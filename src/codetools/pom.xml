@@ -9,10 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.lzt</groupId>
-	<artifactId>codetools</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>codetools</name>
+	<artifactId>codetools</artifactId>
 	<description>code tools</description>
 
 	<properties>
