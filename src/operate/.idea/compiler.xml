@@ -10,10 +10,6 @@
         <module name="codetools" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="codetools" target="1.8" />
-      <module name="ormtools" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
