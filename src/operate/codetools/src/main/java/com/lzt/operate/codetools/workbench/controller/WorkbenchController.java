@@ -1,4 +1,4 @@
-package com.lzt.codetools.workbench.controller;
+package com.lzt.operate.codetools.workbench.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class WorkbenchController {
 
-    @RequestMapping(value="/hello",method= RequestMethod.GET)
-    public String sayHello(){
+    @RequestMapping(value = "/hello", method = RequestMethod.GET)
+    public String sayHello() {
         return "hello";
     }
 

@@ -1,4 +1,4 @@
-package com.lzt.codetools;
+package com.lzt.operate.codetools;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

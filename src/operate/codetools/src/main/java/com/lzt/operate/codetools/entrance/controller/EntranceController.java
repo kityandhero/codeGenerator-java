@@ -1,4 +1,4 @@
-package com.lzt.codetools.entrance.controller;
+package com.lzt.operate.codetools.entrance.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,7 +18,7 @@ public class EntranceController {
 
     @RequestMapping("/entrance/signIn")
     @ResponseBody
-    public String signIn(){
+    public String signIn() {
 
         return "success";
     }
