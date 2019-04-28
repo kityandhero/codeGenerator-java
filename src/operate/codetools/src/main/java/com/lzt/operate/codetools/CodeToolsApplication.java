@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools;
 
 import com.lzt.operate.codetools.common.CorsConfig;
-import com.lzt.operate.utility.filter.CorsCustomFilter;
+import com.lzt.operate.web.filters.CorsCustomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

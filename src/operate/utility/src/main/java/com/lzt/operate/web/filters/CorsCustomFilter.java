@@ -1,10 +1,13 @@
-package com.lzt.operate.utility.filter;
+package com.lzt.operate.web.filters;
 
 import com.lzt.operate.utility.CorsConfigEntity;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+/**
+ * @author lzt
+ */
 public class CorsCustomFilter extends CorsFilter {
 
     public CorsCustomFilter(CorsConfigEntity corsConfigEntity) {
