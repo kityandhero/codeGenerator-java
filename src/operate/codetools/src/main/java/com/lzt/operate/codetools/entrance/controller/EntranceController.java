@@ -30,8 +30,6 @@ public class EntranceController {
     @RequestMapping("/entrance/signIn")
     @ResponseBody
     public String signIn() {
-
-
         return "success";
     }
 }
