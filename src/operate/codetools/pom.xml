@@ -88,6 +88,25 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.lzt.operate.codetools.CodeToolsApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <!--<configuration>-->
+                        <!--<srouce>${jdk.version}</srouce>-->
+                        <!--<target>${jdk.version}</target>-->
+                        <!--<encoed>${project.build.sourceEncoding}</encoed>-->
+                        <!--</configuration>-->
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
