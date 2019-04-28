@@ -20,10 +20,7 @@ public class CorsConfigEntity {
     protected String allowSites;
 
     @Setter
-    protected boolean needAccessControlAllowCredentials;
-
-    @Setter
-    protected String accessControlAllowCredentials;
+    protected boolean accessControlAllowCredentials;
 
     @Setter
     protected String accessControlAllowHeaders;
@@ -31,13 +28,12 @@ public class CorsConfigEntity {
     @Setter
     protected String accessControlAllowMethods;
 
-    private Set<String> mergeToSet(String firstValue, String secordValue) {
+    private Set<String> mergeToSet(String firstValue, String secondValue) {
         String v = Optional.of(firstValue).or("");
         Set<String> set = new HashSet<String>();
 
-
         Iterable<String> firstValueList = Splitter.on(',').split(v);
-        Iterable<String> secondValueList = Splitter.on(',').split(Optional.of(secordValue).or(""));
+        Iterable<String> secondValueList = Splitter.on(',').split(Optional.of(secondValue).or(""));
 
         for (String item : firstValueList) {
             set.add(item);
@@ -50,22 +46,55 @@ public class CorsConfigEntity {
         return set;
     }
 
-    public Set<String> getAccessControlAllowOriginSet(String existingAllowOrigins) {
+    //region AccessControlAllowOrigin Methods
+
+    public String getAccessControlAllowOrigins() {
+        return getAccessControlAllowOrigins("");
+    }
+
+    private String getAccessControlAllowOrigins(String existingAllowOrigins) {
+        Set<String> set = this.getAccessControlAllowOriginSet(existingAllowOrigins);
+
+        return com.google.common.base.Joiner.on(",").join(set);
+    }
+
+    public Set<String> getAccessControlAllowOriginSet() {
+        return getAccessControlAllowOriginSet("");
+    }
+
+    private Set<String> getAccessControlAllowOriginSet(String existingAllowOrigins) {
         return mergeToSet(existingAllowOrigins, allowSites);
     }
 
-    public boolean getNeedAccessControlAllowCredentials() {
-        return needAccessControlAllowCredentials;
-    }
+    // endregion
 
-    public String getAccessControlAllowCredentials() {
+
+    public boolean getAccessControlAllowCredentials() {
         return accessControlAllowCredentials;
     }
 
-    public Set<String> getAccessControlAllowHeaderSet(String existingAllowHeaders) {
+    //region AccessControlAllowHeader Methods
 
+    public String getAccessControlAllowHeaders() {
+        return getAccessControlAllowHeaders("");
+    }
+
+    private String getAccessControlAllowHeaders(String existingAllowOrigins) {
+        Set<String> set = this.getAccessControlAllowHeaderSet(existingAllowOrigins);
+
+        return com.google.common.base.Joiner.on(",").join(set);
+    }
+
+    public Set<String> getAccessControlAllowHeaderSet() {
+        return getAccessControlAllowHeaderSet("");
+    }
+
+    private Set<String> getAccessControlAllowHeaderSet(String existingAllowHeaders) {
         return mergeToSet(existingAllowHeaders, accessControlAllowHeaders);
     }
+
+    //endregion
+
 
     public String getAccessControlAllowMethods() {
         return accessControlAllowMethods;
