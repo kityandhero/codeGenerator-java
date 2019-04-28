@@ -1,7 +1,6 @@
 package com.lzt.operate.codetools.entrance.controller;
 
 import com.lzt.operate.web.controllers.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
