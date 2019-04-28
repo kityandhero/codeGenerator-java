@@ -17,6 +17,11 @@ public class StringEx {
         this.source = Optional.of(source).or("");
     }
 
+    public static StringEx join(String separator, Iterable<?> parts) {
+        String s = com.google.common.base.Joiner.on(separator).join(parts);
+        return new StringEx(s);
+    }
+
     public Iterable<String> split(char separator) {
         return Splitter.on(separator).split(this.source);
     }
@@ -25,4 +30,23 @@ public class StringEx {
     public String toString() {
         return this.source;
     }
+
+    public int toInt() {
+
+        // com.google.common.base.Strings.
+        return Integer.parseInt(this.source);
+    }
+
+    public int toInteger() {
+
+        // com.google.common.base.Strings.
+        return this.toInt();
+    }
+
+
+    public IntegerEx toIntegerEx() {
+        // com.google.common.base.Strings.
+        return new IntegerEx(this.toInteger());
+    }
+
 }

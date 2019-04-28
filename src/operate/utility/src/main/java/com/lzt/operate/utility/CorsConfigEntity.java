@@ -56,7 +56,7 @@ public class CorsConfigEntity {
     private String getAccessControlAllowOrigins(String existingAllowOrigins) {
         Set<String> set = this.getAccessControlAllowOriginSet(existingAllowOrigins);
 
-        return com.google.common.base.Joiner.on(",").join(set);
+        return StringEx.join(",", set).toString();
     }
 
     public Set<String> getAccessControlAllowOriginSet() {
@@ -68,7 +68,6 @@ public class CorsConfigEntity {
     }
 
     // endregion
-
 
     public boolean getAccessControlAllowCredentials() {
         return this.accessControlAllowCredentials;
@@ -95,7 +94,6 @@ public class CorsConfigEntity {
     }
 
     //endregion
-
 
     public String getAccessControlAllowMethods() {
         return this.accessControlAllowMethods;
