@@ -1,7 +1,6 @@
 package com.lzt.operate.utility;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Splitter;
+import com.lzt.operate.extensions.StringEx;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -29,17 +28,19 @@ public class CorsConfigEntity {
     protected String accessControlAllowMethods;
 
     private Set<String> mergeToSet(String firstValue, String secondValue) {
-        String v = Optional.of(firstValue).or("");
+        StringEx first = new StringEx(firstValue);
+        StringEx second = new StringEx(secondValue);
+
         Set<String> set = new HashSet<String>();
 
-        Iterable<String> firstValueList = Splitter.on(',').split(v);
-        Iterable<String> secondValueList = Splitter.on(',').split(Optional.of(secondValue).or(""));
+        Iterable<String> firstSplitList = first.split(',');
+        Iterable<String> secondSplitList = second.split(',');
 
-        for (String item : firstValueList) {
+        for (String item : firstSplitList) {
             set.add(item);
         }
 
-        for (String item : secondValueList) {
+        for (String item : secondSplitList) {
             set.add(item);
         }
 
@@ -49,7 +50,7 @@ public class CorsConfigEntity {
     //region AccessControlAllowOrigin Methods
 
     public String getAccessControlAllowOrigins() {
-        return getAccessControlAllowOrigins("");
+        return this.getAccessControlAllowOrigins("");
     }
 
     private String getAccessControlAllowOrigins(String existingAllowOrigins) {
@@ -59,24 +60,24 @@ public class CorsConfigEntity {
     }
 
     public Set<String> getAccessControlAllowOriginSet() {
-        return getAccessControlAllowOriginSet("");
+        return this.getAccessControlAllowOriginSet("");
     }
 
     private Set<String> getAccessControlAllowOriginSet(String existingAllowOrigins) {
-        return mergeToSet(existingAllowOrigins, allowSites);
+        return this.mergeToSet(existingAllowOrigins, this.allowSites);
     }
 
     // endregion
 
 
     public boolean getAccessControlAllowCredentials() {
-        return accessControlAllowCredentials;
+        return this.accessControlAllowCredentials;
     }
 
     //region AccessControlAllowHeader Methods
 
     public String getAccessControlAllowHeaders() {
-        return getAccessControlAllowHeaders("");
+        return this.getAccessControlAllowHeaders("");
     }
 
     private String getAccessControlAllowHeaders(String existingAllowOrigins) {
@@ -86,18 +87,18 @@ public class CorsConfigEntity {
     }
 
     public Set<String> getAccessControlAllowHeaderSet() {
-        return getAccessControlAllowHeaderSet("");
+        return this.getAccessControlAllowHeaderSet("");
     }
 
     private Set<String> getAccessControlAllowHeaderSet(String existingAllowHeaders) {
-        return mergeToSet(existingAllowHeaders, accessControlAllowHeaders);
+        return this.mergeToSet(existingAllowHeaders, this.accessControlAllowHeaders);
     }
 
     //endregion
 
 
     public String getAccessControlAllowMethods() {
-        return accessControlAllowMethods;
+        return this.accessControlAllowMethods;
     }
 }
 
