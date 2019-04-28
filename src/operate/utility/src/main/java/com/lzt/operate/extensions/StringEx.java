@@ -2,6 +2,7 @@ package com.lzt.operate.extensions;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * 字符串扩展类
@@ -22,6 +23,10 @@ public class StringEx {
         return new StringEx(s);
     }
 
+    public static boolean isNullOrEmpty(@Nullable String target) {
+        return com.google.common.base.Strings.isNullOrEmpty(target);
+    }
+
     public Iterable<String> split(char separator) {
         return Splitter.on(separator).split(this.source);
     }
@@ -32,21 +37,29 @@ public class StringEx {
     }
 
     public int toInt() {
-
-        // com.google.common.base.Strings.
         return Integer.parseInt(this.source);
     }
 
     public int toInteger() {
-
-        // com.google.common.base.Strings.
         return this.toInt();
     }
 
-
     public IntegerEx toIntegerEx() {
-        // com.google.common.base.Strings.
         return new IntegerEx(this.toInteger());
     }
 
+    public StringEx padEnd(int minLength, char padChar) {
+        String s = com.google.common.base.Strings.padEnd(this.source, minLength, padChar);
+        return new StringEx(s);
+    }
+
+    public StringEx padStart(int minLength, char padChar) {
+        String s = com.google.common.base.Strings.padStart(this.source, minLength, padChar);
+        return new StringEx(s);
+    }
+
+    public StringEx repeat(int count) {
+        String s = com.google.common.base.Strings.repeat(this.source, count);
+        return new StringEx(s);
+    }
 }
