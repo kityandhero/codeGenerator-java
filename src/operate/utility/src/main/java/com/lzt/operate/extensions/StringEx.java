@@ -18,8 +18,8 @@ public class StringEx {
     private StringBuilder builder;
 
     public StringEx(String source) {
-        builder = new StringBuilder();
-        builder.append(Optional.of(source).orElse(""));
+        this.builder = new StringBuilder();
+        this.builder.append(Optional.of(source).orElse(""));
     }
 
     public static StringEx join(String separator, Iterable<?> parts) {
@@ -38,7 +38,7 @@ public class StringEx {
         return new StringEx(v);
     }
 
-    public static StringEx lenientFormat(String template, @Nullable Object @Nullable ... args) {
+    private static StringEx lenientFormat(String template, @Nullable Object @Nullable ... args) {
         String f = Optional.of(template).orElse("");
         String v = Strings.lenientFormat(f, args);
         return new StringEx(v);
@@ -82,17 +82,17 @@ public class StringEx {
     }
 
     public StringEx append(String target) {
-        builder.append(java.util.Optional.of(target).orElse(""));
-        return new StringEx(builder.toString());
+        this.builder.append(java.util.Optional.of(target).orElse(""));
+        return new StringEx(this.builder.toString());
     }
 
     public StringEx appendFormat(String format, Object... args) {
-        builder.append(StringEx.format(format, args).toString());
-        return new StringEx(builder.toString());
+        this.builder.append(StringEx.format(format, args).toString());
+        return new StringEx(this.builder.toString());
     }
 
     public StringEx appendLenientFormat(@Nullable String template, @Nullable Object @Nullable ... args) {
-        builder.append(StringEx.lenientFormat(template, args).toString());
-        return new StringEx(builder.toString());
+        this.builder.append(StringEx.lenientFormat(template, args).toString());
+        return new StringEx(this.builder.toString());
     }
 }
