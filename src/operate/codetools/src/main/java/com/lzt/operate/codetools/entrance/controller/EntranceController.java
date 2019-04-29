@@ -20,7 +20,7 @@ public class EntranceController extends BaseController {
     //     this.corsConfig = corsConfig;
     // }
     //
-    // @RequestMapping("/")
+    // @RequestMapping("/test")
     // @ResponseBody
     // public String index() {
     //     return corsConfig.getAccessControlAllowMethods();

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class WorkbenchController extends BaseController {
 
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String sayHello() {
-        return "main";
+        return "index";
     }
 
 }
