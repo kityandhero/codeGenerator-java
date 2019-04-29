@@ -1,8 +1,11 @@
 package com.lzt.operate.extensions;
 
-import com.google.common.base.Optional;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Optional;
 
 /**
  * 字符串扩展类
@@ -12,32 +15,47 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author lzt
  */
 public class StringEx {
-    private String source;
+    private StringBuilder builder;
 
     public StringEx(String source) {
-        this.source = Optional.of(source).or("");
+        builder = new StringBuilder();
+        builder.append(Optional.of(source).orElse(""));
     }
 
     public static StringEx join(String separator, Iterable<?> parts) {
-        String s = com.google.common.base.Joiner.on(separator).join(parts);
+        String s = Joiner.on(Optional.of(separator).orElse("")).join(parts);
         return new StringEx(s);
     }
 
     public static boolean isNullOrEmpty(@Nullable String target) {
-        return com.google.common.base.Strings.isNullOrEmpty(target);
+        return Strings.isNullOrEmpty(target);
     }
 
+    public static StringEx format(String format, Object... args) {
+        String f = Optional.of(format).orElse("");
+        String v = String.format(f, args);
+
+        return new StringEx(v);
+    }
+
+    public static StringEx lenientFormat(String template, @Nullable Object @Nullable ... args) {
+        String f = Optional.of(template).orElse("");
+        String v = Strings.lenientFormat(f, args);
+        return new StringEx(v);
+    }
+
+
     public Iterable<String> split(char separator) {
-        return Splitter.on(separator).split(this.source);
+        return Splitter.on(separator).split(this.builder);
     }
 
     @Override
     public String toString() {
-        return this.source;
+        return this.builder.toString();
     }
 
     public int toInt() {
-        return Integer.parseInt(this.source);
+        return Integer.parseInt(this.builder.toString());
     }
 
     public int toInteger() {
@@ -49,17 +67,32 @@ public class StringEx {
     }
 
     public StringEx padEnd(int minLength, char padChar) {
-        String s = com.google.common.base.Strings.padEnd(this.source, minLength, padChar);
+        String s = Strings.padEnd(this.builder.toString(), minLength, padChar);
         return new StringEx(s);
     }
 
     public StringEx padStart(int minLength, char padChar) {
-        String s = com.google.common.base.Strings.padStart(this.source, minLength, padChar);
+        String s = Strings.padStart(this.builder.toString(), minLength, padChar);
         return new StringEx(s);
     }
 
     public StringEx repeat(int count) {
-        String s = com.google.common.base.Strings.repeat(this.source, count);
+        String s = Strings.repeat(this.builder.toString(), count);
         return new StringEx(s);
+    }
+
+    public StringEx append(String target) {
+        builder.append(java.util.Optional.of(target).orElse(""));
+        return new StringEx(builder.toString());
+    }
+
+    public StringEx appendFormat(String format, Object... args) {
+        builder.append(StringEx.format(format, args).toString());
+        return new StringEx(builder.toString());
+    }
+
+    public StringEx appendLenientFormat(@Nullable String template, @Nullable Object @Nullable ... args) {
+        builder.append(StringEx.lenientFormat(template, args).toString());
+        return new StringEx(builder.toString());
     }
 }
