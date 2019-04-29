@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Description;
 
 /**
  * @author lzt
@@ -26,6 +27,7 @@ public class CodeToolsApplication {
     }
 
     @Bean
+    @Description("全局跨域配置")
     public FilterRegistrationBean<CorsCustomFilter> corsAllUrlFilterRegistration() {
         FilterRegistrationBean<CorsCustomFilter> registration = new FilterRegistrationBean<CorsCustomFilter>(new CorsCustomFilter(corsConfig));
         registration.addUrlPatterns("/*");
