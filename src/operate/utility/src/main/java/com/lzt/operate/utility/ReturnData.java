@@ -3,10 +3,11 @@ package com.lzt.operate.utility;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 /**
@@ -32,23 +33,28 @@ public class ReturnData implements java.io.Serializable {
 
     @Getter
     @Setter
-    public Object data;
+    public Serializable data;
 
     @Getter
     @Setter
-    public Object extraData;
+    public Serializable extraData;
 
     public ReturnData() {
-        this(200, true, "success", new Object(), new Object());
+        this(200, true, "success", null, null);
     }
 
-    public ReturnData(Object data, Object extraData) {
+    public ReturnData(Serializable data) {
+        this();
+        this.data = data;
+    }
+
+    public ReturnData(Serializable data, Serializable extraData) {
         this();
         this.data = data;
         this.extraData = extraData;
     }
 
-    public ReturnData(int code, boolean success, String message, Object data, Object extraData) {
+    public ReturnData(int code, boolean success, String message, Serializable data, Serializable extraData) {
         this.code = code;
         this.success = success;
         this.message = message;
@@ -56,25 +62,25 @@ public class ReturnData implements java.io.Serializable {
         this.extraData = extraData;
     }
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
+    public HashMap<String, Serializable> toMap() {
+        HashMap<String, Serializable> map = new LinkedHashMap<>();
 
         map.put("code", this.code);
         map.put("success", this.success);
         map.put("message", this.message);
 
         if (this.data != null) {
-            Object v = Optional.of(this.data).orElse(new Object());
+            Serializable v = Optional.of(this.data).orElse(new SerializableData());
 
             if (!Collection.class.isAssignableFrom(v.getClass())) {
-                map.put("data", Optional.of(this.data).orElse(new Object()));
+                map.put("data", Optional.of(v).orElse(new SerializableData()));
             } else {
-                map.put("list", Optional.of(this.data).orElse(new ArrayList<>()));
+                map.put("list", Optional.of(v).orElse(new ArrayList<>()));
             }
         }
 
         if (this.extraData != null) {
-            map.put("extra", Optional.of(this.extraData).orElse(new Object()));
+            map.put("extra", Optional.of(this.extraData).orElse(new SerializableData()));
         }
 
         return map;

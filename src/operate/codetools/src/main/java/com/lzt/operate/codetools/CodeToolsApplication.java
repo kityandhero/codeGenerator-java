@@ -1,5 +1,7 @@
 package com.lzt.operate.codetools;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.lzt.operate.codetools.common.CorsConfig;
 import com.lzt.operate.web.filters.CorsCustomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +36,10 @@ public class CodeToolsApplication {
         registration.setName("corsAllUrlFilter");
         registration.setOrder(1);
         return registration;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 }
