@@ -42,7 +42,13 @@ public class ReturnData implements java.io.Serializable {
         this(200, true, "success", new Object(), new Object());
     }
 
-    private ReturnData(int code, boolean success, String message, Object data, Object extraData) {
+    public ReturnData(Object data, Object extraData) {
+        this();
+        this.data = data;
+        this.extraData = extraData;
+    }
+
+    public ReturnData(int code, boolean success, String message, Object data, Object extraData) {
         this.code = code;
         this.success = success;
         this.message = message;
