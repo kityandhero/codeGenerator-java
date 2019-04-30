@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -36,21 +35,21 @@ public class EntranceController extends BaseController {
         return this.success();
     }
 
-    @RequestMapping("/entrance/dataTest")
-    @ResponseBody
-    public HashMap<String, Serializable> dataTest() {
-        return this.success();
-    }
-
-    @RequestMapping("/entrance/listTest")
-    @ResponseBody
-    public HashMap<String, Serializable> listTest() {
-        ArrayList<String> a = new ArrayList<String>();
-        a.add("1");
-        a.add("2");
-        a.add("3");
-        a.add("4");
-
-        return this.pageData(a);
-    }
+    // @RequestMapping("/entrance/dataTest")
+    // @ResponseBody
+    // public HashMap<String, Serializable> dataTest() {
+    //     return this.success();
+    // }
+    //
+    // @RequestMapping("/entrance/listTest")
+    // @ResponseBody
+    // public HashMap<String, Serializable> listTest() {
+    //     ArrayList<String> a = new ArrayList<String>();
+    //     a.add("1");
+    //     a.add("2");
+    //     a.add("3");
+    //     a.add("4");
+    //
+    //     return this.pageData(a);
+    // }
 }
