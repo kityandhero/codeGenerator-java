@@ -16,19 +16,6 @@ import java.util.HashMap;
 @EnableConfigurationProperties
 public class EntranceController extends BaseController {
 
-    // private CorsConfig corsConfig;
-
-    // @Autowired
-    // public EntranceController(CorsConfig corsConfig) {
-    //     this.corsConfig = corsConfig;
-    // }
-    //
-    // @RequestMapping("/test")
-    // @ResponseBody
-    // public String index() {
-    //     return corsConfig.getAccessControlAllowMethods();
-    // }
-
     @RequestMapping("/entrance/signIn")
     @ResponseBody
     public HashMap<String, Serializable> signIn() {
