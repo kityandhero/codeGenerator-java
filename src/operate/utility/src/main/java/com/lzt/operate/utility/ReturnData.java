@@ -1,7 +1,6 @@
 package com.lzt.operate.utility;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,26 +16,17 @@ import java.util.Optional;
  *
  * @author lzt
  */
+@Data
 public class ReturnData implements java.io.Serializable {
 
-    @Getter
-    @Setter
     public int code;
 
-    @Getter
-    @Setter
     public boolean success;
 
-    @Getter
-    @Setter
     public String message;
 
-    @Getter
-    @Setter
     public Serializable data;
 
-    @Getter
-    @Setter
     public Serializable extraData;
 
     public ReturnData() {
