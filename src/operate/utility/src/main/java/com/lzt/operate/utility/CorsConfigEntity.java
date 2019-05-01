@@ -1,6 +1,7 @@
 package com.lzt.operate.utility;
 
 import com.lzt.operate.extensions.StringEx;
+import lombok.Data;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -10,28 +11,25 @@ import java.util.Set;
 /**
  * @author lzt
  */
+@Data
 public class CorsConfigEntity {
 
     /**
      * 允许的域名集合，以,分隔
      */
-    @Setter
     protected String allowSites;
 
-    @Setter
     protected boolean accessControlAllowCredentials;
 
-    @Setter
     protected String accessControlAllowHeaders;
 
-    @Setter
     protected String accessControlAllowMethods;
 
     private Set<String> mergeToSet(String firstValue, String secondValue) {
         StringEx first = new StringEx(firstValue);
         StringEx second = new StringEx(secondValue);
 
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
 
         Iterable<String> firstSplitList = first.split(',');
         Iterable<String> secondSplitList = second.split(',');
