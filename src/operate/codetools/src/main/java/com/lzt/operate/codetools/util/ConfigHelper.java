@@ -35,8 +35,12 @@ public class ConfigHelper {
     public static void createEmptyFiles() throws Exception {
         File file = new File(ConfigHelper.BASE_DIR);
         if (!file.exists()) {
-            file.mkdir();
+            boolean mkdir = file.mkdir();
+            if (!mkdir) {
+                throw new Exception("创建文件夹" + ConfigHelper.BASE_DIR + "失败！");
+            }
         }
+
         File uiConfigFile = new File(ConfigHelper.BASE_DIR + ConfigHelper.CONFIG_FILE);
         if (!uiConfigFile.exists()) {
             ConfigHelper.createEmptyXMLFile(uiConfigFile);
@@ -75,13 +79,8 @@ public class ConfigHelper {
 
     public static void saveDatabaseConfig(boolean isUpdate, Integer primaryKey, DatabaseConfig dbConfig) throws Exception {
         String configName = dbConfig.getName();
-        Connection conn;
-        conn = null;
-        Statement stat = null;
-        ResultSet rs = null;
-        try {
-            conn = ConnectionManager.getConnection();
-            stat = conn.createStatement();
+        // ResultSet rs = null;
+        try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement()) {
             if (!isUpdate) {
                 ResultSet rs1 = stat.executeQuery("SELECT * from dbs where name = '" + configName + "'");
                 if (rs1.next()) {
@@ -96,19 +95,10 @@ public class ConfigHelper {
                 sql = String.format("INSERT INTO dbs (name, value) values('%s', '%s')", configName, jsonStr);
             }
             stat.executeUpdate(sql);
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-
-
-            if (stat != null) {
-                stat.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
         }
+        // if (rs != null) {
+        //     rs.close();
+        // }
     }
 
     public static void deleteDatabaseConfig(DatabaseConfig databaseConfig) throws Exception {

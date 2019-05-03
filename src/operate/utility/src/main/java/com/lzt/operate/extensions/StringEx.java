@@ -4,6 +4,7 @@ package com.lzt.operate.extensions;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
@@ -72,6 +73,11 @@ public class StringEx {
         return null;
     }
 
+    public static StringEx ToMD5(String target) {
+        String v = Optional.of(target).orElse("");
+
+        return new StringEx(Md5Crypt.md5Crypt(v.getBytes()));
+    }
 
     public Iterable<String> split(char separator) {
         return Splitter.on(separator).split(this.builder);

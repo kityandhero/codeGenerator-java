@@ -55,8 +55,8 @@ public class MybatisGeneratorBridge {
 
     private List<ColumnOverride> columnOverrides;
 
-    public MybatisGeneratorBridge() {
-    }
+    // public MybatisGeneratorBridge() {
+    // }
 
     public void setGeneratorConfig(GeneratorConfig generatorConfig) {
         this.generatorConfig = generatorConfig;

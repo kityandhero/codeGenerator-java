@@ -22,6 +22,11 @@ public class BaseController {
         return returnData.toMap();
     }
 
+    protected HashMap<String, Serializable> success(Serializable data) {
+        ReturnData returnData = new ReturnData(data);
+        return returnData.toMap();
+    }
+
     protected HashMap<String, Serializable> success(Serializable data, Serializable extraData) {
         ReturnData returnData = new ReturnData(data, extraData);
         return returnData.toMap();
