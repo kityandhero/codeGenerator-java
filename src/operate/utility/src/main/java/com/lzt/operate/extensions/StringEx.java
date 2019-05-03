@@ -1,5 +1,6 @@
 package com.lzt.operate.extensions;
 
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -44,6 +45,33 @@ public class StringEx {
         return new StringEx(v);
     }
 
+    private static StringEx ToCamelStyle(String str) {
+        if (str != null) {
+            if (str.contains("_")) {
+                str = str.toLowerCase();
+                StringBuilder sb = new StringBuilder();
+                sb.append(String.valueOf(str.charAt(0)).toUpperCase());
+                for (int i = 1; i < str.length(); i++) {
+                    char c = str.charAt(i);
+                    if (c != '_') {
+                        sb.append(c);
+                    } else {
+                        if (i + 1 < str.length()) {
+                            sb.append(String.valueOf(str.charAt(i + 1)).toUpperCase());
+                            i++;
+                        }
+                    }
+                }
+                return new StringEx(sb.toString());
+            } else {
+                String firstChar = String.valueOf(str.charAt(0)).toUpperCase();
+                String otherChars = str.substring(1);
+                return new StringEx(firstChar + otherChars);
+            }
+        }
+        return null;
+    }
+
 
     public Iterable<String> split(char separator) {
         return Splitter.on(separator).split(this.builder);
@@ -82,7 +110,7 @@ public class StringEx {
     }
 
     public StringEx append(String target) {
-        this.builder.append(java.util.Optional.of(target).orElse(""));
+        this.builder.append(Optional.of(target).orElse(""));
         return new StringEx(this.builder.toString());
     }
 
@@ -94,5 +122,13 @@ public class StringEx {
     public StringEx appendLenientFormat(@Nullable String template, @Nullable Object @Nullable ... args) {
         this.builder.append(StringEx.lenientFormat(template, args).toString());
         return new StringEx(this.builder.toString());
+    }
+
+    public boolean contains(String target) {
+        if (StringEx.isNullOrEmpty(target)) {
+            return false;
+        }
+
+        return this.builder.toString().contains(target);
     }
 }
