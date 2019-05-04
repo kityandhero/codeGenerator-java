@@ -31,7 +31,15 @@ import java.util.Optional;
 @RestController
 @EnableConfigurationProperties
 @RequestMapping("/entrance")
-@Api(tags = "用户登录/登出", description = "用于用户登录，登录后可以加载用户的个性化信息")
+@Api(tags = "用户登录登出", description = "用于用户登录登出，登录后可以加载用户的个性化信息")
+@ApiResponses({
+        //返回的东西，有返回码和信息，可以自定义
+        @ApiResponse(code = 200, message = "success", response = ReturnData.class),
+        @ApiResponse(code = 403, message = "不支持的请求"),
+        @ApiResponse(code = 404, message = "找不到资源"),
+        //自定义返回码
+        @ApiResponse(code = -99, message = "未知异常", response = Exception.class),
+})
 public class EntranceController extends OperateBaseController {
 
     private OperatorRepository operatorRepository;
@@ -45,15 +53,6 @@ public class EntranceController extends OperateBaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "账户名", dataType = "String", required = true),
             @ApiImplicitParam(name = "password", value = "密码", dataType = "String", required = true),
-    })
-    //api返回的东西
-    @ApiResponses({
-            //返回的东西，有返回码和信息，可以自定义
-            @ApiResponse(code = 200, message = "success", response = ReturnData.class),
-            @ApiResponse(code = 403, message = "不支持的请求"),
-            @ApiResponse(code = 404, message = "找不到资源"),
-            //自定义返回码
-            @ApiResponse(code = -99, message = "未知异常", response = Exception.class),
     })
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
     public HashMap<String, Serializable> signIn(@RequestBody JSONObject jsonParam) {
@@ -104,7 +103,8 @@ public class EntranceController extends OperateBaseController {
     //     return this.pageData(a);
     // }
 
-    @RequestMapping("/signUp")
+    @ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
+    @PostMapping(path = "/signUp", consumes = "application/json", produces = "application/json")
     public HashMap<String, Serializable> signUp() {
         return this.success();
     }

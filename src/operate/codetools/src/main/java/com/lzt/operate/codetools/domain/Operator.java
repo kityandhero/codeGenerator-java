@@ -16,13 +16,21 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class Operator extends BaseDomain {
 
-    @Column(nullable = false, unique = true)
-    private String name;
-
-    @Column(nullable = false)
-    private String password;
+    @Column(length = 50)
+    String name;
 
     @Column
-    private String friendlyName;
+    String password;
 
+    @Column(length = 50)
+    String friendlyName;
+
+    public Operator() {
+        java.util.Date now = new java.util.Date();
+
+        this.name = "";
+        this.password = "";
+        this.friendlyName = "";
+        this.createTime = now;
+    }
 }
