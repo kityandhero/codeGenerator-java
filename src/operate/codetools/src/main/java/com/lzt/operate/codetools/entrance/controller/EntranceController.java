@@ -1,14 +1,23 @@
 package com.lzt.operate.codetools.entrance.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.extensions.StringEx;
+import com.lzt.operate.utility.ReturnData;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Example;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
@@ -22,6 +31,7 @@ import java.util.Optional;
 @RestController
 @EnableConfigurationProperties
 @RequestMapping("/entrance")
+@Api(tags = "用户登录/登出", description = "用于用户登录，登录后可以加载用户的个性化信息")
 public class EntranceController extends OperateBaseController {
 
     private OperatorRepository operatorRepository;
@@ -31,8 +41,26 @@ public class EntranceController extends OperateBaseController {
         this.operatorRepository = operatorRepository;
     }
 
-    @RequestMapping("/signIn")
-    public HashMap<String, Serializable> signIn(@RequestParam("name") String name, @RequestParam("password") String password) {
+    @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "账户名", dataType = "String", required = true),
+            @ApiImplicitParam(name = "password", value = "密码", dataType = "String", required = true),
+    })
+    //api返回的东西
+    @ApiResponses({
+            //返回的东西，有返回码和信息，可以自定义
+            @ApiResponse(code = 200, message = "success", response = ReturnData.class),
+            @ApiResponse(code = 403, message = "不支持的请求"),
+            @ApiResponse(code = 404, message = "找不到资源"),
+            //自定义返回码
+            @ApiResponse(code = -99, message = "未知异常", response = Exception.class),
+    })
+    @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
+    public HashMap<String, Serializable> signIn(@RequestBody JSONObject jsonParam) {
+        // 将获取的json数据封装一层，然后在给返回
+        String name = jsonParam.getString("name");
+        String password = jsonParam.getString("password");
+
         Operator operator = new Operator();
         operator.setName(name);
         Example<Operator> example = Example.of(operator);
