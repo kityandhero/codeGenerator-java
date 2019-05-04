@@ -21,12 +21,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // @MapperScan("com.lzt.operate.codetools.mapper")
 @SpringBootApplication
 @EnableJpaRepositories("com.lzt.operate.codetools.repository")
-// @EntityScan("om.lzt.operate.codetools.domain")
 public class CodeToolsApplication {
 
     private static final Logger _LOG = LoggerFactory.getLogger(CodeToolsApplication.class);
 
-    @Autowired
     private CorsConfig corsConfig;
 
     @Autowired

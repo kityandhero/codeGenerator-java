@@ -28,7 +28,7 @@ public class Operator implements Serializable {
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
     private String id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String loginName;
 
     @Column(nullable = false)
