@@ -24,25 +24,29 @@ import java.util.Optional;
 @RequestMapping("/entrance")
 public class EntranceController extends OperateBaseController {
 
+    private OperatorRepository operatorRepository;
+
     @Autowired
-    OperatorRepository operatorRepository;
+    public EntranceController(OperatorRepository operatorRepository) {
+        this.operatorRepository = operatorRepository;
+    }
 
     @RequestMapping("/signIn")
-    public HashMap<String, Serializable> signIn(@RequestParam("loginName") String loginName, @RequestParam("password") String password) {
+    public HashMap<String, Serializable> signIn(@RequestParam("name") String name, @RequestParam("password") String password) {
         Operator operator = new Operator();
-        operator.setLoginName(loginName);
+        operator.setName(name);
         Example<Operator> example = Example.of(operator);
 
         Optional<Operator> op = this.operatorRepository.findOne(example);
-        Operator searchResult = op.get();
+        Operator searchResult = op.orElse(null);
 
         if (searchResult == null) {
             Date now = new Date();
             operator = new Operator();
 
-            operator.setLoginName(loginName);
-            operator.setName(loginName);
+            operator.setName(name);
             operator.setPassword(StringEx.ToMD5("123456").toString());
+            operator.setFriendlyName(name);
             operator.setCreateTime(now);
 
             Operator operatorSave = this.operatorRepository.save(operator);

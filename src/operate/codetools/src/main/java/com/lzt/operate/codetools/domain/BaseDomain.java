@@ -4,8 +4,11 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +16,8 @@ import java.util.Date;
  * @author lzt
  */
 @Data
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class BaseDomain implements Serializable {
 
     /**
