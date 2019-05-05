@@ -44,12 +44,28 @@ public class ReturnData implements java.io.Serializable {
         this.extraData = extraData;
     }
 
+    private ReturnData(int code, boolean success, String message) {
+        this.code = code;
+        this.success = success;
+        this.message = message;
+    }
+
     public ReturnData(int code, boolean success, String message, Serializable data, Serializable extraData) {
         this.code = code;
         this.success = success;
         this.message = message;
         this.data = data;
         this.extraData = extraData;
+    }
+
+    public static ReturnData createSuccessData() {
+        return new ReturnData();
+    }
+
+    public static ReturnData createParamErrorData(String paramName, String description) {
+        return new ReturnData(40001, false, "参数" + Optional.of(paramName)
+                                                           .orElse("参数名") + "错误:" + Optional.of(description)
+                                                                                            .orElse("错误描述"));
     }
 
     public HashMap<String, Serializable> toMap() {
