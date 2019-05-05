@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.lzt.operate.codetools.entrance.controller.GlobalString.JSON_USER_EMAIL;
-import static com.lzt.operate.codetools.entrance.controller.GlobalString.JSON_USER_NAME;
+import static com.lzt.operate.codetools.common.GlobalString.JSON_USER_EMAIL;
+import static com.lzt.operate.codetools.common.GlobalString.JSON_USER_NAME;
 
 /**
  * @author lzt
@@ -41,12 +41,12 @@ public class EntranceController extends OperateBaseController {
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-    @ApiJsonObject(name = "preload", value = {
+    @ApiJsonObject(name = "参数信息", value = {
             @ApiJsonProperty(name = JSON_USER_NAME),
             @ApiJsonProperty(name = JSON_USER_EMAIL)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "jsonParam", required = true, dataType = "preload")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK", reference = "preload")})
+    @ApiImplicitParam(name = "jsonParam", required = true, dataType = "参数信息")
+    @ApiResponses({@ApiResponse(code = 200, message = "OK", reference = "参数信息")})
     // @ApiResponses({
     //         //返回的东西，有返回码和信息，可以自定义
     //         @ApiResponse(code = 200, message = "success", response = ReturnData.class),

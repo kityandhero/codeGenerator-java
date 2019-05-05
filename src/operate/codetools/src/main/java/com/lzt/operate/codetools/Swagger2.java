@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools;
 
-import com.lzt.operate.codetools.entrance.controller.GlobalString;
+import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.swagger2.ModelCache;
 import com.lzt.operate.utility.ReturnData;
 import org.springframework.context.annotation.Bean;
