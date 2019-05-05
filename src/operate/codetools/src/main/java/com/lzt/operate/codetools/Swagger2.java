@@ -1,9 +1,10 @@
 package com.lzt.operate.codetools;
 
+import com.lzt.operate.codetools.entrance.controller.GlobalString;
+import com.lzt.operate.codetools.swagger2.ModelCache;
 import com.lzt.operate.utility.ReturnData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -26,6 +27,8 @@ public class Swagger2 {
     //swagger2的配置文件，这里可以配置swagger2的一些基本的内容，比如扫描的包等等
     @Bean
     public Docket createRestApi() {
+        ModelCache.getInstance().setParamClass(GlobalString.class);
+
         List<Parameter> pars = new ArrayList<>();
 
         ReturnData success = ReturnData.createSuccessData();
@@ -63,12 +66,12 @@ public class Swagger2 {
                                                             .build());
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
+                .apiInfo(this.apiInfo())
                 .globalOperationParameters(pars)
-                .globalResponseMessage(RequestMethod.GET, responseMessageList)
-                .globalResponseMessage(RequestMethod.POST, responseMessageList)
-                .globalResponseMessage(RequestMethod.PUT, responseMessageList)
-                .globalResponseMessage(RequestMethod.DELETE, responseMessageList)
+                // .globalResponseMessage(RequestMethod.GET, responseMessageList)
+                // .globalResponseMessage(RequestMethod.POST, responseMessageList)
+                // .globalResponseMessage(RequestMethod.PUT, responseMessageList)
+                // .globalResponseMessage(RequestMethod.DELETE, responseMessageList)
                 .select()
                 //为当前包路径
                 .apis(RequestHandlerSelectors.basePackage("com.lzt.operate.codetools"))
