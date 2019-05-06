@@ -5,6 +5,7 @@ import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.codetools.swagger2.model.ApiJsonObject;
 import com.lzt.operate.codetools.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.codetools.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.ReturnData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -45,8 +46,9 @@ public class EntranceController extends OperateBaseController {
             @ApiJsonProperty(name = JSON_USER_NAME),
             @ApiJsonProperty(name = JSON_USER_EMAIL)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "jsonParam", required = true, dataType = "参数信息")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK", reference = "参数信息")})
+    @ApiImplicitParam(name = "json", required = true, dataType = "参数信息")
+    // @ApiResponses({@ApiResponse(code = 200, message = "OK", reference = "参数信息")})
+    @ApiResponses({@ApiResponse(code = ReturnData.CODE_ACCESS_SUCCESS, message = ReturnData.MESSAGE_ACCESS_SUCCESS, response = ReturnData.class)})
     // @ApiResponses({
     //         //返回的东西，有返回码和信息，可以自定义
     //         @ApiResponse(code = 200, message = "success", response = ReturnData.class),
@@ -56,9 +58,9 @@ public class EntranceController extends OperateBaseController {
     //         @ApiResponse(code = -99, message = "未知异常", response = Exception.class),
     // })
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-    public HashMap<String, Serializable> signIn(@RequestBody Map<String, String> jsonParam) {
+    public HashMap<String, Serializable> signIn(@RequestBody Map<String, String> json) {
         // 直接将json信息打印出来
-        System.out.println(jsonParam);
+        System.out.println(json);
 
         // // 将获取的json数据封装一层，然后在给返回
         // String name = jsonParam.getString("name");

@@ -10,8 +10,8 @@ public class CommonData {
     private static String RESULT_TYPE_PAGE = "page";
     private static String RESULT_TYPE_LIST = "list";
     private static String RESULT_TYPE_OTHER = "other";
-    private static String JSON_ERROR_CODE = "errorCode";
-    private static String JSON_ERROR_MSG = "errorMsg";
+    private static String JSON_ERROR_CODE = "code";
+    private static String JSON_ERROR_MSG = "message";
     private static String JSON_START_PAGE_NUM = "startPageNum";
     private static String JSON_PAGE_SIZE = "pageSize";
     private static String JSON_PAGE_COUNT = "pageCount";

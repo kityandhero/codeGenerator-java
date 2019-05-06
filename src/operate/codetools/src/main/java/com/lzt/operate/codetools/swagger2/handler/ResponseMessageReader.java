@@ -12,7 +12,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ResponseMessageBuilder;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
 import springfox.documentation.service.Header;
@@ -89,13 +88,15 @@ public class ResponseMessageReader extends SwaggerResponseMessageReader {
 
                     java.util.Optional<ModelReference> responseModel = java.util.Optional.empty();
                     java.util.Optional<ResolvedType> type = this.resolvedType(null, apiResponse);
-                    if (isSuccessful(apiResponse.code())) {
-                        type = java.util.Optional.ofNullable(type.orElseGet(operationResponse::get));
-                    }
-                    if (type.isPresent()) {
-                        responseModel = java.util.Optional.of(new ModelRef(apiResponse.reference() + "-result"));
 
-                    }
+                    // if (isSuccessful(apiResponse.code())) {
+                    //     type = java.util.Optional.ofNullable(type.orElseGet(operationResponse::get));
+                    // }
+
+                    // if (type.isPresent()) {
+                    //     responseModel = java.util.Optional.of(new ModelRef(apiResponse.reference() + "-result"));
+                    // }
+
                     Map<String, Header> headers = newHashMap(defaultHeaders);
                     headers.putAll(headers(apiResponse.responseHeaders()));
 

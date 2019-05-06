@@ -2,18 +2,14 @@ package com.lzt.operate.codetools;
 
 import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.swagger2.ModelCache;
-import com.lzt.operate.utility.ReturnData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseMessageBuilder;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Parameter;
-import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -31,47 +27,9 @@ public class Swagger2 {
 
         List<Parameter> pars = new ArrayList<>();
 
-        ReturnData success = ReturnData.createSuccessData();
-        ReturnData paramError = ReturnData.createParamErrorData("参数名", "错误描述");
-
-
-        List<ResponseMessage> responseMessageList = new ArrayList<>();
-        responseMessageList.add(new ResponseMessageBuilder().code(success.code)
-                                                            .message(success.message)
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-        responseMessageList.add(new ResponseMessageBuilder().code(paramError.code)
-                                                            .message(paramError.message)
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-        responseMessageList.add(new ResponseMessageBuilder().code(404)
-                                                            .message("找不到资源")
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-        responseMessageList.add(new ResponseMessageBuilder().code(409)
-                                                            .message("业务逻辑异常")
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-        responseMessageList.add(new ResponseMessageBuilder().code(422)
-                                                            .message("参数校验异常")
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-        responseMessageList.add(new ResponseMessageBuilder().code(500)
-                                                            .message("服务器内部错误")
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-        responseMessageList.add(new ResponseMessageBuilder().code(503)
-                                                            .message("Hystrix异常")
-                                                            .responseModel(new ModelRef(ReturnData.class.getTypeName()))
-                                                            .build());
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(this.apiInfo())
                 .globalOperationParameters(pars)
-                // .globalResponseMessage(RequestMethod.GET, responseMessageList)
-                // .globalResponseMessage(RequestMethod.POST, responseMessageList)
-                // .globalResponseMessage(RequestMethod.PUT, responseMessageList)
-                // .globalResponseMessage(RequestMethod.DELETE, responseMessageList)
                 .select()
                 //为当前包路径
                 .apis(RequestHandlerSelectors.basePackage("com.lzt.operate.codetools"))

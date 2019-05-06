@@ -19,6 +19,9 @@ import java.util.Optional;
 @Data
 public class ReturnData implements java.io.Serializable {
 
+    public final static int CODE_ACCESS_SUCCESS = 200;
+    public final static String MESSAGE_ACCESS_SUCCESS = "success";
+
     public int code;
 
     public boolean success;
@@ -27,7 +30,7 @@ public class ReturnData implements java.io.Serializable {
 
     public Serializable data;
 
-    public Serializable extraData;
+    public Serializable extra;
 
     public ReturnData() {
         this(200, true, "success", null, null);
@@ -38,10 +41,10 @@ public class ReturnData implements java.io.Serializable {
         this.data = data;
     }
 
-    public ReturnData(Serializable data, Serializable extraData) {
+    public ReturnData(Serializable data, Serializable extra) {
         this();
         this.data = data;
-        this.extraData = extraData;
+        this.extra = extra;
     }
 
     private ReturnData(int code, boolean success, String message) {
@@ -50,12 +53,12 @@ public class ReturnData implements java.io.Serializable {
         this.message = message;
     }
 
-    public ReturnData(int code, boolean success, String message, Serializable data, Serializable extraData) {
+    public ReturnData(int code, boolean success, String message, Serializable data, Serializable extra) {
         this.code = code;
         this.success = success;
         this.message = message;
         this.data = data;
-        this.extraData = extraData;
+        this.extra = extra;
     }
 
     public static ReturnData createSuccessData() {
@@ -85,8 +88,8 @@ public class ReturnData implements java.io.Serializable {
             }
         }
 
-        if (this.extraData != null) {
-            map.put("extra", Optional.of(this.extraData).orElse(new SerializableData()));
+        if (this.extra != null) {
+            map.put("extra", Optional.of(this.extra).orElse(new SerializableData()));
         }
 
         return map;
