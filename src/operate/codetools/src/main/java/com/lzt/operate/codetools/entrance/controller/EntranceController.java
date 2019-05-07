@@ -2,9 +2,9 @@ package com.lzt.operate.codetools.entrance.controller;
 
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.repository.OperatorRepository;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonObject;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonProperty;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonResult;
+import com.lzt.operate.swagger2.model.ApiJsonObject;
+import com.lzt.operate.swagger2.model.ApiJsonProperty;
+import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.ReturnData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

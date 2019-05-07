@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.swagger2.model;
+package com.lzt.operate.swagger2.model;
 
 /**
  * Created by yueh on 2018/9/7.

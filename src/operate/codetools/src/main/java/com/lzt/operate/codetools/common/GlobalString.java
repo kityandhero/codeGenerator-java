@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.common;
 
-import com.lzt.operate.codetools.swagger2.model.ApiSingleParam;
+import com.lzt.operate.swagger2.model.ApiSingleParam;
 
 public class GlobalString {
     @ApiSingleParam(value = "错误码", example = "0", type = Integer.class)

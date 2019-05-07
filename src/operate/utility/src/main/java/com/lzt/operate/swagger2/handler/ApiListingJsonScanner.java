@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.swagger2.handler;
+package com.lzt.operate.swagger2.handler;
 
 /**
  * Created by yueh on 2018/9/12.
@@ -15,11 +15,9 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import com.lzt.operate.codetools.swagger2.ModelCache;
+import com.lzt.operate.swagger2.ModelCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import springfox.documentation.PathProvider;
 import springfox.documentation.builders.ApiListingBuilder;
@@ -58,8 +56,6 @@ import static springfox.documentation.builders.BuilderDefaults.nullToEmptyList;
 import static springfox.documentation.spi.service.contexts.Orderings.methodComparator;
 import static springfox.documentation.spi.service.contexts.Orderings.resourceGroupComparator;
 
-@Component
-@Primary
 public class ApiListingJsonScanner extends ApiListingScanner {
     public static final String ROOT = "/";
     private final ApiDescriptionReader apiDescriptionReader;
@@ -120,8 +116,8 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         return from(resourceGroups).toSortedList(resourceGroupComparator());
     }
 
-    private static com.google.common.base.Predicate<ApiDescription> belongsTo(final String groupName) {
-        return new com.google.common.base.Predicate<ApiDescription>() {
+    private static Predicate<ApiDescription> belongsTo(final String groupName) {
+        return new Predicate<ApiDescription>() {
             @Override
             public boolean apply(ApiDescription input) {
                 return !input.getGroupName().isPresent()
@@ -130,8 +126,8 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         };
     }
 
-    private static com.google.common.base.Function<ApiDescription, ResourceGroup> toResourceGroups() {
-        return new com.google.common.base.Function<ApiDescription, ResourceGroup>() {
+    private static Function<ApiDescription, ResourceGroup> toResourceGroups() {
+        return new Function<ApiDescription, ResourceGroup>() {
             @Override
             public ResourceGroup apply(ApiDescription input) {
                 return new ResourceGroup(
@@ -244,7 +240,7 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         }
 
         private Function<Class<?>, String> resourcePathExtractor() {
-            return new com.google.common.base.Function<Class<?>, String>() {
+            return new Function<Class<?>, String>() {
                 @Override
                 public String apply(Class<?> input) {
                     String path = Iterables.getFirst(Arrays.asList(ResourcePathProvider.this.paths(input)), "");
@@ -269,7 +265,7 @@ public class ApiListingJsonScanner extends ApiListingScanner {
             return new String[]{};
         }
 
-        private com.google.common.base.Optional<? extends Class<?>> controllerClass() {
+        private Optional<? extends Class<?>> controllerClass() {
             return this.resourceGroup.getControllerClass();
         }
     }

@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.swagger2.handler;
+package com.lzt.operate.swagger2.handler;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
@@ -7,10 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
@@ -19,7 +16,6 @@ import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.contexts.OperationContext;
-import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import springfox.documentation.swagger.readers.operation.SwaggerResponseMessageReader;
 
 import java.util.List;
@@ -40,9 +36,6 @@ import static springfox.documentation.swagger.readers.operation.ResponseHeaders.
 /**
  * Created by yueh on 2018/9/13.
  */
-@Primary
-@Component
-@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 3)
 public class ResponseMessageReader extends SwaggerResponseMessageReader {
 
 

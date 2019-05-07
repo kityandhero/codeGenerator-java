@@ -1,17 +1,14 @@
-package com.lzt.operate.codetools.swagger2.handler;
+package com.lzt.operate.swagger2.handler;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.lzt.operate.codetools.swagger2.ModelCache;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonObject;
-import com.lzt.operate.codetools.swagger2.model.ApiSingleParam;
+import com.lzt.operate.swagger2.ModelCache;
+import com.lzt.operate.swagger2.model.ApiJsonObject;
+import com.lzt.operate.swagger2.model.ApiSingleParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.ResolvedTypes;
@@ -36,8 +33,6 @@ import static springfox.documentation.swagger.common.SwaggerPluginSupport.plugin
 /**
  * Created by yueh on 2018/9/10.
  */
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ParametersReader implements OperationBuilderPlugin {
     private final DescriptionResolver descriptions;
 

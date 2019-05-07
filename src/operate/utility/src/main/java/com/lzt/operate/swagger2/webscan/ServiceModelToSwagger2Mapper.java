@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.swagger2.webscan;
+package com.lzt.operate.swagger2.webscan;
 
 import com.google.common.collect.Multimap;
 import io.swagger.models.Contact;
@@ -9,8 +9,6 @@ import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.parameters.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiListing;
 import springfox.documentation.service.Documentation;
@@ -33,8 +31,6 @@ import static com.google.common.collect.Maps.newTreeMap;
 /**
  * Created by yueh on 2018/9/12.
  */
-@Primary
-@Component
 public class ServiceModelToSwagger2Mapper extends ServiceModelToSwagger2MapperImpl {
 
     @Autowired
@@ -84,13 +80,13 @@ public class ServiceModelToSwagger2Mapper extends ServiceModelToSwagger2MapperIm
         swagger.setTags(this.tagSetToTagList(from.getTags()));
         List<String> list2 = from.getConsumes();
         if (list2 != null) {
-            swagger.setConsumes(new ArrayList<String>(list2));
+            swagger.setConsumes(new ArrayList<>(list2));
         } else {
             swagger.setConsumes(null);
         }
         List<String> list3 = from.getProduces();
         if (list3 != null) {
-            swagger.setProduces(new ArrayList<String>(list3));
+            swagger.setProduces(new ArrayList<>(list3));
         } else {
             swagger.setProduces(null);
         }
@@ -208,7 +204,7 @@ public class ServiceModelToSwagger2Mapper extends ServiceModelToSwagger2MapperIm
             return null;
         }
 
-        List<Tag> list = new ArrayList<Tag>(set.size());
+        List<Tag> list = new ArrayList<>(set.size());
         for (springfox.documentation.service.Tag tag : set) {
             list.add(this.mapTag(tag));
         }
@@ -222,7 +218,7 @@ public class ServiceModelToSwagger2Mapper extends ServiceModelToSwagger2MapperIm
             return null;
         }
 
-        List<Scheme> list = new ArrayList<Scheme>(set.size());
+        List<Scheme> list = new ArrayList<>(set.size());
         for (String string : set) {
             list.add(Enum.valueOf(Scheme.class, string));
         }

@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.swagger2;
+package com.lzt.operate.swagger2;
 
 /**
  * Created by yueh on 2018/9/18.

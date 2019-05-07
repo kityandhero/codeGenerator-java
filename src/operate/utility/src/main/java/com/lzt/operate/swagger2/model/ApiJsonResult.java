@@ -1,11 +1,11 @@
-package com.lzt.operate.codetools.swagger2.model;
+package com.lzt.operate.swagger2.model;
 
 /**
  * Created by yueh on 2018/9/7.
  */
 
 
-import com.lzt.operate.codetools.swagger2.CommonData;
+import com.lzt.operate.swagger2.CommonData;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,12 +1,12 @@
-package com.lzt.operate.codetools.swagger2;
+package com.lzt.operate.swagger2;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Function;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonObject;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonProperty;
-import com.lzt.operate.codetools.swagger2.model.ApiJsonResult;
-import com.lzt.operate.codetools.swagger2.model.ApiSingleParam;
+import com.lzt.operate.swagger2.model.ApiJsonObject;
+import com.lzt.operate.swagger2.model.ApiJsonProperty;
+import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.swagger2.model.ApiSingleParam;
 import org.springframework.plugin.core.OrderAwarePluginRegistry;
 import org.springframework.plugin.core.PluginRegistry;
 import springfox.documentation.schema.DefaultTypeNameProvider;
@@ -31,14 +31,14 @@ import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.lzt.operate.codetools.swagger2.CommonData.getJsonErrorCode;
-import static com.lzt.operate.codetools.swagger2.CommonData.getJsonErrorMsg;
-import static com.lzt.operate.codetools.swagger2.CommonData.getJsonPageSize;
-import static com.lzt.operate.codetools.swagger2.CommonData.getJsonStartPageNum;
-import static com.lzt.operate.codetools.swagger2.CommonData.getJsonTotalCount;
-import static com.lzt.operate.codetools.swagger2.CommonData.getResultTypeNormal;
-import static com.lzt.operate.codetools.swagger2.CommonData.getResultTypeOther;
-import static com.lzt.operate.codetools.swagger2.CommonData.getResultTypePage;
+import static com.lzt.operate.swagger2.CommonData.getJsonErrorCode;
+import static com.lzt.operate.swagger2.CommonData.getJsonErrorMsg;
+import static com.lzt.operate.swagger2.CommonData.getJsonPageSize;
+import static com.lzt.operate.swagger2.CommonData.getJsonStartPageNum;
+import static com.lzt.operate.swagger2.CommonData.getJsonTotalCount;
+import static com.lzt.operate.swagger2.CommonData.getResultTypeNormal;
+import static com.lzt.operate.swagger2.CommonData.getResultTypeOther;
+import static com.lzt.operate.swagger2.CommonData.getResultTypePage;
 import static org.springframework.util.ObjectUtils.isEmpty;
 import static springfox.documentation.schema.Collections.collectionElementType;
 import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam;
@@ -97,7 +97,7 @@ public class ModelCache {
                 new Model(modelName,
                         modelName,
                         new TypeResolver().resolve(String.class),
-                        "com.lzt.operate.codetools.swagger2.CommonData",
+                        "com.lzt.operate.swagger2.CommonData",
                         this.toPropertyMap(jsonObj.value()),
                         "POST参数",
                         "",
@@ -110,7 +110,7 @@ public class ModelCache {
                 new Model(resultName,
                         resultName,
                         new TypeResolver().resolve(String.class),
-                        "com.lzt.operate.codetools.swagger2.CommonData",
+                        "com.lzt.operate.swagger2.CommonData",
                         this.toResultMap(jsonObj.result(), resultName),
                         "返回模型",
                         "",
@@ -135,7 +135,7 @@ public class ModelCache {
                         new Model(subModelName,
                                 subModelName,
                                 new TypeResolver().resolve(String.class),
-                                "com.lzt.operate.codetools.swagger2.CommonData",
+                                "com.lzt.operate.swagger2.CommonData",
                                 this.transResultMap(values),
                                 "返回模型",
                                 "",
