@@ -1,6 +1,7 @@
 package com.lzt.operate.web.controllers;
 
 import com.lzt.operate.utility.ReturnData;
+import com.lzt.operate.utility.ReturnDataCore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,42 +13,42 @@ import java.util.LinkedHashMap;
  */
 public class BaseController {
 
-    protected HashMap<String, Serializable> data(int code, boolean success, String message, Serializable data, Serializable extraData) {
+    protected ReturnDataCore data(int code, boolean success, String message, Serializable data, Serializable extraData) {
         ReturnData returnData = new ReturnData(code, success, message, data, extraData);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> success() {
+    protected ReturnDataCore success() {
         ReturnData returnData = new ReturnData();
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> success(Serializable data) {
+    protected ReturnDataCore success(Serializable data) {
         ReturnData returnData = new ReturnData(data);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> success(Serializable data, Serializable extraData) {
+    protected ReturnDataCore success(Serializable data, Serializable extraData) {
         ReturnData returnData = new ReturnData(data, extraData);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> fail(int code, String message, Serializable data, Serializable extraData) {
+    protected ReturnDataCore fail(int code, String message, Serializable data, Serializable extraData) {
         ReturnData returnData = new ReturnData(code, false, message, data, extraData);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> pageData(ArrayList list) {
+    protected ReturnDataCore pageData(ArrayList list) {
         ReturnData returnData = new ReturnData(list);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> pageData(ArrayList list, Serializable extraData) {
+    protected ReturnDataCore pageData(ArrayList list, Serializable extraData) {
         ReturnData returnData = new ReturnData(list, extraData);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 
-    protected HashMap<String, Serializable> pageData(ArrayList list, int pageNo, int pageSize, int total, Serializable other) {
+    protected ReturnDataCore pageData(ArrayList list, int pageNo, int pageSize, int total, Serializable other) {
         HashMap<String, Serializable> extraData = new LinkedHashMap<>();
         extraData.put("pageNo", pageNo);
         extraData.put("pageSize", pageSize);
@@ -55,6 +56,6 @@ public class BaseController {
         extraData.put("other", other);
 
         ReturnData returnData = new ReturnData(list, extraData);
-        return returnData.toMap();
+        return returnData.toResult();
     }
 }

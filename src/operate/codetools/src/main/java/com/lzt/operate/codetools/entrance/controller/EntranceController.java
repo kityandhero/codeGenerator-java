@@ -6,6 +6,8 @@ import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.ReturnData;
+import com.lzt.operate.utility.ReturnDataCore;
+import com.lzt.operate.utility.ReturnList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.lzt.operate.codetools.common.GlobalString.JSON_USER_EMAIL;
@@ -47,18 +47,9 @@ public class EntranceController extends OperateBaseController {
             @ApiJsonProperty(name = JSON_USER_EMAIL)},
             result = @ApiJsonResult({}))
     @ApiImplicitParam(name = "json", required = true, dataType = "参数信息")
-    // @ApiResponses({@ApiResponse(code = 200, message = "OK", reference = "参数信息")})
-    @ApiResponses({@ApiResponse(code = ReturnData.CODE_ACCESS_SUCCESS, message = ReturnData.MESSAGE_ACCESS_SUCCESS, response = ReturnData.class)})
-    // @ApiResponses({
-    //         //返回的东西，有返回码和信息，可以自定义
-    //         @ApiResponse(code = 200, message = "success", response = ReturnData.class),
-    //         @ApiResponse(code = 403, message = "不支持的请求"),
-    //         @ApiResponse(code = 404, message = "找不到资源"),
-    //         //自定义返回码
-    //         @ApiResponse(code = -99, message = "未知异常", response = Exception.class),
-    // })
+    @ApiResponses({@ApiResponse(code = ReturnData.CODE_ACCESS_SUCCESS, message = ReturnData.MESSAGE_ACCESS_SUCCESS, response = ReturnList.class)})
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-    public HashMap<String, Serializable> signIn(@RequestBody Map<String, String> json) {
+    public ReturnDataCore signIn(@RequestBody Map<String, String> json) {
         // 直接将json信息打印出来
         System.out.println(json);
 
@@ -110,16 +101,8 @@ public class EntranceController extends OperateBaseController {
     // }
 
     @ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
-    // @ApiResponses({
-    //         //返回的东西，有返回码和信息，可以自定义
-    //         @ApiResponse(code = 200, message = "success", response = ReturnData.class),
-    //         @ApiResponse(code = 403, message = "不支持的请求"),
-    //         @ApiResponse(code = 404, message = "找不到资源"),
-    //         //自定义返回码
-    //         @ApiResponse(code = -99, message = "未知异常", response = Exception.class),
-    // })
     @PostMapping(path = "/signUp", consumes = "application/json", produces = "application/json")
-    public HashMap<String, Serializable> signUp() {
+    public ReturnDataCore signUp() {
         return this.success();
     }
 }

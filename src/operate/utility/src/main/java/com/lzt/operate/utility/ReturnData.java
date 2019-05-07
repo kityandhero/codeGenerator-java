@@ -1,12 +1,11 @@
 package com.lzt.operate.utility;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Optional;
 
 /**
@@ -17,20 +16,13 @@ import java.util.Optional;
  * @author lzt
  */
 @Data
-public class ReturnData implements java.io.Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class ReturnData extends ReturnDataCore {
 
     public final static int CODE_ACCESS_SUCCESS = 200;
     public final static String MESSAGE_ACCESS_SUCCESS = "success";
 
-    public int code;
-
-    public boolean success;
-
-    public String message;
-
     public Serializable data;
-
-    public Serializable extra;
 
     public ReturnData() {
         this(200, true, "success", null, null);
@@ -41,7 +33,7 @@ public class ReturnData implements java.io.Serializable {
         this.data = data;
     }
 
-    public ReturnData(Serializable data, Serializable extra) {
+    public ReturnData(Serializable data, HashMap<String, Serializable> extra) {
         this();
         this.data = data;
         this.extra = extra;
@@ -53,7 +45,7 @@ public class ReturnData implements java.io.Serializable {
         this.message = message;
     }
 
-    public ReturnData(int code, boolean success, String message, Serializable data, Serializable extra) {
+    public ReturnData(int code, boolean success, String message, Serializable data, HashMap<String, Serializable> extra) {
         this.code = code;
         this.success = success;
         this.message = message;
@@ -71,27 +63,33 @@ public class ReturnData implements java.io.Serializable {
                                                                                             .orElse("错误描述"));
     }
 
-    public HashMap<String, Serializable> toMap() {
-        HashMap<String, Serializable> map = new LinkedHashMap<>();
+    public ReturnDataCore toResult() {
+        Serializable v = Optional.of((ArrayList) this.data).orElse((new ArrayList()));
 
-        map.put("code", this.code);
-        map.put("success", this.success);
-        map.put("message", this.message);
-
-        if (this.data != null) {
-            Serializable v = Optional.of(this.data).orElse(new SerializableData());
-
-            if (!Collection.class.isAssignableFrom(v.getClass())) {
-                map.put("data", Optional.of(v).orElse(new SerializableData()));
-            } else {
-                map.put("list", Optional.of(v).orElse(new ArrayList<>()));
-            }
+        if (ArrayList.class.isAssignableFrom(v.getClass())) {
+            return toReturnList((ArrayList) v);
         }
 
-        if (this.extra != null) {
-            map.put("extra", Optional.of(this.extra).orElse(new SerializableData()));
+        HashMap single = Optional.of((HashMap) this.data).orElse((new HashMap<String, Serializable>(0)));
+
+        if (HashMap.class.isAssignableFrom(v.getClass())) {
+            return toReturnSingle((HashMap<String, Serializable>) v);
         }
 
-        return map;
+
+    }
+
+    private ReturnSingle toReturnSingle(HashMap<String, Serializable> v) {
+        return new ReturnSingle(this.code, this.success, this.message, Optional.of(v)
+                                                                               .orElse(new HashMap<>(0)), Optional
+                .of(this.extra)
+                .orElse(new HashMap<>(0)));
+    }
+
+    private ReturnList toReturnList(ArrayList v) {
+        return new ReturnList(this.code, this.success, this.message, Optional.of(v)
+                                                                             .orElse(new ArrayList<>()), Optional
+                .of(this.extra)
+                .orElse(new HashMap<>(0)));
     }
 }
