@@ -5,9 +5,10 @@ import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.ReturnData;
-import com.lzt.operate.utility.ReturnDataCore;
-import com.lzt.operate.utility.ReturnList;
+import com.lzt.operate.utility.ResultDataCore;
+import com.lzt.operate.utility.ResultDataFactory;
+import com.lzt.operate.utility.ResultSingleData;
+import com.lzt.operate.utility.SerializableData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -47,9 +48,9 @@ public class EntranceController extends OperateBaseController {
             @ApiJsonProperty(name = JSON_USER_EMAIL)},
             result = @ApiJsonResult({}))
     @ApiImplicitParam(name = "json", required = true, dataType = "参数信息")
-    @ApiResponses({@ApiResponse(code = ReturnData.CODE_ACCESS_SUCCESS, message = ReturnData.MESSAGE_ACCESS_SUCCESS, response = ReturnList.class)})
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-    public ReturnDataCore signIn(@RequestBody Map<String, String> json) {
+    public ResultDataCore signIn(@RequestBody Map<String, String> json) {
         // 直接将json信息打印出来
         System.out.println(json);
 
@@ -79,7 +80,10 @@ public class EntranceController extends OperateBaseController {
         // } else {
         //     return this.success(searchResult);
         // }
-        return this.success();
+
+        SerializableData data = new SerializableData(json);
+
+        return this.singleData(data);
     }
 
     // @RequestMapping("/entrance/dataTest")
@@ -102,7 +106,7 @@ public class EntranceController extends OperateBaseController {
 
     @ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
     @PostMapping(path = "/signUp", consumes = "application/json", produces = "application/json")
-    public ReturnDataCore signUp() {
+    public ResultSingleData signUp() {
         return this.success();
     }
 }
