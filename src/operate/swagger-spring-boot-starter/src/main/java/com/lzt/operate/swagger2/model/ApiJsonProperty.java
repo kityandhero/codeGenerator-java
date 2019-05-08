@@ -1,10 +1,5 @@
 package com.lzt.operate.swagger2.model;
 
-/**
- * Created by yueh on 2018/9/7.
- */
-
-
 import io.swagger.annotations.Example;
 import io.swagger.annotations.ExampleProperty;
 
@@ -13,6 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * @author lzt
+ * @date 2019-05-08 16:45
+ */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiJsonProperty {
@@ -37,8 +36,7 @@ public @interface ApiJsonProperty {
 
     String example() default "";
 
-    Example examples() default @Example(value = @ExampleProperty(mediaType = "", value = ""));
-
+    Example examples() default @Example(value = @ExampleProperty(value = ""));
 
     String format() default "";
 

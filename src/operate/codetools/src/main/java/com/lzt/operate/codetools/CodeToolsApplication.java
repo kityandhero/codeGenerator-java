@@ -1,6 +1,9 @@
 package com.lzt.operate.codetools;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.lzt.operate.codetools.common.CorsConfig;
+import com.lzt.operate.swagger2.EnableSwagger2Doc;
 import com.lzt.operate.web.filters.CorsCustomFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // @MapperScan("com.lzt.operate.codetools.mapper")
 @SpringBootApplication
 @EnableJpaRepositories("com.lzt.operate.codetools.repository")
+@EnableSwagger2Doc
 public class CodeToolsApplication {
 
     private static final Logger _LOG = LoggerFactory.getLogger(CodeToolsApplication.class);
@@ -46,8 +50,8 @@ public class CodeToolsApplication {
         return registration;
     }
 
-    // @Bean
-    // public ObjectMapper objectMapper() {
-    //     return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-    // }
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+    }
 }

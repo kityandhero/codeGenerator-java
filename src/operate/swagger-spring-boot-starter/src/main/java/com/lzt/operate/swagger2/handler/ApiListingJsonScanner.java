@@ -1,9 +1,5 @@
 package com.lzt.operate.swagger2.handler;
 
-/**
- * Created by yueh on 2018/9/12.
- */
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -11,13 +7,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.lzt.operate.swagger2.ModelCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import springfox.documentation.PathProvider;
 import springfox.documentation.builders.ApiListingBuilder;
@@ -40,11 +37,11 @@ import springfox.documentation.spring.web.scanners.ApiModelReader;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Predicates.and;
@@ -56,8 +53,16 @@ import static springfox.documentation.builders.BuilderDefaults.nullToEmptyList;
 import static springfox.documentation.spi.service.contexts.Orderings.methodComparator;
 import static springfox.documentation.spi.service.contexts.Orderings.resourceGroupComparator;
 
+/**
+ * @author lzt
+ * @date 2019-05-08 16:45
+ */
+@SuppressWarnings({"Guava", "UnstableApiUsage"})
+@Component
+@Primary
 public class ApiListingJsonScanner extends ApiListingScanner {
-    public static final String ROOT = "/";
+    // public static final String ROOT = "/";
+
     private final ApiDescriptionReader apiDescriptionReader;
     private final ApiModelReader apiModelReader;
     private final DocumentationPluginsManager pluginsManager;
@@ -73,11 +78,11 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         this.pluginsManager = pluginsManager;
     }
 
-    private static Optional<String> longestCommonPath(List<ApiDescription> apiDescriptions) {
+    private static java.util.Optional<String> longestCommonPath(List<ApiDescription> apiDescriptions) {
 
         List<String> commons = newArrayList();
         if (null == apiDescriptions || apiDescriptions.isEmpty()) {
-            return Optional.absent();
+            return java.util.Optional.empty();
         }
         List<String> firstWords = urlParts(apiDescriptions.get(0));
 
@@ -97,7 +102,7 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         }
 
         Joiner joiner = Joiner.on("/").skipNulls();
-        return Optional.of("/" + joiner.join(commons));
+        return java.util.Optional.of("/" + joiner.join(commons));
     }
 
     private static List<String> urlParts(ApiDescription apiDescription) {
@@ -108,33 +113,22 @@ public class ApiListingJsonScanner extends ApiListingScanner {
     }
 
     private static Iterable<ResourceGroup> collectResourceGroups(Collection<ApiDescription> apiDescriptions) {
-        return from(apiDescriptions)
-                .transform(toResourceGroups());
+        return apiDescriptions.stream().map(toResourceGroups()).collect(toList());
     }
 
     private static Iterable<ResourceGroup> sortedByName(Set<ResourceGroup> resourceGroups) {
-        return from(resourceGroups).toSortedList(resourceGroupComparator());
+        return resourceGroups.stream().sorted(resourceGroupComparator()).collect(toList());
     }
 
     private static Predicate<ApiDescription> belongsTo(final String groupName) {
-        return new Predicate<ApiDescription>() {
-            @Override
-            public boolean apply(ApiDescription input) {
-                return !input.getGroupName().isPresent()
-                        || groupName.equals(input.getGroupName().get());
-            }
-        };
+        return input -> !Objects.requireNonNull(input).getGroupName().isPresent()
+                || groupName.equals(input.getGroupName().or(""));
     }
 
     private static Function<ApiDescription, ResourceGroup> toResourceGroups() {
-        return new Function<ApiDescription, ResourceGroup>() {
-            @Override
-            public ResourceGroup apply(ApiDescription input) {
-                return new ResourceGroup(
-                        input.getGroupName().or(Docket.DEFAULT_GROUP_NAME),
-                        null);
-            }
-        };
+        return input -> new ResourceGroup(
+                Objects.requireNonNull(input).getGroupName().or(Docket.DEFAULT_GROUP_NAME),
+                null);
     }
 
     @Override
@@ -144,32 +138,32 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         Map<ResourceGroup, List<RequestMappingContext>> requestMappingsByResourceGroup
                 = context.getRequestMappingsByResourceGroup();
         Collection<ApiDescription> additionalListings = this.pluginsManager.additionalListings(context);
-        Set<ResourceGroup> allResourceGroups = FluentIterable.from(collectResourceGroups(additionalListings))
-                                                             .append(requestMappingsByResourceGroup.keySet())
-                                                             .toSet();
+        Set<ResourceGroup> allResourceGroups = from(collectResourceGroups(additionalListings))
+                .append(requestMappingsByResourceGroup.keySet())
+                .toSet();
 
         List<SecurityReference> securityReferences = newArrayList();
         for (final ResourceGroup resourceGroup : sortedByName(allResourceGroups)) {
 
             DocumentationContext documentationContext = context.getDocumentationContext();
-            Set<String> produces = new LinkedHashSet<String>(documentationContext.getProduces());
-            Set<String> consumes = new LinkedHashSet<String>(documentationContext.getConsumes());
+            Set<String> produces = new LinkedHashSet<>(documentationContext.getProduces());
+            Set<String> consumes = new LinkedHashSet<>(documentationContext.getConsumes());
             String host = documentationContext.getHost();
-            Set<String> protocols = new LinkedHashSet<String>(documentationContext.getProtocols());
+            Set<String> protocols = new LinkedHashSet<>(documentationContext.getProtocols());
             Set<ApiDescription> apiDescriptions = newHashSet();
 
-            Map<String, Model> models = new LinkedHashMap<String, Model>();
+            Map<String, Model> models = new LinkedHashMap<>();
             List<RequestMappingContext> requestMappings = nullToEmptyList(requestMappingsByResourceGroup.get(resourceGroup));
 
-            for (RequestMappingContext each : this.sortedByMethods(requestMappings)) {//url
-                Map<String, Model> knownModels = new HashMap<>();
+            //url
+            for (RequestMappingContext each : this.sortedByMethods(requestMappings)) {
+                // Map<String, Model> knownModels = new HashMap<>(1);
                 models.putAll(this.apiModelReader.read(each.withKnownModels(models)));
 
                 apiDescriptions.addAll(this.apiDescriptionReader.read(each));
             }
-            //
-            models.putAll(ModelCache.getInstance().getKnownModels());
 
+            models.putAll(ModelCache.getInstance().getKnownModels());
 
             List<ApiDescription> additional = from(additionalListings)
                     .filter(and(
@@ -178,12 +172,13 @@ public class ApiListingJsonScanner extends ApiListingScanner {
                     .toList();
             apiDescriptions.addAll(additional);
 
-            List<ApiDescription> sortedApis = FluentIterable.from(apiDescriptions)
-                                                            .toSortedList(documentationContext.getApiDescriptionOrdering());
-            Optional<String> o = longestCommonPath(sortedApis);
+            List<ApiDescription> sortedApis = apiDescriptions.stream()
+                                                             .sorted(documentationContext.getApiDescriptionOrdering())
+                                                             .collect(toList());
+            java.util.Optional<String> o = longestCommonPath(sortedApis);
             String resourcePath = new ResourcePathProvider(resourceGroup)
                     .resourcePath()
-                    .or(o)
+                    .or(Optional.fromNullable(o.orElse(null)))
                     .orNull();
 
             PathProvider pathProvider = documentationContext.getPathProvider();
@@ -213,12 +208,7 @@ public class ApiListingJsonScanner extends ApiListingScanner {
     }
 
     private Predicate<ApiDescription> onlySelectedApis(final DocumentationContext context) {
-        return new Predicate<ApiDescription>() {
-            @Override
-            public boolean apply(ApiDescription input) {
-                return context.getApiSelector().getPathSelector().apply(input.getPath());
-            }
-        };
+        return input -> context.getApiSelector().getPathSelector().apply(Objects.requireNonNull(input).getPath());
     }
 
     private Iterable<RequestMappingContext> sortedByMethods(List<RequestMappingContext> contexts) {
@@ -240,18 +230,17 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         }
 
         private Function<Class<?>, String> resourcePathExtractor() {
-            return new Function<Class<?>, String>() {
-                @Override
-                public String apply(Class<?> input) {
-                    String path = Iterables.getFirst(Arrays.asList(ResourcePathProvider.this.paths(input)), "");
-                    if (Strings.isNullOrEmpty(path)) {
-                        return "";
-                    }
-                    if (path.startsWith("/")) {
-                        return path;
-                    }
-                    return "/" + path;
+            return input -> {
+                String path = Iterables.getFirst(Arrays.asList(ResourcePathProvider.this.paths(input)), "");
+                if (Strings.isNullOrEmpty(path)) {
+                    return "";
                 }
+
+                String start = "/";
+                if (path.startsWith(start)) {
+                    return path;
+                }
+                return "/" + path;
             };
         }
 

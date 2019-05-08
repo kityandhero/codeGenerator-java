@@ -7,7 +7,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelReference;
 import springfox.documentation.schema.TypeNameExtractor;
@@ -16,10 +19,12 @@ import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.schema.contexts.ModelContext;
 import springfox.documentation.spi.service.contexts.OperationContext;
+import springfox.documentation.swagger.common.SwaggerPluginSupport;
 import springfox.documentation.swagger.readers.operation.SwaggerResponseMessageReader;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
@@ -36,8 +41,11 @@ import static springfox.documentation.swagger.readers.operation.ResponseHeaders.
 /**
  * Created by yueh on 2018/9/13.
  */
+@SuppressWarnings("Guava")
+@Primary
+@Component
+@Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 3)
 public class ResponseMessageReader extends SwaggerResponseMessageReader {
-
 
     private final TypeNameExtractor typeNameExtractor;
     private final TypeResolver typeResolver;
@@ -119,7 +127,10 @@ public class ResponseMessageReader extends SwaggerResponseMessageReader {
                     .message(message(context))
                     .responseModel(responseModel)
                     .build();
-            if (!responseMessages.contains(defaultMessage) && !"void".equals(responseModel.getType())) {
+
+            String v = "void";
+            if (!responseMessages.contains(defaultMessage) && !v.equals(Objects.requireNonNull(responseModel)
+                                                                               .getType())) {
                 responseMessages.add(defaultMessage);
             }
         }

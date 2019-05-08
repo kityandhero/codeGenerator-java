@@ -40,12 +40,13 @@ import static com.lzt.operate.swagger2.CommonData.getResultTypeNormal;
 import static com.lzt.operate.swagger2.CommonData.getResultTypeOther;
 import static com.lzt.operate.swagger2.CommonData.getResultTypePage;
 import static org.springframework.util.ObjectUtils.isEmpty;
-import static springfox.documentation.schema.Collections.collectionElementType;
 import static springfox.documentation.spi.schema.contexts.ModelContext.inputParam;
 
 /**
- * Created by yueh on 2018/9/13.
+ * @author lzt
+ * @date 2019-05-08 16:45
  */
+@SuppressWarnings("Guava")
 public class ModelCache {
 
     private Map<String, Model> knownModels = new HashMap<>();
@@ -55,10 +56,8 @@ public class ModelCache {
     private Map<String, ApiSingleParam> paramMap = new HashMap<>();
     private Class<?> cls;
 
-
     private ModelCache() {
     }
-
 
     public static ModelCache getInstance() {
         return ModelCacheSub.instance;
@@ -73,9 +72,17 @@ public class ModelCache {
         return this.cls;
     }
 
-    public ModelCache setParamClass(Class<?> cls) {
+    private void setParamClass(Class<?> cls) {
         this.cls = cls;
-        return getInstance();
+    }
+
+    void setParamClass(String className) {
+        try {
+            Class<?> c = Class.forName(className);
+            setParamClass(c);
+        } catch (ClassNotFoundException ex) {
+            setParamClass(GlobalStringInner.class);
+        }
     }
 
     public DocumentationContext getContext() {
@@ -90,7 +97,7 @@ public class ModelCache {
         return this.knownModels;
     }
 
-    public ModelCache addModel(ApiJsonObject jsonObj) {
+    public void addModel(ApiJsonObject jsonObj) {
         String modelName = jsonObj.name();
 
         this.knownModels.put(modelName,
@@ -117,11 +124,9 @@ public class ModelCache {
                         "",
                         newArrayList(), null, null
                 ));
-        return ModelCacheSub.instance;
     }
 
     private Map<String, ModelProperty> toResultMap(ApiJsonResult jsonResult, String groupName) {
-//        System.out.println("--- toResultMap ---");
         List<String> values = Arrays.asList(jsonResult.value());
         List<String> outer = new ArrayList<>();
 
@@ -144,9 +149,8 @@ public class ModelCache {
                         ));
 
                 //prop
-                Map<String, ModelProperty> propertyMap = new HashMap<>();
+                Map<String, ModelProperty> propertyMap = new HashMap<>(1);
 
-//                outer.add(jsonResult.name());
                 ResolvedType type = new TypeResolver().resolve(List.class);
                 ModelProperty mp = new ModelProperty(
                         jsonResult.name(),
@@ -166,7 +170,7 @@ public class ModelCache {
                         newArrayList()
                 );// new AllowableRangeValues("1", "2000"),//.allowableValues(new AllowableListValues(["ABC", "ONE", "TWO"], "string"))
                 mp.updateModelRef(this.getModelRef());
-                ResolvedType collectionElementType = collectionElementType(type);
+                // ResolvedType collectionElementType = collectionElementType(type);
                 try {
                     Field f = ModelProperty.class.getDeclaredField("modelRef");
                     f.setAccessible(true);
@@ -181,7 +185,6 @@ public class ModelCache {
                     outer.add(getJsonPageSize());
                     outer.add(getJsonTotalCount());
                 }
-
 
                 propertyMap.putAll(this.transResultMap(outer));
                 return propertyMap;
@@ -212,11 +215,11 @@ public class ModelCache {
             if (!isEmpty(param)) {
                 allowMultiple = param.allowMultiple();
             }
-            ResolvedType resolvedType = null;
-            if (allowMultiple) {
-                resolvedType = new TypeResolver().resolve(List.class, type);
-            } else {
+            ResolvedType resolvedType;
+            if (!allowMultiple) {
                 resolvedType = new TypeResolver().resolve(type);
+            } else {
+                resolvedType = new TypeResolver().resolve(List.class, type);
             }
             ModelProperty mp = new ModelProperty(
                     resultName,
@@ -243,8 +246,7 @@ public class ModelCache {
     }
 
     private Map<String, ModelProperty> toPropertyMap(ApiJsonProperty[] jsonProp) {
-//        System.out.println("--- toPropertyMap ---");
-        Map<String, ModelProperty> propertyMap = new HashMap<String, ModelProperty>();
+        Map<String, ModelProperty> propertyMap = new HashMap<>(1);
 
         for (ApiJsonProperty property : jsonProp) {
             String propertyName = property.name();
@@ -259,24 +261,25 @@ public class ModelCache {
                 example = param.example();
             }
             Class<?> type = property.type();
-            if (!isEmpty(param)) {
+            if (isEmpty(param)) {
+                if (isEmpty(type)) {
+                    type = String.class;
+                }
+            } else {
                 type = param.type();
-            } else if (isEmpty(type)) {
-                type = String.class;
             }
 
             boolean allowMultiple = property.allowMultiple();
             if (!isEmpty(param)) {
                 allowMultiple = param.allowMultiple();
             }
-            ResolvedType resolvedType = null;
+            ResolvedType resolvedType;
             if (allowMultiple) {
                 resolvedType = new TypeResolver().resolve(List.class, type);
             } else {
                 resolvedType = new TypeResolver().resolve(type);
             }
-//            System.out.println("----- example: " + example);
-//            System.out.println("----- description: " + description);
+
             ModelProperty mp = new ModelProperty(
                     propertyName,
                     resolvedType,
@@ -302,9 +305,8 @@ public class ModelCache {
     }
 
     private Function<ResolvedType, ? extends ModelReference> getModelRef() {
-        Function<ResolvedType, ? extends ModelReference> factory = this.getFactory();
-//        ModelReference stringModel = factory.apply(typeResolver.resolve(List.class, String.class));
-        return factory;
+        // ModelReference stringModel = factory.apply(typeResolver.resolve(List.class, String.class));
+        return this.getFactory();
 
     }
 

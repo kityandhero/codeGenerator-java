@@ -9,6 +9,8 @@ import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.parameters.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiListing;
 import springfox.documentation.service.Documentation;
@@ -29,20 +31,27 @@ import java.util.Set;
 import static com.google.common.collect.Maps.newTreeMap;
 
 /**
- * Created by yueh on 2018/9/12.
+ * @author lzt
+ * @date 2019-05-08 16:45
  */
+@Primary
+@Component
 public class ServiceModelToSwagger2Mapper extends ServiceModelToSwagger2MapperImpl {
 
-    @Autowired
     private ModelMapper modelMapper;
-    @Autowired
     private ParameterMapper parameterMapper;
-    @Autowired
     private SecurityMapper securityMapper;
-    @Autowired
     private LicenseMapper licenseMapper;
-    @Autowired
     private VendorExtensionsMapper vendorExtensionsMapper;
+
+    @Autowired
+    public ServiceModelToSwagger2Mapper(ModelMapper modelMapper, ParameterMapper parameterMapper, SecurityMapper securityMapper, LicenseMapper licenseMapper, VendorExtensionsMapper vendorExtensionsMapper) {
+        this.modelMapper = modelMapper;
+        this.parameterMapper = parameterMapper;
+        this.securityMapper = securityMapper;
+        this.licenseMapper = licenseMapper;
+        this.vendorExtensionsMapper = vendorExtensionsMapper;
+    }
 
     private Map<String, Model> modelsFromApiListings(ModelMapper modelMapper, Multimap<String, ApiListing> apiListings) {
         Map<String, springfox.documentation.schema.Model> definitions = newTreeMap();
