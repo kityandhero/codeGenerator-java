@@ -12,6 +12,12 @@ public class GlobalString {
     @ApiSingleParam(value = "用户姓名", example = "test1")
     public static final String JSON_USER_NAME = "userName";
 
+    @ApiSingleParam(value = "名称", example = "test1")
+    public static final String JSON_NAME = "name";
+
+    @ApiSingleParam(value = "密码", example = "123456")
+    public static final String JSON_PASSWORD = "password";
+
     @ApiSingleParam(value = "用户邮箱", example = "17721026877@qq.com")
     public static final String JSON_USER_EMAIL = "userEmail";
 }

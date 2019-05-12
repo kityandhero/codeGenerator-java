@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 /**
  * @author lzt
  * @date 2019-05-07 19:44
@@ -13,7 +15,7 @@ import lombok.EqualsAndHashCode;
 public class ResultSingleData extends ResultDataCore {
 
     @ApiModelProperty(notes = "数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-    public SerializableData data;
+    public Serializable data;
 
     public ResultSingleData() {
         super();

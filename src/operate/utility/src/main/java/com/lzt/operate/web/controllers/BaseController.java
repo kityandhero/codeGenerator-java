@@ -5,6 +5,7 @@ import com.lzt.operate.utility.ResultListData;
 import com.lzt.operate.utility.ResultSingleData;
 import com.lzt.operate.utility.SerializableData;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  */
 public class BaseController {
 
-    protected ResultSingleData singleData(SerializableData data) {
+    protected ResultSingleData singleData(Serializable data) {
         ResultSingleData result = ResultDataFactory.successSingleData();
 
         result.data = data;
@@ -21,7 +22,7 @@ public class BaseController {
         return result;
     }
 
-    protected ResultSingleData singleData(SerializableData data, SerializableData extra) {
+    protected ResultSingleData singleData(Serializable data, Serializable extra) {
         ResultSingleData result = ResultDataFactory.successSingleData();
 
         result.data = data;
@@ -39,7 +40,7 @@ public class BaseController {
         return result;
     }
 
-    private ResultListData listData(ArrayList list, SerializableData extra) {
+    private ResultListData listData(ArrayList list, Serializable extra) {
         ResultListData result = ResultDataFactory.successListData();
 
         result.list = list;
@@ -64,7 +65,7 @@ public class BaseController {
         return result;
     }
 
-    protected ResultSingleData fail(int code, String message, SerializableData data, SerializableData extra) {
+    protected ResultSingleData fail(int code, String message, Serializable data, Serializable extra) {
         ResultSingleData result = ResultDataFactory.failData(code, message);
 
         result.data = data;
@@ -77,11 +78,11 @@ public class BaseController {
         return this.listData(list);
     }
 
-    protected ResultListData pageListData(ArrayList list, SerializableData extra) {
+    protected ResultListData pageListData(ArrayList list, Serializable extra) {
         return this.listData(list, extra);
     }
 
-    protected ResultListData pageData(ArrayList list, int pageNo, int pageSize, int total, SerializableData other) {
+    protected ResultListData pageData(ArrayList list, int pageNo, int pageSize, int total, Serializable other) {
         ResultListData result = this.listData(list);
 
         SerializableData extra = new SerializableData();

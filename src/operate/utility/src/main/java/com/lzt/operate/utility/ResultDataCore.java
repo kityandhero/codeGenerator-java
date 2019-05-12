@@ -23,7 +23,7 @@ public abstract class ResultDataCore implements Serializable {
     public String message;
 
     @ApiModelProperty(notes = "其他数据", position = 5)
-    public SerializableData extra;
+    public Serializable extra;
 
     ResultDataCore() {
         this.code = 0;
