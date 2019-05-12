@@ -33,12 +33,6 @@ public class SerializableMap<String, Serializable> extends HashMap<String, Seria
         return this;
     }
 
-    // public SerializableMap appends(SerializableMap data) {
-    //     this.putAll(data);
-    //
-    //     return this;
-    // }
-
     public java.lang.String serialize() {
         try {
             ObjectMapper mapper = new ObjectMapper();
