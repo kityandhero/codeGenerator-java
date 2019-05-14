@@ -1,4 +1,4 @@
-package com.lzt.operate.utility;
+package com.lzt.operate.entity;
 
 import java.io.Serializable;
 import java.util.Map;

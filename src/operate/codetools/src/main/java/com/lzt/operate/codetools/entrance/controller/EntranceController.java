@@ -3,14 +3,14 @@ package com.lzt.operate.codetools.entrance.controller;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
+import com.lzt.operate.entity.ParamData;
+import com.lzt.operate.entity.ResultDataCore;
+import com.lzt.operate.entity.ResultDataFactory;
+import com.lzt.operate.entity.ResultSingleData;
 import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.ParamData;
-import com.lzt.operate.utility.ResultDataCore;
-import com.lzt.operate.utility.ResultDataFactory;
-import com.lzt.operate.utility.ResultSingleData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -19,12 +19,14 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,7 +69,14 @@ public class EntranceController extends OperateBaseController {
 
         Operator operator = new Operator();
         operator.setName(name);
-        Example<Operator> example = Example.of(operator);
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                                               .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
+                                               .withIgnorePaths("createTime", "password", "friendlyName");
+
+        Example<Operator> example = Example.of(operator, matcher);
+
+        List<Operator> list = this.operatorRepository.findAll(example);
 
         Optional<Operator> op = this.operatorRepository.findOne(example);
         Operator searchResult = op.orElse(null);

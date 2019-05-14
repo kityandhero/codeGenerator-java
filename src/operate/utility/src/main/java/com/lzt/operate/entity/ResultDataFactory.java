@@ -1,4 +1,4 @@
-package com.lzt.operate.utility;
+package com.lzt.operate.entity;
 
 import java.util.ArrayList;
 

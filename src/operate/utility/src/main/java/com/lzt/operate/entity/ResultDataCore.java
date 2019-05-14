@@ -1,6 +1,6 @@
-package com.lzt.operate.utility;
+package com.lzt.operate.entity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lzt.operate.utility.Convert;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -40,11 +40,6 @@ public abstract class ResultDataCore implements Serializable {
     }
 
     public String serialize() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(this);
-        } catch (Exception e) {
-            return "{}";
-        }
+        return Convert.serialize(this);
     }
 }

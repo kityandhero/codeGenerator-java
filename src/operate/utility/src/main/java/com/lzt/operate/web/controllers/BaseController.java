@@ -1,9 +1,9 @@
 package com.lzt.operate.web.controllers;
 
-import com.lzt.operate.utility.ResultDataFactory;
-import com.lzt.operate.utility.ResultListData;
-import com.lzt.operate.utility.ResultSingleData;
-import com.lzt.operate.utility.SerializableData;
+import com.lzt.operate.entity.ResultDataFactory;
+import com.lzt.operate.entity.ResultListData;
+import com.lzt.operate.entity.ResultSingleData;
+import com.lzt.operate.entity.SerializableData;
 
 import java.io.Serializable;
 import java.util.ArrayList;

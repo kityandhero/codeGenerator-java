@@ -1,11 +1,10 @@
-package com.lzt.operate.utility;
+package com.lzt.operate.entity;
 
 import com.lzt.operate.extensions.StringEx;
 import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  * @author lzt
