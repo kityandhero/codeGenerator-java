@@ -2,9 +2,9 @@ package com.lzt.operate.codetools.jpa;
 
 import lombok.var;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -23,9 +23,10 @@ public interface JpaRepositoryEx<T, ID> extends JpaRepository<T, ID> {
      */
     default <S extends T> Optional<S> findFirst(Example<S> example) {
 
-        var listFind = this.findAll(example);
+        var pageable = PageRequest.of(1, 1);
+        var pageList = this.findAll(example, pageable);
 
-        var list = Optional.of(listFind).orElse(new ArrayList<>());
+        var list = pageList.getContent();
         if (list.size() > 0) {
             return Optional.of(list.get(0));
         }
