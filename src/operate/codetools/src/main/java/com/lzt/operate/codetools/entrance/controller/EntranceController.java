@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Example;
@@ -26,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.lzt.operate.codetools.common.GlobalString.JSON_NAME;
 import static com.lzt.operate.codetools.common.GlobalString.JSON_PASSWORD;
@@ -76,9 +75,8 @@ public class EntranceController extends OperateBaseController {
 
         Example<Operator> example = Example.of(operator, matcher);
 
-        List<Operator> list = this.operatorRepository.findAll(example);
+        var op = this.operatorRepository.findFirst(example);
 
-        Optional<Operator> op = this.operatorRepository.findOne(example);
         Operator searchResult = op.orElse(null);
 
         if (searchResult == null) {
