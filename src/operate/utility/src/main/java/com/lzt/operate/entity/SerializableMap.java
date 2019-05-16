@@ -2,21 +2,20 @@ package com.lzt.operate.entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @param <String>
- * @param <Serializable>
  * @author lzt
  */
-public class SerializableMap<String, Serializable> extends HashMap<String, Serializable> {
+public class SerializableMap<String, T extends Serializable> extends HashMap<String, Serializable> {
 
     SerializableMap() {
         super();
     }
 
-    SerializableMap(Map<? extends String, Serializable> data) {
+    SerializableMap(Map<? extends String, ? extends Serializable> data) {
         this();
         this.appends(data);
     }
@@ -27,7 +26,7 @@ public class SerializableMap<String, Serializable> extends HashMap<String, Seria
         return this;
     }
 
-    private SerializableMap appends(Map<? extends String, Serializable> data) {
+    private SerializableMap appends(Map<? extends String, ? extends Serializable> data) {
         this.putAll(data);
 
         return this;

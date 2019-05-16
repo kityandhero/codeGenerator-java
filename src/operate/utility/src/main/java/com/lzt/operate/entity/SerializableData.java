@@ -15,7 +15,7 @@ public class SerializableData extends SerializableMap<String, Serializable> {
         super();
     }
 
-    public SerializableData(Map<String, Serializable> data) {
+    public SerializableData(Map<String, ? extends Serializable> data) {
         super(data);
     }
 

@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.entrance.controller;
 
+import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
@@ -29,9 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 import java.util.Map;
 
-import static com.lzt.operate.codetools.common.GlobalString.JSON_NAME;
-import static com.lzt.operate.codetools.common.GlobalString.JSON_PASSWORD;
-
 /**
  * @author lzt
  */
@@ -49,9 +47,9 @@ public class EntranceController extends OperateBaseController {
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-    @ApiJsonObject(name = "参数信息", value = {
-            @ApiJsonProperty(name = JSON_NAME),
-            @ApiJsonProperty(name = JSON_PASSWORD)},
+    @ApiJsonObject(name = "登录参数", value = {
+            @ApiJsonProperty(name = GlobalString.JSON_NAME),
+            @ApiJsonProperty(name = GlobalString.JSON_PASSWORD)},
             result = @ApiJsonResult({}))
     @ApiImplicitParam(name = "json", required = true, dataType = "参数信息")
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
@@ -63,8 +61,8 @@ public class EntranceController extends OperateBaseController {
         ParamData paramJson = new ParamData(json);
 
         // 将获取的json数据封装一层，然后在给返回
-        String name = paramJson.get("name");
-        String password = paramJson.get("password");
+        String name = paramJson.getByKey("name");
+        String password = paramJson.getByKey("password");
 
         Operator operator = new Operator();
         operator.setName(name);
