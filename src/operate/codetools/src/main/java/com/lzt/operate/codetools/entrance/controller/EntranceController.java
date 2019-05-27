@@ -47,11 +47,11 @@ public class EntranceController extends OperateBaseController {
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-    @ApiJsonObject(name = "登录参数", value = {
+    @ApiJsonObject(name = "entrance-signIn", value = {
             @ApiJsonProperty(name = GlobalString.JSON_NAME),
             @ApiJsonProperty(name = GlobalString.JSON_PASSWORD)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "json", required = true, dataType = "参数信息")
+    @ApiImplicitParam(name = "json", required = true, dataType = "entrance-signIn")
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
     public ResultDataCore signIn(@RequestBody Map<String, String> json) {

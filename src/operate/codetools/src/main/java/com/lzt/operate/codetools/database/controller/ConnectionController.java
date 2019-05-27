@@ -42,7 +42,7 @@ public class ConnectionController extends OperateBaseController {
     }
 
     @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
-    @ApiJsonObject(name = "新建数据库连接参数", value = {
+    @ApiJsonObject(name = "connection-open", value = {
             @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
             @ApiJsonProperty(name = GlobalString.CONNECTION_DBTYPE),
             @ApiJsonProperty(name = GlobalString.CONNECTION_DBTYPE),
@@ -59,7 +59,7 @@ public class ConnectionController extends OperateBaseController {
             @ApiJsonProperty(name = GlobalString.CONNECTION_SSHUSER),
             @ApiJsonProperty(name = GlobalString.CONNECTION_SSHPASSWORD)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "connection", required = true, dataType = "参数信息")
+    @ApiImplicitParam(name = "connection", required = true, dataType = "connection-open")
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/open", consumes = "application/json", produces = "application/json")
     public ResultDataCore open(@RequestBody Map<String, String> connection) {
