@@ -4,9 +4,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.lzt.operate.codetools.domain.ConnectionConfig;
+import com.lzt.operate.codetools.entity.DataColumnInfo;
 import com.lzt.operate.codetools.entity.DataTableInfo;
 import com.lzt.operate.codetools.entity.DbType;
-import com.lzt.operate.codetools.entity.UITableColumnVO;
 import com.lzt.operate.codetools.exception.DbDriverLoadingException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -47,7 +47,7 @@ public class DbUtil {
     private static volatile boolean portForwaring = false;
     private static Map<Integer, Session> portForwardingSession = new ConcurrentHashMap<>();
 
-    public static Session getSSHSession(ConnectionConfig connectionConfig) {
+    private static Session getSSHSession(ConnectionConfig connectionConfig) {
         if (StringUtils.isBlank(connectionConfig.getSshHost())
                 || StringUtils.isBlank(connectionConfig.getSshPort())
                 || StringUtils.isBlank(connectionConfig.getSshUser())
@@ -72,7 +72,7 @@ public class DbUtil {
         return session;
     }
 
-    public static void engagePortForwarding(Session sshSession, ConnectionConfig config) {
+    private static void engagePortForwarding(Session sshSession, ConnectionConfig config) {
         if (sshSession != null) {
             AtomicInteger assinged_port = new AtomicInteger();
             Future<?> result = DbUtil.executorService.submit(() -> {
@@ -124,7 +124,7 @@ public class DbUtil {
         }
     }
 
-    public static void shutdownPortForwarding(Session session) {
+    private static void shutdownPortForwarding(Session session) {
         DbUtil.portForwaring = false;
         if (session != null && session.isConnected()) {
             session.disconnect();
@@ -133,7 +133,7 @@ public class DbUtil {
 //		executorService.shutdown();
     }
 
-    public static Connection getConnection(ConnectionConfig config) throws SQLException {
+    private static Connection getConnection(ConnectionConfig config) throws SQLException {
         DbType dbType = DbType.valueOf(config.getDbType());
         if (DbUtil.drivers.get(dbType) == null) {
             DbUtil.loadDbDriver(dbType);
@@ -189,7 +189,7 @@ public class DbUtil {
         }
     }
 
-    public static List<UITableColumnVO> getTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
+    public static List<DataColumnInfo> getTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
         String url = DbUtil.getConnectionUrlWithSchema(dbConfig);
         DbUtil._LOG.info("getTableColumns, connection url: {}", url);
         Session sshSession = DbUtil.getSSHSession(dbConfig);
@@ -197,13 +197,17 @@ public class DbUtil {
         try (Connection conn = DbUtil.getConnection(dbConfig)) {
             DatabaseMetaData md = conn.getMetaData();
             ResultSet rs = md.getColumns(dbConfig.getSchema(), null, tableName, null);
-            List<UITableColumnVO> columns = new ArrayList<>();
+            List<DataColumnInfo> columns = new ArrayList<>();
             while (rs.next()) {
-                UITableColumnVO columnVO = new UITableColumnVO();
-                String columnName = rs.getString("COLUMN_NAME");
-                columnVO.setColumnName(columnName);
-                columnVO.setJdbcType(rs.getString("TYPE_NAME"));
-                columns.add(columnVO);
+
+                String name = rs.getString("COLUMN_NAME");
+                String type = rs.getString("TYPE_NAME");
+
+                DataColumnInfo col = new DataColumnInfo();
+                col.setName(name);
+                col.setType(type);
+
+                columns.add(col);
             }
             return columns;
         } finally {
