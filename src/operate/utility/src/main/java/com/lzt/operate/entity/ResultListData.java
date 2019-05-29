@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lzt
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 @EqualsAndHashCode(callSuper = true)
 public class ResultListData extends ResultDataCore {
     @ApiModelProperty(notes = "列表数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-    public ArrayList list;
+    public List list;
 
     public ResultListData() {
         super();

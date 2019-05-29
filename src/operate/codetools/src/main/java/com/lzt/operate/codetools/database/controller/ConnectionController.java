@@ -2,12 +2,14 @@ package com.lzt.operate.codetools.database.controller;
 
 import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.common.OperateBaseController;
+import com.lzt.operate.codetools.domain.ConnectionConfig;
 import com.lzt.operate.codetools.repository.ConnectionConfigRepository;
+import com.lzt.operate.codetools.util.DbUtil;
 import com.lzt.operate.entity.ParamData;
 import com.lzt.operate.entity.ResultDataCore;
 import com.lzt.operate.entity.ResultDataFactory;
 import com.lzt.operate.entity.ResultSingleData;
-import com.lzt.operate.entity.SerializableData;
+import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -16,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +48,6 @@ public class ConnectionController extends OperateBaseController {
     @ApiJsonObject(name = "connection-open", value = {
             @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
             @ApiJsonProperty(name = GlobalString.CONNECTION_DBTYPE),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_DBTYPE),
             @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
             @ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
             @ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
@@ -63,45 +65,22 @@ public class ConnectionController extends OperateBaseController {
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/open", consumes = "application/json", produces = "application/json")
     public ResultDataCore open(@RequestBody Map<String, String> connection) {
-
         ParamData paramJson = new ParamData(connection);
+        var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
 
-        // // 将获取的json数据封装一层，然后在给返回
-        // String name = paramJson.get("name");
-        // String password = paramJson.get("password");
-        //
-        // Operator operator = new Operator();
-        // operator.setName(name);
-        //
-        // ExampleMatcher matcher = ExampleMatcher.matching()
-        //                                        .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
-        //                                        .withIgnorePaths("createTime", "password", "friendlyName");
-        //
-        // Example<Operator> example = Example.of(operator, matcher);
-        //
-        // var op = this.connectionConfigRepository.findFirst(example);
-        //
-        // Operator searchResult = op.orElse(null);
-        //
-        // if (searchResult == null) {
-        //     Date now = new Date();
-        //     operator = new Operator();
-        //
-        //     operator.setName(name);
-        //     operator.setPassword(StringEx.ToMD5(password).toString());
-        //     operator.setFriendlyName(name);
-        //     operator.setCreateTime(now);
-        //
-        //     Operator operatorSave = this.connectionConfigRepository.save(operator);
-        //
-        //     return this.singleData(operatorSave);
-        // } else {
-        //     return this.singleData(searchResult);
-        // }
+        if (StringEx.isNullOrEmpty(name)) {
+            return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
+        }
 
-        SerializableData data = new SerializableData(connection);
+        var connectionConfig = new ConnectionConfig();
+        connectionConfig.fillFromParamJson(paramJson);
 
-        return this.singleData(data);
+        try {
+            var listTableName = DbUtil.getTableNames(connectionConfig);
+            return this.listData(listTableName);
+        } catch (Exception e) {
+            return this.exceptionError(e);
+        }
+
     }
-
 }

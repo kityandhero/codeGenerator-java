@@ -1,5 +1,6 @@
 package com.lzt.operate.entity;
 
+import com.lzt.operate.extensions.StringEx;
 import lombok.var;
 
 import java.io.Serializable;
@@ -19,5 +20,11 @@ public class ParamData extends SerializableMap<String, Serializable> {
         var name = this.get("name");
 
         return (String) name;
+    }
+
+    public boolean isNullOrEmpty(String key) {
+        var v = this.getByKey(key);
+
+        return StringEx.isNullOrEmpty(v);
     }
 }

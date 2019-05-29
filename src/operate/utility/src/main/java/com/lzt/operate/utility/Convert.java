@@ -19,4 +19,8 @@ public class Convert {
             return null;
         }
     }
+
+    public static int toInt(String v) {
+        return Integer.parseInt(v);
+    }
 }

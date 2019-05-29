@@ -3,7 +3,8 @@ package com.lzt.operate.codetools.util;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.lzt.operate.codetools.entity.DatabaseConfig;
+import com.lzt.operate.codetools.domain.ConnectionConfig;
+import com.lzt.operate.codetools.entity.DataTableInfo;
 import com.lzt.operate.codetools.entity.DbType;
 import com.lzt.operate.codetools.entity.UITableColumnVO;
 import com.lzt.operate.codetools.exception.DbDriverLoadingException;
@@ -20,7 +21,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +47,11 @@ public class DbUtil {
     private static volatile boolean portForwaring = false;
     private static Map<Integer, Session> portForwardingSession = new ConcurrentHashMap<>();
 
-    public static Session getSSHSession(DatabaseConfig databaseConfig) {
-        if (StringUtils.isBlank(databaseConfig.getSshHost())
-                || StringUtils.isBlank(databaseConfig.getSshPort())
-                || StringUtils.isBlank(databaseConfig.getSshUser())
-                || StringUtils.isBlank(databaseConfig.getSshPassword())
+    public static Session getSSHSession(ConnectionConfig connectionConfig) {
+        if (StringUtils.isBlank(connectionConfig.getSshHost())
+                || StringUtils.isBlank(connectionConfig.getSshPort())
+                || StringUtils.isBlank(connectionConfig.getSshUser())
+                || StringUtils.isBlank(connectionConfig.getSshPassword())
         ) {
             return null;
         }
@@ -61,10 +61,10 @@ public class DbUtil {
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             JSch jsch = new JSch();
-            Integer sshPort = NumberUtils.createInteger(databaseConfig.getSshPort());
+            Integer sshPort = NumberUtils.createInteger(connectionConfig.getSshPort());
             int port = sshPort == null ? 22 : sshPort;
-            session = jsch.getSession(databaseConfig.getSshUser(), databaseConfig.getSshHost(), port);
-            session.setPassword(databaseConfig.getSshPassword());
+            session = jsch.getSession(connectionConfig.getSshUser(), connectionConfig.getSshHost(), port);
+            session.setPassword(connectionConfig.getSshPassword());
             session.setConfig(config);
         } catch (JSchException e) {
             //Ignore
@@ -72,7 +72,7 @@ public class DbUtil {
         return session;
     }
 
-    public static void engagePortForwarding(Session sshSession, DatabaseConfig config) {
+    public static void engagePortForwarding(Session sshSession, ConnectionConfig config) {
         if (sshSession != null) {
             AtomicInteger assinged_port = new AtomicInteger();
             Future<?> result = DbUtil.executorService.submit(() -> {
@@ -86,7 +86,7 @@ public class DbUtil {
                         String s = session.getPortForwardingL()[0];
                         String[] split = StringUtils.split(s, ":");
                         boolean portForwarding = String.format("%s:%s", split[0], split[1])
-                                                             .equals(lport + ":" + config.getHost());
+                                                       .equals(lport + ":" + config.getHost());
                         if (portForwarding) {
                             return;
                         }
@@ -133,7 +133,7 @@ public class DbUtil {
 //		executorService.shutdown();
     }
 
-    public static Connection getConnection(DatabaseConfig config) throws SQLException {
+    public static Connection getConnection(ConnectionConfig config) throws SQLException {
         DbType dbType = DbType.valueOf(config.getDbType());
         if (DbUtil.drivers.get(dbType) == null) {
             DbUtil.loadDbDriver(dbType);
@@ -154,18 +154,18 @@ public class DbUtil {
         return connection;
     }
 
-    public static List<String> getTableNames(DatabaseConfig config) throws Exception {
+    public static List<DataTableInfo> getTableNames(ConnectionConfig config) throws Exception {
         Session sshSession = DbUtil.getSSHSession(config);
         DbUtil.engagePortForwarding(sshSession, config);
         try (Connection connection = DbUtil.getConnection(config)) {
-            List<String> tables = new ArrayList<>();
+            List<DataTableInfo> tables = new ArrayList<>();
             DatabaseMetaData md = connection.getMetaData();
             ResultSet rs;
             if (DbType.valueOf(config.getDbType()) == DbType.SQL_Server) {
                 String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
                 rs = connection.createStatement().executeQuery(sql);
                 while (rs.next()) {
-                    tables.add(rs.getString("name"));
+                    tables.add(new DataTableInfo(rs.getString("name")));
                 }
             } else if (DbType.valueOf(config.getDbType()) == DbType.Oracle) {
                 rs = md.getTables(null, config.getUsername().toUpperCase(), null, new String[]{"TABLE", "VIEW"});
@@ -173,20 +173,15 @@ public class DbUtil {
                 String sql = "Select name from sqlite_master;";
                 rs = connection.createStatement().executeQuery(sql);
                 while (rs.next()) {
-                    tables.add(rs.getString("name"));
+                    tables.add(new DataTableInfo(rs.getString("name")));
                 }
             } else {
                 // rs = md.getTables(null, config.getUsername().toUpperCase(), null, null);
 
-
                 rs = md.getTables(config.getSchema(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
             }
             while (rs.next()) {
-                tables.add(rs.getString(3));
-            }
-
-            if (tables.size() > 1) {
-                Collections.sort(tables);
+                tables.add(new DataTableInfo(rs.getString(3)));
             }
             return tables;
         } finally {
@@ -194,7 +189,7 @@ public class DbUtil {
         }
     }
 
-    public static List<UITableColumnVO> getTableColumns(DatabaseConfig dbConfig, String tableName) throws Exception {
+    public static List<UITableColumnVO> getTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
         String url = DbUtil.getConnectionUrlWithSchema(dbConfig);
         DbUtil._LOG.info("getTableColumns, connection url: {}", url);
         Session sshSession = DbUtil.getSSHSession(dbConfig);
@@ -216,7 +211,7 @@ public class DbUtil {
         }
     }
 
-    public static String getConnectionUrlWithSchema(DatabaseConfig dbConfig) {
+    public static String getConnectionUrlWithSchema(ConnectionConfig dbConfig) {
         DbType dbType = DbType.valueOf(dbConfig.getDbType());
         String connectionUrl = String.format(dbType.getConnectionUrlPattern(),
                 DbUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DbUtil.portForwaring ? dbConfig.getLport() : dbConfig

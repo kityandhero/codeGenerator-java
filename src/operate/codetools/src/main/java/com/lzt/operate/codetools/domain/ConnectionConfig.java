@@ -1,7 +1,10 @@
 package com.lzt.operate.codetools.domain;
 
+import com.lzt.operate.codetools.common.GlobalString;
+import com.lzt.operate.entity.ParamData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.var;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +15,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "operator")
+@Table(name = "connectionConfig")
 @EqualsAndHashCode(callSuper = true)
 public class ConnectionConfig extends BaseDomain {
 
@@ -26,7 +29,7 @@ public class ConnectionConfig extends BaseDomain {
     private String host;
 
     @Column
-    private Integer port;
+    private String port;
 
     @Column
     private String schema;
@@ -57,6 +60,41 @@ public class ConnectionConfig extends BaseDomain {
 
     @Column
     private String sshPassword;
+
+    public ConnectionConfig() {
+
+    }
+
+    public void fillFromParamJson(ParamData paramJson) {
+        var dbtype = paramJson.getByKey(GlobalString.CONNECTION_DBTYPE);
+        var host = paramJson.getByKey(GlobalString.CONNECTION_HOST);
+        var port = paramJson.getByKey(GlobalString.CONNECTION_PORT);
+        var schema = paramJson.getByKey(GlobalString.CONNECTION_SCHEMA);
+        var username = paramJson.getByKey(GlobalString.CONNECTION_USERNAME);
+        var password = paramJson.getByKey(GlobalString.CONNECTION_PASSWORD);
+        var encoding = paramJson.getByKey(GlobalString.CONNECTION_ENCODING);
+        var lPort = paramJson.getByKey(GlobalString.CONNECTION_LPORT);
+        var rProt = paramJson.getByKey(GlobalString.CONNECTION_RPORT);
+        var sshPort = paramJson.getByKey(GlobalString.CONNECTION_SSHPORT);
+        var sshHost = paramJson.getByKey(GlobalString.CONNECTION_SSHHOST);
+        var sshUser = paramJson.getByKey(GlobalString.CONNECTION_SSHUSER);
+        var sshPassword = paramJson.getByKey(GlobalString.CONNECTION_SSHPASSWORD);
+
+        this.setName(name);
+        this.setDbType(dbtype);
+        this.setHost(host);
+        this.setPort(port);
+        this.setSchema(schema);
+        this.setUsername(username);
+        this.setPassword(password);
+        this.setEncoding(encoding);
+        this.setLport(lPort);
+        this.setRport(rProt);
+        this.setSshPort(sshPort);
+        this.setSshHost(sshHost);
+        this.setSshUser(sshUser);
+        this.setSshPassword(sshPassword);
+    }
 
     // @Override
     // public boolean equals(Object o) {

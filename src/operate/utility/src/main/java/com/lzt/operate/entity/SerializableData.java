@@ -15,8 +15,19 @@ public class SerializableData extends SerializableMap<String, Serializable> {
         super();
     }
 
+    public SerializableData(String key, Serializable v) {
+        super();
+        this.append(key, v);
+    }
+
     public SerializableData(Map<String, ? extends Serializable> data) {
         super(data);
     }
 
+    public SerializableData(Exception e) {
+        super();
+
+        this.append("message", e.getMessage());
+        this.append("stackTrace", e.getStackTrace());
+    }
 }

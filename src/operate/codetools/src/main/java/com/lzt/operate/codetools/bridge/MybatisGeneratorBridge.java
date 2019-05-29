@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.bridge;
 
-import com.lzt.operate.codetools.entity.DatabaseConfig;
+import com.lzt.operate.codetools.domain.ConnectionConfig;
 import com.lzt.operate.codetools.entity.DbType;
 import com.lzt.operate.codetools.entity.GeneratorConfig;
 import com.lzt.operate.codetools.plugins.DbRemarksCommentGenerator;
@@ -47,7 +47,7 @@ public class MybatisGeneratorBridge {
 
     private GeneratorConfig generatorConfig;
 
-    private DatabaseConfig selectedDatabaseConfig;
+    private ConnectionConfig selectedConnectionConfig;
 
     private ProgressCallback progressCallback;
 
@@ -62,8 +62,8 @@ public class MybatisGeneratorBridge {
         this.generatorConfig = generatorConfig;
     }
 
-    public void setDatabaseConfig(DatabaseConfig databaseConfig) {
-        this.selectedDatabaseConfig = databaseConfig;
+    public void setConnectionConfig(ConnectionConfig ConnectionConfig) {
+        this.selectedConnectionConfig = ConnectionConfig;
     }
 
     public void generate() throws Exception {
@@ -73,7 +73,7 @@ public class MybatisGeneratorBridge {
 
         context.addProperty("javaFileEncoding", "UTF-8");
 
-        String dbType = this.selectedDatabaseConfig.getDbType();
+        String dbType = this.selectedConnectionConfig.getDbType();
         String connectorLibPath = ConfigHelper.findConnectorLibPath(dbType);
         MybatisGeneratorBridge._LOG.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
@@ -90,21 +90,21 @@ public class MybatisGeneratorBridge {
 
         context.addProperty("autoDelimitKeywords", "true");
         if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)) {
-            tableConfig.setSchema(this.selectedDatabaseConfig.getSchema());
+            tableConfig.setSchema(this.selectedConnectionConfig.getSchema());
             // 由于beginningDelimiter和endingDelimiter的默认值为双引号(")，在Mysql中不能这么写，所以还要将这两个默认值改为`
             context.addProperty("beginningDelimiter", "`");
             context.addProperty("endingDelimiter", "`");
         } else {
-            tableConfig.setCatalog(this.selectedDatabaseConfig.getSchema());
+            tableConfig.setCatalog(this.selectedConnectionConfig.getSchema());
         }
         if (this.generatorConfig.isUseSchemaPrefix()) {
             if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)) {
-                tableConfig.setSchema(this.selectedDatabaseConfig.getSchema());
+                tableConfig.setSchema(this.selectedConnectionConfig.getSchema());
             } else if (DbType.Oracle.name().equals(dbType)) {
                 //Oracle的schema为用户名，如果连接用户拥有dba等高级权限，若不设schema，会导致把其他用户下同名的表也生成一遍导致mapper中代码重复
-                tableConfig.setSchema(this.selectedDatabaseConfig.getUsername());
+                tableConfig.setSchema(this.selectedConnectionConfig.getUsername());
             } else {
-                tableConfig.setCatalog(this.selectedDatabaseConfig.getSchema());
+                tableConfig.setCatalog(this.selectedConnectionConfig.getSchema());
             }
         }
         // 针对 postgresql 单独配置
@@ -151,9 +151,9 @@ public class MybatisGeneratorBridge {
             jdbcConfig.addProperty("nullCatalogMeansCurrent", "true");
         }
         jdbcConfig.setDriverClass(DbType.valueOf(dbType).getDriverClass());
-        jdbcConfig.setConnectionURL(DbUtil.getConnectionUrlWithSchema(this.selectedDatabaseConfig));
-        jdbcConfig.setUserId(this.selectedDatabaseConfig.getUsername());
-        jdbcConfig.setPassword(this.selectedDatabaseConfig.getPassword());
+        jdbcConfig.setConnectionURL(DbUtil.getConnectionUrlWithSchema(this.selectedConnectionConfig));
+        jdbcConfig.setUserId(this.selectedConnectionConfig.getUsername());
+        jdbcConfig.setPassword(this.selectedConnectionConfig.getPassword());
         if (DbType.Oracle.name().equals(dbType)) {
             jdbcConfig.getProperties().setProperty("remarksReporting", "true");
         }
@@ -170,7 +170,6 @@ public class MybatisGeneratorBridge {
         daoConfig.setConfigurationType("XMLMAPPER");
         daoConfig.setTargetPackage(this.generatorConfig.getDaoPackage());
         daoConfig.setTargetProject(this.generatorConfig.getProjectFolder() + "/" + this.generatorConfig.getDaoTargetFolder());
-
 
         context.setId("myid");
         context.addTableConfiguration(tableConfig);

@@ -1,12 +1,15 @@
 package com.lzt.operate.web.controllers;
 
+import com.lzt.operate.entity.ErrorMessage;
 import com.lzt.operate.entity.ResultDataFactory;
 import com.lzt.operate.entity.ResultListData;
 import com.lzt.operate.entity.ResultSingleData;
 import com.lzt.operate.entity.SerializableData;
+import lombok.var;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lzt
@@ -31,7 +34,7 @@ public class BaseController {
         return result;
     }
 
-    private ResultListData listData(ArrayList list) {
+    protected ResultListData listData(List list) {
         ResultListData result = ResultDataFactory.successListData();
 
         result.list = list;
@@ -72,6 +75,26 @@ public class BaseController {
         result.extra = extra;
 
         return result;
+    }
+
+    protected ResultSingleData paramError(String paramName, String description) {
+        var code = ErrorMessage.ParamError.getCode();
+
+        var message = ErrorMessage.ParamError.getMessage();
+
+        var data = new SerializableData();
+        data.append("paramName", paramName);
+        data.append("description", description);
+
+        return ResultDataFactory.failData(code, message, data);
+    }
+
+    protected ResultSingleData exceptionError(Exception e) {
+        var code = ErrorMessage.exceptionError.getCode();
+        var message = ErrorMessage.ParamError.getMessage();
+        var data = new SerializableData(e);
+
+        return ResultDataFactory.failData(code, message, data);
     }
 
     protected ResultListData pageListData(ArrayList list) {

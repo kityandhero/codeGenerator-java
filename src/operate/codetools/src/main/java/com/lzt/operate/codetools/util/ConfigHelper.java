@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.util;
 
 import com.alibaba.fastjson.JSON;
-import com.lzt.operate.codetools.entity.DatabaseConfig;
+import com.lzt.operate.codetools.domain.ConnectionConfig;
 import com.lzt.operate.codetools.entity.DbType;
 import com.lzt.operate.codetools.entity.GeneratorConfig;
 import com.lzt.operate.extensions.StringEx;
@@ -61,23 +61,23 @@ public class ConfigHelper {
 
     }
 
-    public static List<DatabaseConfig> loadDatabaseConfig() throws Exception {
+    public static List<ConnectionConfig> loadConnectionConfig() throws Exception {
         try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement(); ResultSet rs = stat
                 .executeQuery("SELECT * FROM dbs")) {
-            List<DatabaseConfig> configs = new ArrayList<>();
+            List<ConnectionConfig> configs = new ArrayList<>();
             while (rs.next()) {
-                int id = rs.getInt("id");
+                String id = rs.getString("id");
                 String value = rs.getString("value");
-                DatabaseConfig databaseConfig = JSON.parseObject(value, DatabaseConfig.class);
-                databaseConfig.setId(id);
-                configs.add(databaseConfig);
+                ConnectionConfig connectionConfig = JSON.parseObject(value, ConnectionConfig.class);
+                connectionConfig.setId(id);
+                configs.add(connectionConfig);
             }
 
             return configs;
         }
     }
 
-    public static void saveDatabaseConfig(boolean isUpdate, Integer primaryKey, DatabaseConfig dbConfig) throws Exception {
+    public static void saveConnectionConfig(boolean isUpdate, Integer primaryKey, ConnectionConfig dbConfig) throws Exception {
         String configName = dbConfig.getName();
         // ResultSet rs = null;
         try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement()) {
@@ -101,10 +101,10 @@ public class ConfigHelper {
         // }
     }
 
-    public static void deleteDatabaseConfig(DatabaseConfig databaseConfig) throws Exception {
+    public static void deleteConnectionConfig(ConnectionConfig connectionConfig) throws Exception {
         // ResultSet rs = null;
         try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement()) {
-            String sql = String.format("delete from dbs where id=%d", databaseConfig.getId());
+            String sql = String.format("delete from dbs where id=%d", connectionConfig.getId());
             stat.executeUpdate(sql);
             // } finally {
             //     rs.close();
@@ -235,6 +235,5 @@ public class ConfigHelper {
         }
         return jarFilePathList;
     }
-
 
 }

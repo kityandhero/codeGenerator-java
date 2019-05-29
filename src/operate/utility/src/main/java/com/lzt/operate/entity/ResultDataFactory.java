@@ -18,6 +18,10 @@ public class ResultDataFactory {
         return new ResultSingleData(code, false, message, new SerializableData(), new SerializableData());
     }
 
+    public static ResultSingleData failData(int code, String message, SerializableData data) {
+        return new ResultSingleData(code, false, message, data, new SerializableData());
+    }
+
     public static ResultSingleData successSingleData() {
         return new ResultSingleData(CODE_ACCESS_SUCCESS, true, MESSAGE_ACCESS_SUCCESS, new SerializableData(), new SerializableData());
     }
