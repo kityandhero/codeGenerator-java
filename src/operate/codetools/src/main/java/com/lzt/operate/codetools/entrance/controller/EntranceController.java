@@ -48,8 +48,8 @@ public class EntranceController extends OperateBaseController {
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
     @ApiJsonObject(name = "entrance-signIn", value = {
-            @ApiJsonProperty(name = GlobalString.JSON_NAME),
-            @ApiJsonProperty(name = GlobalString.JSON_PASSWORD)},
+            @ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
+            @ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
             result = @ApiJsonResult({}))
     @ApiImplicitParam(name = "json", required = true, dataType = "entrance-signIn")
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
@@ -61,8 +61,8 @@ public class EntranceController extends OperateBaseController {
         ParamData paramJson = new ParamData(json);
 
         // 将获取的json数据封装一层，然后在给返回
-        String name = paramJson.getByKey("name");
-        String password = paramJson.getByKey("password");
+        String name = paramJson.getByKey(GlobalString.LOGIN_USERNAME);
+        String password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
 
         Operator operator = new Operator();
         operator.setName(name);

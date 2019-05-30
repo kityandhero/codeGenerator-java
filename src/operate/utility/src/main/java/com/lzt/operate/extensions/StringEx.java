@@ -1,6 +1,5 @@
 package com.lzt.operate.extensions;
 
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -79,8 +78,20 @@ public class StringEx {
         return new StringEx(Md5Crypt.md5Crypt(v.getBytes()));
     }
 
+    public static Iterable<String> split(String target, char separator) {
+        return Splitter.on(separator).omitEmptyStrings().split(target);
+    }
+
+    private static Iterable<String> splitToList(String target, char separator) {
+        return Splitter.on(separator).omitEmptyStrings().splitToList(target);
+    }
+
     public Iterable<String> split(char separator) {
-        return Splitter.on(separator).split(this.builder);
+        return StringEx.split(this.builder.toString(), separator);
+    }
+
+    public Iterable<String> splitToList(char separator) {
+        return StringEx.splitToList(this.builder.toString(), separator);
     }
 
     @Override

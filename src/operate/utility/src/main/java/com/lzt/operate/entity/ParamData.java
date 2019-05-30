@@ -17,7 +17,7 @@ public class ParamData extends SerializableMap<String, Serializable> {
     }
 
     public String getByKey(String key) {
-        var name = this.get("name");
+        var name = this.get(key);
 
         return (String) name;
     }

@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.common;
+package com.lzt.operate.codetools.components;
 
 import com.lzt.operate.entity.CorsConfigEntity;
 import org.springframework.boot.context.properties.ConfigurationProperties;

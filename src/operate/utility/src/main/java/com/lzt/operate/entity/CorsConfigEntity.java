@@ -1,9 +1,12 @@
 package com.lzt.operate.entity;
 
 import com.lzt.operate.extensions.StringEx;
+import com.lzt.operate.utility.Convert;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -45,22 +48,14 @@ public class CorsConfigEntity {
 
     //region AccessControlAllowOrigin Methods
 
-    public String getAccessControlAllowOrigins() {
-        return this.getAccessControlAllowOrigins("");
+    public List<String> getAccessControlAllowOriginList() {
+        return this.getAccessControlAllowOriginList("");
     }
 
-    private String getAccessControlAllowOrigins(String existingAllowOrigins) {
-        Set<String> set = this.getAccessControlAllowOriginSet(existingAllowOrigins);
+    private List<String> getAccessControlAllowOriginList(String existingAllowOrigins) {
+        Set<String> set = this.mergeToSet(existingAllowOrigins, this.allowSites);
 
-        return StringEx.join(",", set).toString();
-    }
-
-    public Set<String> getAccessControlAllowOriginSet() {
-        return this.getAccessControlAllowOriginSet("");
-    }
-
-    private Set<String> getAccessControlAllowOriginSet(String existingAllowOrigins) {
-        return this.mergeToSet(existingAllowOrigins, this.allowSites);
+        return new ArrayList<>(set);
     }
 
     // endregion
@@ -71,28 +66,20 @@ public class CorsConfigEntity {
 
     //region AccessControlAllowHeader Methods
 
-    public String getAccessControlAllowHeaders() {
-        return this.getAccessControlAllowHeaders("");
+    public List<String> getAccessControlAllowHeaderList() {
+        return this.getAccessControlAllowHeaderList("");
     }
 
-    private String getAccessControlAllowHeaders(String existingAllowOrigins) {
-        Set<String> set = this.getAccessControlAllowHeaderSet(existingAllowOrigins);
+    private List<String> getAccessControlAllowHeaderList(String existingAllowHeaders) {
+        Set<String> set = this.mergeToSet(existingAllowHeaders, this.accessControlAllowHeaders);
 
-        return com.google.common.base.Joiner.on(",").join(set);
-    }
-
-    public Set<String> getAccessControlAllowHeaderSet() {
-        return this.getAccessControlAllowHeaderSet("");
-    }
-
-    private Set<String> getAccessControlAllowHeaderSet(String existingAllowHeaders) {
-        return this.mergeToSet(existingAllowHeaders, this.accessControlAllowHeaders);
+        return new ArrayList<>(set);
     }
 
     //endregion
 
-    public String getAccessControlAllowMethods() {
-        return this.accessControlAllowMethods;
+    public List<String> getAccessControlAllowMethodList() {
+        return Convert.toList(StringEx.split(this.accessControlAllowMethods.toUpperCase(), ','));
     }
 }
 
