@@ -76,7 +76,7 @@ public class ParametersReader implements OperationBuilderPlugin {
                 ApiSingleParam param = field.getAnnotation(ApiSingleParam.class);
                 try {
                     String name = (String) field.get(type);
-                    paramMap.put(name, param);
+                    paramMap.put(param.modelName() + "_" + name, param);
                 } catch (Exception ignored) {
                 }
             }

@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.entrance.controller;
 
 import com.lzt.operate.codetools.common.GlobalString;
+import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
@@ -47,11 +48,11 @@ public class EntranceController extends OperateBaseController {
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-    @ApiJsonObject(name = "entrance-signIn", value = {
+    @ApiJsonObject(name = ModelNameCollection.Entrance_SING_IN, value = {
             @ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
             @ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "json", required = true, dataType = "entrance-signIn")
+    @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.Entrance_SING_IN)
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
     public ResultDataCore signIn(@RequestBody Map<String, String> json) {

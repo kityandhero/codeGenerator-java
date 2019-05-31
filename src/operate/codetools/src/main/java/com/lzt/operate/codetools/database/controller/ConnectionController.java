@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.database.controller;
 
 import com.lzt.operate.codetools.common.GlobalString;
+import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.ConnectionConfig;
 import com.lzt.operate.codetools.repository.ConnectionConfigRepository;
@@ -45,23 +46,23 @@ public class ConnectionController extends OperateBaseController {
     }
 
     @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
-    @ApiJsonObject(name = "connection-open", value = {
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_OPEN, value = {
             @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_DBTYPE),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
             @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
             @ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
             @ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
             @ApiJsonProperty(name = GlobalString.CONNECTION_USERNAME),
             @ApiJsonProperty(name = GlobalString.CONNECTION_PASSWORD),
             @ApiJsonProperty(name = GlobalString.CONNECTION_ENCODING),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_LPORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_RPORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSHPORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSHHOST),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSHUSER),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSHPASSWORD)},
+            @ApiJsonProperty(name = GlobalString.CONNECTION_L_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_R_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "connection", required = true, dataType = "connection-open")
+    @ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_OPEN)
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/open", consumes = "application/json", produces = "application/json")
     public ResultDataCore open(@RequestBody Map<String, String> connection) {

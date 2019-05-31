@@ -66,19 +66,19 @@ public class ConnectionConfig extends BaseDomain {
     }
 
     public void fillFromParamJson(ParamData paramJson) {
-        var dbtype = paramJson.getByKey(GlobalString.CONNECTION_DBTYPE);
+        var dbtype = paramJson.getByKey(GlobalString.CONNECTION_DB_TYPE);
         var host = paramJson.getByKey(GlobalString.CONNECTION_HOST);
         var port = paramJson.getByKey(GlobalString.CONNECTION_PORT);
         var schema = paramJson.getByKey(GlobalString.CONNECTION_SCHEMA);
         var username = paramJson.getByKey(GlobalString.CONNECTION_USERNAME);
         var password = paramJson.getByKey(GlobalString.CONNECTION_PASSWORD);
         var encoding = paramJson.getByKey(GlobalString.CONNECTION_ENCODING);
-        var lPort = paramJson.getByKey(GlobalString.CONNECTION_LPORT);
-        var rProt = paramJson.getByKey(GlobalString.CONNECTION_RPORT);
-        var sshPort = paramJson.getByKey(GlobalString.CONNECTION_SSHPORT);
-        var sshHost = paramJson.getByKey(GlobalString.CONNECTION_SSHHOST);
-        var sshUser = paramJson.getByKey(GlobalString.CONNECTION_SSHUSER);
-        var sshPassword = paramJson.getByKey(GlobalString.CONNECTION_SSHPASSWORD);
+        var lPort = paramJson.getByKey(GlobalString.CONNECTION_L_PORT);
+        var rProt = paramJson.getByKey(GlobalString.CONNECTION_R_PORT);
+        var sshPort = paramJson.getByKey(GlobalString.CONNECTION_SSH_PORT);
+        var sshHost = paramJson.getByKey(GlobalString.CONNECTION_SSH_HOST);
+        var sshUser = paramJson.getByKey(GlobalString.CONNECTION_SSH_USER);
+        var sshPassword = paramJson.getByKey(GlobalString.CONNECTION_SSH_PASSWORD);
 
         this.setName(name);
         this.setDbType(dbtype);

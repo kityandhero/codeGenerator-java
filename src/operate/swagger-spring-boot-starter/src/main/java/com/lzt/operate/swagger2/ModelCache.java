@@ -105,7 +105,7 @@ public class ModelCache {
                         modelName,
                         new TypeResolver().resolve(String.class),
                         "com.lzt.operate.swagger2.CommonData",
-                        this.toPropertyMap(jsonObj.value()),
+                        this.toPropertyMap(jsonObj.value(), modelName),
                         "POST参数",
                         "",
                         "",
@@ -245,12 +245,12 @@ public class ModelCache {
         return propertyMap;
     }
 
-    private Map<String, ModelProperty> toPropertyMap(ApiJsonProperty[] jsonProp) {
+    private Map<String, ModelProperty> toPropertyMap(ApiJsonProperty[] jsonProp, String modelName) {
         Map<String, ModelProperty> propertyMap = new HashMap<>(1);
 
         for (ApiJsonProperty property : jsonProp) {
             String propertyName = property.name();
-            ApiSingleParam param = this.paramMap.get(propertyName);
+            ApiSingleParam param = this.paramMap.get(modelName + "_" + propertyName);
 
             String description = property.description();
             if (isNullOrEmpty(description) && !isEmpty(param)) {

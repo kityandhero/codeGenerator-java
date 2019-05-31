@@ -11,6 +11,8 @@ public @interface ApiSingleParam {
 
     String name() default "";
 
+    String modelName() default "";
+
     String value() default "";
 
     Class<?> type() default String.class;
