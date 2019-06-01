@@ -9,6 +9,7 @@ import com.lzt.operate.codetools.util.DbUtil;
 import com.lzt.operate.entity.ParamData;
 import com.lzt.operate.entity.ResultDataCore;
 import com.lzt.operate.entity.ResultDataFactory;
+import com.lzt.operate.entity.ResultListData;
 import com.lzt.operate.entity.ResultSingleData;
 import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
@@ -46,7 +47,7 @@ public class ConnectionController extends OperateBaseController {
     }
 
     @ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
-    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultListData.class)})
     @PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
     public ResultDataCore list(@RequestBody Map<String, String> connectionJson) {
         var list = this.connectionConfigRepository.findAll();
