@@ -74,9 +74,9 @@ public class EntranceController extends OperateBaseController {
 
         Example<Operator> example = Example.of(operator, matcher);
 
-        var op = this.operatorRepository.findFirst(example);
+        var optionalResult = this.operatorRepository.findFirst(example);
 
-        Operator searchResult = op.orElse(null);
+        Operator searchResult = optionalResult.orElse(null);
 
         if (searchResult == null) {
             Date now = new Date();

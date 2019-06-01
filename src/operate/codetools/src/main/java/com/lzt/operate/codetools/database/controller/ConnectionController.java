@@ -45,8 +45,41 @@ public class ConnectionController extends OperateBaseController {
         this.connectionConfigRepository = connectionConfigRepository;
     }
 
+    @ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
+    public ResultDataCore list(@RequestBody Map<String, String> connectionJson) {
+        var list = this.connectionConfigRepository.findAll();
+
+        return this.listData(list);
+    }
+
+    @ApiOperation(value = "获取连接", notes = "获取数据库连接", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ConfigId)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
+    public ResultDataCore get(@RequestBody Map<String, String> connectionJson) {
+        ParamData paramJson = new ParamData(connectionJson);
+        var connectionConfigId = paramJson.getByKey(GlobalString.CONNECTION_ConfigId);
+
+        if (StringEx.isNullOrEmpty(connectionConfigId)) {
+            return this.paramError(GlobalString.CONNECTION_ConfigId, "不能为空值");
+        }
+
+        var optionalResult = this.connectionConfigRepository.findById(connectionConfigId);
+
+        if (!optionalResult.isPresent()) {
+            return this.noDataError();
+        }
+
+        return this.singleData(optionalResult.get());
+    }
+
     @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
-    @ApiJsonObject(name = ModelNameCollection.CONNECTION_OPEN, value = {
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
             @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
             @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
             @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
@@ -62,11 +95,11 @@ public class ConnectionController extends OperateBaseController {
             @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
             @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
             result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_OPEN)
+    @ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-    @PostMapping(path = "/open", consumes = "application/json", produces = "application/json")
-    public ResultDataCore open(@RequestBody Map<String, String> connection) {
-        ParamData paramJson = new ParamData(connection);
+    @PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
+    public ResultDataCore add(@RequestBody Map<String, String> connectionJson) {
+        ParamData paramJson = new ParamData(connectionJson);
         var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
 
         if (StringEx.isNullOrEmpty(name)) {
@@ -84,4 +117,46 @@ public class ConnectionController extends OperateBaseController {
         }
 
     }
+
+    @ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ConfigId),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_USERNAME),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_PASSWORD),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ENCODING),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_L_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_R_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/update", consumes = "application/json", produces = "application/json")
+    public ResultDataCore update(@RequestBody Map<String, String> connectionJson) {
+        ParamData paramJson = new ParamData(connectionJson);
+        var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
+
+        if (StringEx.isNullOrEmpty(name)) {
+            return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
+        }
+
+        var connectionConfig = new ConnectionConfig();
+        connectionConfig.fillFromParamJson(paramJson);
+
+        try {
+            var listTableName = DbUtil.getTableNames(connectionConfig);
+            return this.listData(listTableName);
+        } catch (Exception e) {
+            return this.exceptionError(e);
+        }
+
+    }
+
 }
