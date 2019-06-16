@@ -2,6 +2,7 @@ package com.lzt.operate.codetools.assists;
 
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
+import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.secret.DesAssist;
 import com.lzt.operate.utility.RequestAssist;
 import lombok.var;
@@ -27,6 +28,10 @@ public class OperatorAssist {
         String token = request.getHeader("token");
 
         String operatorId = DesAssist.decryptWithCBC(token);
+
+        if (StringEx.isNullOrEmpty(operatorId)) {
+            return null;
+        }
 
         var optionalResult = this.operatorRepository.findById(operatorId);
 
