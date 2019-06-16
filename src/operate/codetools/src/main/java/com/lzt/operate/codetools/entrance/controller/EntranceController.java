@@ -118,7 +118,7 @@ public class EntranceController extends OperateBaseController {
     // }
 
     @ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
-    @PostMapping(path = "/signUp", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/signUp", produces = "application/json")
     public ResultSingleData signUp() {
         return this.success();
     }

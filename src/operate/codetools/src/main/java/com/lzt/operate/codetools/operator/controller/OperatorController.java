@@ -36,7 +36,7 @@ public class OperatorController extends OperateBaseController {
 
     @ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-    @PostMapping(path = "/getCurrent", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/getCurrent", produces = "application/json")
     public ResultDataCore getCurrent() {
 
         OperatorAssist assist = new OperatorAssist(this.operatorRepository);
