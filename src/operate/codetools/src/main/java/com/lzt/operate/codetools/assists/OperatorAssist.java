@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.Assists;
+package com.lzt.operate.codetools.assists;
 
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;

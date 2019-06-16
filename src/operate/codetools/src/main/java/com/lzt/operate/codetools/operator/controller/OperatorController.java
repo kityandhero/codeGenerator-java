@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.operator.controller;
 
-import com.lzt.operate.codetools.Assists.OperatorAssist;
+import com.lzt.operate.codetools.assists.OperatorAssist;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/entrance")
-@Api(tags = "用户信息", description = "用于获取和操作用户的信息")
+@RequestMapping("/operator")
+@Api(tags = "操作者信息", description = "用于获取和操作操作者的信息")
 public class OperatorController extends OperateBaseController {
 
     private OperatorRepository operatorRepository;
@@ -34,7 +34,7 @@ public class OperatorController extends OperateBaseController {
         this.operatorRepository = operatorRepository;
     }
 
-    @ApiOperation(value = "当前用户信息", notes = "当前用户信息", httpMethod = "POST")
+    @ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/getCurrent", consumes = "application/json", produces = "application/json")
     public ResultDataCore getCurrent() {

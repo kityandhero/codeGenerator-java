@@ -1,5 +1,7 @@
 package com.lzt.operate.secret;
 
+import com.lzt.operate.extensions.StringEx;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -21,7 +23,6 @@ public class DesAssist {
      * @return 默认秘钥加密后的内容
      */
     public static String encryptWithCBC(String content) {
-
         return encryptWithCBC(content, DEFAULT_KEY);
     }
 
@@ -33,6 +34,10 @@ public class DesAssist {
      * @return 加密后的内容
      */
     private static String encryptWithCBC(String content, String key) {
+        if (StringEx.isNullOrEmpty(content)) {
+            return "";
+        }
+
         byte[] resultEncrypt = encryptWithCBC(content.getBytes(), key.getBytes());
 
         if (resultEncrypt == null) {
@@ -91,6 +96,10 @@ public class DesAssist {
      * @return 解密后的内容
      */
     private static String decryptWithCBC(String content, String key) {
+        if (StringEx.isNullOrEmpty(content)) {
+            return "";
+        }
+
         byte[] resultEncrypt = decryptWithCBC(content.getBytes(), key.getBytes());
 
         if (resultEncrypt == null) {
