@@ -15,14 +15,20 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OperatorAssist {
 
-    public static Operator getCurrent(OperatorRepository operatorRepository) {
+    private OperatorRepository operatorRepository;
+
+    public OperatorAssist(OperatorRepository operatorRepository) {
+        this.operatorRepository = operatorRepository;
+    }
+
+    public Operator getCurrent() {
         HttpServletRequest request = RequestAssist.getHttpServletRequest();
 
         String token = request.getHeader("token");
 
         String operatorId = DesAssist.decryptWithCBC(token);
 
-        var optionalResult = operatorRepository.findById(operatorId);
+        var optionalResult = this.operatorRepository.findById(operatorId);
 
         return optionalResult.orElse(null);
     }

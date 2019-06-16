@@ -39,7 +39,9 @@ public class OperatorController extends OperateBaseController {
     @PostMapping(path = "/getCurrent", consumes = "application/json", produces = "application/json")
     public ResultDataCore getCurrent() {
 
-        Operator operator = OperatorAssist.getCurrent(this.operatorRepository);
+        OperatorAssist assist = new OperatorAssist(this.operatorRepository);
+
+        Operator operator = assist.getCurrent();
 
         if (operator != null) {
             return this.singleData(operator);
