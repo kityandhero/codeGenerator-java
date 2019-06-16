@@ -1,7 +1,9 @@
 package com.lzt.operate.codetools.domain;
 
+import com.lzt.operate.utility.RequestAssist;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.var;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,5 +34,13 @@ public class Operator extends BaseDomain {
         this.password = "";
         this.friendlyName = "";
         this.createTime = now;
+    }
+
+    public static Operator GetCurrent() {
+        var request = RequestAssist.getHttpServletRequest();
+
+        var token = request.getHeader("token");
+
+        return null;
     }
 }
