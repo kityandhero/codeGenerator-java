@@ -33,7 +33,7 @@ public class DesAssist {
      * @param key     加密秘钥
      * @return 加密后的内容
      */
-    private static String encryptWithCBC(String content, String key) {
+    static String encryptWithCBC(String content, String key) {
         if (StringEx.isNullOrEmpty(content)) {
             return "";
         }

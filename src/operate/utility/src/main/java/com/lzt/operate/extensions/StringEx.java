@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
@@ -86,6 +87,10 @@ public class StringEx {
         return Splitter.on(separator).omitEmptyStrings().splitToList(target);
     }
 
+    public static StringEx randomAlphanumeric(int count) {
+        return new StringEx(RandomStringUtils.randomAlphanumeric(count));
+    }
+
     public Iterable<String> split(char separator) {
         return StringEx.split(this.builder.toString(), separator);
     }
@@ -147,5 +152,10 @@ public class StringEx {
         }
 
         return this.builder.toString().contains(target);
+    }
+
+    public StringEx replace(String target, String replaceText) {
+        String result = this.builder.toString().replace(target, replaceText);
+        return new StringEx(result);
     }
 }
