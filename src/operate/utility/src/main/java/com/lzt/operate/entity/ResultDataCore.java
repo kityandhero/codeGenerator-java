@@ -40,6 +40,6 @@ public abstract class ResultDataCore implements Serializable {
     }
 
     public String serialize() {
-        return Convert.serialize(this);
+        return Convert.serializeObject(this);
     }
 }

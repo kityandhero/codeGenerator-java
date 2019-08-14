@@ -95,7 +95,7 @@ public class DesAssist {
      * @param key     解密秘钥
      * @return 解密后的内容
      */
-    private static String decryptWithCBC(String content, String key) {
+    static String decryptWithCBC(String content, String key) {
         if (StringEx.isNullOrEmpty(content)) {
             return "";
         }

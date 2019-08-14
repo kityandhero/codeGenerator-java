@@ -91,6 +91,18 @@ public class StringEx {
         return new StringEx(RandomStringUtils.randomAlphanumeric(count));
     }
 
+    public static StringEx substring(StringEx source, int index, int length) {
+        String result = source.toString().substring(index, index + length);
+
+        return new StringEx(result);
+    }
+
+    public static StringEx substring(StringEx source, int index) {
+        String result = source.toString().substring(index);
+
+        return new StringEx(result);
+    }
+
     public Iterable<String> split(char separator) {
         return StringEx.split(this.builder.toString(), separator);
     }
@@ -157,5 +169,13 @@ public class StringEx {
     public StringEx replace(String target, String replaceText) {
         String result = this.builder.toString().replace(target, replaceText);
         return new StringEx(result);
+    }
+
+    public StringEx substring(int index, int length) {
+        return StringEx.substring(this, index, length);
+    }
+
+    public StringEx substring(int index) {
+        return StringEx.substring(this, index);
     }
 }

@@ -79,7 +79,7 @@ public class CorsConfigEntity {
     //endregion
 
     public List<String> getAccessControlAllowMethodList() {
-        return Convert.toList(StringEx.split(this.accessControlAllowMethods.toUpperCase(), ','));
+        return Convert.iterableToList(StringEx.split(this.accessControlAllowMethods.toUpperCase(), ','));
     }
 }
 
