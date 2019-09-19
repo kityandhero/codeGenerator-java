@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * @author lzt
@@ -25,7 +26,7 @@ public class CustomConfig extends BaseDomain {
     String description;
 
     public CustomConfig() {
-        java.util.Date now = new java.util.Date();
+        LocalDateTime now = LocalDateTime.now();
 
         this.name = "";
         this.value = "";

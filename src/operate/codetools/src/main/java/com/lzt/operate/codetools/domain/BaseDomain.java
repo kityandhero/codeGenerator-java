@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author lzt
@@ -27,6 +27,9 @@ abstract class BaseDomain implements Serializable {
     String id;
 
     @Column
-    Date createTime;
+    LocalDateTime createTime;
 
+    BaseDomain() {
+        LocalDateTime createTime = LocalDateTime.now();
+    }
 }
