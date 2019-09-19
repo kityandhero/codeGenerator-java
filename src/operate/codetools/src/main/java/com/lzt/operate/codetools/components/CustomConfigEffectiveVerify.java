@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.assists;
+package com.lzt.operate.codetools.components;
 
 import com.lzt.operate.codetools.domain.CustomConfig;
 import com.lzt.operate.codetools.repository.CustomConfigRepository;
@@ -16,12 +16,12 @@ import java.util.HashSet;
  * @author lzt
  */
 @Component
-public class CustomConfigAssist {
+public class CustomConfigEffectiveVerify {
 
     private CustomConfigRepository customConfigRepository;
 
     @Autowired
-    public CustomConfigAssist(CustomConfigRepository customConfigRepository) {
+    public CustomConfigEffectiveVerify(CustomConfigRepository customConfigRepository) {
         this.customConfigRepository = customConfigRepository;
 
         this.checkDataIntegrity();
