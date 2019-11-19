@@ -1,6 +1,7 @@
 package com.lzt.operate.web.controllers;
 
 import com.lzt.operate.entity.ErrorMessage;
+import com.lzt.operate.entity.ParamData;
 import com.lzt.operate.entity.ResultDataFactory;
 import com.lzt.operate.entity.ResultListData;
 import com.lzt.operate.entity.ResultSingleData;
@@ -8,13 +9,23 @@ import com.lzt.operate.entity.SerializableData;
 import lombok.var;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lzt
  */
 public class BaseController {
+
+    /**
+     * 返回结构化的参数
+     *
+     * @param query
+     * @return
+     */
+    protected ParamData getParamData(Map<String, String> query) {
+        return new ParamData(query);
+    }
 
     protected ResultSingleData singleData(Serializable data) {
         ResultSingleData result = ResultDataFactory.successSingleData();
@@ -43,7 +54,7 @@ public class BaseController {
         return result;
     }
 
-    private ResultListData listData(ArrayList list, Serializable extra) {
+    private ResultListData listData(List list, Serializable extra) {
         ResultListData result = ResultDataFactory.successListData();
 
         result.list = list;
@@ -97,15 +108,19 @@ public class BaseController {
         return ResultDataFactory.failData(code, message, data);
     }
 
-    protected ResultListData pageListData(ArrayList list) {
+    protected ResultListData pageListData(List list) {
         return this.listData(list);
     }
 
-    protected ResultListData pageListData(ArrayList list, Serializable extra) {
+    protected ResultListData pageListData(List list, Serializable extra) {
         return this.listData(list, extra);
     }
 
-    protected ResultListData pageData(ArrayList list, int pageNo, int pageSize, int total, Serializable other) {
+    protected ResultListData pageData(List list, int pageNo, int pageSize, int total) {
+        return pageData(list, pageNo, pageSize, total, new SerializableData());
+    }
+
+    protected ResultListData pageData(List list, int pageNo, int pageSize, int total, Serializable other) {
         ResultListData result = this.listData(list);
 
         SerializableData extra = new SerializableData();

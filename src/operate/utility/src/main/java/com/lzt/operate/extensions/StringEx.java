@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Optional;
  *
  * @author lzt
  */
-public class StringEx {
+public class StringEx implements Serializable {
     private StringBuilder builder;
 
     public StringEx(String source) {
@@ -99,6 +100,10 @@ public class StringEx {
         return this.builder.toString();
     }
 
+    public boolean isNullOrEmpty() {
+        return Strings.isNullOrEmpty(this.builder.toString());
+    }
+
     public int toInt() {
         return Integer.parseInt(this.builder.toString());
     }
@@ -147,5 +152,9 @@ public class StringEx {
         }
 
         return this.builder.toString().contains(target);
+    }
+
+    public String serialize() {
+        return this.builder.toString();
     }
 }

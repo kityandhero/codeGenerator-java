@@ -26,7 +26,64 @@ abstract class BaseDomain implements Serializable {
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
     String id;
 
+    /**
+     * 程序最后操作备注
+     */
+    @Column
+    String autoRemark;
+
+    /**
+     * 状态
+     */
+    @Column
+    Integer state;
+
+    /**
+     * 状态文本
+     */
+    @Column
+    String stateNote;
+
+    /**
+     * 最后操作IP
+     */
+    @Column
+    String ip;
+
+    /**
+     * 创建人标识
+     */
+    @Column
+    String createOperatorId;
+
+    /**
+     * 创建时间
+     */
     @Column
     Date createTime;
+
+    /**
+     * 创建时间 UnixTIme
+     */
+    @Column
+    Date createUnixTime;
+
+    /**
+     * 最后更信人
+     */
+    @Column
+    String updateOperatorId;
+
+    /**
+     * 更新时间
+     */
+    @Column
+    Date updateTime;
+
+    /**
+     * 更新时间 UnixTime
+     */
+    @Column
+    Date updateUnixTime;
 
 }

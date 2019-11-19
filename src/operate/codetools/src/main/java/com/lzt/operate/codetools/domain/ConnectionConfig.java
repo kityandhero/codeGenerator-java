@@ -11,7 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ * 数据库连接配置
+ *
  * @author lzt
+ * @date 2019-11-19
  */
 @Data
 @Entity

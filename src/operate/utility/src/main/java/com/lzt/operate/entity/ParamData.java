@@ -16,15 +16,15 @@ public class ParamData extends SerializableMap<String, Serializable> {
         super(data);
     }
 
-    public String getByKey(String key) {
-        var name = this.get(key);
+    public StringEx getByKey(String key) {
+        var v = this.get(key);
 
-        return (String) name;
+        return new StringEx((String) v);
     }
 
     public boolean isNullOrEmpty(String key) {
-        var v = this.getByKey(key);
+        var v = this.get(key);
 
-        return StringEx.isNullOrEmpty(v);
+        return StringEx.isNullOrEmpty((String) v);
     }
 }

@@ -12,6 +12,12 @@ public class GlobalString {
     // @ApiSingleParam(value = "用户姓名", example = "test1")
     // public static final String JSON_USER_NAME = "userName";
 
+    @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "页码", example = "1")
+    public static final String CONNECTION_LIST_PAGE_NO = "pageNo";
+
+    @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "页条目数", example = "10")
+    public static final String CONNECTION_LIST_PAGE_SIZE = "pageSize";
+
     @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "用户名称", example = "test1")
     public static final String LOGIN_USERNAME = "userName";
 
