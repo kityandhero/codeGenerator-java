@@ -6,11 +6,10 @@ import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.ConnectionConfig;
 import com.lzt.operate.codetools.repository.ConnectionConfigRepository;
 import com.lzt.operate.codetools.util.DbUtil;
-import com.lzt.operate.entity.ParamData;
 import com.lzt.operate.entity.ResultDataCore;
 import com.lzt.operate.entity.ResultDataFactory;
+import com.lzt.operate.entity.ResultListData;
 import com.lzt.operate.entity.ResultSingleData;
-import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -22,6 +21,11 @@ import io.swagger.annotations.ApiResponses;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +39,7 @@ import java.util.Map;
 @RestController
 @EnableConfigurationProperties
 @RequestMapping("/connection")
-@Api(tags = "数据库连接", description = "用于数据库连接等的操作")
+@Api(tags = {"数据库连接"})
 public class ConnectionController extends OperateBaseController {
 
     private ConnectionConfigRepository connectionConfigRepository;
@@ -45,7 +49,7 @@ public class ConnectionController extends OperateBaseController {
         this.connectionConfigRepository = connectionConfigRepository;
     }
 
-    @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+    @ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
     @ApiJsonObject(name = ModelNameCollection.CONNECTION_OPEN, value = {
             @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
             @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
@@ -65,23 +69,59 @@ public class ConnectionController extends OperateBaseController {
     @ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_OPEN)
     @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/open", consumes = "application/json", produces = "application/json")
-    public ResultDataCore open(@RequestBody Map<String, String> connection) {
-        ParamData paramJson = new ParamData(connection);
+    public ResultDataCore open(@RequestBody Map<String, String> connection) throws Exception {
+
+        var paramJson = getParamData(connection);
         var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
 
-        if (StringEx.isNullOrEmpty(name)) {
+        if (name.isNullOrEmpty()) {
             return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
         }
 
         var connectionConfig = new ConnectionConfig();
         connectionConfig.fillFromParamJson(paramJson);
 
-        try {
-            var listTableName = DbUtil.getTableNames(connectionConfig);
-            return this.listData(listTableName);
-        } catch (Exception e) {
-            return this.exceptionError(e);
-        }
+        var listTableName = DbUtil.getTableNames(connectionConfig);
+        return this.listData(listTableName);
 
+        // try {
+        //     var listTableName = DbUtil.getTableNames(connectionConfig);
+        //     return this.listData(listTableName);
+        // } catch (Exception e) {
+        //     return this.exceptionError(e);
+        // }
+
+    }
+
+    @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_LIST, value = {
+            @ApiJsonProperty(name = GlobalString.CONNECTION_LIST_PAGE_NO),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_LIST_PAGE_SIZE)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_LIST)
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
+    public ResultListData list(@RequestBody Map<String, String> query) {
+        var paramJson = getParamData(query);
+
+        var pageNo = paramJson.getByKey(GlobalString.CONNECTION_LIST_PAGE_NO).toInt();
+        var pageSize = paramJson.getByKey(GlobalString.CONNECTION_LIST_PAGE_SIZE).toInt();
+
+        pageNo = Math.max(pageNo, 1);
+        pageSize = Math.max(pageSize, 1);
+
+        ConnectionConfig connectionConfig = new ConnectionConfig();
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                                               .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
+                                               .withIgnorePaths("createTime", "password", "friendlyName");
+
+        Example<ConnectionConfig> filter = Example.of(connectionConfig, matcher);
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, "createTime");
+
+        var page = this.connectionConfigRepository.findAll(filter, pageable);
+
+        return this.pageData(page.getContent(), page.getNumber(), page.getSize(), page.getTotalPages());
     }
 }
