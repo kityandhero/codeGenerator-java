@@ -154,6 +154,16 @@ public class StringEx implements Serializable {
         return this.builder.toString().contains(target);
     }
 
+    public StringEx replace(String target, String replaceText) {
+        String result = this.builder.toString().replace(target, replaceText);
+        return new StringEx(result);
+    }
+
+    // public StringEx substring(int index, int length) {
+    //
+    //      return StringEx.substring(this, index, length);
+    // }
+
     public String serialize() {
         return this.builder.toString();
     }

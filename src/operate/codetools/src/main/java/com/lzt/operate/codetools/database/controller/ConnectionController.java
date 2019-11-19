@@ -6,10 +6,12 @@ import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.ConnectionConfig;
 import com.lzt.operate.codetools.repository.ConnectionConfigRepository;
 import com.lzt.operate.codetools.util.DbUtil;
+import com.lzt.operate.entity.ParamData;
 import com.lzt.operate.entity.ResultDataCore;
 import com.lzt.operate.entity.ResultDataFactory;
 import com.lzt.operate.entity.ResultListData;
 import com.lzt.operate.entity.ResultSingleData;
+import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -49,51 +51,7 @@ public class ConnectionController extends OperateBaseController {
         this.connectionConfigRepository = connectionConfigRepository;
     }
 
-    @ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
-    @ApiJsonObject(name = ModelNameCollection.CONNECTION_OPEN, value = {
-            @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_USERNAME),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_PASSWORD),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_ENCODING),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_L_PORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_R_PORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PORT),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_HOST),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
-            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
-            result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_OPEN)
-    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-    @PostMapping(path = "/open", consumes = "application/json", produces = "application/json")
-    public ResultDataCore open(@RequestBody Map<String, String> connection) throws Exception {
-
-        var paramJson = getParamData(connection);
-        var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
-
-        if (name.isNullOrEmpty()) {
-            return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
-        }
-
-        var connectionConfig = new ConnectionConfig();
-        connectionConfig.fillFromParamJson(paramJson);
-
-        var listTableName = DbUtil.getTableNames(connectionConfig);
-        return this.listData(listTableName);
-
-        // try {
-        //     var listTableName = DbUtil.getTableNames(connectionConfig);
-        //     return this.listData(listTableName);
-        // } catch (Exception e) {
-        //     return this.exceptionError(e);
-        // }
-
-    }
-
-    @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+    @ApiOperation(value = "连接列表", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
     @ApiJsonObject(name = ModelNameCollection.CONNECTION_LIST, value = {
             @ApiJsonProperty(name = GlobalString.CONNECTION_LIST_PAGE_NO),
             @ApiJsonProperty(name = GlobalString.CONNECTION_LIST_PAGE_SIZE)},
@@ -123,5 +81,110 @@ public class ConnectionController extends OperateBaseController {
         var page = this.connectionConfigRepository.findAll(filter, pageable);
 
         return this.pageData(page.getContent(), page.getNumber(), page.getSize(), page.getTotalPages());
+    }
+
+    @ApiOperation(value = "获取连接", notes = "获取数据库连接", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ConfigId)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
+    public ResultDataCore get(@RequestBody Map<String, String> connectionJson) {
+        ParamData paramJson = new ParamData(connectionJson);
+        var connectionConfigId = paramJson.getByKey(GlobalString.CONNECTION_ConfigId);
+
+        if (StringEx.isNullOrEmpty(connectionConfigId)) {
+            return this.paramError(GlobalString.CONNECTION_ConfigId, "不能为空值");
+        }
+
+        var optionalResult = this.connectionConfigRepository.findById(connectionConfigId);
+
+        if (!optionalResult.isPresent()) {
+            return this.noDataError();
+        }
+
+        return this.singleData(optionalResult.get());
+    }
+
+    @ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
+            @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_USERNAME),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_PASSWORD),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ENCODING),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_L_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_R_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
+    public ResultDataCore add(@RequestBody Map<String, String> connectionJson) {
+        ParamData paramJson = new ParamData(connectionJson);
+
+        var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
+
+        if (StringEx.isNullOrEmpty(name)) {
+            return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
+        }
+
+        var connectionConfig = new ConnectionConfig();
+        connectionConfig.fillFromParamJson(paramJson);
+
+        try {
+            var listTableName = DbUtil.getTableNames(connectionConfig);
+            return this.listData(listTableName);
+        } catch (Exception e) {
+            return this.exceptionError(e);
+        }
+
+    }
+
+    @ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ConfigId),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_USERNAME),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_PASSWORD),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_ENCODING),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_L_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_R_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PORT),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_HOST),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
+            @ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
+    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/update", consumes = "application/json", produces = "application/json")
+    public ResultDataCore update(@RequestBody Map<String, String> connectionJson) {
+        ParamData paramJson = new ParamData(connectionJson);
+        var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
+
+        if (StringEx.isNullOrEmpty(name)) {
+            return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
+        }
+
+        var connectionConfig = new ConnectionConfig();
+        connectionConfig.fillFromParamJson(paramJson);
+
+        try {
+            var listTableName = DbUtil.getTableNames(connectionConfig);
+            return this.listData(listTableName);
+        } catch (Exception e) {
+            return this.exceptionError(e);
+        }
     }
 }

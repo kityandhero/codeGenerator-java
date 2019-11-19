@@ -22,6 +22,11 @@ public class ErrorMessage {
     public static ErrorMessage exceptionError = new ErrorMessage(40002, "执行异常");
 
     /**
+     * 参数错误
+     */
+    public static ErrorMessage noDataError = new ErrorMessage(40003, "无数据");
+
+    /**
      * 代码
      */
     private int code;
@@ -30,7 +35,7 @@ public class ErrorMessage {
      */
     private String message;
 
-    public ErrorMessage(int code, String message) {
+    private ErrorMessage(int code, String message) {
         this.code = code;
         this.message = message;
     }

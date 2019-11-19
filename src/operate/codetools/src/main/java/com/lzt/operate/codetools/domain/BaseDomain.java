@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author lzt
@@ -60,13 +60,13 @@ abstract class BaseDomain implements Serializable {
      * 创建时间
      */
     @Column
-    Date createTime;
+    LocalDateTime createTime;
 
     /**
      * 创建时间 UnixTIme
      */
     @Column
-    Date createUnixTime;
+    long createUnixTime;
 
     /**
      * 最后更信人
@@ -78,12 +78,15 @@ abstract class BaseDomain implements Serializable {
      * 更新时间
      */
     @Column
-    Date updateTime;
+    LocalDateTime updateTime;
 
     /**
      * 更新时间 UnixTime
      */
     @Column
-    Date updateUnixTime;
+    long updateUnixTime;
 
+    BaseDomain() {
+        this.createTime = LocalDateTime.now();
+    }
 }

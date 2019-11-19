@@ -27,46 +27,49 @@ public class GlobalString {
     // @ApiSingleParam(value = "用户邮箱", example = "17721026877@qq.com")
     // public static final String JSON_USER_EMAIL = "userEmail";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "数据库连接名称", example = "my connection")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
+    public static final String CONNECTION_ConfigId = "connectionConfigId";
+
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
     public static final String CONNECTION_NAME = "connectionName";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "数据库类型", example = "mysql")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库类型", example = "mysql")
     public static final String CONNECTION_DB_TYPE = "dbtype";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "数据库Host", example = "localhost")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库Host", example = "localhost")
     public static final String CONNECTION_HOST = "host";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "连接Port", example = "8090")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "连接Port", example = "8090")
     public static final String CONNECTION_PORT = "port";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "schema", example = "dbo")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "schema", example = "dbo")
     public static final String CONNECTION_SCHEMA = "schema";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "用户名", example = "test")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "用户名", example = "test")
     public static final String CONNECTION_USERNAME = "username";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "密码", example = "111111")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "密码", example = "111111")
     public static final String CONNECTION_PASSWORD = "password";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "编码模式", example = "utf8")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "编码模式", example = "utf8")
     public static final String CONNECTION_ENCODING = "encoding";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "lport", example = "lport")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "lport", example = "lport")
     public static final String CONNECTION_L_PORT = "lPort";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "rport", example = "rport")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "rport", example = "rport")
     public static final String CONNECTION_R_PORT = "rProt";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "sshPort", example = "sshPort")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPort", example = "sshPort")
     public static final String CONNECTION_SSH_PORT = "sshPort";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "sshHost", example = "sshHost")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshHost", example = "sshHost")
     public static final String CONNECTION_SSH_HOST = "sshHost";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "sshUser", example = "sshUser")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshUser", example = "sshUser")
     public static final String CONNECTION_SSH_USER = "sshUser";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_OPEN, value = "sshPassword", example = "sshPassword")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPassword", example = "sshPassword")
     public static final String CONNECTION_SSH_PASSWORD = "sshPassword";
 
 }

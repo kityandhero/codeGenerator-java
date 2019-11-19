@@ -100,6 +100,22 @@ public class BaseController {
         return ResultDataFactory.failData(code, message, data);
     }
 
+    protected ResultSingleData noDataError() {
+
+        return this.noDataError("指定的数据不存在！");
+    }
+
+    private ResultSingleData noDataError(String description) {
+        var code = ErrorMessage.noDataError.getCode();
+
+        var message = ErrorMessage.noDataError.getMessage();
+
+        var data = new SerializableData();
+        data.append("description", description);
+
+        return ResultDataFactory.failData(code, message, data);
+    }
+
     protected ResultSingleData exceptionError(Exception e) {
         var code = ErrorMessage.exceptionError.getCode();
         var message = ErrorMessage.ParamError.getMessage();

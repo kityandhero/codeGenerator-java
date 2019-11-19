@@ -26,11 +26,8 @@ public class Operator extends BaseDomain {
     String friendlyName;
 
     public Operator() {
-        java.util.Date now = new java.util.Date();
-
         this.name = "";
         this.password = "";
         this.friendlyName = "";
-        this.createTime = now;
     }
 }
