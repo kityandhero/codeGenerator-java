@@ -1,7 +1,8 @@
 package com.lzt.operate.codetools.domain;
 
 import com.lzt.operate.codetools.common.GlobalString;
-import com.lzt.operate.entity.ParamData;
+import com.lzt.operate.entities.ParamData;
+import com.lzt.operate.extensions.StringEx;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.var;
@@ -23,46 +24,46 @@ import javax.persistence.Table;
 public class ConnectionConfig extends BaseDomain {
 
     @Column
-    private String dbType;
+    private StringEx dbType;
 
     @Column
-    private String name;
+    private StringEx name;
 
     @Column
-    private String host;
+    private StringEx host;
 
     @Column
-    private String port;
+    private StringEx port;
 
     @Column
-    private String schema;
+    private StringEx schema;
 
     @Column
-    private String username;
+    private StringEx username;
 
     @Column
-    private String password;
+    private StringEx password;
 
     @Column
-    private String encoding;
+    private StringEx encoding;
 
     @Column
-    private String lport;
+    private StringEx lport;
 
     @Column
-    private String rport;
+    private StringEx rport;
 
     @Column
-    private String sshPort;
+    private StringEx sshPort;
 
     @Column
-    private String sshHost;
+    private StringEx sshHost;
 
     @Column
-    private String sshUser;
+    private StringEx sshUser;
 
     @Column
-    private String sshPassword;
+    private StringEx sshPassword;
 
     public ConnectionConfig() {
 

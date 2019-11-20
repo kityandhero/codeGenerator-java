@@ -46,7 +46,7 @@ public class StringEx implements Serializable {
         return new StringEx(v);
     }
 
-    private static StringEx ToCamelStyle(String str) {
+    private static StringEx toCamelStyle(String str) {
         if (str != null) {
             if (str.contains("_")) {
                 str = str.toLowerCase();
@@ -85,6 +85,18 @@ public class StringEx implements Serializable {
 
     private static Iterable<String> splitToList(String target, char separator) {
         return Splitter.on(separator).omitEmptyStrings().splitToList(target);
+    }
+
+    public static StringEx substring(StringEx source, int index, int length) {
+        String result = source.toString().substring(index, index + length);
+
+        return new StringEx(result);
+    }
+
+    public static StringEx substring(StringEx source, int index) {
+        String result = source.toString().substring(index);
+
+        return new StringEx(result);
     }
 
     public Iterable<String> split(char separator) {
@@ -154,16 +166,23 @@ public class StringEx implements Serializable {
         return this.builder.toString().contains(target);
     }
 
+    /**
+     * 替换指定字符字符串为目标字符串
+     *
+     * @param target      替换目标
+     * @param replaceText 替换值
+     * @return 替换后的字符串
+     */
     public StringEx replace(String target, String replaceText) {
         String result = this.builder.toString().replace(target, replaceText);
         return new StringEx(result);
     }
 
-    // public StringEx substring(int index, int length) {
-    //
-    //      return StringEx.substring(this, index, length);
-    // }
-
+    /**
+     * 序列化方法
+     *
+     * @return 转换后的字符串
+     */
     public String serialize() {
         return this.builder.toString();
     }

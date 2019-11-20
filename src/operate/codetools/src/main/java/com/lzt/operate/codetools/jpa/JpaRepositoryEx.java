@@ -2,7 +2,7 @@ package com.lzt.operate.codetools.jpa;
 
 import lombok.var;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -19,16 +19,17 @@ public interface JpaRepositoryEx<T, ID> extends JpaRepository<T, ID> {
      *
      * @param example 匹配源
      * @param <S>     类型
+     * @param sort    排序方式
      * @return 返回结果
      */
-    default <S extends T> Optional<S> findFirst(Example<S> example) {
+    default <S extends T> Optional<S> findFirst(Example<S> example, Sort sort) {
 
-        var pageable = PageRequest.of(1, 1);
-        var pageList = this.findAll(example, pageable);
+        var list = this.findAll(example, sort);
 
-        var list = pageList.getContent();
         if (list.size() > 0) {
-            return Optional.of(list.get(0));
+            var o = list.get(0);
+
+            return Optional.of(o);
         }
 
         return Optional.empty();

@@ -1,4 +1,4 @@
-package com.lzt.operate.entity;
+package com.lzt.operate.entities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

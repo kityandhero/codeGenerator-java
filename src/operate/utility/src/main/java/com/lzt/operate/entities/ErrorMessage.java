@@ -1,4 +1,4 @@
-package com.lzt.operate.entity;
+package com.lzt.operate.entities;
 
 import lombok.Data;
 import org.springframework.lang.NonNull;

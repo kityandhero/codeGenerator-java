@@ -1,11 +1,12 @@
 package com.lzt.operate.web.controllers;
 
-import com.lzt.operate.entity.ErrorMessage;
-import com.lzt.operate.entity.ParamData;
-import com.lzt.operate.entity.ResultDataFactory;
-import com.lzt.operate.entity.ResultListData;
-import com.lzt.operate.entity.ResultSingleData;
-import com.lzt.operate.entity.SerializableData;
+import com.lzt.operate.entities.ParamData;
+import com.lzt.operate.entities.ResultDataFactory;
+import com.lzt.operate.entities.ResultListData;
+import com.lzt.operate.entities.ResultSingleData;
+import com.lzt.operate.entities.SerializableData;
+import com.lzt.operate.enums.ReturnDataCode;
+import lombok.NonNull;
 import lombok.var;
 
 import java.io.Serializable;
@@ -20,8 +21,8 @@ public class BaseController {
     /**
      * 返回结构化的参数
      *
-     * @param query
-     * @return
+     * @param query json参数
+     * @return ParamData
      */
     protected ParamData getParamData(Map<String, String> query) {
         return new ParamData(query);
@@ -67,20 +68,20 @@ public class BaseController {
         return ResultDataFactory.successSingleData();
     }
 
-    protected ResultSingleData fail(int code, String message) {
-        return ResultDataFactory.failData(code, message);
+    protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode) {
+        return ResultDataFactory.failData(returnDataCode);
     }
 
-    protected ResultSingleData fail(int code, String message, SerializableData data) {
-        ResultSingleData result = ResultDataFactory.failData(code, message);
+    protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, SerializableData data) {
+        ResultSingleData result = ResultDataFactory.failData(returnDataCode);
 
         result.data = data;
 
         return result;
     }
 
-    protected ResultSingleData fail(int code, String message, Serializable data, Serializable extra) {
-        ResultSingleData result = ResultDataFactory.failData(code, message);
+    protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, Serializable data, Serializable extra) {
+        ResultSingleData result = ResultDataFactory.failData(returnDataCode);
 
         result.data = data;
         result.extra = extra;
@@ -89,15 +90,11 @@ public class BaseController {
     }
 
     protected ResultSingleData paramError(String paramName, String description) {
-        var code = ErrorMessage.ParamError.getCode();
-
-        var message = ErrorMessage.ParamError.getMessage();
-
         var data = new SerializableData();
         data.append("paramName", paramName);
         data.append("description", description);
 
-        return ResultDataFactory.failData(code, message, data);
+        return ResultDataFactory.failData(ReturnDataCode.PARAM_ERROR);
     }
 
     protected ResultSingleData noDataError() {
@@ -106,22 +103,18 @@ public class BaseController {
     }
 
     private ResultSingleData noDataError(String description) {
-        var code = ErrorMessage.noDataError.getCode();
-
-        var message = ErrorMessage.noDataError.getMessage();
-
         var data = new SerializableData();
         data.append("description", description);
 
-        return ResultDataFactory.failData(code, message, data);
+        return ResultDataFactory.failData(ReturnDataCode.NODATA);
     }
 
     protected ResultSingleData exceptionError(Exception e) {
-        var code = ErrorMessage.exceptionError.getCode();
-        var message = ErrorMessage.ParamError.getMessage();
-        var data = new SerializableData(e);
+        return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
+    }
 
-        return ResultDataFactory.failData(code, message, data);
+    protected ResultSingleData customError(int code, boolean success, String message) {
+        return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
     }
 
     protected ResultListData pageListData(List list) {

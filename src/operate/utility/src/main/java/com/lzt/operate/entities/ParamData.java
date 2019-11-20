@@ -1,4 +1,4 @@
-package com.lzt.operate.entity;
+package com.lzt.operate.entities;
 
 import com.lzt.operate.extensions.StringEx;
 import lombok.var;

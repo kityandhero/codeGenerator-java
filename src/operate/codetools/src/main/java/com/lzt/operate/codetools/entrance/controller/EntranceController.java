@@ -5,12 +5,11 @@ import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.domain.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
-import com.lzt.operate.entity.ErrorMessage;
-import com.lzt.operate.entity.ParamData;
-import com.lzt.operate.entity.ResultDataCore;
-import com.lzt.operate.entity.ResultDataFactory;
-import com.lzt.operate.entity.ResultSingleData;
-import com.lzt.operate.entity.SerializableData;
+import com.lzt.operate.entities.BaseResultData;
+import com.lzt.operate.entities.ParamData;
+import com.lzt.operate.entities.ResultSingleData;
+import com.lzt.operate.entities.SerializableData;
+import com.lzt.operate.enums.ReturnDataCode;
 import com.lzt.operate.secret.SecretAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
@@ -38,7 +37,7 @@ import java.util.Map;
 @RestController
 @EnableConfigurationProperties
 @RequestMapping("/entrance")
-@Api(tags = "用户登录登出", description = "用于用户登录登出，登录后可以加载用户的个性化信息")
+@Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
     private OperatorRepository operatorRepository;
@@ -54,20 +53,20 @@ public class EntranceController extends OperateBaseController {
             @ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
             result = @ApiJsonResult({}))
     @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.Entrance_SING_IN)
-    @ApiResponses({@ApiResponse(code = ResultDataFactory.CODE_ACCESS_SUCCESS, message = ResultDataFactory.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-    public ResultDataCore signIn(@RequestBody Map<String, String> json) throws Exception {
+    public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
         // 直接将json信息打印出来
         System.out.println(json);
 
         ParamData paramJson = new ParamData(json);
 
         // 将获取的json数据封装一层，然后在给返回
-        String name = paramJson.getByKey(GlobalString.LOGIN_USERNAME);
-        String password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
+        var name = paramJson.getByKey(GlobalString.LOGIN_USERNAME);
+        var password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
 
         Operator operator = new Operator();
-        operator.setName(name);
+        operator.setName(name.toString());
 
         ExampleMatcher matcher = ExampleMatcher.matching()
                                                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
@@ -75,7 +74,7 @@ public class EntranceController extends OperateBaseController {
 
         Example<Operator> example = Example.of(operator, matcher);
 
-        var optionalResult = this.operatorRepository.findFirst(example);
+        var optionalResult = this.operatorRepository.findOne(example);
 
         Operator searchResult = optionalResult.orElse(null);
 
@@ -92,7 +91,11 @@ public class EntranceController extends OperateBaseController {
             //
             // return this.singleData(operatorSave);
 
-            return this.fail(ErrorMessage.noDataError.getCode(), "账户不存在或密码错误！");
+            var error = ReturnDataCode.NODATA;
+
+            error.setMessage("账户不存在或密码错误!");
+
+            return this.fail(error);
         }
 
         SerializableData data = new SerializableData();
