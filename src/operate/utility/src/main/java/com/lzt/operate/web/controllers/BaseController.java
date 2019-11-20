@@ -6,9 +6,18 @@ import com.lzt.operate.entities.ResultListData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
+import io.swagger.annotations.Api;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import lombok.var;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +25,10 @@ import java.util.Map;
 /**
  * @author lzt
  */
-public class BaseController {
+@RestController
+@Slf4j
+@Api(tags = "错误接口")
+public class BaseController implements ErrorController {
 
     /**
      * 返回结构化的参数
@@ -143,4 +155,36 @@ public class BaseController {
 
         return result;
     }
+
+    @Override
+    public String getErrorPath() {
+        return "/error";
+    }
+
+    @GetMapping(value = "/error")
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Object error(HttpServletRequest request, HttpServletResponse response) {
+
+        log.error("response error,httpCode:" + response.getStatus());
+
+        final int requestNotFound = 404;
+
+        // 错误处理逻辑
+        int status = response.getStatus();
+        if (status == requestNotFound) {
+
+            return new ResultSingleData(ReturnDataCode.REQUEST_NOT_FOUND);
+        } else if (status == 500) {
+            return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
+        } else if (status >= 100 && status < 200) {
+            return new ResultSingleData(ReturnDataCode.HTTP_ERROR_100);
+        } else if (status >= 300 && status < 400) {
+            return new ResultSingleData(ReturnDataCode.HTTP_ERROR_300);
+        } else if (status >= 400 && status < 500) {
+            return new ResultSingleData(ReturnDataCode.HTTP_ERROR_400);
+        } else {
+            return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.jpa;
 
+import com.lzt.operate.codetools.domain.BaseDomain;
 import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -12,7 +13,7 @@ import java.util.Optional;
  * @param <ID>
  * @author lzt
  */
-public interface JpaRepositoryEx<T, ID> extends JpaRepository<T, ID> {
+public interface JpaRepositoryEx<T extends BaseDomain, ID> extends JpaRepository<T, ID> {
 
     /**
      * findFirst 查找第一个匹配项目
@@ -33,6 +34,20 @@ public interface JpaRepositoryEx<T, ID> extends JpaRepository<T, ID> {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * 预处理后保存
+     *
+     * @param entity 需要保存的数据
+     * @param <S>    类型
+     * @return 保存后的数据
+     */
+    default <S extends T> S saveAfterPretreatment(S entity) {
+
+        entity.beforeSave();
+
+        return this.save(entity);
     }
 
 }

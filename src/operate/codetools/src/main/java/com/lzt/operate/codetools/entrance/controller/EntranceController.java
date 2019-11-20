@@ -93,43 +93,55 @@ public class EntranceController extends OperateBaseController {
 
             var error = ReturnDataCode.NODATA;
 
-            error.setMessage("账户不存在或密码错误!");
+            error.setMessage("账户不存在!");
 
             return this.fail(error);
         }
 
+        var passwordEncrypt = password.toMD5();
+
+        if (!searchResult.getPassword().equals(passwordEncrypt)) {
+            return this.fail(ReturnDataCode.PARAM_ERROR);
+        }
+
         SerializableData data = new SerializableData();
 
-        data.append("token", SecretAssist.EncryptWithExpirationTime(searchResult.getId(), 240));
+        data.append("token", SecretAssist.encryptWithExpirationTime(searchResult.getId(), 240));
 
         return this.singleData(data);
-
-        // SerializableData data = new SerializableData(json);
-
-        // return this.singleData(data);
     }
-
-    // @RequestMapping("/entrance/dataTest")
-    // @ResponseBody
-    // public HashMap<String, Serializable> dataTest() {
-    //     return this.success();
-    // }
-    //
-    // @RequestMapping("/entrance/listTest")
-    // @ResponseBody
-    // public HashMap<String, Serializable> listTest() {
-    //     ArrayList<String> a = new ArrayList<String>();
-    //     a.add("1");
-    //     a.add("2");
-    //     a.add("3");
-    //     a.add("4");
-    //
-    //     return this.pageData(a);
-    // }
 
     @ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
     @PostMapping(path = "/signUp", produces = "application/json")
     public ResultSingleData signUp() {
         return this.success();
+    }
+
+    @ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.ENTRANCE_REGISTER, value = {
+            @ApiJsonProperty(name = GlobalString.REGISTER_USERNAME),
+            @ApiJsonProperty(name = GlobalString.REGISTER_PASSWORD),
+            @ApiJsonProperty(name = GlobalString.REGISTER_RE_PASSWORD)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
+    public BaseResultData register(@RequestBody Map<String, String> json) {
+
+        var paramJson = getParamData(json);
+
+        var name = paramJson.getByKey(GlobalString.REGISTER_USERNAME);
+        var password = paramJson.getByKey(GlobalString.REGISTER_PASSWORD);
+        var rePassword = paramJson.getByKey(GlobalString.REGISTER_RE_PASSWORD);
+
+        var operator = new Operator();
+
+        operator.setName(name.toString());
+        operator.setPassword(password.toMD5());
+
+        Operator operatorSave = this.operatorRepository.saveAfterPretreatment(operator);
+
+        return this.singleData(operatorSave);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.domain;
 
+import com.lzt.operate.utility.LocalDateTimeAssist;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,13 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author lzt
  */
 @Data
 @MappedSuperclass
-abstract class BaseDomain implements Serializable {
+public abstract class BaseDomain<virtual> implements Serializable {
 
     /**
      * 主键
@@ -36,7 +38,7 @@ abstract class BaseDomain implements Serializable {
      * 状态
      */
     @Column
-    Integer state;
+    int state;
 
     /**
      * 状态文本
@@ -88,5 +90,24 @@ abstract class BaseDomain implements Serializable {
 
     BaseDomain() {
         this.createTime = LocalDateTime.now();
+        this.updateTime = LocalDateTime.now();
+    }
+
+    /**
+     * 保存前预处理
+     */
+    protected abstract void fixDataBeforeSave();
+
+    /**
+     * 保存前处理
+     */
+    public void beforeSave() {
+        fixDataBeforeSave();
+
+        this.createTime = Optional.of(this.createTime).orElse(LocalDateTime.now());
+        this.createUnixTime = LocalDateTimeAssist.toUnixTime(this.createTime);
+
+        this.updateTime = Optional.of(this.updateTime).orElse(LocalDateTime.now());
+        this.updateUnixTime = LocalDateTimeAssist.toUnixTime(this.updateTime);
     }
 }

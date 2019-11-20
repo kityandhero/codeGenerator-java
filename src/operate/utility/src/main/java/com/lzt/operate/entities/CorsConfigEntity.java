@@ -1,7 +1,7 @@
 package com.lzt.operate.entities;
 
 import com.lzt.operate.extensions.StringEx;
-import com.lzt.operate.utility.Convert;
+import com.lzt.operate.utility.ConvertAssist;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class CorsConfigEntity {
     //endregion
 
     public List<String> getAccessControlAllowMethodList() {
-        return Convert.iterableToList(StringEx.split(this.accessControlAllowMethods.toUpperCase(), ','));
+        return ConvertAssist.iterableToList(StringEx.split(this.accessControlAllowMethods.toUpperCase(), ','));
     }
 }
 

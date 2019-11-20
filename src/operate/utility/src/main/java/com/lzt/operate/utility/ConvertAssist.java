@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * @author lzt
  */
-public class Convert {
-    private static final Logger log = LoggerFactory.getLogger(Convert.class);
+public class ConvertAssist {
+    private static final Logger log = LoggerFactory.getLogger(ConvertAssist.class);
 
     public static String serializeObject(Object target) {
         try {

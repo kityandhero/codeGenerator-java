@@ -30,4 +30,9 @@ public class Operator extends BaseDomain {
         this.password = "";
         this.friendlyName = "";
     }
+
+    @Override
+    protected void fixDataBeforeSave() {
+    }
+
 }

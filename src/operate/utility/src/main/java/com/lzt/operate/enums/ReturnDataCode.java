@@ -158,7 +158,12 @@ public enum ReturnDataCode {
     /**
      * 程序异常
      */
-    EXCEPTION_ERROR(50002, "程序异常", false);
+    EXCEPTION_ERROR(50002, "程序异常", false),
+
+    /**
+     * 密码错误
+     */
+    PASSWORD_ERROR(50002, "密码错误", false);
 
     private int code;
     private String message;

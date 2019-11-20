@@ -10,6 +10,11 @@ public class ModelNameCollection {
      */
     public static final String Entrance_SING_IN = "Entrance_SING_IN";
 
+    /**
+     * 注册
+     */
+    public static final String ENTRANCE_REGISTER = "ENTRANCE_REGISTER";
+
     public static final String CONNECTION_MODEL = "CONNECTION_MODEL";
 
     /**

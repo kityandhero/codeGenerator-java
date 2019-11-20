@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
@@ -73,7 +74,7 @@ public class StringEx implements Serializable {
         return null;
     }
 
-    public static StringEx ToMD5(String target) {
+    public static StringEx toMD5(String target) {
         String v = Optional.of(target).orElse("");
 
         return new StringEx(Md5Crypt.md5Crypt(v.getBytes()));
@@ -97,6 +98,10 @@ public class StringEx implements Serializable {
         String result = source.toString().substring(index);
 
         return new StringEx(result);
+    }
+
+    public static StringEx randomAlphanumeric(int count) {
+        return new StringEx(RandomStringUtils.randomAlphanumeric(count));
     }
 
     public Iterable<String> split(char separator) {
@@ -148,6 +153,10 @@ public class StringEx implements Serializable {
         return new StringEx(this.builder.toString());
     }
 
+    public String toMD5() {
+        return Md5Crypt.md5Crypt(this.toString().getBytes());
+    }
+
     public StringEx appendFormat(String format, Object... args) {
         this.builder.append(StringEx.format(format, args).toString());
         return new StringEx(this.builder.toString());
@@ -164,6 +173,14 @@ public class StringEx implements Serializable {
         }
 
         return this.builder.toString().contains(target);
+    }
+
+    public StringEx substring(int index, int length) {
+        return StringEx.substring(this, index, length);
+    }
+
+    public StringEx substring(int index) {
+        return StringEx.substring(this, index);
     }
 
     /**

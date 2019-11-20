@@ -69,6 +69,10 @@ public class ConnectionConfig extends BaseDomain {
 
     }
 
+    @Override
+    protected void fixDataBeforeSave() {
+    }
+
     public void fillFromParamJson(ParamData paramJson) {
         var dbtype = paramJson.getByKey(GlobalString.CONNECTION_DB_TYPE);
         var host = paramJson.getByKey(GlobalString.CONNECTION_HOST);

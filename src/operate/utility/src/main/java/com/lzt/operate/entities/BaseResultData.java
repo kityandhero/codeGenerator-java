@@ -1,7 +1,7 @@
 package com.lzt.operate.entities;
 
 import com.lzt.operate.enums.ReturnDataCode;
-import com.lzt.operate.utility.Convert;
+import com.lzt.operate.utility.ConvertAssist;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NonNull;
@@ -53,6 +53,6 @@ public abstract class BaseResultData implements Serializable {
     }
 
     public String serialize() {
-        return Convert.serializeObject(this);
+        return ConvertAssist.serializeObject(this);
     }
 }

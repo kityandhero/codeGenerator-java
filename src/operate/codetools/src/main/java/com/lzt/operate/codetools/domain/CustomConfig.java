@@ -33,4 +33,8 @@ public class CustomConfig extends BaseDomain {
         this.description = "";
         this.createTime = now;
     }
+
+    @Override
+    protected void fixDataBeforeSave() {
+    }
 }

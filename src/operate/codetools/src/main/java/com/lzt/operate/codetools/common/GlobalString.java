@@ -2,21 +2,22 @@ package com.lzt.operate.codetools.common;
 
 import com.lzt.operate.swagger2.model.ApiSingleParam;
 
+/**
+ * @author lzt
+ */
 public class GlobalString {
-    // @ApiSingleParam(value = "错误码", example = "0", type = Integer.class)
-    // public static final String JSON_ERROR_CODE = "errorCode";
-    //
-    // @ApiSingleParam(value = "错误信息", example = "OK")
-    // public static final String JSON_ERROR_MSG = "errorMsg";
-    //
-    // @ApiSingleParam(value = "用户姓名", example = "test1")
-    // public static final String JSON_USER_NAME = "userName";
 
-    @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "页码", example = "1")
+    //region CONNECTION_LIST
+
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_LIST, value = "页码", example = "1")
     public static final String CONNECTION_LIST_PAGE_NO = "pageNo";
 
-    @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "页条目数", example = "10")
+    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_LIST, value = "页条目数", example = "10")
     public static final String CONNECTION_LIST_PAGE_SIZE = "pageSize";
+
+    //endregion
+
+    //region Entrance_SING_IN
 
     @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "用户名称", example = "test1")
     public static final String LOGIN_USERNAME = "userName";
@@ -24,8 +25,22 @@ public class GlobalString {
     @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "登录密码", example = "123456")
     public static final String LOGIN_PASSWORD = "password";
 
-    // @ApiSingleParam(value = "用户邮箱", example = "17721026877@qq.com")
-    // public static final String JSON_USER_EMAIL = "userEmail";
+    //endregion
+
+    //region ENTRANCE_REGISTER
+
+    @ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "用户名称", example = "test1")
+    public static final String REGISTER_USERNAME = "userName";
+
+    @ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "登录密码", example = "123456")
+    public static final String REGISTER_PASSWORD = "password";
+
+    @ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "验证密码", example = "123456")
+    public static final String REGISTER_RE_PASSWORD = "rePassword";
+
+    //endregion
+
+    //region CONNECTION_MODEL
 
     @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
     public static final String CONNECTION_ConfigId = "connectionConfigId";
@@ -71,5 +86,7 @@ public class GlobalString {
 
     @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPassword", example = "sshPassword")
     public static final String CONNECTION_SSH_PASSWORD = "sshPassword";
+
+    //endregion
 
 }

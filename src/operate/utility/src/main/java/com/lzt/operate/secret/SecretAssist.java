@@ -2,12 +2,15 @@ package com.lzt.operate.secret;
 
 import com.lzt.operate.extensions.LocalDateTimeEx;
 import com.lzt.operate.extensions.StringEx;
-import com.lzt.operate.utility.Convert;
+import com.lzt.operate.utility.ConvertAssist;
 import lombok.var;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author lzt
+ */
 public class SecretAssist {
     private static final String Key = "ikjuoperkiosj7p4c68s98eda1ioec5x";
 
@@ -24,19 +27,19 @@ public class SecretAssist {
         return result.toString().toLowerCase();
     }
 
-    public static String EncryptWithExpirationTime(String source, long minute) throws Exception {
+    public static String encryptWithExpirationTime(String source, long minute) throws Exception {
         LocalDateTime time = LocalDateTime.now().plusMinutes(minute);
-        return EncryptWithExpirationTime(source, time);
+        return encryptWithExpirationTime(source, time);
     }
 
-    private static String EncryptWithExpirationTime(String source, LocalDateTime expirationtime) throws Exception {
+    private static String encryptWithExpirationTime(String source, LocalDateTime expirationtime) throws Exception {
 
         if (StringEx.isNullOrEmpty(source)) {
             throw new Exception("空字符串不允许加密");
         }
 
         String sourceMix = StringEx.randomAlphanumeric(4)
-                                   .toString() + Convert.localDateTimeToString(expirationtime, DateTimeFormatter.ISO_LOCAL_DATE_TIME) + source + StringEx
+                                   .toString() + ConvertAssist.localDateTimeToString(expirationtime, DateTimeFormatter.ISO_LOCAL_DATE_TIME) + source + StringEx
                 .randomAlphanumeric(4);
         StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
         result = result.replace("=", "").replace("+", "-").replace("/", "@");
@@ -45,7 +48,7 @@ public class SecretAssist {
 
     }
 
-    public static String Decrypt(String target) {
+    public static String decrypt(String target) {
         String result = "";
 
         if (!StringEx.isNullOrEmpty(target)) {
@@ -74,7 +77,7 @@ public class SecretAssist {
         return result;
     }
 
-    public static String DecryptWithExpirationTime(String target, boolean expired) {
+    public static String decryptWithExpirationTime(String target, boolean expired) {
         String result = "";
         expired = false;
 
@@ -102,7 +105,7 @@ public class SecretAssist {
 
             String timeString = new StringEx(result).substring(0, 19).toString();
 
-            var localDateTime = Convert.stringToLocalDateTime(timeString);
+            var localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
 
             var duration = new LocalDateTimeEx(localDateTime).Duration(LocalDateTime.now());
 
