@@ -79,18 +79,6 @@ public class EntranceController extends OperateBaseController {
         Operator searchResult = optionalResult.orElse(null);
 
         if (searchResult == null) {
-            // Date now = new Date();
-            // operator = new Operator();
-            //
-            // operator.setName(name);
-            // operator.setPassword(StringEx.ToMD5(password).toString());
-            // operator.setFriendlyName(name);
-            // operator.setCreateTime(now);
-            //
-            // Operator operatorSave = this.operatorRepository.save(operator);
-            //
-            // return this.singleData(operatorSave);
-
             var error = ReturnDataCode.NODATA;
 
             error.setMessage("账户不存在!");
@@ -142,6 +130,5 @@ public class EntranceController extends OperateBaseController {
         Operator operatorSave = this.operatorRepository.saveAfterPretreatment(operator);
 
         return this.singleData(operatorSave);
-
     }
 }

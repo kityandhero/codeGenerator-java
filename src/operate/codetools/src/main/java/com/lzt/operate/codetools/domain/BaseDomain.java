@@ -1,8 +1,10 @@
 package com.lzt.operate.codetools.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lzt.operate.utility.LocalDateTimeAssist;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -62,6 +64,8 @@ public abstract class BaseDomain<virtual> implements Serializable {
      * 创建时间
      */
     @Column
+    @DateTimeFormat
+    @JsonFormat
     LocalDateTime createTime;
 
     /**
@@ -80,6 +84,8 @@ public abstract class BaseDomain<virtual> implements Serializable {
      * 更新时间
      */
     @Column
+    @DateTimeFormat
+    @JsonFormat
     LocalDateTime updateTime;
 
     /**

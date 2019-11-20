@@ -78,7 +78,7 @@ public class ConfigHelper {
     }
 
     public static void saveConnectionConfig(boolean isUpdate, Integer primaryKey, ConnectionConfig dbConfig) throws Exception {
-        String configName = dbConfig.getName();
+        String configName = dbConfig.getName().toString();
         // ResultSet rs = null;
         try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement()) {
             if (!isUpdate) {

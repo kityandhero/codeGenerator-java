@@ -48,10 +48,10 @@ public class DbUtil {
     private static Map<Integer, Session> portForwardingSession = new ConcurrentHashMap<>();
 
     private static Session getSSHSession(ConnectionConfig connectionConfig) {
-        if (StringUtils.isBlank(connectionConfig.getSshHost())
-                || StringUtils.isBlank(connectionConfig.getSshPort())
-                || StringUtils.isBlank(connectionConfig.getSshUser())
-                || StringUtils.isBlank(connectionConfig.getSshPassword())
+        if (StringUtils.isBlank(connectionConfig.getSshHost().toString())
+                || StringUtils.isBlank(connectionConfig.getSshPort().toString())
+                || StringUtils.isBlank(connectionConfig.getSshUser().toString())
+                || StringUtils.isBlank(connectionConfig.getSshPassword().toString())
         ) {
             return null;
         }
@@ -61,10 +61,11 @@ public class DbUtil {
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             JSch jsch = new JSch();
-            Integer sshPort = NumberUtils.createInteger(connectionConfig.getSshPort());
+            Integer sshPort = NumberUtils.createInteger(connectionConfig.getSshPort().toString());
             int port = sshPort == null ? 22 : sshPort;
-            session = jsch.getSession(connectionConfig.getSshUser(), connectionConfig.getSshHost(), port);
-            session.setPassword(connectionConfig.getSshPassword());
+            session = jsch.getSession(connectionConfig.getSshUser().toString(), connectionConfig.getSshHost()
+                                                                                                .toString(), port);
+            session.setPassword(connectionConfig.getSshPassword().toString());
             session.setConfig(config);
         } catch (JSchException e) {
             //Ignore
@@ -77,10 +78,10 @@ public class DbUtil {
             AtomicInteger assinged_port = new AtomicInteger();
             Future<?> result = DbUtil.executorService.submit(() -> {
                 try {
-                    Integer localPort = NumberUtils.createInteger(config.getLport());
-                    Integer RemotePort = NumberUtils.createInteger(config.getRport());
-                    int lport = localPort == null ? Integer.parseInt(config.getPort()) : localPort;
-                    int rport = RemotePort == null ? Integer.parseInt(config.getPort()) : RemotePort;
+                    Integer localPort = NumberUtils.createInteger(config.getLport().toString());
+                    Integer RemotePort = NumberUtils.createInteger(config.getRport().toString());
+                    int lport = localPort == null ? Integer.parseInt(config.getPort().toString()) : localPort;
+                    int rport = RemotePort == null ? Integer.parseInt(config.getPort().toString()) : RemotePort;
                     Session session = DbUtil.portForwardingSession.get(lport);
                     if (session != null && session.isConnected()) {
                         String s = session.getPortForwardingL()[0];
@@ -92,7 +93,7 @@ public class DbUtil {
                         }
                     }
                     sshSession.connect();
-                    assinged_port.set(sshSession.setPortForwardingL(lport, config.getHost(), rport));
+                    assinged_port.set(sshSession.setPortForwardingL(lport, config.getHost().toString(), rport));
                     DbUtil.portForwardingSession.put(lport, sshSession);
                     DbUtil.portForwaring = true;
                     DbUtil._LOG.info("portForwarding Enabled, {}", assinged_port);
@@ -134,7 +135,7 @@ public class DbUtil {
     }
 
     private static Connection getConnection(ConnectionConfig config) throws SQLException {
-        DbType dbType = DbType.valueOf(config.getDbType());
+        DbType dbType = DbType.valueOf(config.getDbType().toString());
         if (DbUtil.drivers.get(dbType) == null) {
             DbUtil.loadDbDriver(dbType);
         }
@@ -143,10 +144,10 @@ public class DbUtil {
         Properties props = new Properties();
 
         // $NON-NLS-1$
-        props.setProperty("user", config.getUsername());
+        props.setProperty("user", config.getUsername().toString());
 
         //$NON-NLS-1$
-        props.setProperty("password", config.getPassword());
+        props.setProperty("password", config.getPassword().toString());
 
         DriverManager.setLoginTimeout(DbUtil.DB_CONNECTION_TIMEOUTS_SECONDS);
         Connection connection = DbUtil.drivers.get(dbType).connect(url, props);
@@ -161,15 +162,17 @@ public class DbUtil {
             List<DataTableInfo> tables = new ArrayList<>();
             DatabaseMetaData md = connection.getMetaData();
             ResultSet rs;
-            if (DbType.valueOf(config.getDbType()) == DbType.SQL_Server) {
+            if (DbType.valueOf(config.getDbType().toString()) == DbType.SQL_Server) {
                 String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
                 rs = connection.createStatement().executeQuery(sql);
                 while (rs.next()) {
                     tables.add(new DataTableInfo(rs.getString("name")));
                 }
-            } else if (DbType.valueOf(config.getDbType()) == DbType.Oracle) {
-                rs = md.getTables(null, config.getUsername().toUpperCase(), null, new String[]{"TABLE", "VIEW"});
-            } else if (DbType.valueOf(config.getDbType()) == DbType.Sqlite) {
+            } else if (DbType.valueOf(config.getDbType().toString()) == DbType.Oracle) {
+                rs = md.getTables(null, config.getUsername()
+                                              .toString()
+                                              .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
+            } else if (DbType.valueOf(config.getDbType().toString()) == DbType.Sqlite) {
                 String sql = "Select name from sqlite_master;";
                 rs = connection.createStatement().executeQuery(sql);
                 while (rs.next()) {
@@ -178,7 +181,8 @@ public class DbUtil {
             } else {
                 // rs = md.getTables(null, config.getUsername().toUpperCase(), null, null);
 
-                rs = md.getTables(config.getSchema(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
+                rs = md.getTables(config.getSchema()
+                                        .toString(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
             }
             while (rs.next()) {
                 tables.add(new DataTableInfo(rs.getString(3)));
@@ -196,7 +200,7 @@ public class DbUtil {
         DbUtil.engagePortForwarding(sshSession, dbConfig);
         try (Connection conn = DbUtil.getConnection(dbConfig)) {
             DatabaseMetaData md = conn.getMetaData();
-            ResultSet rs = md.getColumns(dbConfig.getSchema(), null, tableName, null);
+            ResultSet rs = md.getColumns(dbConfig.getSchema().toString(), null, tableName, null);
             List<DataColumnInfo> columns = new ArrayList<>();
             while (rs.next()) {
 
@@ -216,7 +220,7 @@ public class DbUtil {
     }
 
     public static String getConnectionUrlWithSchema(ConnectionConfig dbConfig) {
-        DbType dbType = DbType.valueOf(dbConfig.getDbType());
+        DbType dbType = DbType.valueOf(dbConfig.getDbType().toString());
         String connectionUrl = String.format(dbType.getConnectionUrlPattern(),
                 DbUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DbUtil.portForwaring ? dbConfig.getLport() : dbConfig
                         .getPort(), dbConfig

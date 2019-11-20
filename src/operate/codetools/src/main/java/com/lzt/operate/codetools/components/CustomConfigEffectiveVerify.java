@@ -49,7 +49,7 @@ public class CustomConfigEffectiveVerify {
 
         Example<CustomConfig> example = Example.of(customConfig, matcher);
 
-        var optionalResult = this.customConfigRepository.findFirst(example);
+        var optionalResult = this.customConfigRepository.findOne(example);
 
         CustomConfig searchResult = optionalResult.orElse(null);
 

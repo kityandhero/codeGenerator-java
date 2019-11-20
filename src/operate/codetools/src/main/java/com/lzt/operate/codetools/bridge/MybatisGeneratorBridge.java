@@ -73,7 +73,7 @@ public class MybatisGeneratorBridge {
 
         context.addProperty("javaFileEncoding", "UTF-8");
 
-        String dbType = this.selectedConnectionConfig.getDbType();
+        String dbType = this.selectedConnectionConfig.getDbType().toString();
         String connectorLibPath = ConfigHelper.findConnectorLibPath(dbType);
         MybatisGeneratorBridge._LOG.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
@@ -90,21 +90,21 @@ public class MybatisGeneratorBridge {
 
         context.addProperty("autoDelimitKeywords", "true");
         if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)) {
-            tableConfig.setSchema(this.selectedConnectionConfig.getSchema());
+            tableConfig.setSchema(this.selectedConnectionConfig.getSchema().toString());
             // 由于beginningDelimiter和endingDelimiter的默认值为双引号(")，在Mysql中不能这么写，所以还要将这两个默认值改为`
             context.addProperty("beginningDelimiter", "`");
             context.addProperty("endingDelimiter", "`");
         } else {
-            tableConfig.setCatalog(this.selectedConnectionConfig.getSchema());
+            tableConfig.setCatalog(this.selectedConnectionConfig.getSchema().toString());
         }
         if (this.generatorConfig.isUseSchemaPrefix()) {
             if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)) {
-                tableConfig.setSchema(this.selectedConnectionConfig.getSchema());
+                tableConfig.setSchema(this.selectedConnectionConfig.getSchema().toString());
             } else if (DbType.Oracle.name().equals(dbType)) {
                 //Oracle的schema为用户名，如果连接用户拥有dba等高级权限，若不设schema，会导致把其他用户下同名的表也生成一遍导致mapper中代码重复
-                tableConfig.setSchema(this.selectedConnectionConfig.getUsername());
+                tableConfig.setSchema(this.selectedConnectionConfig.getUsername().toString());
             } else {
-                tableConfig.setCatalog(this.selectedConnectionConfig.getSchema());
+                tableConfig.setCatalog(this.selectedConnectionConfig.getSchema().toString());
             }
         }
         // 针对 postgresql 单独配置
@@ -152,8 +152,8 @@ public class MybatisGeneratorBridge {
         }
         jdbcConfig.setDriverClass(DbType.valueOf(dbType).getDriverClass());
         jdbcConfig.setConnectionURL(DbUtil.getConnectionUrlWithSchema(this.selectedConnectionConfig));
-        jdbcConfig.setUserId(this.selectedConnectionConfig.getUsername());
-        jdbcConfig.setPassword(this.selectedConnectionConfig.getPassword());
+        jdbcConfig.setUserId(this.selectedConnectionConfig.getUsername().toString());
+        jdbcConfig.setPassword(this.selectedConnectionConfig.getPassword().toString());
         if (DbType.Oracle.name().equals(dbType)) {
             jdbcConfig.getProperties().setProperty("remarksReporting", "true");
         }
