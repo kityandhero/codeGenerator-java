@@ -66,7 +66,7 @@ public class EntranceController extends OperateBaseController {
         var password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
 
         Operator operator = new Operator();
-        operator.setName(name.toString());
+        operator.setUserName(name.toString());
 
         ExampleMatcher matcher = ExampleMatcher.matching()
                                                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
@@ -94,7 +94,7 @@ public class EntranceController extends OperateBaseController {
 
         SerializableData data = new SerializableData();
 
-        data.append("token", SecretAssist.encryptWithExpirationTime(searchResult.getId(), 240));
+        data.append("token", SecretAssist.encryptWithExpirationTime(searchResult.getId(), 1440));
 
         return this.singleData(data);
     }
@@ -124,7 +124,7 @@ public class EntranceController extends OperateBaseController {
 
         var operator = new Operator();
 
-        operator.setName(name.toString());
+        operator.setUserName(name.toString());
         operator.setPassword(password.toMD5());
 
         Operator operatorSave = this.operatorRepository.saveAfterPretreatment(operator);
