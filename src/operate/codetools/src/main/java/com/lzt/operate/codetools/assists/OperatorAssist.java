@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.assists;
 
-import com.lzt.operate.codetools.domain.Operator;
+import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.secret.DesAssist;

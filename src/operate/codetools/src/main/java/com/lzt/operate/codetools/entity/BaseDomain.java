@@ -1,7 +1,6 @@
-package com.lzt.operate.codetools.domain;
+package com.lzt.operate.codetools.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lzt.operate.utility.LocalDateTimeAssist;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,22 +11,25 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * @author lzt
  */
 @Data
 @MappedSuperclass
-public abstract class BaseDomain<virtual> implements Serializable {
+public abstract class BaseDomain implements Serializable {
 
     /**
      * 主键
      * 这个是hibernate的注解/生成32位UUID
+     *
+     * @see GeneratedValue 指定生成器名称
+     * @see GenericGenerator 生成器名称，uuid生成类
      */
     @Id
-    @GeneratedValue(generator = "idGenerator")
-    @GenericGenerator(name = "idGenerator", strategy = "uuid")
+    @Column(length = 32, nullable = false)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     String id;
 
     /**
@@ -95,25 +97,13 @@ public abstract class BaseDomain<virtual> implements Serializable {
     long updateUnixTime;
 
     BaseDomain() {
+        this.autoRemark = "";
+        this.state = 0;
+        this.stateNote = "";
+        this.ip = "";
         this.createTime = LocalDateTime.now();
+        this.createOperatorId = "";
         this.updateTime = LocalDateTime.now();
-    }
-
-    /**
-     * 保存前预处理
-     */
-    protected abstract void fixDataBeforeSave();
-
-    /**
-     * 保存前处理
-     */
-    public void beforeSave() {
-        fixDataBeforeSave();
-
-        this.createTime = Optional.of(this.createTime).orElse(LocalDateTime.now());
-        this.createUnixTime = LocalDateTimeAssist.toUnixTime(this.createTime);
-
-        this.updateTime = Optional.of(this.updateTime).orElse(LocalDateTime.now());
-        this.updateUnixTime = LocalDateTimeAssist.toUnixTime(this.updateTime);
+        this.updateOperatorId = "";
     }
 }

@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.domain;
+package com.lzt.operate.codetools.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,10 +18,24 @@ public class Permission extends BaseDomain {
     /**
      * 名称
      */
-    @Column(length = 50, unique = true)
+    @Column(length = 50)
     String name;
 
-    @Override
-    protected void fixDataBeforeSave() {
-    }
+    /**
+     * 唯一标识符
+     */
+    @Column(length = 32, unique = true)
+    String guidTag;
+
+    /**
+     * 路径
+     */
+    @Column(length = 500)
+    String relativePath;
+
+    /**
+     * 扩展权限说明
+     */
+    @Column(length = 500)
+    String expand;
 }

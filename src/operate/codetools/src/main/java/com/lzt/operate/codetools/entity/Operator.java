@@ -1,6 +1,5 @@
-package com.lzt.operate.codetools.domain;
+package com.lzt.operate.codetools.entity;
 
-import com.lzt.operate.extensions.StringEx;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,8 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author lzt
@@ -58,14 +57,6 @@ public class Operator extends BaseDomain {
         this.userName = "";
         this.password = "";
         this.name = "";
+        this.roleList = new ArrayList<>();
     }
-
-    @Override
-    protected void fixDataBeforeSave() {
-        this.slat = StringEx.isNullOrEmpty(this.slat) ? UUID.randomUUID()
-                                                            .toString()
-                                                            .replaceAll("-", "")
-                                                            .toLowerCase() : this.slat;
-    }
-
 }

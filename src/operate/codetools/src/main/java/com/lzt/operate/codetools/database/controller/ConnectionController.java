@@ -3,8 +3,8 @@ package com.lzt.operate.codetools.database.controller;
 import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
-import com.lzt.operate.codetools.domain.ConnectionConfig;
-import com.lzt.operate.codetools.repository.ConnectionConfigRepository;
+import com.lzt.operate.codetools.entity.ConnectionConfig;
+import com.lzt.operate.codetools.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.util.DbUtil;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ResultListData;
@@ -41,11 +41,11 @@ import java.util.Map;
 @Api(tags = {"数据库连接"})
 public class ConnectionController extends OperateBaseController {
 
-    private ConnectionConfigRepository connectionConfigRepository;
+    private ConnectionConfigServiceImpl connectionConfigServiceImpl;
 
     @Autowired
-    public ConnectionController(ConnectionConfigRepository connectionConfigRepository) {
-        this.connectionConfigRepository = connectionConfigRepository;
+    public ConnectionController(ConnectionConfigServiceImpl connectionConfigServiceImpl) {
+        this.connectionConfigServiceImpl = connectionConfigServiceImpl;
     }
 
     @ApiOperation(value = "连接列表", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
@@ -75,7 +75,7 @@ public class ConnectionController extends OperateBaseController {
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, "createTime");
 
-        var page = this.connectionConfigRepository.findAll(filter, pageable);
+        var page = this.connectionConfigServiceImpl.page(filter, pageable);
 
         return this.pageData(page.getContent(), page.getNumber(), page.getSize(), page.getTotalPages());
     }
@@ -95,7 +95,7 @@ public class ConnectionController extends OperateBaseController {
             return this.paramError(GlobalString.CONNECTION_ConfigId, "不能为空值");
         }
 
-        var optionalResult = this.connectionConfigRepository.findById(connectionConfigId.toString());
+        var optionalResult = this.connectionConfigServiceImpl.get(connectionConfigId.toString());
 
         if (!optionalResult.isPresent()) {
             return this.noDataError();
@@ -134,7 +134,7 @@ public class ConnectionController extends OperateBaseController {
         }
 
         var connectionConfig = new ConnectionConfig();
-        connectionConfig.fillFromParamJson(paramJson);
+        connectionConfig = connectionConfigServiceImpl.fillFromParamJson(connectionConfig, paramJson);
 
         try {
             var listTableName = DbUtil.getTableNames(connectionConfig);
@@ -174,7 +174,7 @@ public class ConnectionController extends OperateBaseController {
         }
 
         var connectionConfig = new ConnectionConfig();
-        connectionConfig.fillFromParamJson(paramJson);
+        connectionConfig = connectionConfigServiceImpl.fillFromParamJson(connectionConfig, paramJson);
 
         try {
             var listTableName = DbUtil.getTableNames(connectionConfig);

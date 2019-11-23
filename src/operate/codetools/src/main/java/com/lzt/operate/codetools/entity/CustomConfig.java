@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.domain;
+package com.lzt.operate.codetools.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,9 +32,5 @@ public class CustomConfig extends BaseDomain {
         this.value = "";
         this.description = "";
         this.createTime = now;
-    }
-
-    @Override
-    protected void fixDataBeforeSave() {
     }
 }

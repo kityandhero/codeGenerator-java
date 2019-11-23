@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.util;
 
 import com.alibaba.fastjson.JSON;
-import com.lzt.operate.codetools.domain.ConnectionConfig;
+import com.lzt.operate.codetools.entity.ConnectionConfig;
 import com.lzt.operate.codetools.entity.DbType;
 import com.lzt.operate.codetools.entity.GeneratorConfig;
 import com.lzt.operate.extensions.StringEx;
@@ -47,7 +47,7 @@ public class ConfigHelper {
         }
     }
 
-    static void createEmptyXMLFile(File uiConfigFile) throws IOException {
+    private static void createEmptyXMLFile(File uiConfigFile) throws IOException {
         try (InputStream fis = Thread.currentThread()
                                      .getContextClassLoader()
                                      .getResourceAsStream("sqlite3.db"); FileOutputStream fos = new FileOutputStream(uiConfigFile)) {

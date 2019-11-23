@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.components;
 
-import com.lzt.operate.codetools.domain.CustomConfig;
+import com.lzt.operate.codetools.entity.CustomConfig;
 import com.lzt.operate.codetools.repository.CustomConfigRepository;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;

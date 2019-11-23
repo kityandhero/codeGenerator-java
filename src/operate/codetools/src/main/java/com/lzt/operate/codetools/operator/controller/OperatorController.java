@@ -2,7 +2,7 @@ package com.lzt.operate.codetools.operator.controller;
 
 import com.lzt.operate.codetools.assists.OperatorAssist;
 import com.lzt.operate.codetools.common.OperateBaseController;
-import com.lzt.operate.codetools.domain.Operator;
+import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ResultSingleData;
@@ -38,7 +38,6 @@ public class OperatorController extends OperateBaseController {
     @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
     @PostMapping(path = "/getCurrent", produces = "application/json")
     public BaseResultData getCurrent() {
-
         OperatorAssist assist = new OperatorAssist(this.operatorRepository);
 
         Operator operator = assist.getCurrent();

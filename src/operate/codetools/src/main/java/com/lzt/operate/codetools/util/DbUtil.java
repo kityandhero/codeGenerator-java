@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.util;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.lzt.operate.codetools.domain.ConnectionConfig;
+import com.lzt.operate.codetools.entity.ConnectionConfig;
 import com.lzt.operate.codetools.entity.DataColumnInfo;
 import com.lzt.operate.codetools.entity.DataTableInfo;
 import com.lzt.operate.codetools.entity.DbType;

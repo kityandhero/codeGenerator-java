@@ -26,7 +26,7 @@ public class SerializableMap<String, T extends Serializable> extends HashMap<Str
         return this;
     }
 
-    private SerializableMap appends(Map<? extends String, ? extends Serializable> data) {
+    public SerializableMap appends(Map<? extends String, ? extends Serializable> data) {
         this.putAll(data);
 
         return this;

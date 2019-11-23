@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.bridge;
 
-import com.lzt.operate.codetools.domain.ConnectionConfig;
+import com.lzt.operate.codetools.entity.ConnectionConfig;
 import com.lzt.operate.codetools.entity.DbType;
 import com.lzt.operate.codetools.entity.GeneratorConfig;
 import com.lzt.operate.codetools.plugins.DbRemarksCommentGenerator;

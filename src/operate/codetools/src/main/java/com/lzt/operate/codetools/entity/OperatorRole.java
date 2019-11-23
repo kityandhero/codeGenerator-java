@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.domain;
+package com.lzt.operate.codetools.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,8 +26,4 @@ public class OperatorRole extends BaseDomain {
      */
     @Column(length = 50)
     String roleId;
-
-    @Override
-    protected void fixDataBeforeSave() {
-    }
 }

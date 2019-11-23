@@ -1,6 +1,7 @@
-package com.lzt.operate.common;
+package com.lzt.operate.exceptionhandlers;
 
 import com.lzt.operate.entities.ResultSingleData;
+import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -36,8 +36,7 @@ import java.net.BindException;
  * @see ResponseStatus：可以将某种异常映射为HTTP状态码 成功则Status Code: 200
  */
 @Slf4j
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+public abstract class BaseGlobalExceptionHandler {
     /**
      * 400 - Bad Request
      */
@@ -92,7 +91,13 @@ public class GlobalExceptionHandler {
             //redis异常
             return new ResultSingleData(ReturnDataCode.REDIS_ERROR);
         }
-        return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
-    }
 
+        var serializableData = new SerializableData();
+
+        serializableData.append("message", e.getMessage());
+        serializableData.append("localizedMessage", e.getLocalizedMessage());
+        serializableData.append("stackTrace", e.getStackTrace());
+
+        return new ResultSingleData(ReturnDataCode.SYSTEM_ERR, serializableData);
+    }
 }

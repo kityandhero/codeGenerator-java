@@ -3,11 +3,14 @@ package com.lzt.operate.extensions;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import lombok.var;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -80,11 +83,15 @@ public class StringEx implements Serializable {
         return new StringEx(Md5Crypt.md5Crypt(v.getBytes()));
     }
 
-    public static Iterable<String> split(String target, char separator) {
-        return Splitter.on(separator).omitEmptyStrings().split(target);
+    public static List<String> split(String target, char separator) {
+        var list = new ArrayList<String>();
+
+        Splitter.on(separator).omitEmptyStrings().split(target).forEach(list::add);
+
+        return list;
     }
 
-    private static Iterable<String> splitToList(String target, char separator) {
+    private static List<String> splitToList(String target, char separator) {
         return Splitter.on(separator).omitEmptyStrings().splitToList(target);
     }
 
@@ -104,7 +111,7 @@ public class StringEx implements Serializable {
         return new StringEx(RandomStringUtils.randomAlphanumeric(count));
     }
 
-    public Iterable<String> split(char separator) {
+    public List<String> split(char separator) {
         return StringEx.split(this.builder.toString(), separator);
     }
 

@@ -3,8 +3,8 @@ package com.lzt.operate.codetools.entrance.controller;
 import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
-import com.lzt.operate.codetools.domain.Operator;
-import com.lzt.operate.codetools.repository.OperatorRepository;
+import com.lzt.operate.codetools.entity.Operator;
+import com.lzt.operate.codetools.service.impl.OperatorServiceImpl;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ParamData;
 import com.lzt.operate.entities.ResultSingleData;
@@ -40,11 +40,11 @@ import java.util.Map;
 @Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
-    private OperatorRepository operatorRepository;
+    private OperatorServiceImpl operatorServiceImpl;
 
     @Autowired
-    public EntranceController(OperatorRepository operatorRepository) {
-        this.operatorRepository = operatorRepository;
+    public EntranceController(OperatorServiceImpl operatorServiceImpl) {
+        this.operatorServiceImpl = operatorServiceImpl;
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
@@ -74,7 +74,7 @@ public class EntranceController extends OperateBaseController {
 
         Example<Operator> example = Example.of(operator, matcher);
 
-        var optionalResult = this.operatorRepository.findOne(example);
+        var optionalResult = this.operatorServiceImpl.findOne(example);
 
         Operator searchResult = optionalResult.orElse(null);
 
@@ -127,7 +127,7 @@ public class EntranceController extends OperateBaseController {
         operator.setUserName(name.toString());
         operator.setPassword(password.toMD5());
 
-        Operator operatorSave = this.operatorRepository.saveAfterPretreatment(operator);
+        Operator operatorSave = this.operatorServiceImpl.save(operator);
 
         return this.singleData(operatorSave);
     }
