@@ -1,7 +1,8 @@
 package com.lzt.operate.codetools.components;
 
 import com.lzt.operate.codetools.entity.CustomConfig;
-import com.lzt.operate.codetools.repository.CustomConfigRepository;
+import com.lzt.operate.codetools.service.CustomConfigService;
+import com.lzt.operate.codetools.service.impl.CustomConfigServiceImpl;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -18,11 +19,11 @@ import java.util.HashSet;
 @Component
 public class CustomConfigEffectiveVerify {
 
-    private CustomConfigRepository customConfigRepository;
+    private CustomConfigService repository;
 
     @Autowired
-    public CustomConfigEffectiveVerify(CustomConfigRepository customConfigRepository) {
-        this.customConfigRepository = customConfigRepository;
+    public CustomConfigEffectiveVerify(CustomConfigServiceImpl repository) {
+        this.repository = repository;
 
         this.checkDataIntegrity();
     }
@@ -49,18 +50,16 @@ public class CustomConfigEffectiveVerify {
 
         Example<CustomConfig> example = Example.of(customConfig, matcher);
 
-        var optionalResult = this.customConfigRepository.findOne(example);
+        var optionalResult = this.repository.findOne(example);
 
-        CustomConfig searchResult = optionalResult.orElse(null);
-
-        if (searchResult == null) {
+        if (optionalResult.isPresent()) {
             customConfig = new CustomConfig();
 
             customConfig.setName(needLogin);
             customConfig.setValue("");
             customConfig.setDescription("请设置是否需要登陆使用，如数据需要保密，请启用账户登陆");
 
-            this.customConfigRepository.save(customConfig);
+            this.repository.save(customConfig);
         } else {
             var value = customConfig.getValue();
 
@@ -73,7 +72,7 @@ public class CustomConfigEffectiveVerify {
             if (!set.contains(value)) {
                 customConfig.setValue("");
 
-                this.customConfigRepository.save(customConfig);
+                this.repository.save(customConfig);
             }
         }
     }

@@ -27,7 +27,7 @@ public abstract class BaseDomain implements Serializable {
      * @see GenericGenerator 生成器名称，uuid生成类
      */
     @Id
-    @Column(length = 32, nullable = false)
+    @Column(nullable = false)
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     String id;
