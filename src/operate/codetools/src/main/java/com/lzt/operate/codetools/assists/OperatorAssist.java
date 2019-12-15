@@ -2,9 +2,9 @@ package com.lzt.operate.codetools.assists;
 
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
-import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.secret.DesAssist;
 import com.lzt.operate.utility.RequestAssist;
+import com.lzt.operate.utility.StringAssist;
 import lombok.var;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,25 +16,25 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OperatorAssist {
 
-    private OperatorRepository operatorRepository;
+	private OperatorRepository operatorRepository;
 
-    public OperatorAssist(OperatorRepository operatorRepository) {
-        this.operatorRepository = operatorRepository;
-    }
+	public OperatorAssist(OperatorRepository operatorRepository) {
+		this.operatorRepository = operatorRepository;
+	}
 
-    public Operator getCurrent() {
-        HttpServletRequest request = RequestAssist.getHttpServletRequest();
+	public Operator getCurrent() {
+		HttpServletRequest request = RequestAssist.getHttpServletRequest();
 
-        String token = request.getHeader("token");
+		String token = request.getHeader("token");
 
-        String operatorId = DesAssist.decryptWithCBC(token);
+		String operatorId = DesAssist.decryptWithCBC(token);
 
-        if (StringEx.isNullOrEmpty(operatorId)) {
-            return null;
-        }
+		if (StringAssist.isNullOrEmpty(operatorId)) {
+			return null;
+		}
 
-        var optionalResult = this.operatorRepository.findById(operatorId);
+		var optionalResult = operatorRepository.findById(operatorId);
 
-        return optionalResult.orElse(null);
-    }
+		return optionalResult.orElse(null);
+	}
 }

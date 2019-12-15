@@ -22,8 +22,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,95 +38,110 @@ import java.util.Map;
 @Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
-    private OperatorServiceImpl operatorServiceImpl;
+	private OperatorServiceImpl operatorServiceImpl;
 
-    @Autowired
-    public EntranceController(OperatorServiceImpl operatorServiceImpl) {
-        this.operatorServiceImpl = operatorServiceImpl;
-    }
+	@Autowired
+	public EntranceController(OperatorServiceImpl operatorServiceImpl) {
+		this.operatorServiceImpl = operatorServiceImpl;
+	}
 
-    @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-    @ApiJsonObject(name = ModelNameCollection.Entrance_SING_IN, value = {
-            @ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
-            @ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
-            result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.Entrance_SING_IN)
-    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-    @PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-    public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
-        // 直接将json信息打印出来
-        System.out.println(json);
+	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.Entrance_SING_IN, value = {
+			@ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
+			@ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.Entrance_SING_IN)
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
+	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
+		// 直接将json信息打印出来
+		System.out.println(json);
 
-        ParamData paramJson = new ParamData(json);
+		ParamData paramJson = new ParamData(json);
 
-        // 将获取的json数据封装一层，然后在给返回
-        var name = paramJson.getByKey(GlobalString.LOGIN_USERNAME);
-        var password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
+		// 将获取的json数据封装一层，然后在给返回
+		var userName = paramJson.getByKey(GlobalString.LOGIN_USERNAME);
+		var password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
 
-        Operator operator = new Operator();
-        operator.setUserName(name.toString());
+		Operator operator = new Operator();
+		operator.setUserName(userName.toString());
 
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                                               .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
-                                               .withIgnorePaths("createTime", "password", "friendlyName");
+		var optionalResult = operatorServiceImpl.findByUserName(userName.toString());
 
-        Example<Operator> example = Example.of(operator, matcher);
+		if (optionalResult.isPresent()) {
+			var searchResult = optionalResult.get();
 
-        var optionalResult = this.operatorServiceImpl.findOne(example);
+			var passwordEncrypt = password.toMd5();
 
-        Operator searchResult = optionalResult.orElse(null);
+			if (!searchResult.getPassword().equals(passwordEncrypt)) {
+				var error = ReturnDataCode.NODATA;
 
-        if (searchResult == null) {
-            var error = ReturnDataCode.NODATA;
+				error.setMessage("密码错误!");
 
-            error.setMessage("账户不存在!");
+				return fail(error);
+			}
 
-            return this.fail(error);
-        }
+			SerializableData data = new SerializableData();
 
-        var passwordEncrypt = password.toMD5();
+			data.append("token", SecretAssist.encryptWithExpirationTime(searchResult.getId(), 1440));
 
-        if (!searchResult.getPassword().equals(passwordEncrypt)) {
-            return this.fail(ReturnDataCode.PARAM_ERROR);
-        }
+			return singleData(data);
+		} else {
+			var error = ReturnDataCode.NODATA;
 
-        SerializableData data = new SerializableData();
+			error.setMessage("账户不存在!");
 
-        data.append("token", SecretAssist.encryptWithExpirationTime(searchResult.getId(), 1440));
+			return fail(error);
+		}
 
-        return this.singleData(data);
-    }
+	}
 
-    @ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
-    @PostMapping(path = "/signUp", produces = "application/json")
-    public ResultSingleData signUp() {
-        return this.success();
-    }
+	@ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
+	@PostMapping(path = "/signUp", produces = "application/json")
+	public ResultSingleData signUp() {
+		return success();
+	}
 
-    @ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
-    @ApiJsonObject(name = ModelNameCollection.ENTRANCE_REGISTER, value = {
-            @ApiJsonProperty(name = GlobalString.REGISTER_USERNAME),
-            @ApiJsonProperty(name = GlobalString.REGISTER_PASSWORD),
-            @ApiJsonProperty(name = GlobalString.REGISTER_RE_PASSWORD)},
-            result = @ApiJsonResult({}))
-    @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
-    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-    @PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
-    public BaseResultData register(@RequestBody Map<String, String> json) {
+	@ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.ENTRANCE_REGISTER, value = {
+			@ApiJsonProperty(name = GlobalString.REGISTER_USERNAME),
+			@ApiJsonProperty(name = GlobalString.REGISTER_PASSWORD),
+			@ApiJsonProperty(name = GlobalString.REGISTER_RE_PASSWORD)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
+	public BaseResultData register(@RequestBody Map<String, String> json) {
 
-        var paramJson = getParamData(json);
+		var paramJson = getParamData(json);
 
-        var name = paramJson.getByKey(GlobalString.REGISTER_USERNAME);
-        var password = paramJson.getByKey(GlobalString.REGISTER_PASSWORD);
-        var rePassword = paramJson.getByKey(GlobalString.REGISTER_RE_PASSWORD);
+		var userName = paramJson.getByKey(GlobalString.REGISTER_USERNAME);
+		var password = paramJson.getByKey(GlobalString.REGISTER_PASSWORD);
+		var rePassword = paramJson.getByKey(GlobalString.REGISTER_RE_PASSWORD);
 
-        var operator = new Operator();
+		if (!password.equals(rePassword)) {
+			var error = ReturnDataCode.PARAM_ERROR;
+			error.setMessage("两次密码输入不一致");
 
-        operator.setUserName(name.toString());
-        operator.setPassword(password.toMD5());
+			return fail(error);
+		}
 
-        Operator operatorSave = this.operatorServiceImpl.save(operator);
+		var existOperator = operatorServiceImpl.findByUserName(userName.toString());
 
-        return this.singleData(operatorSave);
-    }
+		if (existOperator.isPresent()) {
+			var error = ReturnDataCode.PARAM_ERROR;
+			error.setMessage("登录名已存在");
+
+			return fail(error);
+		}
+
+		var operator = new Operator();
+
+		operator.setUserName(userName.toString());
+		operator.setPassword(password.toMd5());
+
+		Operator operatorSave = operatorServiceImpl.save(operator);
+
+		return singleData(operatorSave);
+	}
 }

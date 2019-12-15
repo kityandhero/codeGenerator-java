@@ -3,6 +3,7 @@ package com.lzt.operate.secret;
 import com.lzt.operate.extensions.LocalDateTimeEx;
 import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.utility.ConvertAssist;
+import com.lzt.operate.utility.StringAssist;
 import lombok.var;
 
 import java.time.LocalDateTime;
@@ -12,111 +13,109 @@ import java.time.format.DateTimeFormatter;
  * @author lzt
  */
 public class SecretAssist {
-    private static final String Key = "ikjuoperkiosj7p4c68s98eda1ioec5x";
+	private static final String Key = "ikjuoperkiosj7p4c68s98eda1ioec5x";
 
-    public static String encrypt(String source) throws Exception {
-        if (StringEx.isNullOrEmpty(source)) {
-            throw new Exception("空字符串不允许加密");
-        }
+	public static String encrypt(String source) throws Exception {
+		if (StringAssist.isNullOrEmpty(source)) {
+			throw new Exception("空字符串不允许加密");
+		}
 
-        String sourceMix = StringEx.randomAlphanumeric(4).toString() + source + StringEx.randomAlphanumeric(4)
-                                                                                        .toString();
-        StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
-        result = result.replace("=", "").replace("+", "-").replace("/", "@");
+		String sourceMix = StringAssist.randomAlphanumeric(4) + source + StringAssist.randomAlphanumeric(4);
+		StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
+		result = result.replace("=", "").replace("+", "-").replace("/", "@");
 
-        return result.toString().toLowerCase();
-    }
+		return result.toString().toLowerCase();
+	}
 
-    public static String encryptWithExpirationTime(String source, long minute) throws Exception {
-        LocalDateTime time = LocalDateTime.now().plusMinutes(minute);
-        return encryptWithExpirationTime(source, time);
-    }
+	public static String encryptWithExpirationTime(String source, long minute) throws Exception {
+		LocalDateTime time = LocalDateTime.now().plusMinutes(minute);
+		return encryptWithExpirationTime(source, time);
+	}
 
-    private static String encryptWithExpirationTime(String source, LocalDateTime expirationtime) throws Exception {
+	private static String encryptWithExpirationTime(String source, LocalDateTime expirationtime) throws Exception {
 
-        if (StringEx.isNullOrEmpty(source)) {
-            throw new Exception("空字符串不允许加密");
-        }
+		if (StringAssist.isNullOrEmpty(source)) {
+			throw new Exception("空字符串不允许加密");
+		}
 
-        String sourceMix = StringEx.randomAlphanumeric(4)
-                                   .toString() + ConvertAssist.localDateTimeToString(expirationtime, DateTimeFormatter.ISO_LOCAL_DATE_TIME) + source + StringEx
-                .randomAlphanumeric(4);
-        StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
-        result = result.replace("=", "").replace("+", "-").replace("/", "@");
+		String sourceMix = StringAssist.randomAlphanumeric(4) + ConvertAssist.localDateTimeToString(expirationtime, DateTimeFormatter.ISO_LOCAL_DATE_TIME) + source + StringAssist
+				.randomAlphanumeric(4);
+		StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
+		result = result.replace("=", "").replace("+", "-").replace("/", "@");
 
-        return result.toString().toLowerCase();
+		return result.toString().toLowerCase();
 
-    }
+	}
 
-    public static String decrypt(String target) {
-        String result = "";
+	public static String decrypt(String target) {
+		String result = "";
 
-        if (!StringEx.isNullOrEmpty(target)) {
-            target = target.toUpperCase().replace("%25", "%").replace("%40", "@");
-            target = target.replace("-", "+").replace("@", "/");
+		if (!StringAssist.isNullOrEmpty(target)) {
+			target = target.toUpperCase().replace("%25", "%").replace("%40", "@");
+			target = target.replace("-", "+").replace("@", "/");
 
-            int residue = target.length() % 4;
+			int residue = target.length() % 4;
 
-            if (residue > 0) {
-                int complement = 4 - residue;
+			if (residue > 0) {
+				int complement = 4 - residue;
 
-                StringBuilder targetBuilder = new StringBuilder(target);
+				StringBuilder targetBuilder = new StringBuilder(target);
 
-                for (int i = 0; i < complement; i++) {
-                    targetBuilder.append("=");
-                }
+				for (int i = 0; i < complement; i++) {
+					targetBuilder.append("=");
+				}
 
-                target = targetBuilder.toString();
-            }
+				target = targetBuilder.toString();
+			}
 
-            result = DesAssist.decryptWithCBC(target, Key);
-            result = new StringEx(result).substring(0, result.length() - 4).toString();
-            result = result.substring(4);
-        }
+			result = DesAssist.decryptWithCBC(target, Key);
+			result = new StringEx(result).substring(0, result.length() - 4).toString();
+			result = result.substring(4);
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    public static String decryptWithExpirationTime(String target, boolean expired) {
-        String result = "";
-        expired = false;
+	public static String decryptWithExpirationTime(String target, boolean expired) {
+		String result = "";
+		expired = false;
 
-        if (!StringEx.isNullOrEmpty(target)) {
-            target = target.toUpperCase().replace("%25", "%").replace("%40", "@");
-            target = target.replace("-", "+").replace("@", "/");
+		if (!StringAssist.isNullOrEmpty(target)) {
+			target = target.toUpperCase().replace("%25", "%").replace("%40", "@");
+			target = target.replace("-", "+").replace("@", "/");
 
-            int residue = target.length() % 4;
+			int residue = target.length() % 4;
 
-            if (residue > 0) {
-                int complement = 4 - residue;
+			if (residue > 0) {
+				int complement = 4 - residue;
 
-                StringBuilder targetBuilder = new StringBuilder(target);
+				StringBuilder targetBuilder = new StringBuilder(target);
 
-                for (int i = 0; i < complement; i++) {
-                    targetBuilder.append("=");
-                }
+				for (int i = 0; i < complement; i++) {
+					targetBuilder.append("=");
+				}
 
-                target = targetBuilder.toString();
-            }
+				target = targetBuilder.toString();
+			}
 
-            result = DesAssist.decryptWithCBC(target, Key);
-            result = new StringEx(result).substring(0, result.length() - 4).toString();
-            result = new StringEx(result).substring(4).toString();
+			result = DesAssist.decryptWithCBC(target, Key);
+			result = new StringEx(result).substring(0, result.length() - 4).toString();
+			result = new StringEx(result).substring(4).toString();
 
-            String timeString = new StringEx(result).substring(0, 19).toString();
+			String timeString = new StringEx(result).substring(0, 19).toString();
 
-            var localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
+			var localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
 
-            var duration = new LocalDateTimeEx(localDateTime).Duration(LocalDateTime.now());
+			var duration = new LocalDateTimeEx(localDateTime).Duration(LocalDateTime.now());
 
-            // 转换为毫秒数
-            if (duration.toMillis() < 0) {
-                expired = true;
-            }
+			// 转换为毫秒数
+			if (duration.toMillis() < 0) {
+				expired = true;
+			}
 
-            result = result.substring(19);
-        }
+			result = result.substring(19);
+		}
 
-        return result;
-    }
+		return result;
+	}
 }

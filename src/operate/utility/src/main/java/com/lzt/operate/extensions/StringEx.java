@@ -1,15 +1,11 @@
 package com.lzt.operate.extensions;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import lombok.var;
+import com.lzt.operate.utility.StringAssist;
 import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,193 +17,130 @@ import java.util.Optional;
  * @author lzt
  */
 public class StringEx implements Serializable {
-    private StringBuilder builder;
+	private static final long serialVersionUID = 4500327534935128311L;
+	private StringBuilder builder;
 
-    public StringEx(String source) {
-        this.builder = new StringBuilder();
-        this.builder.append(Optional.of(source).orElse(""));
-    }
+	public StringEx(String source) {
+		builder = new StringBuilder();
+		builder.append(Optional.of(source).orElse(""));
+	}
 
-    public static StringEx join(String separator, Iterable<?> parts) {
-        String s = Joiner.on(Optional.of(separator).orElse("")).join(parts);
-        return new StringEx(s);
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		} else if ((obj instanceof String)) {
+			return builder.toString().equals(obj);
+		} else if (!(obj instanceof StringEx)) {
+			return false;
+		} else {
+			return builder.toString().equals(obj.toString());
+		}
 
-    public static boolean isNullOrEmpty(@Nullable String target) {
-        return Strings.isNullOrEmpty(target);
-    }
+	}
 
-    public static StringEx format(String format, Object... args) {
-        String f = Optional.of(format).orElse("");
-        String v = String.format(f, args);
+	@Override
+	public int hashCode() {
+		return builder.toString().hashCode();
+	}
 
-        return new StringEx(v);
-    }
+	public List<String> split(char separator) {
+		return StringAssist.split(builder.toString(), separator);
+	}
 
-    private static StringEx lenientFormat(String template, @Nullable Object @Nullable ... args) {
-        String f = Optional.of(template).orElse("");
-        String v = Strings.lenientFormat(f, args);
-        return new StringEx(v);
-    }
+	public Iterable<String> splitToList(char separator) {
+		return StringAssist.splitToList(builder.toString(), separator);
+	}
 
-    private static StringEx toCamelStyle(String str) {
-        if (str != null) {
-            if (str.contains("_")) {
-                str = str.toLowerCase();
-                StringBuilder sb = new StringBuilder();
-                sb.append(String.valueOf(str.charAt(0)).toUpperCase());
-                for (int i = 1; i < str.length(); i++) {
-                    char c = str.charAt(i);
-                    if (c != '_') {
-                        sb.append(c);
-                    } else {
-                        if (i + 1 < str.length()) {
-                            sb.append(String.valueOf(str.charAt(i + 1)).toUpperCase());
-                            i++;
-                        }
-                    }
-                }
-                return new StringEx(sb.toString());
-            } else {
-                String firstChar = String.valueOf(str.charAt(0)).toUpperCase();
-                String otherChars = str.substring(1);
-                return new StringEx(firstChar + otherChars);
-            }
-        }
-        return null;
-    }
+	@Override
+	public String toString() {
+		return builder.toString();
+	}
 
-    public static StringEx toMD5(String target) {
-        String v = Optional.of(target).orElse("");
+	public boolean isNullOrEmpty() {
+		return Strings.isNullOrEmpty(builder.toString());
+	}
 
-        return new StringEx(Md5Crypt.md5Crypt(v.getBytes()));
-    }
+	public int toInt() {
+		return Integer.parseInt(builder.toString());
+	}
 
-    public static List<String> split(String target, char separator) {
-        var list = new ArrayList<String>();
+	public int toInteger() {
+		return toInt();
+	}
 
-        Splitter.on(separator).omitEmptyStrings().split(target).forEach(list::add);
+	public IntegerEx toIntegerEx() {
+		return new IntegerEx(toInteger());
+	}
 
-        return list;
-    }
+	public StringEx padEnd(int minLength, char padChar) {
+		String s = Strings.padEnd(builder.toString(), minLength, padChar);
+		return new StringEx(s);
+	}
 
-    private static List<String> splitToList(String target, char separator) {
-        return Splitter.on(separator).omitEmptyStrings().splitToList(target);
-    }
+	public StringEx padStart(int minLength, char padChar) {
+		String s = Strings.padStart(builder.toString(), minLength, padChar);
+		return new StringEx(s);
+	}
 
-    public static StringEx substring(StringEx source, int index, int length) {
-        String result = source.toString().substring(index, index + length);
+	public StringEx repeat(int count) {
+		String s = Strings.repeat(builder.toString(), count);
+		return new StringEx(s);
+	}
 
-        return new StringEx(result);
-    }
+	public StringEx append(String target) {
+		builder.append(Optional.of(target).orElse(""));
+		return new StringEx(builder.toString());
+	}
 
-    public static StringEx substring(StringEx source, int index) {
-        String result = source.toString().substring(index);
+	public String toMd5() {
+		return Md5Crypt.md5Crypt(toString().getBytes());
+	}
 
-        return new StringEx(result);
-    }
+	public StringEx appendFormat(String format, Object... args) {
+		builder.append(StringAssist.format(format, args).toString());
+		return new StringEx(builder.toString());
+	}
 
-    public static StringEx randomAlphanumeric(int count) {
-        return new StringEx(RandomStringUtils.randomAlphanumeric(count));
-    }
+	public StringEx appendLenientFormat(@Nullable String template, @Nullable Object @Nullable ... args) {
+		builder.append(StringAssist.lenientFormat(template, args).toString());
+		return new StringEx(builder.toString());
+	}
 
-    public List<String> split(char separator) {
-        return StringEx.split(this.builder.toString(), separator);
-    }
+	public boolean contains(String target) {
+		if (StringAssist.isNullOrEmpty(target)) {
+			return false;
+		}
 
-    public Iterable<String> splitToList(char separator) {
-        return StringEx.splitToList(this.builder.toString(), separator);
-    }
+		return builder.toString().contains(target);
+	}
 
-    @Override
-    public String toString() {
-        return this.builder.toString();
-    }
+	public StringEx substring(int index, int length) {
+		return new StringEx(StringAssist.substring(toString(), index, length));
+	}
 
-    public boolean isNullOrEmpty() {
-        return Strings.isNullOrEmpty(this.builder.toString());
-    }
+	public StringEx substring(int index) {
+		return new StringEx(StringAssist.substring(toString(), index));
+	}
 
-    public int toInt() {
-        return Integer.parseInt(this.builder.toString());
-    }
+	/**
+	 * 替换指定字符字符串为目标字符串
+	 *
+	 * @param target      替换目标
+	 * @param replaceText 替换值
+	 * @return 替换后的字符串
+	 */
+	public StringEx replace(String target, String replaceText) {
+		String result = builder.toString().replace(target, replaceText);
+		return new StringEx(result);
+	}
 
-    public int toInteger() {
-        return this.toInt();
-    }
-
-    public IntegerEx toIntegerEx() {
-        return new IntegerEx(this.toInteger());
-    }
-
-    public StringEx padEnd(int minLength, char padChar) {
-        String s = Strings.padEnd(this.builder.toString(), minLength, padChar);
-        return new StringEx(s);
-    }
-
-    public StringEx padStart(int minLength, char padChar) {
-        String s = Strings.padStart(this.builder.toString(), minLength, padChar);
-        return new StringEx(s);
-    }
-
-    public StringEx repeat(int count) {
-        String s = Strings.repeat(this.builder.toString(), count);
-        return new StringEx(s);
-    }
-
-    public StringEx append(String target) {
-        this.builder.append(Optional.of(target).orElse(""));
-        return new StringEx(this.builder.toString());
-    }
-
-    public String toMD5() {
-        return Md5Crypt.md5Crypt(this.toString().getBytes());
-    }
-
-    public StringEx appendFormat(String format, Object... args) {
-        this.builder.append(StringEx.format(format, args).toString());
-        return new StringEx(this.builder.toString());
-    }
-
-    public StringEx appendLenientFormat(@Nullable String template, @Nullable Object @Nullable ... args) {
-        this.builder.append(StringEx.lenientFormat(template, args).toString());
-        return new StringEx(this.builder.toString());
-    }
-
-    public boolean contains(String target) {
-        if (StringEx.isNullOrEmpty(target)) {
-            return false;
-        }
-
-        return this.builder.toString().contains(target);
-    }
-
-    public StringEx substring(int index, int length) {
-        return StringEx.substring(this, index, length);
-    }
-
-    public StringEx substring(int index) {
-        return StringEx.substring(this, index);
-    }
-
-    /**
-     * 替换指定字符字符串为目标字符串
-     *
-     * @param target      替换目标
-     * @param replaceText 替换值
-     * @return 替换后的字符串
-     */
-    public StringEx replace(String target, String replaceText) {
-        String result = this.builder.toString().replace(target, replaceText);
-        return new StringEx(result);
-    }
-
-    /**
-     * 序列化方法
-     *
-     * @return 转换后的字符串
-     */
-    public String serialize() {
-        return this.builder.toString();
-    }
+	/**
+	 * 序列化方法
+	 *
+	 * @return 转换后的字符串
+	 */
+	public String serialize() {
+		return builder.toString();
+	}
 }

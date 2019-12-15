@@ -6,6 +6,7 @@ import com.lzt.operate.codetools.repository.RoleRepository;
 import com.lzt.operate.codetools.service.RoleService;
 import com.lzt.operate.entities.Competence;
 import com.lzt.operate.extensions.StringEx;
+import com.lzt.operate.utility.StringAssist;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -24,111 +25,114 @@ import java.util.Optional;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepository repository;
-    private final PermissionRepository permissionRepository;
+	private final RoleRepository repository;
+	private final PermissionRepository permissionRepository;
 
-    @Autowired
-    public RoleServiceImpl(RoleRepository repository, PermissionRepository permissionRepository) {
-        this.repository = repository;
-        this.permissionRepository = permissionRepository;
-    }
+	@Autowired
+	public RoleServiceImpl(RoleRepository repository, PermissionRepository permissionRepository) {
+		this.repository = repository;
+		this.permissionRepository = permissionRepository;
+	}
 
-    @Override
-    public Page<Role> page(Example<Role> filter, Pageable pageable) {
-        return this.repository.findAll(filter, pageable);
-    }
+	@Override
+	public Page<Role> page(Example<Role> filter, Pageable pageable) {
+		return repository.findAll(filter, pageable);
+	}
 
-    @Override
-    public Optional<Role> findOne(Example<Role> filter) {
-        return this.repository.findOne(filter);
-    }
+	@Override
+	public Optional<Role> findOne(Example<Role> filter) {
+		return repository.findOne(filter);
+	}
 
-    @Override
-    public Optional<Role> get(String id) {
-        return this.repository.findById(id);
-    }
+	@Override
+	public Optional<Role> get(String id) {
+		return repository.findById(id);
+	}
 
-    @Override
-    public Role save(Role entity) {
-        beforeSave(entity);
+	@Override
+	public Role save(Role entity) {
+		beforeSave(entity);
 
-        return this.repository.save(entity);
-    }
+		return repository.save(entity);
+	}
 
-    /**
-     * 保存前预处理
-     *
-     * @param entity 数据实体
-     */
-    @Override
-    public void fixDataBeforeSave(Role entity) {
-        var competence = entity.getCompetence();
+	/**
+	 * 保存前预处理
+	 *
+	 * @param entity 数据实体
+	 */
+	@Override
+	public void fixDataBeforeSave(Role entity) {
+		var competence = entity.getCompetence();
 
-        if (StringEx.isNullOrEmpty(competence)) {
-            entity.setCompetence("");
-            entity.setModuleCount(0);
+		if (StringAssist.isNullOrEmpty(competence)) {
+			entity.setCompetence("");
+			entity.setModuleCount(0);
 
-        } else {
-            var moduleCount = getCompetenceEntityCollection(entity).size();
+		} else {
+			var moduleCount = getCompetenceEntityCollection(entity).size();
 
-            entity.setModuleCount(moduleCount);
-        }
-    }
+			entity.setModuleCount(moduleCount);
+		}
+	}
 
-    private List<Competence> getCompetenceEntityCollection(Role entity) {
-        var competence = entity.getCompetence();
+	private List<Competence> getCompetenceEntityCollection(Role entity) {
+		var competence = entity.getCompetence();
 
-        List<Competence> result = new ArrayList<>();
+		List<Competence> result = new ArrayList<>();
 
-        if (!StringEx.isNullOrEmpty(competence)) {
-            var list = StringEx.split(competence, ',').stream().filter(o -> !StringEx.isNullOrEmpty(o));
+		if (!StringAssist.isNullOrEmpty(competence)) {
+			var list = StringAssist.split(competence, ',').stream().filter(o -> !StringAssist.isNullOrEmpty(o));
 
-            final String splitTag = "|";
+			final String splitTag = "|";
 
-            list.forEach(item -> {
-                var c = new Competence();
+			list.forEach(item -> {
+				var c = new Competence();
 
-                if (item.contains(splitTag)) {
-                    var cv = StringEx.split(item, '|').stream().filter(o -> !StringEx.isNullOrEmpty(o)).toArray();
+				if (item.contains(splitTag)) {
+					var cv = StringAssist.split(item, '|')
+										 .stream()
+										 .filter(o -> !StringAssist.isNullOrEmpty(o))
+										 .toArray();
 
-                    final int mustValue = 2;
+					final int mustValue = 2;
 
-                    if (cv.length == mustValue) {
-                        c.setGuidTag((new StringEx((String) cv[0])));
-                        c.setExpansionSet((new StringEx((String) cv[1])));
-                    } else if (cv.length == 1) {
-                        c.setGuidTag((new StringEx((String) cv[0])));
-                    }
-                } else {
-                    c.setGuidTag((new StringEx(item)));
-                }
+					if (cv.length == mustValue) {
+						c.setGuidTag((new StringEx((String) cv[0])));
+						c.setExpansionSet((new StringEx((String) cv[1])));
+					} else if (cv.length == 1) {
+						c.setGuidTag((new StringEx((String) cv[0])));
+					}
+				} else {
+					c.setGuidTag((new StringEx(item)));
+				}
 
-                result.add(c);
-            });
+				result.add(c);
+			});
 
-            if (result.size() > 0) {
+			if (result.size() > 0) {
 
-                var listPermission = this.permissionRepository.findAll((root, query, cb) -> {
-                    Predicate predicate = root.isNotNull();
-                    predicate = cb.and(predicate, cb.and(root.get("guidTag")
-                                                             .as(String.class)
-                                                             .in(result.stream().map(Competence::getGuidTag))));
-                    return predicate;
-                });
+				var listPermission = permissionRepository.findAll((root, query, cb) -> {
+					Predicate predicate = root.isNotNull();
+					predicate = cb.and(predicate, cb.and(root.get("guidTag")
+															 .as(String.class)
+															 .in(result.stream().map(Competence::getGuidTag))));
+					return predicate;
+				});
 
-                for (var c : result) {
-                    for (var aw : listPermission) {
-                        if (aw.getGuidTag().equals(c.getGuidTag().toString())) {
-                            c.setName(new StringEx(aw.getName()));
-                            c.setExplain(new StringEx(aw.getExpand()));
-                            c.setRelativePath(new StringEx(aw.getRelativePath()));
-                        }
-                    }
-                }
-            }
-        }
+				for (var c : result) {
+					for (var aw : listPermission) {
+						if (aw.getGuidTag().equals(c.getGuidTag().toString())) {
+							c.setName(new StringEx(aw.getName()));
+							c.setExplain(new StringEx(aw.getExpand()));
+							c.setRelativePath(new StringEx(aw.getRelativePath()));
+						}
+					}
+				}
+			}
+		}
 
-        return result;
-    }
+		return result;
+	}
 
 }

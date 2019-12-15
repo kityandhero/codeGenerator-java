@@ -2,6 +2,7 @@ package com.lzt.operate.entities;
 
 import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.utility.ConvertAssist;
+import com.lzt.operate.utility.StringAssist;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -15,72 +16,72 @@ import java.util.Set;
 @Data
 public class CorsConfigEntity {
 
-    /**
-     * 允许的域名集合，以,分隔
-     */
-    protected String allowSites;
+	/**
+	 * 允许的域名集合，以,分隔
+	 */
+	protected String allowSites;
 
-    protected boolean accessControlAllowCredentials;
+	protected boolean accessControlAllowCredentials;
 
-    protected String accessControlAllowHeaders;
+	protected String accessControlAllowHeaders;
 
-    protected String accessControlAllowMethods;
+	protected String accessControlAllowMethods;
 
-    private Set<String> mergeToSet(String firstValue, String secondValue) {
-        StringEx first = new StringEx(firstValue);
-        StringEx second = new StringEx(secondValue);
+	private Set<String> mergeToSet(String firstValue, String secondValue) {
+		StringEx first = new StringEx(firstValue);
+		StringEx second = new StringEx(secondValue);
 
-        Set<String> set = new HashSet<>();
+		Set<String> set = new HashSet<>();
 
-        Iterable<String> firstSplitList = first.split(',');
-        Iterable<String> secondSplitList = second.split(',');
+		Iterable<String> firstSplitList = first.split(',');
+		Iterable<String> secondSplitList = second.split(',');
 
-        for (String item : firstSplitList) {
-            set.add(item);
-        }
+		for (String item : firstSplitList) {
+			set.add(item);
+		}
 
-        for (String item : secondSplitList) {
-            set.add(item);
-        }
+		for (String item : secondSplitList) {
+			set.add(item);
+		}
 
-        return set;
-    }
+		return set;
+	}
 
-    //region AccessControlAllowOrigin Methods
+	//region AccessControlAllowOrigin Methods
 
-    public List<String> getAccessControlAllowOriginList() {
-        return this.getAccessControlAllowOriginList("");
-    }
+	public List<String> getAccessControlAllowOriginList() {
+		return getAccessControlAllowOriginList("");
+	}
 
-    private List<String> getAccessControlAllowOriginList(String existingAllowOrigins) {
-        Set<String> set = this.mergeToSet(existingAllowOrigins, this.allowSites);
+	private List<String> getAccessControlAllowOriginList(String existingAllowOrigins) {
+		Set<String> set = mergeToSet(existingAllowOrigins, allowSites);
 
-        return new ArrayList<>(set);
-    }
+		return new ArrayList<>(set);
+	}
 
-    // endregion
+	// endregion
 
-    public boolean getAccessControlAllowCredentials() {
-        return this.accessControlAllowCredentials;
-    }
+	public boolean getAccessControlAllowCredentials() {
+		return accessControlAllowCredentials;
+	}
 
-    //region AccessControlAllowHeader Methods
+	//region AccessControlAllowHeader Methods
 
-    public List<String> getAccessControlAllowHeaderList() {
-        return this.getAccessControlAllowHeaderList("");
-    }
+	public List<String> getAccessControlAllowHeaderList() {
+		return getAccessControlAllowHeaderList("");
+	}
 
-    private List<String> getAccessControlAllowHeaderList(String existingAllowHeaders) {
-        Set<String> set = this.mergeToSet(existingAllowHeaders, this.accessControlAllowHeaders);
+	private List<String> getAccessControlAllowHeaderList(String existingAllowHeaders) {
+		Set<String> set = mergeToSet(existingAllowHeaders, accessControlAllowHeaders);
 
-        return new ArrayList<>(set);
-    }
+		return new ArrayList<>(set);
+	}
 
-    //endregion
+	//endregion
 
-    public List<String> getAccessControlAllowMethodList() {
-        return ConvertAssist.iterableToList(StringEx.split(this.accessControlAllowMethods.toUpperCase(), ','));
-    }
+	public List<String> getAccessControlAllowMethodList() {
+		return ConvertAssist.iterableToList(StringAssist.split(accessControlAllowMethods.toUpperCase(), ','));
+	}
 }
 
 

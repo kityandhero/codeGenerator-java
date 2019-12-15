@@ -5,6 +5,7 @@ import com.lzt.operate.codetools.repository.PermissionRepository;
 import com.lzt.operate.codetools.service.PermissionService;
 import com.lzt.operate.entities.Competence;
 import com.lzt.operate.extensions.StringEx;
+import com.lzt.operate.utility.StringAssist;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -20,71 +21,71 @@ import java.util.Optional;
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
-    private final PermissionRepository repository;
+	private final PermissionRepository repository;
 
-    @Autowired
-    public PermissionServiceImpl(PermissionRepository repository) {
-        this.repository = repository;
-    }
+	@Autowired
+	public PermissionServiceImpl(PermissionRepository repository) {
+		this.repository = repository;
+	}
 
-    @Override
-    public Page<Permission> page(Example<Permission> filter, Pageable pageable) {
-        return this.repository.findAll(filter, pageable);
-    }
+	@Override
+	public Page<Permission> page(Example<Permission> filter, Pageable pageable) {
+		return repository.findAll(filter, pageable);
+	}
 
-    @Override
-    public Optional<Permission> get(String id) {
-        return this.repository.findById(id);
-    }
+	@Override
+	public Optional<Permission> get(String id) {
+		return repository.findById(id);
+	}
 
-    @Override
-    public Optional<Permission> findOne(Example<Permission> filter) {
-        return this.repository.findOne(filter);
-    }
+	@Override
+	public Optional<Permission> findOne(Example<Permission> filter) {
+		return repository.findOne(filter);
+	}
 
-    @Override
-    public Permission save(Permission data) {
-        beforeSave(data);
+	@Override
+	public Permission save(Permission data) {
+		beforeSave(data);
 
-        return this.repository.save(data);
-    }
+		return repository.save(data);
+	}
 
-    public Competence buildCompetenceEntity(Permission data) {
-        var expand = data.getExpand();
-        var guidTag = data.getGuidTag();
-        var name = data.getName();
-        var relativePath = data.getRelativePath();
+	public Competence buildCompetenceEntity(Permission data) {
+		var expand = data.getExpand();
+		var guidTag = data.getGuidTag();
+		var name = data.getName();
+		var relativePath = data.getRelativePath();
 
-        var v = new StringEx("");
+		var v = new StringEx("");
 
-        if (!StringEx.isNullOrEmpty(expand)) {
-            String splitFlag = "|";
+		if (!StringAssist.isNullOrEmpty(expand)) {
+			String splitFlag = "|";
 
-            if (expand.contains(splitFlag)) {
+			if (expand.contains(splitFlag)) {
 
-                StringEx.split(expand, '|')
-                        .stream()
-                        .filter(o -> !StringEx.isNullOrEmpty(o))
-                        .forEach(item -> v.append("0"));
+				StringAssist.split(expand, '|')
+							.stream()
+							.filter(o -> !StringAssist.isNullOrEmpty(o))
+							.forEach(item -> v.append("0"));
 
-            } else {
-                v.append("0");
-            }
-        }
+			} else {
+				v.append("0");
+			}
+		}
 
-        var result = new Competence();
+		var result = new Competence();
 
-        result.setGuidTag(new StringEx(guidTag));
-        result.setName(new StringEx(name));
-        result.setRelativePath(new StringEx(relativePath));
-        result.setExplain(new StringEx(expand));
-        result.setExpansionSet(v);
+		result.setGuidTag(new StringEx(guidTag));
+		result.setName(new StringEx(name));
+		result.setRelativePath(new StringEx(relativePath));
+		result.setExplain(new StringEx(expand));
+		result.setExpansionSet(v);
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public void fixDataBeforeSave(Permission entity) {
+	@Override
+	public void fixDataBeforeSave(Permission entity) {
 
-    }
+	}
 }
