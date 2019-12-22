@@ -15,23 +15,23 @@ import java.util.List;
  */
 public class RepositoryPlugin extends PluginAdapter {
 
-    private FullyQualifiedJavaType annotationRepository;
-    private String annotation = "@Repository";
+	private FullyQualifiedJavaType annotationRepository;
+	private String annotation = "@Repository";
 
-    public RepositoryPlugin() {
-        //$NON-NLS-1$
-        this.annotationRepository = new FullyQualifiedJavaType("org.springframework.stereotype.Repository");
-    }
+	public RepositoryPlugin() {
+		//$NON-NLS-1$
+		annotationRepository = new FullyQualifiedJavaType("org.springframework.stereotype.Repository");
+	}
 
-    @Override
-    public boolean validate(List<String> list) {
-        return true;
-    }
+	@Override
+	public boolean validate(List<String> list) {
+		return true;
+	}
 
-    @Override
-    public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        interfaze.addImportedType(this.annotationRepository);
-        interfaze.addAnnotation(this.annotation);
-        return true;
-    }
+	@Override
+	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		interfaze.addImportedType(annotationRepository);
+		interfaze.addAnnotation(annotation);
+		return true;
+	}
 }

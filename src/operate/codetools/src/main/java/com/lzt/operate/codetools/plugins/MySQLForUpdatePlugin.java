@@ -22,56 +22,52 @@ import java.util.List;
  */
 public class MySQLForUpdatePlugin extends PluginAdapter {
 
-    @Override
-    public boolean validate(List<String> warnings) {
-        return true;
-    }
+	@Override
+	public boolean validate(List<String> warnings) {
+		return true;
+	}
 
-    @Override
-    public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+	@Override
+	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 
-        PrimitiveTypeWrapper booleanWrapper = FullyQualifiedJavaType.getBooleanPrimitiveInstance()
-                                                                          .getPrimitiveTypeWrapper();
-        Field forUpdate = new Field();
-        forUpdate.setName("forUpdate");
-        forUpdate.setVisibility(JavaVisibility.PRIVATE);
-        forUpdate.setType(booleanWrapper);
-        topLevelClass.addField(forUpdate);
+		PrimitiveTypeWrapper booleanWrapper = FullyQualifiedJavaType.getBooleanPrimitiveInstance()
+																	.getPrimitiveTypeWrapper();
+		Field forUpdate = new Field("forUpdate", booleanWrapper);
+		forUpdate.setVisibility(JavaVisibility.PRIVATE);
 
-        Method setForUpdate = new Method();
-        setForUpdate.setVisibility(JavaVisibility.PUBLIC);
-        setForUpdate.setName("setForUpdate");
-        setForUpdate.addParameter(new Parameter(booleanWrapper, "forUpdate"));
-        setForUpdate.addBodyLine("this.forUpdate = forUpdate;");
-        topLevelClass.addMethod(setForUpdate);
+		topLevelClass.addField(forUpdate);
 
-        Method getForUpdate = new Method();
-        getForUpdate.setVisibility(JavaVisibility.PUBLIC);
-        getForUpdate.setReturnType(booleanWrapper);
-        getForUpdate.setName("getForUpdate");
-        getForUpdate.addBodyLine("return forUpdate;");
-        topLevelClass.addMethod(getForUpdate);
+		Method setForUpdate = new Method("setForUpdate");
+		setForUpdate.setVisibility(JavaVisibility.PUBLIC);
+		setForUpdate.addParameter(new Parameter(booleanWrapper, "forUpdate"));
+		setForUpdate.addBodyLine("this.forUpdate = forUpdate;");
+		topLevelClass.addMethod(setForUpdate);
 
-        return true;
-    }
+		Method getForUpdate = new Method("getForUpdate");
+		getForUpdate.setVisibility(JavaVisibility.PUBLIC);
+		getForUpdate.setReturnType(booleanWrapper);
+		getForUpdate.addBodyLine("return forUpdate;");
+		topLevelClass.addMethod(getForUpdate);
 
-    private void appendForUpdate(XmlElement element, IntrospectedTable introspectedTable) {
-        XmlElement forUpdateElement = new XmlElement("if");
-        forUpdateElement.addAttribute(new Attribute("test", "forUpdate != null and forUpdate == true"));
-        forUpdateElement.addElement(new TextElement("for update"));
-        element.addElement(forUpdateElement);
-    }
+		return true;
+	}
 
+	private void appendForUpdate(XmlElement element, IntrospectedTable introspectedTable) {
+		XmlElement forUpdateElement = new XmlElement("if");
+		forUpdateElement.addAttribute(new Attribute("test", "forUpdate != null and forUpdate == true"));
+		forUpdateElement.addElement(new TextElement("for update"));
+		element.addElement(forUpdateElement);
+	}
 
-    @Override
-    public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        this.appendForUpdate(element, introspectedTable);
-        return true;
-    }
+	@Override
+	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		appendForUpdate(element, introspectedTable);
+		return true;
+	}
 
-    @Override
-    public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        this.appendForUpdate(element, introspectedTable);
-        return true;
-    }
+	@Override
+	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+		appendForUpdate(element, introspectedTable);
+		return true;
+	}
 }
