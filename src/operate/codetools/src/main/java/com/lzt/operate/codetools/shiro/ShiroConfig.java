@@ -9,9 +9,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.Filter;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @author lzt
@@ -41,16 +39,19 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
 		// filterChainDefinitionMap.put("/#/**", "anon");
 		// filterChainDefinitionMap.put("/**", "authc");
-		filterChainDefinitionMap.put("/**", "corsAuthenticationFilter");
+
+		//// 跨域配置 有另外模块提供支持，此处废弃
+		// filterChainDefinitionMap.put("/**", "corsAuthenticationFilter");
+
 		//配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
 		//shiroFilterFactoryBean.setLoginUrl("/unauth");
 		// shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
-		//自定义过滤器
-		Map<String, Filter> filterMap = new LinkedHashMap<>();
-		filterMap.put("corsAuthenticationFilter", corsAuthenticationFilter());
-		shiroFilterFactoryBean.setFilters(filterMap);
+		// //自定义过滤器 ，跨域配置 有另外模块提供支持，此处废弃
+		// Map<String, Filter> filterMap = new LinkedHashMap<>();
+		// filterMap.put("corsAuthenticationFilter", corsAuthenticationFilter());
+		// shiroFilterFactoryBean.setFilters(filterMap);
 
 		return shiroFilterFactoryBean;
 	}
@@ -75,9 +76,10 @@ public class ShiroConfig {
 		return new CustomSessionManager();
 	}
 
-	public CORSAuthenticationFilter corsAuthenticationFilter() {
-		return new CORSAuthenticationFilter();
-	}
+	//// 跨域配置 有另外模块提供支持，此处废弃
+	// public CORSAuthenticationFilter corsAuthenticationFilter() {
+	// 	return new CORSAuthenticationFilter();
+	// }
 
 	/**
 	 * 开启shiro aop注解支持.
