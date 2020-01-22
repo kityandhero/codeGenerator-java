@@ -1,13 +1,11 @@
 package com.lzt.operate.codetools.service.impl;
 
+import com.baidu.fsg.uid.service.UidGenService;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.codetools.service.OperatorService;
 import com.lzt.operate.utility.ReflectAssist;
-import com.lzt.operate.utility.StringAssist;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +18,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @author lzt
@@ -28,11 +25,18 @@ import java.util.UUID;
 @Service
 public class OperatorServiceImpl implements OperatorService {
 
+	private final UidGenService uidGenService;
+
 	private final OperatorRepository repository;
 
-	@Autowired
-	public OperatorServiceImpl(OperatorRepository repository) {
+	public OperatorServiceImpl(UidGenService uidGenService, OperatorRepository repository) {
+		this.uidGenService = uidGenService;
 		this.repository = repository;
+	}
+
+	@Override
+	public long generateId() {
+		return uidGenService.getUid();
 	}
 
 	@Override
@@ -74,13 +78,7 @@ public class OperatorServiceImpl implements OperatorService {
 
 	@Override
 	public void fixDataBeforeSave(Operator entity) {
-		var salt = entity.getSlat();
 
-		salt = StringAssist.isNullOrEmpty(salt) ? UUID.randomUUID()
-													  .toString()
-													  .replaceAll("-", "")
-													  .toLowerCase() : salt;
-
-		entity.setSlat(salt);
 	}
+
 }

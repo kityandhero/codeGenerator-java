@@ -318,6 +318,21 @@ public class StringAssist {
 	public static String toMd5(String target) {
 		String v = Optional.of(target).orElse("");
 
+		return toMd5(target, "");
+	}
+
+	/**
+	 * 获取对应的 MD5 字符串
+	 *
+	 * @param target 源字符串
+	 * @param salt   混淆字符串
+	 * @return md5 结果
+	 */
+	public static String toMd5(String target, String salt) {
+		String v = Optional.of(target).orElse("");
+
+		v += Optional.of(salt).orElse("");
+
 		return Md5Crypt.md5Crypt(v.getBytes());
 	}
 
@@ -402,5 +417,35 @@ public class StringAssist {
 	 */
 	public static String trim(String s) {
 		return s.trim();
+	}
+
+	/**
+	 * 校验对应的 MD5 字符串
+	 *
+	 * @param md5    对比的Md5源字符串
+	 * @param target 目标字符串
+	 * @param salt   混淆字符串
+	 * @return boolean 对比结果
+	 */
+	public static boolean verifyMd5(String md5, String target, String salt) {
+
+		String v = Optional.of(target).orElse("");
+
+		v += Optional.of(salt).orElse("");
+
+		String targetMd5 = Md5Crypt.md5Crypt(v.getBytes());
+
+		return targetMd5.equals(md5);
+	}
+
+	/**
+	 * 校验对应的 MD5 字符串
+	 *
+	 * @param md5    对比的Md5源字符串
+	 * @param target 目标字符串
+	 * @return boolean 对比结果
+	 */
+	public static boolean verifyMd5(String md5, String target) {
+		return verifyMd5(md5, target, "");
 	}
 }

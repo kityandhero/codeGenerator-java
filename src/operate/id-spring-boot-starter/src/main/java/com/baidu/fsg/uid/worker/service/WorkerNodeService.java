@@ -13,34 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.baidu.fsg.uid.worker.dao;
+package com.baidu.fsg.uid.worker.service;
 
 import com.baidu.fsg.uid.worker.entity.WorkerNodeEntity;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * DAO for M_WORKER_NODE
  *
  * @author yutianbao
  */
-@Repository
-public interface WorkerNodeDAO {
+public interface WorkerNodeService {
 
-    /**
-     * Get {@link WorkerNodeEntity} by node host
-     * 
-     * @param host
-     * @param port
-     * @return
-     */
-    WorkerNodeEntity getWorkerNodeByHostPort(@Param("host") String host, @Param("port") String port);
+	/**
+	 * Get {@link WorkerNodeEntity} by node host
+	 *
+	 * @param host host
+	 * @param port port
+	 * @return WorkerNodeEntity WorkerNodeEntity
+	 */
+	WorkerNodeEntity getWorkerNodeByHostPort(@Param("host") String host, @Param("port") String port);
 
-    /**
-     * Add {@link WorkerNodeEntity}
-     * 
-     * @param workerNodeEntity
-     */
-    void addWorkerNode(WorkerNodeEntity workerNodeEntity);
+	/**
+	 * Add {@link WorkerNodeEntity}
+	 *
+	 * @param workerNodeEntity void
+	 */
+	void addWorkerNode(WorkerNodeEntity workerNodeEntity);
 
 }

@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
  */
 @Data
 @MappedSuperclass
-@GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
 public abstract class BaseDomain implements Serializable {
 
-    private static final long serialVersionUID = -7716145801326828526L;
-    /**
+	private static final long serialVersionUID = -7716145801326828526L;
+
+	/**
 	 * 主键
 	 * 这个是hibernate的注解/生成32位UUID
 	 *
@@ -30,8 +30,7 @@ public abstract class BaseDomain implements Serializable {
 	 */
 	@Id
 	@Column(nullable = false)
-	@GeneratedValue(generator = "uuid2")
-	String id;
+	long id;
 
 	/**
 	 * 程序最后操作备注
@@ -98,13 +97,13 @@ public abstract class BaseDomain implements Serializable {
 	long updateUnixTime;
 
 	BaseDomain() {
-        autoRemark = "";
-        state = 0;
-        stateNote = "";
-        ip = "";
-        createTime = LocalDateTime.now();
-        createOperatorId = "";
-        updateTime = LocalDateTime.now();
-        updateOperatorId = "";
+		autoRemark = "";
+		state = 0;
+		stateNote = "";
+		ip = "";
+		createTime = LocalDateTime.now();
+		createOperatorId = "";
+		updateTime = LocalDateTime.now();
+		updateOperatorId = "";
 	}
 }

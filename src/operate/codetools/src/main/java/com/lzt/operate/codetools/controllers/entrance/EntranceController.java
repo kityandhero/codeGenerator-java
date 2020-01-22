@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.entrance.controller;
+package com.lzt.operate.codetools.controllers.entrance;
 
 import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.common.ModelNameCollection;
@@ -14,6 +14,7 @@ import com.lzt.operate.secret.SecretAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.StringAssist;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -73,7 +74,7 @@ public class EntranceController extends OperateBaseController {
 
 			var passwordEncrypt = password.toMd5();
 
-			if (!searchResult.getPassword().equals(passwordEncrypt)) {
+			if (!StringAssist.verifyMd5(searchResult.getPassword(), password.toString(), searchResult.getSlat())) {
 				var error = ReturnDataCode.NODATA;
 
 				error.setMessage("密码错误!");
@@ -83,7 +84,7 @@ public class EntranceController extends OperateBaseController {
 
 			SerializableData data = new SerializableData();
 
-			data.append("token", SecretAssist.encryptWithExpirationTime(searchResult.getId(), 1440));
+			data.append("token", SecretAssist.encryptWithExpirationTime(Long.toString(searchResult.getId()), 1440));
 
 			return singleData(data);
 		} else {
@@ -138,7 +139,9 @@ public class EntranceController extends OperateBaseController {
 		var operator = new Operator();
 
 		operator.setUserName(userName.toString());
-		operator.setPassword(password.toMd5());
+		operator.setSlat(StringAssist.randomAlphanumeric(6)
+									 .toLowerCase());
+		operator.setPassword(password.toMd5(operator.getSlat()));
 
 		Operator operatorSave = operatorServiceImpl.save(operator);
 

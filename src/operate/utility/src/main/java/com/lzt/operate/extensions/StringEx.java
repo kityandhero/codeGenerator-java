@@ -2,7 +2,6 @@ package com.lzt.operate.extensions;
 
 import com.google.common.base.Strings;
 import com.lzt.operate.utility.StringAssist;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
@@ -94,7 +93,19 @@ public class StringEx implements Serializable {
 	}
 
 	public String toMd5() {
-		return Md5Crypt.md5Crypt(toString().getBytes());
+		return toMd5(toString());
+	}
+
+	public String toMd5(String salt) {
+		return StringAssist.toMd5(toString(), salt);
+	}
+
+	public boolean verifyMd5(String target, String salt) {
+		return StringAssist.verifyMd5(toString(), target, salt);
+	}
+
+	public boolean verifyMd5(String target) {
+		return verifyMd5(target, "");
 	}
 
 	public StringEx appendFormat(String format, Object... args) {
