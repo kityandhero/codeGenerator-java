@@ -1,8 +1,10 @@
 package com.lzt.operate.codetools.shiro;
 
 import lombok.var;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -70,12 +72,6 @@ public class ShiroConfig {
 		return securityManager;
 	}
 
-	@Bean
-	public SessionManager sessionManager() {
-		System.out.println("******sessionManager()");
-		return new CustomSessionManager();
-	}
-
 	//// 跨域配置 有另外模块提供支持，此处废弃
 	// public CORSAuthenticationFilter corsAuthenticationFilter() {
 	// 	return new CORSAuthenticationFilter();
@@ -94,6 +90,33 @@ public class ShiroConfig {
 		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
 
 		return authorizationAttributeSourceAdvisor;
+	}
+
+	/**
+	 * shiro缓存管理器
+	 * 1 添加相关的maven支持
+	 * 2 注册这个bean，将缓存的配置文件导入
+	 * 3 在securityManager 中注册缓存管理器，之后就不会每次都会去查询数据库了，相关的权限和角色会保存在缓存中，但需要注意一点，更新了权限等操作之后，需要及时的清理缓存
+	 */
+	@Bean
+	public EhCacheManager ehCacheManager() {
+		EhCacheManager cacheManager = new EhCacheManager();
+		cacheManager.setCacheManagerConfigFile("classpath:config/ehcache.xml");
+		return cacheManager;
+	}
+
+	/**
+	 * 自定义的 shiro session 缓存管理器，用于跨域等情况下使用 token 进行验证，不依赖于sessionId
+	 *
+	 * @return SessionManager SessionManager
+	 */
+	@Bean
+	public SessionManager sessionManager() {
+		//将我们继承后重写的shiro session 注册
+		CustomSessionManager shiroSession = new CustomSessionManager();
+		//如果后续考虑多tomcat部署应用，可以使用shiro-redis开源插件来做session 的控制，或者nginx 的负载均衡
+		shiroSession.setSessionDAO(new EnterpriseCacheSessionDAO());
+		return shiroSession;
 	}
 
 }

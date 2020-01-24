@@ -9,7 +9,7 @@
              xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_1.xsd">
 
     <classpath>
-        <dir name="E:/project/my/codetools-java/src/operate/utility/target/classes">
+        <dir name="F:\project\Git\resource\codetools-java\src\operate/utility/target/classes">
         </dir>
     </classpath>
 
