@@ -31,7 +31,7 @@ public class MetaDataController extends OperateBaseController {
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	public BaseResultData get(@RequestBody Map<String, String> connectionJson) {
 
-		var result = new HashMap<String, Object>();
+		var result = new HashMap<String, Object>(2);
 
 		return this.singleData(result);
 	}
