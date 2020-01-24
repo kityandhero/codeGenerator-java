@@ -92,22 +92,6 @@ public class StringEx implements Serializable {
 		return new StringEx(builder.toString());
 	}
 
-	public String toMd5() {
-		return toMd5(toString());
-	}
-
-	public String toMd5(String salt) {
-		return StringAssist.toMd5(toString(), salt);
-	}
-
-	public boolean verifyMd5(String target, String salt) {
-		return StringAssist.verifyMd5(toString(), target, salt);
-	}
-
-	public boolean verifyMd5(String target) {
-		return verifyMd5(target, "");
-	}
-
 	public StringEx appendFormat(String format, Object... args) {
 		builder.append(StringAssist.format(format, args).toString());
 		return new StringEx(builder.toString());

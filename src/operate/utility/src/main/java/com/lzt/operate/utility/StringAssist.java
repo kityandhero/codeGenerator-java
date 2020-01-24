@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import lombok.var;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -309,33 +308,6 @@ public class StringAssist {
 		return RandomStringUtils.randomAlphanumeric(count);
 	}
 
-	/**
-	 * 获取对应的 MD5 字符串
-	 *
-	 * @param target 源字符串
-	 * @return md5 结果
-	 */
-	public static String toMd5(String target) {
-		String v = Optional.of(target).orElse("");
-
-		return toMd5(target, "");
-	}
-
-	/**
-	 * 获取对应的 MD5 字符串
-	 *
-	 * @param target 源字符串
-	 * @param salt   混淆字符串
-	 * @return md5 结果
-	 */
-	public static String toMd5(String target, String salt) {
-		String v = Optional.of(target).orElse("");
-
-		v += Optional.of(salt).orElse("");
-
-		return Md5Crypt.md5Crypt(v.getBytes());
-	}
-
 	/***
 	 * 将首字母转为大写
 	 *
@@ -419,33 +391,4 @@ public class StringAssist {
 		return s.trim();
 	}
 
-	/**
-	 * 校验对应的 MD5 字符串
-	 *
-	 * @param md5    对比的Md5源字符串
-	 * @param target 目标字符串
-	 * @param salt   混淆字符串
-	 * @return boolean 对比结果
-	 */
-	public static boolean verifyMd5(String md5, String target, String salt) {
-
-		String v = Optional.of(target).orElse("");
-
-		v += Optional.of(salt).orElse("");
-
-		String targetMd5 = Md5Crypt.md5Crypt(v.getBytes());
-
-		return targetMd5.equals(md5);
-	}
-
-	/**
-	 * 校验对应的 MD5 字符串
-	 *
-	 * @param md5    对比的Md5源字符串
-	 * @param target 目标字符串
-	 * @return boolean 对比结果
-	 */
-	public static boolean verifyMd5(String md5, String target) {
-		return verifyMd5(md5, target, "");
-	}
 }

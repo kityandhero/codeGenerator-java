@@ -10,6 +10,7 @@ import com.lzt.operate.entities.ParamData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
+import com.lzt.operate.secret.Md5Assist;
 import com.lzt.operate.secret.SecretAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 /**
@@ -72,9 +75,7 @@ public class EntranceController extends OperateBaseController {
 		if (optionalResult.isPresent()) {
 			var searchResult = optionalResult.get();
 
-			var passwordEncrypt = password.toMd5();
-
-			if (!StringAssist.verifyMd5(searchResult.getPassword(), password.toString(), searchResult.getSlat())) {
+			if (!Md5Assist.verifyMd5(searchResult.getPassword(), password.toString(), searchResult.getSlat())) {
 				var error = ReturnDataCode.NODATA;
 
 				error.setMessage("密码错误!");
@@ -112,7 +113,7 @@ public class EntranceController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
-	public BaseResultData register(@RequestBody Map<String, String> json) {
+	public BaseResultData register(@RequestBody Map<String, String> json) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
 		var paramJson = getParamData(json);
 
@@ -141,10 +142,10 @@ public class EntranceController extends OperateBaseController {
 		operator.setUserName(userName.toString());
 		operator.setSlat(StringAssist.randomAlphanumeric(6)
 									 .toLowerCase());
-		operator.setPassword(password.toMd5(operator.getSlat()));
+		operator.setPassword(Md5Assist.toMd5(password, operator.getSlat()));
 
-		Operator operatorSave = operatorServiceImpl.save(operator);
+		operatorServiceImpl.save(operator);
 
-		return singleData(operatorSave);
+		return success();
 	}
 }
