@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.assists;
 
+import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.secret.DesAssist;
@@ -25,7 +26,7 @@ public class OperatorAssist {
 	public Operator getCurrent() {
 		HttpServletRequest request = RequestAssist.getHttpServletRequest();
 
-		String token = request.getHeader("token");
+		String token = request.getHeader(GlobalString.AUTH_TOKEN);
 
 		String operatorId = DesAssist.decryptWithCBC(token);
 

@@ -11,7 +11,9 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author lzt
@@ -22,6 +24,7 @@ public class ShiroConfig {
 	public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
+
 		var filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
 		//注意过滤器配置顺序 不能颠倒
@@ -42,18 +45,18 @@ public class ShiroConfig {
 		// filterChainDefinitionMap.put("/#/**", "anon");
 		// filterChainDefinitionMap.put("/**", "authc");
 
-		//// 跨域配置 有另外模块提供支持，此处废弃
-		// filterChainDefinitionMap.put("/**", "corsAuthenticationFilter");
+		// 跨域配置 有另外模块提供支持，此处废弃
+		filterChainDefinitionMap.put("/**", "customAuthenticationFilter");
 
 		//配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
 		//shiroFilterFactoryBean.setLoginUrl("/unauth");
 		// shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
-		// //自定义过滤器 ，跨域配置 有另外模块提供支持，此处废弃
-		// Map<String, Filter> filterMap = new LinkedHashMap<>();
-		// filterMap.put("corsAuthenticationFilter", corsAuthenticationFilter());
-		// shiroFilterFactoryBean.setFilters(filterMap);
+		//自定义过滤器 ，验证token等
+		Map<String, Filter> filterMap = new LinkedHashMap<>();
+		filterMap.put("customAuthenticationFilter", new CustomAuthenticationFilter());
+		shiroFilterFactoryBean.setFilters(filterMap);
 
 		return shiroFilterFactoryBean;
 	}
@@ -64,12 +67,18 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public SecurityManager securityManager(CustomShiroRealm realm, SessionManager sessionManager) {
+	public SecurityManager securityManager(CustomShiroRealm realm) {
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+
+		//设置自定义的realm
 		securityManager.setRealm(realm);
-		securityManager.setSessionManager(sessionManager);
+		//自定义的shiro session 缓存管理器
+		securityManager.setSessionManager(sessionManager());
+		//将缓存对象注入到SecurityManager中
+		securityManager.setCacheManager(ehCacheManager());
 
 		return securityManager;
+
 	}
 
 	//// 跨域配置 有另外模块提供支持，此处废弃

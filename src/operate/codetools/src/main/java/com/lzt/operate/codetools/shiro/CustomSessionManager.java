@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.shiro;
 
+import com.lzt.operate.codetools.common.GlobalString;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
@@ -15,17 +16,13 @@ import java.io.Serializable;
  * @author lzt
  */
 public class CustomSessionManager extends DefaultWebSessionManager {
-	/**
-	 * 定义的请求头中使用的标记key，用来传递 token
-	 */
-	private static final String AUTH_TOKEN = "token";
 
 	private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
 	@Override
 	protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
 		HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
-		String token = httpServletRequest.getHeader(AUTH_TOKEN);
+		String token = httpServletRequest.getHeader(GlobalString.AUTH_TOKEN);
 
 		System.out.println("token：" + token);
 

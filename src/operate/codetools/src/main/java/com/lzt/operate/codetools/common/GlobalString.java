@@ -7,86 +7,91 @@ import com.lzt.operate.swagger2.model.ApiSingleParam;
  */
 public class GlobalString {
 
-    //region CONNECTION_LIST
+	/**
+	 * 定义的请求头中使用的标记key，用来传递 token
+	 */
+	public static final String AUTH_TOKEN = "token";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_LIST, value = "页码", example = "1")
-    public static final String CONNECTION_LIST_PAGE_NO = "pageNo";
+	//region CONNECTION_LIST
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_LIST, value = "页条目数", example = "10")
-    public static final String CONNECTION_LIST_PAGE_SIZE = "pageSize";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_LIST, value = "页码", example = "1")
+	public static final String CONNECTION_LIST_PAGE_NO = "pageNo";
 
-    //endregion
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_LIST, value = "页条目数", example = "10")
+	public static final String CONNECTION_LIST_PAGE_SIZE = "pageSize";
 
-    //region Entrance_SING_IN
+	//endregion
 
-    @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "用户名称", example = "test1")
-    public static final String LOGIN_USERNAME = "userName";
+	//region Entrance_SING_IN
 
-    @ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "登录密码", example = "123456")
-    public static final String LOGIN_PASSWORD = "password";
+	@ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "用户名称", example = "test1")
+	public static final String LOGIN_USERNAME = "userName";
 
-    //endregion
+	@ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "登录密码", example = "123456")
+	public static final String LOGIN_PASSWORD = "password";
 
-    //region ENTRANCE_REGISTER
+	//endregion
 
-    @ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "用户名称", example = "test1")
-    public static final String REGISTER_USERNAME = "userName";
+	//region ENTRANCE_REGISTER
 
-    @ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "登录密码", example = "123456")
-    public static final String REGISTER_PASSWORD = "password";
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "用户名称", example = "test1")
+	public static final String REGISTER_USERNAME = "userName";
 
-    @ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "验证密码", example = "123456")
-    public static final String REGISTER_RE_PASSWORD = "rePassword";
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "登录密码", example = "123456")
+	public static final String REGISTER_PASSWORD = "password";
 
-    //endregion
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_REGISTER, value = "验证密码", example = "123456")
+	public static final String REGISTER_RE_PASSWORD = "rePassword";
 
-    //region CONNECTION_MODEL
+	//endregion
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
-    public static final String CONNECTION_ConfigId = "connectionConfigId";
+	//region CONNECTION_MODEL
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
-    public static final String CONNECTION_NAME = "connectionName";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
+	public static final String CONNECTION_ConfigId = "connectionConfigId";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库类型", example = "mysql")
-    public static final String CONNECTION_DB_TYPE = "dbtype";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
+	public static final String CONNECTION_NAME = "connectionName";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库Host", example = "localhost")
-    public static final String CONNECTION_HOST = "host";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库类型", example = "mysql")
+	public static final String CONNECTION_DB_TYPE = "dbtype";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "连接Port", example = "8090")
-    public static final String CONNECTION_PORT = "port";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库Host", example = "localhost")
+	public static final String CONNECTION_HOST = "host";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "schema", example = "dbo")
-    public static final String CONNECTION_SCHEMA = "schema";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "连接Port", example = "8090")
+	public static final String CONNECTION_PORT = "port";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "用户名", example = "test")
-    public static final String CONNECTION_USERNAME = "username";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "schema", example = "dbo")
+	public static final String CONNECTION_SCHEMA = "schema";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "密码", example = "111111")
-    public static final String CONNECTION_PASSWORD = "password";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "用户名", example = "test")
+	public static final String CONNECTION_USERNAME = "username";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "编码模式", example = "utf8")
-    public static final String CONNECTION_ENCODING = "encoding";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "密码", example = "111111")
+	public static final String CONNECTION_PASSWORD = "password";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "lport", example = "lport")
-    public static final String CONNECTION_L_PORT = "lPort";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "编码模式", example = "utf8")
+	public static final String CONNECTION_ENCODING = "encoding";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "rport", example = "rport")
-    public static final String CONNECTION_R_PORT = "rProt";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "lport", example = "lport")
+	public static final String CONNECTION_L_PORT = "lPort";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPort", example = "sshPort")
-    public static final String CONNECTION_SSH_PORT = "sshPort";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "rport", example = "rport")
+	public static final String CONNECTION_R_PORT = "rProt";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshHost", example = "sshHost")
-    public static final String CONNECTION_SSH_HOST = "sshHost";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPort", example = "sshPort")
+	public static final String CONNECTION_SSH_PORT = "sshPort";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshUser", example = "sshUser")
-    public static final String CONNECTION_SSH_USER = "sshUser";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshHost", example = "sshHost")
+	public static final String CONNECTION_SSH_HOST = "sshHost";
 
-    @ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPassword", example = "sshPassword")
-    public static final String CONNECTION_SSH_PASSWORD = "sshPassword";
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshUser", example = "sshUser")
+	public static final String CONNECTION_SSH_USER = "sshUser";
 
-    //endregion
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "sshPassword", example = "sshPassword")
+	public static final String CONNECTION_SSH_PASSWORD = "sshPassword";
+
+	//endregion
 
 }

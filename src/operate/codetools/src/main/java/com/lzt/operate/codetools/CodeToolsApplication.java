@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -38,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 @SpringBootApplication
 // @EnableJpaRepositories("com.lzt.operate.codetools.repository")
 @EnableSwagger2Doc
+@EnableCaching
 @ComponentScan(basePackages = {"com.lzt.operate.codetools.**", "com.baidu.fsg.uid.worker.**"})
 @EnableJpaRepositories({"com.lzt.operate.codetools.repository", "com.baidu.fsg.uid.worker.repository"})
 @EntityScan(basePackages = {"com.lzt.operate.codetools.entity", "com.baidu.fsg.uid.worker.entity"})

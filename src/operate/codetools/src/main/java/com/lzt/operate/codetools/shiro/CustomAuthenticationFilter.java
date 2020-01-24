@@ -1,9 +1,14 @@
 package com.lzt.operate.codetools.shiro;
 
+import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.entities.ResultDataFactory;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.enums.ReturnDataCode;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -34,25 +39,50 @@ public class CustomAuthenticationFilter extends FormAuthenticationFilter {
 
 	@Override
 	public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-		if (((HttpServletRequest) request).getMethod().toUpperCase().equals(REQUEST_TYPE)) {
-			return true;
-		}
-		return super.isAccessAllowed(request, response, mappedValue);
+		return false;
+
+		// if (((HttpServletRequest) request).getMethod().toUpperCase().equals(REQUEST_TYPE)) {
+		// 	return true;
+		// }
+		// return super.isAccessAllowed(request, response, mappedValue);
 	}
 
 	@Override
 	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-		HttpServletResponse res = (HttpServletResponse) response;
+		String token = getRequestToken((HttpServletRequest) request);
 
-		res.setStatus(HttpServletResponse.SC_OK);
-		res.setCharacterEncoding("UTF-8");
-		PrintWriter writer = res.getWriter();
+		//从当前shiro中获得用户信息
+		SecurityProperties.User user = (SecurityProperties.User) SecurityUtils.getSubject().getPrincipal();
+		//对当前ID进行SHA256加密
+		String encryptionKey = DigestUtils.sha256Hex(GlobalString.AUTH_TOKEN + user.getName());
+		if (encryptionKey.equals(token)) {
+			return true;
+		} else {
+			HttpServletResponse res = (HttpServletResponse) response;
 
-		ResultSingleData result = ResultDataFactory.failData(ReturnDataCode.Authentication_FAIL);
-		writer.write(result.serialize());
-		writer.close();
+			res.setStatus(HttpServletResponse.SC_OK);
+			res.setCharacterEncoding("UTF-8");
+			res.setContentType("text/json; charset=UTF-8");
+			PrintWriter writer = res.getWriter();
 
+			ResultSingleData result = ResultDataFactory.failData(ReturnDataCode.Authentication_FAIL);
+			writer.write(result.serialize());
+			writer.close();
+		}
 		return false;
+
+	}
+
+	private String getRequestToken(HttpServletRequest request) {
+		//默认从请求头中获得token
+		String token = request.getHeader(GlobalString.AUTH_TOKEN);
+
+		//如果header中不存在token，则从参数中获取token
+		if (StringUtils.isBlank(token)) {
+			token = request.getParameter(GlobalString.AUTH_TOKEN);
+		}
+
+		return token;
 	}
 
 }
