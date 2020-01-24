@@ -23,3 +23,10 @@
 hs_err_pid*
 */.idea/
 .idea/
+/src/operate/id-spring-boot-starter/target
+/src/operate/swagger-spring-boot-starter/target
+/src/operate/utility/target
+/src/operate/id-spring-boot-starter/id-spring-boot-starter.iml
+/src/operate/swagger-spring-boot-starter/swagger-spring-boot-starter.iml
+/src/operate/utility/utility.iml
+/src/operate/operate.iml
