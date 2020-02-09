@@ -6,6 +6,6 @@ import com.lzt.operate.codetools.jpa.JpaRepositoryEx;
 /**
  * @author lzt
  */
-public interface RoleRepository extends JpaRepositoryEx<Role, String> {
+public interface RoleRepository extends JpaRepositoryEx<Role, Long> {
 
 }

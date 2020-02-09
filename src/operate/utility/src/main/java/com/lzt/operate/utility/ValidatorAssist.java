@@ -66,6 +66,15 @@ public class ValidatorAssist {
 
 	/***
 	 * 集合为空
+	 * @param s s
+	 * @return
+	 */
+	public static <T> boolean isEmpty(String s) {
+		return StringAssist.isNullOrEmpty(s);
+	}
+
+	/***
+	 * 集合为空
 	 * @param list
 	 * @return
 	 */

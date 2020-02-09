@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 /**
  * @author lzt
  */
@@ -34,16 +36,20 @@ public class CurrentOperator extends OperateAuthController {
 		this.operatorRepository = operatorRepository;
 	}
 
+	private OperatorAssist getOperatorAssist() {
+		return new OperatorAssist(this.operatorRepository);
+	}
+
 	@ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/getCurrent", produces = "application/json")
 	public BaseResultData getCurrent() {
-		OperatorAssist assist = new OperatorAssist(this.operatorRepository);
+		OperatorAssist assist = getOperatorAssist();
 
-		Operator operator = assist.getCurrent();
+		Optional<Operator> op = assist.getCurrent();
 
-		if (operator != null) {
-			return this.singleData(operator);
+		if (op.isPresent()) {
+			return this.singleData(op.get());
 		} else {
 			var error = ReturnDataCode.NODATA;
 
@@ -57,12 +63,12 @@ public class CurrentOperator extends OperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/getCurrentBasicInfo", produces = "application/json")
 	public BaseResultData getCurrentBasicInfo() {
-		OperatorAssist assist = new OperatorAssist(this.operatorRepository);
+		OperatorAssist assist = getOperatorAssist();
 
-		Operator operator = assist.getCurrent();
+		Optional<Operator> op = assist.getCurrent();
 
-		if (operator != null) {
-			return this.singleData(operator);
+		if (op.isPresent()) {
+			return this.singleData(op.get());
 		} else {
 			var error = ReturnDataCode.NODATA;
 

@@ -1,14 +1,11 @@
 package com.lzt.operate.codetools.assists;
 
-import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
-import com.lzt.operate.secret.DesAssist;
-import com.lzt.operate.utility.RequestAssist;
-import com.lzt.operate.utility.StringAssist;
-import lombok.var;
+import com.lzt.operate.codetools.shiro.CustomIdentificationToken;
+import com.lzt.operate.utility.ConvertAssist;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 /**
  * Operator辅助方法集合
@@ -23,19 +20,11 @@ public class OperatorAssist {
 		this.operatorRepository = operatorRepository;
 	}
 
-	public Operator getCurrent() {
-		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+	public Optional<Operator> getCurrent() {
+		Optional<CustomIdentificationToken> op = CustomIdentificationToken.getFromCurrentHttpToken();
 
-		String token = request.getHeader(GlobalString.AUTH_TOKEN);
-
-		String operatorId = DesAssist.decrypt(token);
-
-		if (StringAssist.isNullOrEmpty(operatorId)) {
-			return null;
-		}
-
-		var optionalResult = operatorRepository.findById(operatorId);
-
-		return optionalResult.orElse(null);
+		return op.flatMap(customIdentificationToken -> operatorRepository.findById(ConvertAssist.stringToLong(customIdentificationToken
+				.getPrincipal().toString())));
 	}
+
 }

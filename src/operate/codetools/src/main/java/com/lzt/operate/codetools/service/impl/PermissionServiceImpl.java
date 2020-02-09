@@ -34,7 +34,7 @@ public class PermissionServiceImpl implements PermissionService {
 	}
 
 	@Override
-	public Optional<Permission> get(String id) {
+	public Optional<Permission> get(Long id) {
 		return repository.findById(id);
 	}
 

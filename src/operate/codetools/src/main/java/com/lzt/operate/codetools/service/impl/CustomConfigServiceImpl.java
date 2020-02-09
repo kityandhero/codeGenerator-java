@@ -16,36 +16,36 @@ import java.util.Optional;
  */
 @Service
 public class CustomConfigServiceImpl implements CustomConfigService {
-    private final CustomConfigRepository repository;
+	private final CustomConfigRepository repository;
 
-    @Autowired
-    public CustomConfigServiceImpl(CustomConfigRepository repository) {
-        this.repository = repository;
-    }
+	@Autowired
+	public CustomConfigServiceImpl(CustomConfigRepository repository) {
+		this.repository = repository;
+	}
 
-    @Override
-    public Page<CustomConfig> page(Example<CustomConfig> filter, Pageable pageable) {
-        return this.repository.findAll(filter, pageable);
-    }
+	@Override
+	public Page<CustomConfig> page(Example<CustomConfig> filter, Pageable pageable) {
+		return this.repository.findAll(filter, pageable);
+	}
 
-    @Override
-    public Optional<CustomConfig> get(String id) {
-        return this.repository.findById(id);
-    }
+	@Override
+	public Optional<CustomConfig> get(Long id) {
+		return this.repository.findById(id);
+	}
 
-    @Override
-    public Optional<CustomConfig> findOne(Example<CustomConfig> filter) {
-        return this.repository.findOne(filter);
-    }
+	@Override
+	public Optional<CustomConfig> findOne(Example<CustomConfig> filter) {
+		return this.repository.findOne(filter);
+	}
 
-    @Override
-    public CustomConfig save(CustomConfig entity) {
-        beforeSave(entity);
+	@Override
+	public CustomConfig save(CustomConfig entity) {
+		beforeSave(entity);
 
-        return this.repository.save(entity);
-    }
+		return this.repository.save(entity);
+	}
 
-    @Override
-    public void fixDataBeforeSave(CustomConfig entity) {
-    }
+	@Override
+	public void fixDataBeforeSave(CustomConfig entity) {
+	}
 }

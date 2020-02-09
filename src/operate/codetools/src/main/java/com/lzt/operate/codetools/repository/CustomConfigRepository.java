@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @author lzt
  */
 @Repository
-public interface CustomConfigRepository extends JpaRepositoryEx<CustomConfig, String> {
+public interface CustomConfigRepository extends JpaRepositoryEx<CustomConfig, Long> {
 }

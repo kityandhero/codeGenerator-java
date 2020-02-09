@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @author lzt
  */
 @Repository
-public interface ConnectionConfigRepository extends JpaRepositoryEx<ConnectionConfig, String> {
+public interface ConnectionConfigRepository extends JpaRepositoryEx<ConnectionConfig, Long> {
 }

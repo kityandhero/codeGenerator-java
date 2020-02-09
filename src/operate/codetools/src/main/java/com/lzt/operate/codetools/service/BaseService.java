@@ -39,7 +39,7 @@ public interface BaseService<S extends BaseDomain> {
 	 * @param id 数据标识
 	 * @return 数据实体
 	 */
-	Optional<S> get(String id);
+	Optional<S> get(Long id);
 
 	/**
 	 * 查找一个匹配

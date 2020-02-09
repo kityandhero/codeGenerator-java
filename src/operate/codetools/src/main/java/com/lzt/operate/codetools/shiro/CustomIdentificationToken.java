@@ -1,9 +1,12 @@
 package com.lzt.operate.codetools.shiro;
 
+import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.secret.SecretAssist;
 import com.lzt.operate.secret.SecretDecryptResult;
+import com.lzt.operate.utility.RequestAssist;
 import org.apache.shiro.authc.AuthenticationToken;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
@@ -33,6 +36,14 @@ public class CustomIdentificationToken implements AuthenticationToken {
 		}
 
 		return Optional.empty();
+	}
+
+	public static Optional<CustomIdentificationToken> getFromCurrentHttpToken() {
+		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+
+		String token = request.getHeader(GlobalString.AUTH_TOKEN);
+
+		return getFromHttpToken(token);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.ConvertAssist;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -95,7 +96,7 @@ public class ConnectionController extends OperateBaseController {
 			return this.paramError(GlobalString.CONNECTION_ConfigId, "不能为空值");
 		}
 
-		var optionalResult = this.connectionConfigServiceImpl.get(connectionConfigId.toString());
+		var optionalResult = this.connectionConfigServiceImpl.get(ConvertAssist.stringToLong(connectionConfigId.toString()));
 
 		if (!optionalResult.isPresent()) {
 			return this.noDataError();

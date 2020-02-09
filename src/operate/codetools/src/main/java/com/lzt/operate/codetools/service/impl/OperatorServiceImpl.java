@@ -45,7 +45,7 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 
 	@Override
-	public Optional<Operator> get(String id) {
+	public Optional<Operator> get(Long id) {
 		return repository.findById(id);
 	}
 

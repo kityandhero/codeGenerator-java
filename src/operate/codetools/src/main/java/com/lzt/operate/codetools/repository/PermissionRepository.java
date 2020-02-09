@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @author lzt
  */
 @Repository
-public interface PermissionRepository extends JpaRepositoryEx<Permission, String> {
+public interface PermissionRepository extends JpaRepositoryEx<Permission, Long> {
 }

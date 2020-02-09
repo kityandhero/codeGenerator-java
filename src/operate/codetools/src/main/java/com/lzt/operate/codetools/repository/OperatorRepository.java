@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @author lzt
  */
 @Repository
-public interface OperatorRepository extends JpaRepositoryEx<Operator, String> {
+public interface OperatorRepository extends JpaRepositoryEx<Operator, Long> {
 }
