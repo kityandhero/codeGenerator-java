@@ -2,7 +2,6 @@ package com.lzt.operate.secret;
 
 import com.lzt.operate.extensions.StringEx;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,7 +19,7 @@ public class Md5Assist {
 	 * @param target 源字符串
 	 * @return md5 结果
 	 */
-	public static String toMd5(StringEx target) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public static String toMd5(StringEx target) throws NoSuchAlgorithmException {
 		return toMd5(target.toString(), "");
 	}
 
@@ -30,7 +29,7 @@ public class Md5Assist {
 	 * @param target 源字符串
 	 * @return md5 结果
 	 */
-	public static String toMd5(StringEx target, String salt) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public static String toMd5(StringEx target, String salt) throws NoSuchAlgorithmException {
 		return toMd5(target.toString(), salt);
 	}
 
@@ -40,7 +39,7 @@ public class Md5Assist {
 	 * @param target 源字符串
 	 * @return md5 结果
 	 */
-	public static String toMd5(String target) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public static String toMd5(String target) throws NoSuchAlgorithmException {
 		String v = Optional.of(target).orElse("");
 
 		return toMd5(target, "");
@@ -53,7 +52,7 @@ public class Md5Assist {
 	 * @param salt   混淆字符串
 	 * @return md5 结果
 	 */
-	public static String toMd5(String target, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public static String toMd5(String target, String salt) throws NoSuchAlgorithmException {
 		String v = Optional.of(target).orElse("");
 
 		v += Optional.of(salt).orElse("");
@@ -79,7 +78,7 @@ public class Md5Assist {
 	 * @param salt   混淆字符串
 	 * @return boolean 对比结果
 	 */
-	public static boolean verifyMd5(String md5, String target, String salt) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public static boolean verifyMd5(String md5, String target, String salt) throws NoSuchAlgorithmException {
 
 		String v = Optional.of(target).orElse("");
 
@@ -97,7 +96,7 @@ public class Md5Assist {
 	 * @param target 目标字符串
 	 * @return boolean 对比结果
 	 */
-	public static boolean verifyMd5(String md5, String target) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public static boolean verifyMd5(String md5, String target) throws NoSuchAlgorithmException {
 		return verifyMd5(md5, target, "");
 	}
 }

@@ -28,7 +28,7 @@ public class OperatorAssist {
 
 		String token = request.getHeader(GlobalString.AUTH_TOKEN);
 
-		String operatorId = DesAssist.decryptWithCBC(token);
+		String operatorId = DesAssist.decrypt(token);
 
 		if (StringAssist.isNullOrEmpty(operatorId)) {
 			return null;

@@ -5,13 +5,14 @@ import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.shiro.CustomIdentificationToken;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ParamData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
+import com.lzt.operate.secret.DesAssist;
 import com.lzt.operate.secret.Md5Assist;
-import com.lzt.operate.secret.SecretAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -50,11 +50,11 @@ public class EntranceController extends OperateBaseController {
 	}
 
 	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.Entrance_SING_IN, value = {
+	@ApiJsonObject(name = ModelNameCollection.ENTRANCE_SING_IN, value = {
 			@ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
 			@ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.Entrance_SING_IN)
+	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_SING_IN)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
 	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
@@ -85,7 +85,12 @@ public class EntranceController extends OperateBaseController {
 
 			SerializableData data = new SerializableData();
 
-			data.append("token", SecretAssist.encryptWithExpirationTime(Long.toString(searchResult.getId()), 1440));
+			var token = new CustomIdentificationToken(Long.toString(searchResult.getId()));
+
+			data.append("token", token.buildHttpToken());
+
+			String t1 = DesAssist.encrypt("1");
+			String t2 = DesAssist.decrypt(t1);
 
 			return singleData(data);
 		} else {
@@ -113,7 +118,7 @@ public class EntranceController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
-	public BaseResultData register(@RequestBody Map<String, String> json) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+	public BaseResultData register(@RequestBody Map<String, String> json) throws NoSuchAlgorithmException {
 
 		var paramJson = getParamData(json);
 

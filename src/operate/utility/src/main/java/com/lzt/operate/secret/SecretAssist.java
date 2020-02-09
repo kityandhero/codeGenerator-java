@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * @author lzt
  */
 public class SecretAssist {
-	private static final String Key = "ikjuoperkiosj7p4c68s98eda1ioec5x";
+	private static final String KEY = "ikjuoperkiosj7p4c68s98eda1ioec5x";
 
 	public static String encrypt(String source) throws Exception {
 		if (StringAssist.isNullOrEmpty(source)) {
@@ -21,10 +21,10 @@ public class SecretAssist {
 		}
 
 		String sourceMix = StringAssist.randomAlphanumeric(4) + source + StringAssist.randomAlphanumeric(4);
-		StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
+		StringEx result = new StringEx(DesAssist.encrypt(KEY, sourceMix));
 		result = result.replace("=", "").replace("+", "-").replace("/", "@");
 
-		return result.toString().toLowerCase();
+		return result.toString();
 	}
 
 	public static String encryptWithExpirationTime(String source, long minute) throws Exception {
@@ -32,26 +32,27 @@ public class SecretAssist {
 		return encryptWithExpirationTime(source, time);
 	}
 
-	private static String encryptWithExpirationTime(String source, LocalDateTime expirationtime) throws Exception {
+	private static String encryptWithExpirationTime(String source, LocalDateTime expirationTime) throws Exception {
 
 		if (StringAssist.isNullOrEmpty(source)) {
 			throw new Exception("空字符串不允许加密");
 		}
 
-		String sourceMix = StringAssist.randomAlphanumeric(4) + ConvertAssist.localDateTimeToString(expirationtime, DateTimeFormatter.ISO_LOCAL_DATE_TIME) + source + StringAssist
+		String sourceMix = StringAssist.randomAlphanumeric(4) + ConvertAssist.localDateTimeToString(expirationTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+																			 .substring(0, 19) + source + StringAssist
 				.randomAlphanumeric(4);
-		StringEx result = new StringEx(DesAssist.encryptWithCBC(sourceMix, Key));
+		StringEx result = new StringEx(DesAssist.encrypt(KEY, sourceMix));
 		result = result.replace("=", "").replace("+", "-").replace("/", "@");
 
-		return result.toString().toLowerCase();
+		return result.toString();
 
 	}
 
-	public static String decrypt(String target) {
-		String result = "";
+	public static SecretDecryptResult decrypt(String target) {
+		SecretDecryptResult result = new SecretDecryptResult();
 
 		if (!StringAssist.isNullOrEmpty(target)) {
-			target = target.toUpperCase().replace("%25", "%").replace("%40", "@");
+			target = target.replace("%25", "%").replace("%40", "@");
 			target = target.replace("-", "+").replace("@", "/");
 
 			int residue = target.length() % 4;
@@ -68,20 +69,24 @@ public class SecretAssist {
 				target = targetBuilder.toString();
 			}
 
-			result = DesAssist.decryptWithCBC(target, Key);
-			result = new StringEx(result).substring(0, result.length() - 4).toString();
-			result = result.substring(4);
+			String text = DesAssist.decrypt(KEY, target);
+
+			text = new StringEx(text).substring(0, text.length() - 4).toString();
+			text = text.substring(4);
+
+			result.setSuccess(true);
+			result.setDecryptResult(text);
+			result.setExpired(false);
 		}
 
 		return result;
 	}
 
-	public static String decryptWithExpirationTime(String target, boolean expired) {
-		String result = "";
-		expired = false;
+	public static SecretDecryptResult decryptWithExpirationTime(String target) {
+		SecretDecryptResult result = new SecretDecryptResult();
 
 		if (!StringAssist.isNullOrEmpty(target)) {
-			target = target.toUpperCase().replace("%25", "%").replace("%40", "@");
+			target = target.replace("%25", "%").replace("%40", "@");
 			target = target.replace("-", "+").replace("@", "/");
 
 			int residue = target.length() % 4;
@@ -98,22 +103,22 @@ public class SecretAssist {
 				target = targetBuilder.toString();
 			}
 
-			result = DesAssist.decryptWithCBC(target, Key);
-			result = new StringEx(result).substring(0, result.length() - 4).toString();
-			result = new StringEx(result).substring(4).toString();
+			String text = DesAssist.decrypt(KEY, target);
+			text = new StringEx(text).substring(0, text.length() - 4).toString();
+			text = new StringEx(text).substring(4).toString();
 
-			String timeString = new StringEx(result).substring(0, 19).toString();
+			String timeString = new StringEx(text).substring(0, 19).toString();
 
 			var localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
 
 			var duration = new LocalDateTimeEx(localDateTime).Duration(LocalDateTime.now());
+			var expired = duration.toMillis() < 0;
 
-			// 转换为毫秒数
-			if (duration.toMillis() < 0) {
-				expired = true;
-			}
+			text = text.substring(19);
 
-			result = result.substring(19);
+			result.setSuccess(true);
+			result.setDecryptResult(text);
+			result.setExpired(expired);
 		}
 
 		return result;

@@ -4,17 +4,15 @@ import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.entities.ResultDataFactory;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.enums.ReturnDataCode;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Optional;
 
 /**
  * @author ：lzt
@@ -51,11 +49,9 @@ public class CustomAuthenticationFilter extends FormAuthenticationFilter {
 	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
 		String token = getRequestToken((HttpServletRequest) request);
 
-		//从当前shiro中获得用户信息
-		SecurityProperties.User user = (SecurityProperties.User) SecurityUtils.getSubject().getPrincipal();
-		//对当前ID进行SHA256加密
-		String encryptionKey = DigestUtils.sha256Hex(GlobalString.AUTH_TOKEN + user.getName());
-		if (encryptionKey.equals(token)) {
+		Optional<CustomIdentificationToken> optional = CustomIdentificationToken.getFromHttpToken(token);
+
+		if (optional.isPresent()) {
 			return true;
 		} else {
 			HttpServletResponse res = (HttpServletResponse) response;

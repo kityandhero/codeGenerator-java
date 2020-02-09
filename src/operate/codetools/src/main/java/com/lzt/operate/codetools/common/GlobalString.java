@@ -24,10 +24,10 @@ public class GlobalString {
 
 	//region Entrance_SING_IN
 
-	@ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "用户名称", example = "test1")
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_SING_IN, value = "用户名称", example = "test1")
 	public static final String LOGIN_USERNAME = "userName";
 
-	@ApiSingleParam(modelName = ModelNameCollection.Entrance_SING_IN, value = "登录密码", example = "123456")
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_SING_IN, value = "登录密码", example = "123456")
 	public static final String LOGIN_PASSWORD = "password";
 
 	//endregion
