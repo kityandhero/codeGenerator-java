@@ -30,161 +30,161 @@ import java.util.Map;
 @Api(tags = "错误接口")
 public class BaseController implements ErrorController {
 
-    /**
-     * 返回结构化的参数
-     *
-     * @param query json参数
-     * @return ParamData
-     */
-    protected ParamData getParamData(Map<String, String> query) {
-        return new ParamData(query);
-    }
+	/**
+	 * 返回结构化的参数
+	 *
+	 * @param query json参数
+	 * @return ParamData
+	 */
+	protected ParamData getParamData(Map<String, Serializable> query) {
+		return new ParamData(query);
+	}
 
-    protected ResultSingleData singleData(Serializable data) {
-        ResultSingleData result = ResultDataFactory.successSingleData();
+	protected ResultSingleData singleData(Serializable data) {
+		ResultSingleData result = ResultDataFactory.successSingleData();
 
-        result.data = data;
-        result.extra = new SerializableData();
+		result.data = data;
+		result.extra = new SerializableData();
 
-        return result;
-    }
+		return result;
+	}
 
-    protected ResultSingleData singleData(Serializable data, Serializable extra) {
-        ResultSingleData result = ResultDataFactory.successSingleData();
+	protected ResultSingleData singleData(Serializable data, Serializable extra) {
+		ResultSingleData result = ResultDataFactory.successSingleData();
 
-        result.data = data;
-        result.extra = extra;
+		result.data = data;
+		result.extra = extra;
 
-        return result;
-    }
+		return result;
+	}
 
-    protected ResultListData listData(List list) {
-        ResultListData result = ResultDataFactory.successListData();
+	protected ResultListData listData(List list) {
+		ResultListData result = ResultDataFactory.successListData();
 
-        result.list = list;
-        result.extra = new SerializableData();
+		result.list = list;
+		result.extra = new SerializableData();
 
-        return result;
-    }
+		return result;
+	}
 
-    private ResultListData listData(List list, Serializable extra) {
-        ResultListData result = ResultDataFactory.successListData();
+	private ResultListData listData(List list, Serializable extra) {
+		ResultListData result = ResultDataFactory.successListData();
 
-        result.list = list;
-        result.extra = extra;
+		result.list = list;
+		result.extra = extra;
 
-        return result;
-    }
+		return result;
+	}
 
-    protected ResultSingleData success() {
-        return ResultDataFactory.successSingleData();
-    }
+	protected ResultSingleData success() {
+		return ResultDataFactory.successSingleData();
+	}
 
-    protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode) {
-        return ResultDataFactory.failData(returnDataCode);
-    }
+	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode) {
+		return ResultDataFactory.failData(returnDataCode);
+	}
 
-    protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, SerializableData data) {
-        ResultSingleData result = ResultDataFactory.failData(returnDataCode);
+	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, SerializableData data) {
+		ResultSingleData result = ResultDataFactory.failData(returnDataCode);
 
-        result.data = data;
+		result.data = data;
 
-        return result;
-    }
+		return result;
+	}
 
-    protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, Serializable data, Serializable extra) {
-        ResultSingleData result = ResultDataFactory.failData(returnDataCode);
+	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, Serializable data, Serializable extra) {
+		ResultSingleData result = ResultDataFactory.failData(returnDataCode);
 
-        result.data = data;
-        result.extra = extra;
+		result.data = data;
+		result.extra = extra;
 
-        return result;
-    }
+		return result;
+	}
 
-    protected ResultSingleData paramError(String paramName, String description) {
-        var data = new SerializableData();
-        data.append("paramName", paramName);
-        data.append("description", description);
+	protected ResultSingleData paramError(String paramName, String description) {
+		var data = new SerializableData();
+		data.append("paramName", paramName);
+		data.append("description", description);
 
-        return ResultDataFactory.failData(ReturnDataCode.PARAM_ERROR);
-    }
+		return ResultDataFactory.failData(ReturnDataCode.PARAM_ERROR);
+	}
 
-    protected ResultSingleData noDataError() {
+	protected ResultSingleData noDataError() {
 
-        return this.noDataError("指定的数据不存在！");
-    }
+		return this.noDataError("指定的数据不存在！");
+	}
 
-    private ResultSingleData noDataError(String description) {
-        var data = new SerializableData();
-        data.append("description", description);
+	private ResultSingleData noDataError(String description) {
+		var data = new SerializableData();
+		data.append("description", description);
 
-        return ResultDataFactory.failData(ReturnDataCode.NODATA);
-    }
+		return ResultDataFactory.failData(ReturnDataCode.NODATA);
+	}
 
-    protected ResultSingleData exceptionError(Exception e) {
-        return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
-    }
+	protected ResultSingleData exceptionError(Exception e) {
+		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
+	}
 
-    protected ResultSingleData customError(int code, boolean success, String message) {
-        return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
-    }
+	protected ResultSingleData customError(int code, boolean success, String message) {
+		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
+	}
 
-    protected ResultListData pageListData(List list) {
-        return this.listData(list);
-    }
+	protected ResultListData pageListData(List list) {
+		return this.listData(list);
+	}
 
-    protected ResultListData pageListData(List list, Serializable extra) {
-        return this.listData(list, extra);
-    }
+	protected ResultListData pageListData(List list, Serializable extra) {
+		return this.listData(list, extra);
+	}
 
-    protected ResultListData pageData(List list, int pageNo, int pageSize, int total) {
-        return pageData(list, pageNo, pageSize, total, new SerializableData());
-    }
+	protected ResultListData pageData(List list, int pageNo, int pageSize, int total) {
+		return pageData(list, pageNo, pageSize, total, new SerializableData());
+	}
 
-    protected ResultListData pageData(List list, int pageNo, int pageSize, int total, Serializable other) {
-        ResultListData result = this.listData(list);
+	protected ResultListData pageData(List list, int pageNo, int pageSize, int total, Serializable other) {
+		ResultListData result = this.listData(list);
 
-        SerializableData extra = new SerializableData();
+		SerializableData extra = new SerializableData();
 
-        extra.put("pageNo", pageNo);
-        extra.put("pageSize", pageSize);
-        extra.put("total", total);
-        extra.put("other", other);
+		extra.put("pageNo", pageNo);
+		extra.put("pageSize", pageSize);
+		extra.put("total", total);
+		extra.put("other", other);
 
-        result.extra = extra;
+		result.extra = extra;
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
+	@Override
+	public String getErrorPath() {
+		return "/error";
+	}
 
-    @GetMapping(value = "/error")
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Object error(HttpServletRequest request, HttpServletResponse response) {
+	@GetMapping(value = "/error")
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Object error(HttpServletRequest request, HttpServletResponse response) {
 
-        log.error("response error,httpCode:" + response.getStatus());
+		log.error("response error,httpCode:" + response.getStatus());
 
-        final int requestNotFound = 404;
+		final int requestNotFound = 404;
 
-        // 错误处理逻辑
-        int status = response.getStatus();
-        if (status == requestNotFound) {
+		// 错误处理逻辑
+		int status = response.getStatus();
+		if (status == requestNotFound) {
 
-            return new ResultSingleData(ReturnDataCode.REQUEST_NOT_FOUND);
-        } else if (status == 500) {
-            return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
-        } else if (status >= 100 && status < 200) {
-            return new ResultSingleData(ReturnDataCode.HTTP_ERROR_100);
-        } else if (status >= 300 && status < 400) {
-            return new ResultSingleData(ReturnDataCode.HTTP_ERROR_300);
-        } else if (status >= 400 && status < 500) {
-            return new ResultSingleData(ReturnDataCode.HTTP_ERROR_400);
-        } else {
-            return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
-        }
-    }
+			return new ResultSingleData(ReturnDataCode.REQUEST_NOT_FOUND);
+		} else if (status == 500) {
+			return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
+		} else if (status >= 100 && status < 200) {
+			return new ResultSingleData(ReturnDataCode.HTTP_ERROR_100);
+		} else if (status >= 300 && status < 400) {
+			return new ResultSingleData(ReturnDataCode.HTTP_ERROR_300);
+		} else if (status >= 400 && status < 500) {
+			return new ResultSingleData(ReturnDataCode.HTTP_ERROR_400);
+		} else {
+			return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);
+		}
+	}
 
 }

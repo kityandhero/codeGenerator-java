@@ -18,14 +18,18 @@ public class ParamData extends SerializableMap<String, Serializable> {
 		super();
 	}
 
-	public ParamData(Map<String, String> data) {
+	public ParamData(Map<String, Serializable> data) {
 		super(data);
 	}
 
-	public StringEx getByKey(String key) {
+	public StringEx getStringExByKey(String key) {
+		return getStringExByKey(key, "");
+	}
+
+	public StringEx getStringExByKey(String key, String defaultValue) {
 		var v = get(key);
 
-		return new StringEx((String) v);
+		return new StringEx(StringAssist.isNullOrEmpty((String) v) ? defaultValue : (String) v);
 	}
 
 	public boolean isNullOrEmpty(String key) {

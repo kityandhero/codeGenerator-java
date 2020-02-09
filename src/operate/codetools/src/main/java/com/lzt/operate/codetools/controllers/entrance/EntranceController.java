@@ -11,6 +11,7 @@ import com.lzt.operate.entities.ParamData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
+import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.secret.DesAssist;
 import com.lzt.operate.secret.Md5Assist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -57,15 +59,15 @@ public class EntranceController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_SING_IN)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
+	public BaseResultData signIn(@RequestBody Map<String, Serializable> json) throws Exception {
 		// 直接将json信息打印出来
 		System.out.println(json);
 
 		ParamData paramJson = new ParamData(json);
 
 		// 将获取的json数据封装一层，然后在给返回
-		var userName = paramJson.getByKey(GlobalString.LOGIN_USERNAME);
-		var password = paramJson.getByKey(GlobalString.LOGIN_PASSWORD);
+		var userName = paramJson.getStringExByKey(GlobalString.LOGIN_USERNAME);
+		var password = paramJson.getStringExByKey(GlobalString.LOGIN_PASSWORD);
 
 		Operator operator = new Operator();
 		operator.setUserName(userName.toString());
@@ -118,13 +120,13 @@ public class EntranceController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
-	public BaseResultData register(@RequestBody Map<String, String> json) throws NoSuchAlgorithmException {
+	public BaseResultData register(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
 
 		var paramJson = getParamData(json);
 
-		var userName = paramJson.getByKey(GlobalString.REGISTER_USERNAME);
-		var password = paramJson.getByKey(GlobalString.REGISTER_PASSWORD);
-		var rePassword = paramJson.getByKey(GlobalString.REGISTER_RE_PASSWORD);
+		StringEx userName = paramJson.getStringExByKey(GlobalString.REGISTER_USERNAME);
+		StringEx password = paramJson.getStringExByKey(GlobalString.REGISTER_PASSWORD);
+		StringEx rePassword = paramJson.getStringExByKey(GlobalString.REGISTER_RE_PASSWORD);
 
 		if (!password.equals(rePassword)) {
 			var error = ReturnDataCode.PARAM_ERROR;

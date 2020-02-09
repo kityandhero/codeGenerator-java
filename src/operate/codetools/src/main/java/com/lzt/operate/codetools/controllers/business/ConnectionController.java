@@ -9,6 +9,7 @@ import com.lzt.operate.codetools.util.DbUtil;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ResultListData;
 import com.lzt.operate.entities.ResultSingleData;
+import com.lzt.operate.extensions.StringEx;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -57,11 +59,11 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_LIST)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	public ResultListData list(@RequestBody Map<String, String> query) {
+	public ResultListData list(@RequestBody Map<String, Serializable> query) {
 		var paramJson = getParamData(query);
 
-		var pageNo = paramJson.getByKey(GlobalString.CONNECTION_LIST_PAGE_NO).toInt();
-		var pageSize = paramJson.getByKey(GlobalString.CONNECTION_LIST_PAGE_SIZE).toInt();
+		var pageNo = paramJson.getStringExByKey(GlobalString.CONNECTION_LIST_PAGE_NO).toInt();
+		var pageSize = paramJson.getStringExByKey(GlobalString.CONNECTION_LIST_PAGE_SIZE).toInt();
 
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
@@ -88,9 +90,10 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	public BaseResultData get(@RequestBody Map<String, String> connectionJson) {
+	public BaseResultData get(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
-		var connectionConfigId = paramJson.getByKey(GlobalString.CONNECTION_ConfigId);
+
+		StringEx connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_ConfigId);
 
 		if (connectionConfigId.isNullOrEmpty()) {
 			return this.paramError(GlobalString.CONNECTION_ConfigId, "不能为空值");
@@ -125,10 +128,10 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
-	public BaseResultData add(@RequestBody Map<String, String> connectionJson) {
+	public BaseResultData add(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
-		var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
+		StringEx name = paramJson.getStringExByKey(GlobalString.CONNECTION_NAME);
 
 		if (name.isNullOrEmpty()) {
 			return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
@@ -166,9 +169,10 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/update", consumes = "application/json", produces = "application/json")
-	public BaseResultData update(@RequestBody Map<String, String> connectionJson) {
+	public BaseResultData update(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
-		var name = paramJson.getByKey(GlobalString.CONNECTION_NAME);
+
+		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_NAME);
 
 		if (name.isNullOrEmpty()) {
 			return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
