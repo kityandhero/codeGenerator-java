@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/operator")
+@RequestMapping("/business/operator")
 @Api(tags = {"操作者信息"})
 public class OperatorController extends OperateBaseController {
 

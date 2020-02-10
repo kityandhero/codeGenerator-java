@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/metaData")
+@RequestMapping("/business/metaData")
 @Api(tags = {"公共资源"})
 public class MetaDataController extends OperateBaseController {
 

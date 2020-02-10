@@ -2,6 +2,7 @@ package com.lzt.operate.codetools.controllers.business;
 
 import com.lzt.operate.codetools.assists.OperatorAssist;
 import com.lzt.operate.codetools.common.OperateAuthController;
+import com.lzt.operate.codetools.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
 import com.lzt.operate.entities.BaseResultData;
@@ -25,19 +26,21 @@ import java.util.Optional;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/currentOperator")
+@RequestMapping("/business/currentOperator")
 @Api(tags = {"操作者信息"})
 public class CurrentOperator extends OperateAuthController {
+	private final CustomJsonWebTokenConfig jwtConfig;
 
 	private OperatorRepository operatorRepository;
 
 	@Autowired
-	public CurrentOperator(OperatorRepository operatorRepository) {
+	public CurrentOperator(OperatorRepository operatorRepository, CustomJsonWebTokenConfig jwtConfig) {
 		this.operatorRepository = operatorRepository;
+		this.jwtConfig = jwtConfig;
 	}
 
 	private OperatorAssist getOperatorAssist() {
-		return new OperatorAssist(this.operatorRepository);
+		return new OperatorAssist(this.operatorRepository, this.jwtConfig);
 	}
 
 	@ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")

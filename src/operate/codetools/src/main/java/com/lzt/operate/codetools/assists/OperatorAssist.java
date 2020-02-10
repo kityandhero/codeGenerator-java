@@ -1,9 +1,9 @@
 package com.lzt.operate.codetools.assists;
 
+import com.lzt.operate.codetools.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
-import com.lzt.operate.codetools.shiro.CustomIdentificationToken;
-import com.lzt.operate.utility.ConvertAssist;
+import com.lzt.operate.codetools.shiro.CustomJsonWebToken;
 
 import java.util.Optional;
 
@@ -14,17 +14,27 @@ import java.util.Optional;
  */
 public class OperatorAssist {
 
+	private CustomJsonWebTokenConfig jwtConfig;
+
 	private OperatorRepository operatorRepository;
 
-	public OperatorAssist(OperatorRepository operatorRepository) {
+	public OperatorAssist(OperatorRepository operatorRepository, CustomJsonWebTokenConfig jwtConfig) {
 		this.operatorRepository = operatorRepository;
+		this.jwtConfig = jwtConfig;
 	}
 
 	public Optional<Operator> getCurrent() {
-		Optional<CustomIdentificationToken> op = CustomIdentificationToken.getFromCurrentHttpToken();
+		Optional<CustomJsonWebToken> op = CustomJsonWebToken.getFromCurrentHttpToken(jwtConfig);
 
-		return op.flatMap(customIdentificationToken -> operatorRepository.findById(ConvertAssist.stringToLong(customIdentificationToken
-				.getPrincipal().toString())));
+		return op.flatMap(customIdentificationToken -> {
+			try {
+				return operatorRepository.findById(customIdentificationToken.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				return Optional.empty();
+			}
+		});
 	}
 
 }

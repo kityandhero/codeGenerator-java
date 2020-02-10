@@ -23,6 +23,15 @@ public class DateAssist extends DateUtils {
 	 * 当前的日期时间
 	 * @return format指定格式的日期时间
 	 */
+	public static Date now() {
+		Calendar cal = Calendar.getInstance();
+		return cal.getTime();
+	}
+
+	/***
+	 * 当前的日期时间
+	 * @return format指定格式的日期时间
+	 */
 	public static String now(String format) {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -76,7 +85,7 @@ public class DateAssist extends DateUtils {
 
 	/***
 	 * 获取格式化的日期时间
-	 * @param date
+	 * @param date date
 	 * @return yyyy-MM-dd HH:mm
 	 */
 	public static String getDateTime(Date date, int... daysOffset) {
@@ -93,7 +102,7 @@ public class DateAssist extends DateUtils {
 	/**
 	 * 是否是工作时间段，用于后台程序等
 	 *
-	 * @return
+	 * @return boolean
 	 */
 	public static boolean isWorkingTime() {
 		Calendar cal = Calendar.getInstance();
@@ -103,7 +112,7 @@ public class DateAssist extends DateUtils {
 
 	/***
 	 * 获取上午/下午
-	 * @return
+	 * @return String
 	 */
 	public static String getAmPm() {
 		Calendar c = Calendar.getInstance();
@@ -112,7 +121,7 @@ public class DateAssist extends DateUtils {
 			return "早上";
 		} else if (9 < hours && hours <= 12) {
 			return "上午";
-		} else if (12 < hours && hours <= 13) {
+		} else if (hours == 13) {
 			return "中午";
 		} else if (13 < hours && hours <= 18) {
 			return "下午";
@@ -124,7 +133,7 @@ public class DateAssist extends DateUtils {
 	/**
 	 * 得到当前的年月YYMM，用于生成文件夹名称
 	 *
-	 * @return
+	 * @return String
 	 */
 	public static String getYearMonth() {
 		Calendar cal = Calendar.getInstance();
@@ -135,7 +144,7 @@ public class DateAssist extends DateUtils {
 	/**
 	 * 得到当前的年月YYMM，用于生成文件夹
 	 *
-	 * @return
+	 * @return String
 	 */
 	public static String getYearMonthDay() {
 		Calendar cal = Calendar.getInstance();
@@ -146,7 +155,7 @@ public class DateAssist extends DateUtils {
 	/**
 	 * 得到当前的年月YYMM，用于生成文件夹
 	 *
-	 * @return
+	 * @return int
 	 */
 	public static int getDay() {
 		Calendar cal = Calendar.getInstance();
@@ -155,8 +164,8 @@ public class DateAssist extends DateUtils {
 
 	/***
 	 * 获取日期对应的星期
-	 * @param date
-	 * @return
+	 * @param date date
+	 * @return String
 	 */
 	public static String getWeek(Date date) {
 		return WEEK[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)];
@@ -165,8 +174,8 @@ public class DateAssist extends DateUtils {
 	/**
 	 * 毫秒数转date
 	 *
-	 * @param timeMillis
-	 * @return
+	 * @param timeMillis timeMillis
+	 * @return Date
 	 */
 	public static Date timeMillis2Date(Long timeMillis) {
 		return new Date(timeMillis);

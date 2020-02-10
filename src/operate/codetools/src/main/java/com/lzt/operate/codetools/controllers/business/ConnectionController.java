@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/connection")
+@RequestMapping("/business/connection")
 @Api(tags = {"数据库连接"})
 public class ConnectionController extends OperateBaseController {
 

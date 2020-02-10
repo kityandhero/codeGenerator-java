@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.shiro;
 
+import com.lzt.operate.codetools.components.CustomJsonWebTokenConfig;
 import lombok.var;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -8,6 +9,7 @@ import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,9 +22,23 @@ import java.util.Map;
  */
 @Configuration
 public class ShiroConfig {
+	private CustomJsonWebTokenConfig jwtConfig;
+
+	@Autowired
+	public ShiroConfig(CustomJsonWebTokenConfig jwtConfig) {
+		this.jwtConfig = jwtConfig;
+	}
+
 	@Bean
 	public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+
+		//自定义过滤器 ，验证token等
+		Map<String, Filter> filterMap = new LinkedHashMap<>();
+		filterMap.put("customAuthenticationFilter", new CustomAuthenticationFilter(jwtConfig));
+		shiroFilterFactoryBean.setFilters(filterMap);
+
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 
 		var filterChainDefinitionMap = new LinkedHashMap<String, String>();
@@ -33,7 +49,7 @@ public class ShiroConfig {
 
 		// 配置不会被拦截的链接 顺序判断
 		filterChainDefinitionMap.put("/static/**", "anon");
-		filterChainDefinitionMap.put("/entrance/signIn", "anon");
+		filterChainDefinitionMap.put("/entrance/**", "anon");
 		filterChainDefinitionMap.put("/entrance/register", "anon");
 		filterChainDefinitionMap.put("/druid/**", "anon");
 		filterChainDefinitionMap.put("/swagger-ui.html", "anon");
@@ -46,17 +62,12 @@ public class ShiroConfig {
 		// filterChainDefinitionMap.put("/**", "authc");
 
 		// 跨域配置 有另外模块提供支持，此处废弃
-		filterChainDefinitionMap.put("/**", "customAuthenticationFilter");
+		filterChainDefinitionMap.put("/business/**", "customAuthenticationFilter");
 
 		//配置shiro默认登录界面地址，前后端分离中登录界面跳转应由前端路由控制，后台仅返回json数据
 		//shiroFilterFactoryBean.setLoginUrl("/unauth");
 		// shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-
-		//自定义过滤器 ，验证token等
-		Map<String, Filter> filterMap = new LinkedHashMap<>();
-		filterMap.put("customAuthenticationFilter", new CustomAuthenticationFilter());
-		shiroFilterFactoryBean.setFilters(filterMap);
 
 		return shiroFilterFactoryBean;
 	}

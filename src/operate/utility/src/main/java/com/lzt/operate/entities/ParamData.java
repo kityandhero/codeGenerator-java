@@ -18,7 +18,7 @@ public class ParamData extends SerializableMap<String, Serializable> {
 		super();
 	}
 
-	public ParamData(Map<String, Serializable> data) {
+	public ParamData(Map<String, ? extends Serializable> data) {
 		super(data);
 	}
 

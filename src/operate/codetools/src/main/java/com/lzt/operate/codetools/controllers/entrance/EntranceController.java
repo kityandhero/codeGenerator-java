@@ -3,16 +3,16 @@ package com.lzt.operate.codetools.controllers.entrance;
 import com.lzt.operate.codetools.common.GlobalString;
 import com.lzt.operate.codetools.common.ModelNameCollection;
 import com.lzt.operate.codetools.common.OperateBaseController;
+import com.lzt.operate.codetools.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.service.impl.OperatorServiceImpl;
-import com.lzt.operate.codetools.shiro.CustomIdentificationToken;
+import com.lzt.operate.codetools.shiro.CustomJsonWebToken;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ParamData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
 import com.lzt.operate.extensions.StringEx;
-import com.lzt.operate.secret.DesAssist;
 import com.lzt.operate.secret.Md5Assist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
@@ -24,6 +24,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.var;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,11 +46,14 @@ import java.util.Map;
 @Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
+	private CustomJsonWebTokenConfig jwtConfig;
+
 	private OperatorServiceImpl operatorServiceImpl;
 
 	@Autowired
-	public EntranceController(OperatorServiceImpl operatorServiceImpl) {
+	public EntranceController(OperatorServiceImpl operatorServiceImpl, CustomJsonWebTokenConfig jwtConfig) {
 		this.operatorServiceImpl = operatorServiceImpl;
+		this.jwtConfig = jwtConfig;
 	}
 
 	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
@@ -59,7 +64,7 @@ public class EntranceController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_SING_IN)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-	public BaseResultData signIn(@RequestBody Map<String, Serializable> json) throws Exception {
+	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
 		// 直接将json信息打印出来
 		System.out.println(json);
 
@@ -85,14 +90,18 @@ public class EntranceController extends OperateBaseController {
 				return fail(error);
 			}
 
+			String token = CustomJsonWebToken.generateToken(searchResult.getId(), searchResult
+					.getUserName(), searchResult.getPassword(), jwtConfig);
+
+			Subject subject = SecurityUtils.getSubject();
+
+			CustomJsonWebToken customJsonWebToken = new CustomJsonWebToken(token);
+
+			subject.login(customJsonWebToken);
+
 			SerializableData data = new SerializableData();
 
-			var token = new CustomIdentificationToken(Long.toString(searchResult.getId()));
-
-			data.append("token", token.buildHttpToken());
-
-			String t1 = DesAssist.encrypt("1");
-			String t2 = DesAssist.decrypt(t1);
+			data.append("token", token);
 
 			return singleData(data);
 		} else {
