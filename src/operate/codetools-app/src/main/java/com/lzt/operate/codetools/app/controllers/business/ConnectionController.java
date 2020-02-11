@@ -1,20 +1,21 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
+import com.lzt.operate.codetools.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
-import com.lzt.operate.codetools.app.entity.ConnectionConfig;
-import com.lzt.operate.codetools.app.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.app.util.DbUtil;
-import com.lzt.operate.utility.pojo.BaseResultData;
-import com.lzt.operate.utility.pojo.ResultListData;
-import com.lzt.operate.utility.pojo.ResultSingleData;
-import com.lzt.operate.utility.extensions.StringEx;
-import com.lzt.operate.utility.permissions.NeedAuthorization;
+import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
+import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.ConvertAssist;
+import com.lzt.operate.utility.extensions.StringEx;
+import com.lzt.operate.utility.permissions.NeedAuthorization;
+import com.lzt.operate.utility.pojo.BaseResultData;
+import com.lzt.operate.utility.pojo.ResultListData;
+import com.lzt.operate.utility.pojo.ResultSingleData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +52,10 @@ public class ConnectionController extends OperateBaseController {
 	@Autowired
 	public ConnectionController(ConnectionConfigServiceImpl connectionConfigServiceImpl) {
 		this.connectionConfigServiceImpl = connectionConfigServiceImpl;
+	}
+
+	private ConnectionConfigAssist getConnectionConfigAssist() {
+		return new ConnectionConfigAssist(this.connectionConfigServiceImpl);
 	}
 
 	@ApiOperation(value = "连接列表", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
@@ -141,7 +146,7 @@ public class ConnectionController extends OperateBaseController {
 		}
 
 		var connectionConfig = new ConnectionConfig();
-		connectionConfig = connectionConfigServiceImpl.fillFromParamJson(connectionConfig, paramJson);
+		connectionConfig = getConnectionConfigAssist().fillFromParamJson(connectionConfig, paramJson);
 
 		try {
 			var listTableName = DbUtil.getTableNames(connectionConfig);
@@ -182,7 +187,7 @@ public class ConnectionController extends OperateBaseController {
 		}
 
 		var connectionConfig = new ConnectionConfig();
-		connectionConfig = connectionConfigServiceImpl.fillFromParamJson(connectionConfig, paramJson);
+		connectionConfig = getConnectionConfigAssist().fillFromParamJson(connectionConfig, paramJson);
 
 		try {
 			var listTableName = DbUtil.getTableNames(connectionConfig);

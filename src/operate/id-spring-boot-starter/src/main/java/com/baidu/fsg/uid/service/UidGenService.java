@@ -8,10 +8,10 @@ import javax.annotation.Resource;
 @Service
 public class UidGenService {
 
-    @Resource
-    private UidGenerator uidGenerator;
+	@Resource
+	private UidGenerator uidGenerator;
 
-    public long getUid() {
-        return uidGenerator.getUID();
-    }
+	public long getUid() {
+		return uidGenerator.getUID();
+	}
 }

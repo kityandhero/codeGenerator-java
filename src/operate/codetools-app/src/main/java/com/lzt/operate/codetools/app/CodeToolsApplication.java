@@ -40,9 +40,9 @@ import java.time.format.DateTimeFormatter;
 // @EnableJpaRepositories("com.lzt.operate.codetools.repository")
 @EnableSwagger2Doc
 @EnableCaching
-@ComponentScan(basePackages = {"com.lzt.operate.codetools.app.**", "com.baidu.fsg.uid.worker.**"})
-@EnableJpaRepositories({"com.lzt.operate.codetools.app.repositories", "com.baidu.fsg.uid.worker.repository"})
-@EntityScan(basePackages = {"com.lzt.operate.codetools.app.entity", "com.baidu.fsg.uid.worker.entity"})
+@ComponentScan(basePackages = {"com.lzt.operate.codetools.app.**", "com.lzt.operate.codetools.dao.**", "com.baidu.fsg.uid.worker.**"})
+@EnableJpaRepositories({"com.lzt.operate.codetools.dao.repositories", "com.baidu.fsg.uid.worker.repository"})
+@EntityScan(basePackages = {"com.lzt.operate.codetools.entities", "com.baidu.fsg.uid.worker.entity"})
 public class CodeToolsApplication {
 
 	private static final Logger _LOG = LoggerFactory.getLogger(CodeToolsApplication.class);

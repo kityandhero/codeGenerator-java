@@ -1,8 +1,8 @@
 package com.lzt.operate.codetools.app.assists;
 
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.app.entity.Operator;
-import com.lzt.operate.codetools.app.repositories.OperatorRepository;
+import com.lzt.operate.codetools.dao.repositories.OperatorRepository;
+import com.lzt.operate.codetools.entities.Operator;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 
 import java.util.Optional;

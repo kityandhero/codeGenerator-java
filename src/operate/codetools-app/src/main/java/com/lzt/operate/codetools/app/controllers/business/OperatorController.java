@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.common.OperateBaseController;
-import com.lzt.operate.codetools.app.repositories.OperatorRepository;
+import com.lzt.operate.codetools.dao.repositories.OperatorRepository;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

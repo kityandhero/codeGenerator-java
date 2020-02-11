@@ -12,11 +12,12 @@
 
     <!-- 声明子模块 -->
     <modules>
-        <module>codetools</module>
         <module>utility</module>
         <module>swagger-spring-boot-starter</module>
         <module>id-spring-boot-starter</module>
         <module>codetools-app</module>
+        <module>codetools-entity</module>
+        <module>codetools-dao</module>
     </modules>
 
     <properties>

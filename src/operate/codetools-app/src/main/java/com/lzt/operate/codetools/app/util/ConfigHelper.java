@@ -1,9 +1,9 @@
 package com.lzt.operate.codetools.app.util;
 
 import com.alibaba.fastjson.JSON;
-import com.lzt.operate.codetools.app.entity.ConnectionConfig;
-import com.lzt.operate.codetools.app.entity.DbType;
-import com.lzt.operate.codetools.app.entity.GeneratorConfig;
+import com.lzt.operate.codetools.app.enums.DbType;
+import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.codetools.entities.GeneratorConfig;
 import com.lzt.operate.utility.extensions.StringEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +78,7 @@ public class ConfigHelper {
 	}
 
 	public static void saveConnectionConfig(boolean isUpdate, Integer primaryKey, ConnectionConfig dbConfig) throws Exception {
-		String configName = dbConfig.getName().toString();
+		String configName = dbConfig.getName();
 		// ResultSet rs = null;
 		try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement()) {
 			if (!isUpdate) {

@@ -32,3 +32,4 @@ hs_err_pid*
 /src/operate/operate.iml
 /src/operate/id-spring-boot-starter/id-spring-boot-starter.iml
 /src/operate/codetools/src/main/resources/localData.db
+/temp
