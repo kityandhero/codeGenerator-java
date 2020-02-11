@@ -20,7 +20,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.var;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Example;
@@ -61,7 +60,7 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_LIST)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@RequiresPermissions(CONTROLLER_DESCRIPTION + "连接列表" + ":" + "f201e035-bfcc-4eee-a263-70fdc2968e64")
+	// @RequiresPermissions(CONTROLLER_DESCRIPTION + "连接列表" + ":" + "f201e035-bfcc-4eee-a263-70fdc2968e64")
 	public ResultListData list(@RequestBody Map<String, Serializable> query) {
 		var paramJson = getParamData(query);
 

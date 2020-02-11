@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.assists;
 import com.lzt.operate.codetools.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.repository.OperatorRepository;
-import com.lzt.operate.codetools.shiro.CustomJsonWebToken;
+import com.lzt.operate.permissions.CustomJsonWebToken;
 
 import java.util.Optional;
 

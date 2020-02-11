@@ -6,13 +6,13 @@ import com.lzt.operate.codetools.common.OperateBaseController;
 import com.lzt.operate.codetools.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.entity.Operator;
 import com.lzt.operate.codetools.service.impl.OperatorServiceImpl;
-import com.lzt.operate.codetools.shiro.CustomJsonWebToken;
 import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ParamData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.entities.SerializableData;
 import com.lzt.operate.enums.ReturnDataCode;
 import com.lzt.operate.extensions.StringEx;
+import com.lzt.operate.permissions.CustomJsonWebToken;
 import com.lzt.operate.secret.Md5Assist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
@@ -24,8 +24,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.var;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -92,12 +90,6 @@ public class EntranceController extends OperateBaseController {
 
 			String token = CustomJsonWebToken.generateToken(searchResult.getId(), searchResult
 					.getUserName(), searchResult.getPassword(), jwtConfig);
-
-			Subject subject = SecurityUtils.getSubject();
-
-			CustomJsonWebToken customJsonWebToken = new CustomJsonWebToken(token);
-
-			subject.login(customJsonWebToken);
 
 			SerializableData data = new SerializableData();
 

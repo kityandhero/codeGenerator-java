@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.shiro;
+package com.lzt.operate.permissions;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -10,7 +10,6 @@ import com.lzt.operate.entities.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.DateAssist;
 import com.lzt.operate.utility.RequestAssist;
 import com.lzt.operate.utility.StringAssist;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ import java.util.Optional;
  *
  * @author lzt
  */
-public class CustomJsonWebToken implements AuthenticationToken {
+public class CustomJsonWebToken {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String token;
 
@@ -52,6 +51,17 @@ public class CustomJsonWebToken implements AuthenticationToken {
 		}
 
 		return DateAssist.addDays(DateAssist.now(), -90);
+	}
+
+	/**
+	 * 校验token是否过期
+	 *
+	 * @return boolean
+	 */
+	public boolean isTokenExpired() {
+		Date expirationTime = getExpiration();
+
+		return expirationTime.before(new Date());
 	}
 
 	/**
@@ -140,13 +150,7 @@ public class CustomJsonWebToken implements AuthenticationToken {
 		return getFromHttpToken(token);
 	}
 
-	@Override
-	public Object getPrincipal() {
-		return this.token;
-	}
-
-	@Override
-	public Object getCredentials() {
+	public Object getToken() {
 		return this.token;
 	}
 }
