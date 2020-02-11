@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.var;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Example;
@@ -43,6 +44,7 @@ import java.util.Map;
 @RequestMapping("/business/connection")
 @Api(tags = {"数据库连接"})
 public class ConnectionController extends OperateBaseController {
+	private static final String CONTROLLER_DESCRIPTION = "数据库连接/";
 
 	private ConnectionConfigServiceImpl connectionConfigServiceImpl;
 
@@ -59,11 +61,12 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_LIST)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
+	@RequiresPermissions(CONTROLLER_DESCRIPTION + "连接列表" + ":" + "f201e035-bfcc-4eee-a263-70fdc2968e64")
 	public ResultListData list(@RequestBody Map<String, Serializable> query) {
 		var paramJson = getParamData(query);
 
-		var pageNo = paramJson.getStringExByKey(GlobalString.CONNECTION_LIST_PAGE_NO).toInt();
-		var pageSize = paramJson.getStringExByKey(GlobalString.CONNECTION_LIST_PAGE_SIZE).toInt();
+		var pageNo = paramJson.getStringExByKey(GlobalString.CONNECTION_LIST_PAGE_NO, "1").toInt();
+		var pageSize = paramJson.getStringExByKey(GlobalString.CONNECTION_LIST_PAGE_SIZE, "20").toInt();
 
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);

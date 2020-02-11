@@ -12,6 +12,8 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
@@ -20,33 +22,45 @@ import java.util.Optional;
  * @author lzt
  */
 public class CustomShiroRealm extends AuthorizingRealm {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private OperatorServiceImpl operatorServiceImpl;
 
+	/**
+	 * 权限验证
+	 *
+	 * @param principals
+	 * @return
+	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		System.out.println("权限认证");
-		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+		logger.info("doGetAuthorizationInfo+" + principals.toString());
 
-		Operator user = (Operator) principals.getPrimaryPrincipal();
-		System.out.println("**********" + user.toString());
+		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-		// try {
-		// 	List<SysRole> roles = sysRoleService.selectByUid(user.getUid());
-		// 	for (SysRole role : roles) {
-		// 		authorizationInfo.addRole(role.getRolename());
-		// 	}
-		// 	List<SysPermission> permissions = sysPermissionService.selectByUid(user.getUid());
-		// 	for (SysPermission permission : permissions) {
-		// 		authorizationInfo.addStringPermission(permission.getPername());
-		// 	}
-		// } catch (Exception e) {
-		// 	e.printStackTrace();
-		// }
+		String token = principals.toString();
 
-		return authorizationInfo;
+		Optional<CustomJsonWebToken> opCustomJsonWebToken = CustomJsonWebToken.getFromHttpToken(token);
 
+		if (opCustomJsonWebToken.isPresent()) {
+			CustomJsonWebToken customJsonWebToken = opCustomJsonWebToken.get();
+
+			try {
+				// String userName = customJsonWebToken.getUserName();
+				//
+				// User user = shiroAuthService.queryUserByName(userName);
+				//
+				// List<String> userPermissions = shiroAuthService.getPermissions(user.getUser_id());
+				//
+				// // 基于Permission的权限信息
+				// info.addStringPermissions(userPermissions);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return info;
 	}
 
 	/**

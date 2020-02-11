@@ -29,7 +29,7 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	public StringEx getStringExByKey(String key, String defaultValue) {
 		var v = get(key);
 
-		return new StringEx(StringAssist.isNullOrEmpty((String) v) ? defaultValue : (String) v);
+		return new StringEx(StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString());
 	}
 
 	public boolean isNullOrEmpty(String key) {

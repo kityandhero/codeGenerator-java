@@ -88,7 +88,7 @@ public class CustomJsonWebToken implements AuthenticationToken {
 	public static String generateToken(Long id, String userName, String password, BaseCustomJsonWebTokenConfig config) {
 		try {
 			// 指定过期时间
-			Date date = new Date(System.currentTimeMillis() + config.getExpire());
+			Date date = new Date(System.currentTimeMillis() + config.getExpire() * 1000);
 
 			Algorithm algorithm = Algorithm.HMAC256(password);
 
