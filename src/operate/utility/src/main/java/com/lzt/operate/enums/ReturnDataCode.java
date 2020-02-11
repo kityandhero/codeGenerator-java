@@ -111,11 +111,6 @@ public enum ReturnDataCode {
 	NOT_EXIST_BUSINESS(10002, "该商家不存在", false),
 
 	/**
-	 * 登录异常
-	 */
-	SHIRO_ERROR(10003, "登录异常", false),
-
-	/**
 	 * 您没有该权限
 	 */
 	UNAUTHORIZED_ERROR(10004, "您没有该权限", false),

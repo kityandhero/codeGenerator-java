@@ -6,6 +6,7 @@ import lombok.var;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author lzt
@@ -27,7 +28,7 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	}
 
 	public StringEx getStringExByKey(String key, String defaultValue) {
-		var v = get(key);
+		var v = Optional.ofNullable(get(key)).orElse(defaultValue);
 
 		return new StringEx(StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString());
 	}

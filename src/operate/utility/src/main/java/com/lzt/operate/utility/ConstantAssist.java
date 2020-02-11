@@ -1,9 +1,12 @@
 package com.lzt.operate.utility;
 
+import org.springframework.core.Ordered;
+
 /**
  * @author lzt
  */
 public class ConstantAssist {
+
 	/**
 	 * 默认字符集UTF-8
 	 */
@@ -38,6 +41,16 @@ public class ConstantAssist {
 	 * 排序 - 升序标记
 	 */
 	public static final String ORDER_ASC = "ASC";
+
+	/***
+	 * 鉴权校验执行优先级
+	 */
+	public static final int AUTHORIZATION_ORDER = Ordered.LOWEST_PRECEDENCE;
+
+	/***
+	 * 登录校验执行优先级
+	 */
+	public static final int AUTHENTICATION_ORDER = Ordered.LOWEST_PRECEDENCE - 1;
 
 	//region 日期时间格式
 

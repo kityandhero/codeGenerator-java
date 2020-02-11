@@ -1,7 +1,5 @@
 package com.lzt.operate.entities;
 
-import java.util.Date;
-
 /**
  * Json Web Token 设置
  *
@@ -11,16 +9,6 @@ public abstract class BaseCustomJsonWebTokenConfig {
 	private String secret;
 	private Long expire;
 	private String header;
-
-	/**
-	 * 校验token是否过期
-	 *
-	 * @param expirationTime expirationTime
-	 * @return boolean
-	 */
-	public boolean isTokenExpired(Date expirationTime) {
-		return expirationTime.before(new Date());
-	}
 
 	public String getSecret() {
 		return secret;

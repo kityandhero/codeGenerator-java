@@ -10,6 +10,7 @@ import com.lzt.operate.entities.BaseResultData;
 import com.lzt.operate.entities.ResultListData;
 import com.lzt.operate.entities.ResultSingleData;
 import com.lzt.operate.extensions.StringEx;
+import com.lzt.operate.permissions.NeedAuthorization;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -60,7 +61,7 @@ public class ConnectionController extends OperateBaseController {
 	@ApiImplicitParam(name = "connection", required = true, dataType = ModelNameCollection.CONNECTION_LIST)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	// @RequiresPermissions(CONTROLLER_DESCRIPTION + "连接列表" + ":" + "f201e035-bfcc-4eee-a263-70fdc2968e64")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", identification = "f201e035-bfcc-4eee-a263-70fdc2968e64")
 	public ResultListData list(@RequestBody Map<String, Serializable> query) {
 		var paramJson = getParamData(query);
 
