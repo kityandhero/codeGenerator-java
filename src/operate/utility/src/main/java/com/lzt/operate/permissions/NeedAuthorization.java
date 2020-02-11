@@ -22,5 +22,5 @@ public @interface NeedAuthorization {
 	/**
 	 * 标识
 	 */
-	String identification() default "";
+	String tag() default "";
 }

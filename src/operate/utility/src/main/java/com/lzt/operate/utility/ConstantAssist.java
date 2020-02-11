@@ -45,12 +45,12 @@ public class ConstantAssist {
 	/***
 	 * 鉴权校验执行优先级
 	 */
-	public static final int AUTHORIZATION_ORDER = Ordered.LOWEST_PRECEDENCE;
+	public static final int AUTHORIZATION_ORDER = Ordered.LOWEST_PRECEDENCE - 1;
 
 	/***
 	 * 登录校验执行优先级
 	 */
-	public static final int AUTHENTICATION_ORDER = Ordered.LOWEST_PRECEDENCE - 1;
+	public static final int AUTHENTICATION_ORDER = Ordered.LOWEST_PRECEDENCE - 2;
 
 	//region 日期时间格式
 
