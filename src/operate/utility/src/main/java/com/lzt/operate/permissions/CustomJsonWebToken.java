@@ -1,7 +1,6 @@
 package com.lzt.operate.permissions;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -65,27 +64,27 @@ public class CustomJsonWebToken {
 		return expirationTime.before(new Date());
 	}
 
-	/**
-	 * 校验token是否正确
-	 *
-	 * @param token    密钥
-	 * @param userName 登录名
-	 * @param password 密码
-	 * @return boolean
-	 */
-	public static boolean verify(String token, Long id, String userName, String password) {
-		try {
-			Algorithm algorithm = Algorithm.HMAC256(password);
-
-			JWTVerifier verifier = JWT.require(algorithm).withClaim("id", id).withClaim("userName", userName).build();
-
-			DecodedJWT jwt = verifier.verify(token);
-
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+	// /**
+	//  * 校验token是否正确
+	//  *
+	//  * @param token    密钥
+	//  * @param userName 登录名
+	//  * @param password 密码
+	//  * @return boolean
+	//  */
+	// public static boolean verify(String token, Long id, String userName, String password) {
+	// 	try {
+	// 		Algorithm algorithm = Algorithm.HMAC256(password);
+	//
+	// 		JWTVerifier verifier = JWT.require(algorithm).withClaim("id", id).withClaim("userName", userName).build();
+	//
+	// 		DecodedJWT jwt = verifier.verify(token);
+	//
+	// 		return true;
+	// 	} catch (Exception e) {
+	// 		return false;
+	// 	}
+	// }
 
 	/**
 	 * 成JWT token
@@ -134,6 +133,12 @@ public class CustomJsonWebToken {
 		return op.map(Payload::getClaims);
 	}
 
+	/**
+	 * 从JWTToken解析Token
+	 *
+	 * @param token JWTToken
+	 * @return Optional<CustomJsonWebToken>
+	 */
 	public static Optional<CustomJsonWebToken> getFromHttpToken(String token) {
 		if (!StringAssist.isNullOrEmpty(token)) {
 			return Optional.of(new CustomJsonWebToken(token));
@@ -142,16 +147,42 @@ public class CustomJsonWebToken {
 		return Optional.empty();
 	}
 
-	public static Optional<CustomJsonWebToken> getFromCurrentHttpToken(BaseCustomJsonWebTokenConfig config) {
+	/**
+	 * 获取当前的Token，忽略是否过期
+	 *
+	 * @param customJsonWebTokenConfig customJsonWebTokenConfig
+	 * @return Optional<CustomJsonWebToken>
+	 */
+	public static Optional<CustomJsonWebToken> getFromCurrentHttpToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
 
 		HttpServletRequest request = RequestAssist.getHttpServletRequest();
 
-		String token = request.getHeader(config.getHeader());
+		String token = request.getHeader(customJsonWebTokenConfig.getHeader());
 
 		return getFromHttpToken(token);
 	}
 
-	public static CustomJsonWebToken checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+	/**
+	 * 获取当前有效的Token
+	 *
+	 * @param customJsonWebTokenConfig customJsonWebTokenConfig
+	 * @return Optional<CustomJsonWebToken>
+	 */
+	public static Optional<CustomJsonWebToken> getEffectiveCurrent(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
+
+		if (optional.isPresent()) {
+			CustomJsonWebToken customJsonWebToken = optional.get();
+
+			if (!customJsonWebToken.isTokenExpired()) {
+				return Optional.of(customJsonWebToken);
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	public static void checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
 		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
 
 		if (!optional.isPresent()) {
@@ -164,7 +195,6 @@ public class CustomJsonWebToken {
 			throw new AuthenticationException("登录超时，请重新登录");
 		}
 
-		return customJsonWebToken;
 	}
 
 	public Object getToken() {
