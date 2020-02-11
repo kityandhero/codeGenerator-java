@@ -3,7 +3,7 @@ package com.baidu.fsg.uid.worker.service.impl;
 import com.baidu.fsg.uid.worker.entity.WorkerNodeEntity;
 import com.baidu.fsg.uid.worker.repository.WorkerNodeRepository;
 import com.baidu.fsg.uid.worker.service.WorkerNodeService;
-import com.lzt.operate.utility.ReflectAssist;
+import com.lzt.operate.utility.assists.ReflectAssist;
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

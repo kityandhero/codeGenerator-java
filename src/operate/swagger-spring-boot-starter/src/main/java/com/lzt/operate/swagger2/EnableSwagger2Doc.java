@@ -20,6 +20,4 @@ import java.lang.annotation.Target;
 @Inherited
 @Import({SwaggerAutoConfiguration.class})
 public @interface EnableSwagger2Doc {
-
-
 }

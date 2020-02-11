@@ -16,6 +16,7 @@
         <module>utility</module>
         <module>swagger-spring-boot-starter</module>
         <module>id-spring-boot-starter</module>
+        <module>codetools-app</module>
     </modules>
 
     <properties>
