@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class ConvertAssist {
 	private static final Logger log = LoggerFactory.getLogger(ConvertAssist.class);

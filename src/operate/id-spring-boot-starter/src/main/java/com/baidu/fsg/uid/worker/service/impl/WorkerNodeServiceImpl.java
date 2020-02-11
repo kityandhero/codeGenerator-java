@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Service
 public class WorkerNodeServiceImpl implements WorkerNodeService {

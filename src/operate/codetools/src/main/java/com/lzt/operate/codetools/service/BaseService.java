@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public interface BaseService<S extends BaseDomain> {
 

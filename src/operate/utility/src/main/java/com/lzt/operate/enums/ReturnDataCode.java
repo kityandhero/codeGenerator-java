@@ -5,7 +5,7 @@ import com.lzt.operate.entities.BaseResultData;
 /**
  * 操作返回码
  *
- * @author lzt
+ * @author luzhitao
  */
 
 public enum ReturnDataCode {

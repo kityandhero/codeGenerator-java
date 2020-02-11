@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @RestController
 @EnableConfigurationProperties

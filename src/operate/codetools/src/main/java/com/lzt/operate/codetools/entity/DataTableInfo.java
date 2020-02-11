@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Data
 public class DataTableInfo implements Serializable {

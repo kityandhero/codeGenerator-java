@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public interface IObjectExtensionMethod extends Serializable {
     /**

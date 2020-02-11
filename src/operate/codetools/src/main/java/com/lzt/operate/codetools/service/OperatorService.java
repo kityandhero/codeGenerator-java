@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.service;
 import com.lzt.operate.codetools.entity.Operator;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public interface OperatorService extends BaseService<Operator> {
 }

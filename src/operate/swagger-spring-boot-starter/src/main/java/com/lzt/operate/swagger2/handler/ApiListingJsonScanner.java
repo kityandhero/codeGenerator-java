@@ -54,7 +54,7 @@ import static springfox.documentation.spi.service.contexts.Orderings.methodCompa
 import static springfox.documentation.spi.service.contexts.Orderings.resourceGroupComparator;
 
 /**
- * @author lzt
+ * @author luzhitao
  * @date 2019-05-08 16:45
  */
 @SuppressWarnings({"Guava", "UnstableApiUsage"})

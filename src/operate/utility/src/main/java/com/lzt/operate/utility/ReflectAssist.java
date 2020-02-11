@@ -9,7 +9,7 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class ReflectAssist {
 

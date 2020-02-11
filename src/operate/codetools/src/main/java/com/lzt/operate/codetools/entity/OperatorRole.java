@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Data
 @Entity

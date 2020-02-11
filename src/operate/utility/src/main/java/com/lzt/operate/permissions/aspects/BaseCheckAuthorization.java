@@ -7,14 +7,13 @@ import com.lzt.operate.permissions.CustomJsonWebToken;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
-import java.util.Optional;
-
 /**
  * 检验权限基类
  *
- * @author lzt
+ * @author luzhitao
  */
 public abstract class BaseCheckAuthorization {
+
 	protected BaseCustomJsonWebTokenConfig customJsonWebTokenConfig;
 
 	/**
@@ -29,19 +28,9 @@ public abstract class BaseCheckAuthorization {
 	 */
 	@Before("checkDataPoint()")
 	public void checkBefore() throws AuthenticationException {
-		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
+		CustomJsonWebToken customJsonWebToken = CustomJsonWebToken.checkToken(customJsonWebTokenConfig);
 
-		if (!optional.isPresent()) {
-			throw new AuthenticationException("请登录后访问");
-		}
-
-		CustomJsonWebToken customJsonWebToken = optional.get();
-
-		if (customJsonWebToken.isTokenExpired()) {
-			throw new AuthenticationException("登录超时，请重新登录");
-		}
-
-		if (!checkAuthorization()) {
+		if (!checkAuthorization(customJsonWebToken)) {
 			throw new AuthorizationException("无权限访问");
 		}
 	}
@@ -49,7 +38,9 @@ public abstract class BaseCheckAuthorization {
 	/**
 	 * 校验是否具有指定权限
 	 *
-	 * @return boolean
+	 * @param customJsonWebToken 登录凭证
+	 * @return boolean 是否具有权限
 	 */
-	protected abstract boolean checkAuthorization();
+	protected abstract boolean checkAuthorization(CustomJsonWebToken customJsonWebToken);
+
 }

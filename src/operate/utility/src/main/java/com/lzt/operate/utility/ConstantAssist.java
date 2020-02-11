@@ -3,7 +3,7 @@ package com.lzt.operate.utility;
 import org.springframework.core.Ordered;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class ConstantAssist {
 

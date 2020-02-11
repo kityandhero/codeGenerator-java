@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * 检验登录Aop
  *
- * @author lzt
+ * @author luzhitao
  */
 @Aspect
 @Component

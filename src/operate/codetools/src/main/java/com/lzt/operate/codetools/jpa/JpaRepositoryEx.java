@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * @param <T>
  * @param <ID>
- * @author lzt
+ * @author luzhitao
  */
 public interface JpaRepositoryEx<T extends BaseDomain, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 

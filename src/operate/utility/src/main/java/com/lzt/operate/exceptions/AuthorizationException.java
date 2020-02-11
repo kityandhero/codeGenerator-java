@@ -3,7 +3,7 @@ package com.lzt.operate.exceptions;
 /**
  * 鉴权异常
  *
- * @author lzt
+ * @author luzhitao
  */
 public class AuthorizationException extends RuntimeException {
 

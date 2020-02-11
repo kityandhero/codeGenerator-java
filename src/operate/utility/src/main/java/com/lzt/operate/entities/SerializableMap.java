@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class SerializableMap<String, Serializable> extends HashMap<String, Serializable> {
 

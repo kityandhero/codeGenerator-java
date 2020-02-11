@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.common;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class ModelNameCollection {
 

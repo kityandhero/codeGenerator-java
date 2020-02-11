@@ -30,9 +30,9 @@ import java.net.BindException;
  * 3.已经catch到的异常不会被捕获
  * 4.异常的体系结构中，哪个异常与目标方法抛出的异常血缘关系越紧密，就会被哪个捕捉到。
  *
- * @author licanfeng
+ * @author luzhitao
  * @version 1.0
- * @date 2019/3/11 16:13
+ * @date 2020/02/11 16:13
  * @see ExceptionHandler：统一处理某一类异常，从而能够减少代码重复率和复杂度
  * @see ControllerAdvice ：异常集中处理，更好的使业务逻辑与异常处理剥离开
  * @see ResponseStatus：可以将某种异常映射为HTTP状态码 成功则Status Code: 200
@@ -80,7 +80,7 @@ public abstract class BaseGlobalExceptionHandler {
 	 * @param e 异常
 	 * @return json结果
 	 */
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseStatus(HttpStatus.OK)
 	@ExceptionHandler(Throwable.class)
 	public ResultSingleData handleException(Throwable e) {
 		log.error("服务运行异常", e);

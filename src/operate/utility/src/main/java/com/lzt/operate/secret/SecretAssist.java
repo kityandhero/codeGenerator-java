@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class SecretAssist {
 	private static final String KEY = "ikjuoperkiosj7p4c68s98eda1ioec5x";

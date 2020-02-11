@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * 需要登录
  *
- * @author lzt
+ * @author luzhitao
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Order(ConstantAssist.AUTHENTICATION_ORDER)

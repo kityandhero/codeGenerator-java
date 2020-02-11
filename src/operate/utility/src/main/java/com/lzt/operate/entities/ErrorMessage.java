@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 /**
  * 错误集合
  *
- * @author lzt
+ * @author luzhitao
  */
 @Data
 public class ErrorMessage {

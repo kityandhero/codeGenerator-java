@@ -12,7 +12,7 @@
 // import javax.sql.DataSource;
 //
 // /**
-//  * @author lzt
+//  * @author luzhitao
 //  */
 // @Configuration
 // public class MyBatisConfig {

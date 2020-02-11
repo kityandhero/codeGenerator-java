@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @RestController
 @EnableConfigurationProperties

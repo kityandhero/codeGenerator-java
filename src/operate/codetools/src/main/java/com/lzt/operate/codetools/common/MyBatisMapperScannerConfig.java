@@ -6,7 +6,7 @@
 // import org.springframework.context.annotation.Configuration;
 //
 // /**
-//  * @author lzt
+//  * @author luzhitao
 //  */
 // @Configuration
 // public class MyBatisMapperScannerConfig {

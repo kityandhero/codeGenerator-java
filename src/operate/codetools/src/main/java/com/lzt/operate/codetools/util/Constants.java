@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.util;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class Constants {
     /**

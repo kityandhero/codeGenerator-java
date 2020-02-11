@@ -8,7 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.List;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class CorsCustomFilter extends CorsFilter {
 

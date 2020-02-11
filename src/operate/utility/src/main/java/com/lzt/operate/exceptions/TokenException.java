@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 /**
  * TokenException
  *
- * @author lzt
+ * @author luzhitao
  */
 public class TokenException extends Exception {
 

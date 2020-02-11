@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.entity;
 import lombok.Data;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Data
 public class DataColumnInfo {

@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Md5相关类，支持校验跨平台字符串
  *
- * @author lzt
+ * @author luzhitao
  */
 public class Md5Assist {
 	/**

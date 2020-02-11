@@ -36,7 +36,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @RestController
 @EnableConfigurationProperties

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class ValidatorAssist {
 	private static final Logger log = LoggerFactory.getLogger(ValidatorAssist.class);

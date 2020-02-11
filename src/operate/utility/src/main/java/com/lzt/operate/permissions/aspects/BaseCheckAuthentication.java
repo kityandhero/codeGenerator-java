@@ -5,12 +5,10 @@ import com.lzt.operate.exceptions.AuthenticationException;
 import com.lzt.operate.permissions.CustomJsonWebToken;
 import org.aspectj.lang.annotation.Before;
 
-import java.util.Optional;
-
 /**
  * 检验登录基类
  *
- * @author lzt
+ * @author luzhitao
  */
 public abstract class BaseCheckAuthentication {
 
@@ -21,17 +19,7 @@ public abstract class BaseCheckAuthentication {
 	 */
 	@Before("checkDataPoint()")
 	public void checkBefore() throws AuthenticationException {
-		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
-
-		if (!optional.isPresent()) {
-			throw new AuthenticationException("请登录后访问");
-		}
-
-		CustomJsonWebToken customJsonWebToken = optional.get();
-
-		if (customJsonWebToken.isTokenExpired()) {
-			throw new AuthenticationException("登录超时，请重新登录");
-		}
+		CustomJsonWebToken.checkToken(customJsonWebTokenConfig);
 	}
 
 }

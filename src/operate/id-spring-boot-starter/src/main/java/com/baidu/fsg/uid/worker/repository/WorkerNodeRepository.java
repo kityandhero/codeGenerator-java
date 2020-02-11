@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Repository
 public interface WorkerNodeRepository extends JpaRepository<WorkerNodeEntity, Long>, JpaSpecificationExecutor<WorkerNodeEntity> {

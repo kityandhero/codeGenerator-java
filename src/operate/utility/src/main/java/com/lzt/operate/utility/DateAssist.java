@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class DateAssist extends DateUtils {
 

@@ -3,7 +3,7 @@ package com.lzt.operate.entities;
 /**
  * Json Web Token 设置
  *
- * @author lzt
+ * @author luzhitao
  */
 public abstract class BaseCustomJsonWebTokenConfig {
 	private String secret;

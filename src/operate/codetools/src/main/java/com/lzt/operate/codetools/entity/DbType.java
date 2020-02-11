@@ -4,7 +4,7 @@ package com.lzt.operate.codetools.entity;
 import lombok.Getter;
 
 /**
- * @author lzt
+ * @author luzhitao
  * Created by Owen on 6/14/16.
  */
 @Getter

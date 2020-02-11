@@ -17,7 +17,7 @@ import java.util.UUID;
 import static com.lzt.operate.utility.ConstantAssist.NUMBER_SET;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class StringAssist {
 

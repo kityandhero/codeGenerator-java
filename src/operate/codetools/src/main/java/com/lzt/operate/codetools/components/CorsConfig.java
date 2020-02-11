@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Component
 @Configuration

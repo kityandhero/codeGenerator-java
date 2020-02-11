@@ -3,7 +3,8 @@ package com.lzt.operate.exceptions;
 /**
  * 认证异常
  *
- * @author lzt
+ * @author luzhitao
+ * @date 2020/02/11 16:13
  */
 public class AuthenticationException extends RuntimeException {
 

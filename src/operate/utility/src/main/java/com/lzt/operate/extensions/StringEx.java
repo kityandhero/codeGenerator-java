@@ -13,7 +13,7 @@ import java.util.Optional;
  * CreteTime:2019-04-28 23:14
  * UpdateTIme:2019-04-28 23:14
  *
- * @author lzt
+ * @author luzhitao
  */
 public class StringEx implements Serializable {
 	private static final long serialVersionUID = 4500327534935128311L;

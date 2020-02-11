@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * 需要特定权限
  *
- * @author lzt
+ * @author luzhitao
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Order(ConstantAssist.AUTHORIZATION_ORDER)

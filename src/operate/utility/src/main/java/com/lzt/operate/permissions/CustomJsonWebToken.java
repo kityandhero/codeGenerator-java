@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Payload;
 import com.lzt.operate.entities.BaseCustomJsonWebTokenConfig;
+import com.lzt.operate.exceptions.AuthenticationException;
 import com.lzt.operate.utility.DateAssist;
 import com.lzt.operate.utility.RequestAssist;
 import com.lzt.operate.utility.StringAssist;
@@ -21,7 +22,7 @@ import java.util.Optional;
 /**
  * 唯一标识Token
  *
- * @author lzt
+ * @author luzhitao
  */
 public class CustomJsonWebToken {
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -148,6 +149,22 @@ public class CustomJsonWebToken {
 		String token = request.getHeader(config.getHeader());
 
 		return getFromHttpToken(token);
+	}
+
+	public static CustomJsonWebToken checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
+
+		if (!optional.isPresent()) {
+			throw new AuthenticationException("请登录后访问");
+		}
+
+		CustomJsonWebToken customJsonWebToken = optional.get();
+
+		if (customJsonWebToken.isTokenExpired()) {
+			throw new AuthenticationException("登录超时，请重新登录");
+		}
+
+		return customJsonWebToken;
 	}
 
 	public Object getToken() {

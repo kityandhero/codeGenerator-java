@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * getter方法接口定义
  *
- * @author lzt
+ * @author luzhitao
  */
 @FunctionalInterface
 public interface IGetter<T> extends Serializable {

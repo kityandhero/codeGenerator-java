@@ -5,7 +5,7 @@ import com.lzt.operate.codetools.jpa.JpaRepositoryEx;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Repository
 public interface CustomConfigRepository extends JpaRepositoryEx<CustomConfig, Long> {

@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * CreteTime:2019-04-29 22:06
  * UpdateTIme:2019-04-29 22:06
  *
- * @author lzt
+ * @author luzhitao
  */
 public class ResultDataFactory {
 

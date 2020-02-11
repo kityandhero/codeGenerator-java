@@ -14,7 +14,7 @@ import java.util.HashSet;
 /**
  * CustomConfig辅助方法集合
  *
- * @author lzt
+ * @author luzhitao
  */
 @Component
 public class CustomConfigEffectiveVerify {

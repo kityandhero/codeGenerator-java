@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.common;
 import com.lzt.operate.swagger2.model.ApiSingleParam;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 public class GlobalString {
 

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 /**
  * 数据库连接配置
  *
- * @author lzt
+ * @author luzhitao
  * @date 2019-11-19
  */
 @Data

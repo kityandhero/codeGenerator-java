@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Data
 public class Competence implements IObjectExtensionMethod {

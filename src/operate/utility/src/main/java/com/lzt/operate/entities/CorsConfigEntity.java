@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author lzt
+ * @author luzhitao
  */
 @Data
 public class CorsConfigEntity {

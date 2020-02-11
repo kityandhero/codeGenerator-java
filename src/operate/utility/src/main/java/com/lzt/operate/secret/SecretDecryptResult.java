@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 揭秘结果
  *
- * @author lzt
+ * @author luzhitao
  */
 @Data
 public class SecretDecryptResult {

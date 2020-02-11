@@ -20,7 +20,7 @@ import java.util.Base64;
 /**
  * DES加密解密工具
  *
- * @author lzt
+ * @author luzhitao
  */
 public class DesAssist {
 	private final static int MIN_LENGTH = 8;
