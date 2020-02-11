@@ -12,30 +12,30 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "Permission")
+@Table(name = "permission")
 @EqualsAndHashCode(callSuper = true)
 public class Permission extends BaseDomain {
-    /**
-     * 名称
-     */
-    @Column(length = 50)
-    String name;
+	/**
+	 * 名称
+	 */
+	@Column(length = 50)
+	String name;
 
-    /**
-     * 唯一标识符
-     */
-    @Column(length = 32, unique = true)
-    String guidTag;
+	/**
+	 * 唯一标识符
+	 */
+	@Column(length = 32, unique = true)
+	String guidTag;
 
-    /**
-     * 路径
-     */
-    @Column(length = 500)
-    String relativePath;
+	/**
+	 * 路径
+	 */
+	@Column(length = 500)
+	String relativePath;
 
-    /**
-     * 扩展权限说明
-     */
-    @Column(length = 500)
-    String expand;
+	/**
+	 * 扩展权限说明
+	 */
+	@Column(length = 500)
+	String expand;
 }

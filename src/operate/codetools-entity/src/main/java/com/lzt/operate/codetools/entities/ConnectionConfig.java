@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "connectionConfig")
+@Table(name = "connection_config")
 @EqualsAndHashCode(callSuper = true)
 public class ConnectionConfig extends BaseDomain {
 

@@ -12,7 +12,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "operatorRole")
+@Table(name = "operator_role")
 @EqualsAndHashCode(callSuper = true)
 public class OperatorRole extends BaseDomain {
 	/**
