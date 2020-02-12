@@ -20,7 +20,9 @@ import java.util.List;
 @Entity
 @Table(name = "operator")
 @EqualsAndHashCode(callSuper = true)
-public class Operator extends BaseDomain {
+public class Operator extends BaseEntity {
+
+	private static final long serialVersionUID = 6804364620994420244L;
 
 	/**
 	 * 登陆名

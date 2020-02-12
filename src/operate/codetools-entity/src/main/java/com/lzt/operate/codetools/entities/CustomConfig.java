@@ -13,24 +13,27 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "customConfig")
+@Table(name = "custom_config")
 @EqualsAndHashCode(callSuper = false)
-public class CustomConfig extends BaseDomain {
-    @Column(length = 50)
-    String name;
+public class CustomConfig extends BaseEntity {
 
-    @Column
-    String value;
+	private static final long serialVersionUID = -8937636579334404642L;
 
-    @Column
-    String description;
+	@Column(length = 50)
+	String name;
 
-    public CustomConfig() {
-        LocalDateTime now = LocalDateTime.now();
+	@Column
+	String value;
 
-        this.name = "";
-        this.value = "";
-        this.description = "";
-        this.createTime = now;
-    }
+	@Column
+	String description;
+
+	public CustomConfig() {
+		LocalDateTime now = LocalDateTime.now();
+
+		this.name = "";
+		this.value = "";
+		this.description = "";
+		this.createTime = now;
+	}
 }

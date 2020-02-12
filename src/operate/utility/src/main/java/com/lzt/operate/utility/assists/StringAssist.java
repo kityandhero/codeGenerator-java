@@ -9,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -65,7 +68,68 @@ public class StringAssist {
 	 * @return 已合并的字符串
 	 */
 	public static String join(String[] parts, String separator) {
-		return Joiner.on(Optional.of(separator).orElse("")).join(parts);
+		return join(parts, separator, false);
+	}
+
+	/**
+	 * 通过分隔符构建字符串
+	 *
+	 * @param separator   分隔符
+	 * @param parts       合并的源
+	 * @param ignoreEmpty 是否忽略空白项
+	 * @return 已合并的字符串
+	 */
+	public static String join(String[] parts, String separator, boolean ignoreEmpty) {
+		return join(parts, separator, ignoreEmpty, false);
+	}
+
+	/**
+	 * 通过分隔符构建字符串
+	 *
+	 * @param separator       分隔符
+	 * @param parts           合并的源
+	 * @param ignoreEmpty     是否忽略空白项
+	 * @param whetherTrimItem 是否针对每一项执行trim
+	 * @return 已合并的字符串
+	 */
+	public static String join(String[] parts, String separator, boolean ignoreEmpty, boolean whetherTrimItem) {
+		Iterator<String> iterator = Arrays.asList(parts).iterator();
+
+		if (iterator.hasNext()) {
+
+			List<String> collection = new ArrayList<String>(Collections.emptyList()) {
+				private static final long serialVersionUID = 4090918772117415982L;
+			};
+
+			while (iterator.hasNext()) {
+
+				String item = iterator.next();
+
+				if (ignoreEmpty) {
+					var se = Optional.of(item).orElse("");
+					if (!"".equals(Optional.of(item).orElse(""))) {
+						if (whetherTrimItem) {
+							String handleTrimItem = Optional.of(item)
+															.orElse(null)
+															.trim();
+
+							if (!"".equals(Optional.of(handleTrimItem).orElse(""))) {
+								collection.add(item);
+							}
+						} else {
+							collection.add(item);
+						}
+					}
+				} else {
+					collection.add(item);
+				}
+
+			}
+
+			return Joiner.on(Optional.of(separator).orElse("")).join(collection);
+		}
+
+		return "";
 	}
 
 	/**
@@ -76,7 +140,69 @@ public class StringAssist {
 	 * @return 已合并的字符串
 	 */
 	public static String join(Iterable<?> parts, String separator) {
-		return Joiner.on(Optional.of(separator).orElse("")).join(parts);
+		return join(parts, separator, false);
+	}
+
+	/**
+	 * 通过分隔符构建字符串
+	 *
+	 * @param separator   分隔符
+	 * @param parts       合并的源
+	 * @param ignoreEmpty 是否忽略空白项
+	 * @return 已合并的字符串
+	 */
+	public static String join(Iterable<?> parts, String separator, boolean ignoreEmpty) {
+		return join(parts, separator, ignoreEmpty, false);
+	}
+
+	/**
+	 * 通过分隔符构建字符串
+	 *
+	 * @param separator       分隔符
+	 * @param parts           合并的源
+	 * @param ignoreEmpty     是否忽略空白项
+	 * @param whetherTrimItem 是否针对每一项执行trim
+	 * @return 已合并的字符串
+	 */
+	public static String join(Iterable<?> parts, String separator, boolean ignoreEmpty, boolean whetherTrimItem) {
+		Iterator<?> iterator = parts.iterator();
+
+		if (iterator.hasNext()) {
+
+			List<Object> collection = new ArrayList<Object>(Collections.emptyList()) {
+				private static final long serialVersionUID = 4090918772117415982L;
+			};
+
+			while (iterator.hasNext()) {
+
+				Object item = iterator.next();
+
+				if (ignoreEmpty) {
+
+					if (!"".equals(Optional.of(item).orElse(""))) {
+						if (whetherTrimItem) {
+							Object handleTrimItem = Optional.of(item)
+															.orElse(null)
+															.toString()
+															.trim();
+
+							if (!"".equals(Optional.of(handleTrimItem).orElse(""))) {
+								collection.add(item);
+							}
+						} else {
+							collection.add(item);
+						}
+					}
+				} else {
+					collection.add(item);
+				}
+
+			}
+
+			return Joiner.on(Optional.of(separator).orElse("")).join(collection);
+		}
+
+		return "";
 	}
 
 	/**

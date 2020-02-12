@@ -1,9 +1,11 @@
 package com.lzt.operate.utility.permissions.aspects;
 
-import com.lzt.operate.utility.pojo.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
+import com.lzt.operate.utility.permissions.NeedAuthorization;
+import com.lzt.operate.utility.pojo.BaseCustomJsonWebTokenConfig;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -27,7 +29,7 @@ public abstract class BaseCheckAuthorization {
 	}
 
 	/**
-	 * @annotation 声明以注解的方式来定义切点
+	 * 声明以注解的方式来定义切点
 	 */
 	@Pointcut("@annotation(com.lzt.operate.utility.permissions.NeedAuthorization)")
 	public void checkDataPoint() {
@@ -36,8 +38,8 @@ public abstract class BaseCheckAuthorization {
 	/**
 	 * 前置拦截
 	 */
-	@Before("checkDataPoint()")
-	public void checkBefore() throws AuthenticationException {
+	@Before("checkDataPoint() && @annotation(needAuthorization)")
+	public void checkBefore(JoinPoint joinPoint, NeedAuthorization needAuthorization) throws AuthenticationException {
 		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getEffectiveCurrent(customJsonWebTokenConfig);
 
 		if (!optional.isPresent()) {
@@ -46,7 +48,7 @@ public abstract class BaseCheckAuthorization {
 
 		CustomJsonWebToken customJsonWebToken = optional.get();
 
-		if (!checkAuthorization(customJsonWebToken)) {
+		if (!checkAuthorization(joinPoint, needAuthorization, customJsonWebToken)) {
 			throw new AuthorizationException("无权限访问");
 		}
 	}
@@ -54,9 +56,11 @@ public abstract class BaseCheckAuthorization {
 	/**
 	 * 校验是否具有指定权限
 	 *
+	 * @param joinPoint          拦截点
+	 * @param needAuthorization  权限信息
 	 * @param customJsonWebToken 登录凭证
 	 * @return boolean 是否具有权限
 	 */
-	protected abstract boolean checkAuthorization(CustomJsonWebToken customJsonWebToken);
+	protected abstract boolean checkAuthorization(JoinPoint joinPoint, NeedAuthorization needAuthorization, CustomJsonWebToken customJsonWebToken);
 
 }

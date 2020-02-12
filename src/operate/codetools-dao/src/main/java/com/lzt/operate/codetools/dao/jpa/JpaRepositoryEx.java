@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.dao.jpa;
 
-import com.lzt.operate.codetools.entities.BaseDomain;
+import com.lzt.operate.codetools.entities.BaseEntity;
 import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * @param <ID>
  * @author luzhitao
  */
-public interface JpaRepositoryEx<T extends BaseDomain, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
+public interface JpaRepositoryEx<T extends BaseEntity, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
 	/**
 	 * findFirst 查找第一个匹配项目

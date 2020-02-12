@@ -40,10 +40,10 @@ public class ConnectionConfigServiceImpl implements ConnectionConfigService {
 	}
 
 	@Override
-	public ConnectionConfig save(ConnectionConfig data) {
-		beforeSave(data);
+	public ConnectionConfig save(ConnectionConfig entity) {
+		beforeSave(entity);
 
-		return this.repository.save(data);
+		return this.repository.save(entity);
 	}
 
 	@Override

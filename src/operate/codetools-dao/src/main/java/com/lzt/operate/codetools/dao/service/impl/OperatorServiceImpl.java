@@ -54,6 +54,7 @@ public class OperatorServiceImpl implements OperatorService {
 		return repository.findOne(filter);
 	}
 
+	@Override
 	public Optional<Operator> findByUserName(String userName) {
 		Specification<Operator> spec = new Specification<Operator>() {
 			private static final long serialVersionUID = -2260955832137429106L;

@@ -8,37 +8,39 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ * 访问通道
+ *
  * @author luzhitao
  */
 @Data
 @Entity
-@Table(name = "permission")
+@Table(name = "access_way")
 @EqualsAndHashCode(callSuper = true)
-public class Permission extends BaseEntity {
+public class AccessWay extends BaseEntity {
 
-	private static final long serialVersionUID = 8335695685595744636L;
+	private static final long serialVersionUID = 7406460829949779042L;
 
 	/**
 	 * 名称
 	 */
-	@Column(length = 50)
+	@Column
 	String name;
 
 	/**
-	 * 唯一标识符
+	 * 标记
 	 */
-	@Column(length = 32, unique = true)
-	String guidTag;
+	@Column
+	String tag;
 
 	/**
-	 * 路径
+	 * 相对路径
 	 */
-	@Column(length = 500)
+	@Column(name = "relative_path")
 	String relativePath;
 
 	/**
-	 * 扩展权限说明
+	 * 扩展子权限设置
 	 */
-	@Column(length = 500)
+	@Column
 	String expand;
 }

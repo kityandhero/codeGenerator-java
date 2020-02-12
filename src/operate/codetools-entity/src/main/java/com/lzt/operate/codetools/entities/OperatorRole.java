@@ -14,16 +14,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "operator_role")
 @EqualsAndHashCode(callSuper = true)
-public class OperatorRole extends BaseDomain {
+public class OperatorRole extends BaseEntity {
+
+	private static final long serialVersionUID = -3413222825054232328L;
+
 	/**
 	 * 账户标识
 	 */
-	@Column(length = 50)
-	String operatorId;
+	@Column(name = "operator_id")
+	long operatorId;
 
 	/**
 	 * 角色标识
 	 */
-	@Column(length = 50)
-	String roleId;
+	@Column(name = "role_id")
+	long roleId;
 }

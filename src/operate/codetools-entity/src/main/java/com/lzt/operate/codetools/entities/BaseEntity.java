@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @MappedSuperclass
-public abstract class BaseDomain implements Serializable {
+public abstract class BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -7716145801326828526L;
 
@@ -90,7 +90,7 @@ public abstract class BaseDomain implements Serializable {
 	@Column
 	long updateUnixTime;
 
-	BaseDomain() {
+	BaseEntity() {
 		autoRemark = "";
 		state = 0;
 		stateNote = "";

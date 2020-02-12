@@ -4,6 +4,8 @@ import com.lzt.operate.utility.assists.ConstantAssist;
 import org.springframework.core.annotation.Order;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -11,6 +13,7 @@ import java.lang.annotation.Target;
  *
  * @author luzhitao
  */
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Order(ConstantAssist.AUTHENTICATION_ORDER)
 public @interface NeedAuthentication {

@@ -17,7 +17,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "connection_config")
 @EqualsAndHashCode(callSuper = true)
-public class ConnectionConfig extends BaseDomain {
+public class ConnectionConfig extends BaseEntity {
+
+	private static final long serialVersionUID = -3628391768513027313L;
 
 	@Column
 	private String dbType;

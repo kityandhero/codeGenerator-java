@@ -14,7 +14,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "role")
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseDomain {
+public class Role extends BaseEntity {
+
+	private static final long serialVersionUID = -7381639390992375293L;
 
 	/**
 	 * 名称

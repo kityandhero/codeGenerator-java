@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.dao.service;
 
-import com.lzt.operate.codetools.entities.BaseDomain;
+import com.lzt.operate.codetools.entities.BaseEntity;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import lombok.var;
 import org.springframework.data.domain.Example;
@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * @author luzhitao
  */
-public interface BaseService<S extends BaseDomain> {
+public interface BaseService<S extends BaseEntity> {
 
 	/**
 	 * 构建主键标识
