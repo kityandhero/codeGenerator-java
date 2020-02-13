@@ -2,6 +2,7 @@ package com.lzt.operate.codetools.app.permissions.aspects;
 
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
 import com.lzt.operate.codetools.entities.AccessWay;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -25,12 +26,14 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
+	private final OperatorServiceImpl operatorService;
 	private AccessWayServiceImpl accessWayService;
 
 	@Autowired
-	public CheckAuthorization(CustomJsonWebTokenConfig customJsonWebTokenConfig, AccessWayServiceImpl accessWayService) {
+	public CheckAuthorization(CustomJsonWebTokenConfig customJsonWebTokenConfig, AccessWayServiceImpl accessWayService, OperatorServiceImpl operatorService) {
 		this.setBaseCustomJsonWebTokenConfig(customJsonWebTokenConfig);
 		this.accessWayService = accessWayService;
+		this.operatorService = operatorService;
 	}
 
 	@Override

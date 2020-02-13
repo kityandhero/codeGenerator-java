@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.entities;
 
+import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -95,7 +96,7 @@ public class ConnectionConfig extends BaseEntity {
 
 	public String build() {
 		return "DatabaseConfig{" +
-				"id=" + this.id +
+				"id=" + this.getId() +
 				", dbType='" + this.dbType + '\'' +
 				", name='" + this.name + '\'' +
 				", host='" + this.host + '\'' +

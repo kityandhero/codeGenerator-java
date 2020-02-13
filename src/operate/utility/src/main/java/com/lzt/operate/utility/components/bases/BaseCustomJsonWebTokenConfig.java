@@ -1,4 +1,4 @@
-package com.lzt.operate.utility.pojo;
+package com.lzt.operate.utility.components.bases;
 
 /**
  * Json Web Token 设置

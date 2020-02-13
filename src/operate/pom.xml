@@ -18,6 +18,7 @@
         <module>codetools-app</module>
         <module>codetools-entity</module>
         <module>codetools-dao</module>
+        <module>codetools-common</module>
     </modules>
 
     <properties>

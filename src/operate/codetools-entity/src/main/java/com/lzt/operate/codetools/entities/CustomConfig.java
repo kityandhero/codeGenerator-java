@@ -1,12 +1,12 @@
 package com.lzt.operate.codetools.entities;
 
+import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 /**
  * @author luzhitao
@@ -29,11 +29,9 @@ public class CustomConfig extends BaseEntity {
 	String description;
 
 	public CustomConfig() {
-		LocalDateTime now = LocalDateTime.now();
-
 		this.name = "";
 		this.value = "";
 		this.description = "";
-		this.createTime = now;
 	}
+
 }

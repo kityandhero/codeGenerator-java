@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.dao.jpa;
 
-import com.lzt.operate.codetools.entities.BaseEntity;
+import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;

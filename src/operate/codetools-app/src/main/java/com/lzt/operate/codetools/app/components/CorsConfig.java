@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.app.components;
 
-import com.lzt.operate.utility.pojo.CorsConfigEntity;
+import com.lzt.operate.utility.components.bases.CorsConfigEntity;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

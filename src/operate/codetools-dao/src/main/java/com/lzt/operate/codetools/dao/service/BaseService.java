@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.dao.service;
 
-import com.lzt.operate.codetools.entities.BaseEntity;
+import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import lombok.var;
 import org.springframework.data.domain.Example;

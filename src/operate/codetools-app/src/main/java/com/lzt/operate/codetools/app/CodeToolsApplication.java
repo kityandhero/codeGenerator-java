@@ -13,7 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.lzt.operate.codetools.app.util.Constants;
+import com.lzt.operate.codetools.common.utils.Constants;
 import com.lzt.operate.swagger2.EnableSwagger2Doc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

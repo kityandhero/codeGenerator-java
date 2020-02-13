@@ -1,8 +1,8 @@
-package com.lzt.operate.utility.pojo;
+package com.lzt.operate.utility.components.bases;
 
-import com.lzt.operate.utility.extensions.StringEx;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.extensions.StringEx;
 import lombok.Data;
 
 import java.util.ArrayList;

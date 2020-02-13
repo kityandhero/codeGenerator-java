@@ -1,10 +1,10 @@
 package com.lzt.operate.utility.permissions.aspects;
 
+import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
-import com.lzt.operate.utility.pojo.BaseCustomJsonWebTokenConfig;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;

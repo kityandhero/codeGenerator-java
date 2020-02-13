@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.entities;
 
+import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -41,4 +42,5 @@ public class Permission extends BaseEntity {
 	 */
 	@Column(length = 500)
 	String expand;
+
 }

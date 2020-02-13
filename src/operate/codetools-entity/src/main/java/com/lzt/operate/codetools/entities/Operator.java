@@ -1,5 +1,6 @@
 package com.lzt.operate.codetools.entities;
 
+import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

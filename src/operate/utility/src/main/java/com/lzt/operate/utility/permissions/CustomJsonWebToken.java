@@ -5,11 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Payload;
-import com.lzt.operate.utility.pojo.BaseCustomJsonWebTokenConfig;
-import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.assists.DateAssist;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
+import com.lzt.operate.utility.exceptions.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class CustomJsonWebToken {
 	public Long getId() {
 		Optional<Map<String, Claim>> op = parseToken();
 
-		return op.map(longClaimMap -> longClaimMap.get("userName").asLong()).orElse((long) 0);
+		return op.map(longClaimMap -> longClaimMap.get("id").asLong()).orElse((long) 0);
 	}
 
 	public String getUserName() {
@@ -182,7 +182,7 @@ public class CustomJsonWebToken {
 		return Optional.empty();
 	}
 
-	public static void checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+	public static CustomJsonWebToken checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
 		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
 
 		if (!optional.isPresent()) {
@@ -195,6 +195,7 @@ public class CustomJsonWebToken {
 			throw new AuthenticationException("登录超时，请重新登录");
 		}
 
+		return customJsonWebToken;
 	}
 
 	public Object getToken() {

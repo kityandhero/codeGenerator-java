@@ -34,7 +34,7 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "workerNode")
+@Table(name = "worker_node")
 public class WorkerNodeEntity {
 
 	/**

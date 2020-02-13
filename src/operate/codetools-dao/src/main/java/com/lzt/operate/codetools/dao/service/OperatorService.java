@@ -17,4 +17,20 @@ public interface OperatorService extends BaseService<Operator> {
 	 */
 	Optional<Operator> findByUserName(String userName);
 
+	/**
+	 * 是否存在任意用户
+	 *
+	 * @param channel channel
+	 * @return boolean
+	 */
+	boolean existAny(int channel);
+
+	/**
+	 * 是否有效
+	 *
+	 * @param id id
+	 * @return boolean
+	 */
+	boolean existEffective(long id);
+
 }
