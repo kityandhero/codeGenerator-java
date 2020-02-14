@@ -1,5 +1,7 @@
 package com.lzt.operate.codetools.dao.service;
 
+import com.lzt.operate.codetools.dao.repositories.OperatorRepository;
+import com.lzt.operate.codetools.dao.service.bases.BaseService;
 import com.lzt.operate.codetools.entities.Operator;
 
 import java.util.Optional;
@@ -7,7 +9,7 @@ import java.util.Optional;
 /**
  * @author luzhitao
  */
-public interface OperatorService extends BaseService<Operator> {
+public interface OperatorService extends BaseService<OperatorRepository, Operator> {
 
 	/**
 	 * 通过登录名获取信息

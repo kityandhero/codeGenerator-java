@@ -7,5 +7,4 @@ import com.lzt.operate.codetools.entities.RoleUniversal;
  * @author luzhitao
  */
 public interface RoleUniversalRepository extends JpaRepositoryEx<RoleUniversal, Long> {
-
 }

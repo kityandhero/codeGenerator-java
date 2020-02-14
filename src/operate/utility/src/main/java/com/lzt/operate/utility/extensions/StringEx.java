@@ -1,6 +1,7 @@
 package com.lzt.operate.utility.extensions;
 
 import com.google.common.base.Strings;
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -72,6 +73,10 @@ public class StringEx implements Serializable {
 		return new IntegerEx(toInteger());
 	}
 
+	public Long toLong() {
+		return ConvertAssist.stringToLong(this.builder.toString());
+	}
+
 	public StringEx padEnd(int minLength, char padChar) {
 		String s = Strings.padEnd(builder.toString(), minLength, padChar);
 		return new StringEx(s);
@@ -93,12 +98,12 @@ public class StringEx implements Serializable {
 	}
 
 	public StringEx appendFormat(String format, Object... args) {
-		builder.append(StringAssist.format(format, args).toString());
+		builder.append(StringAssist.format(format, args));
 		return new StringEx(builder.toString());
 	}
 
 	public StringEx appendLenientFormat(@Nullable String template, @Nullable Object @Nullable ... args) {
-		builder.append(StringAssist.lenientFormat(template, args).toString());
+		builder.append(StringAssist.lenientFormat(template, args));
 		return new StringEx(builder.toString());
 	}
 

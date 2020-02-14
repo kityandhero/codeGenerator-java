@@ -1,15 +1,10 @@
 package com.lzt.operate.codetools.dao.service.impl;
 
+import com.baidu.fsg.uid.service.UidGenService;
 import com.lzt.operate.codetools.dao.repositories.ConnectionConfigRepository;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
-import com.lzt.operate.codetools.entities.ConnectionConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -17,37 +12,24 @@ import java.util.Optional;
 @Service
 public class ConnectionConfigServiceImpl implements ConnectionConfigService {
 
+	private final UidGenService uidGenService;
+
 	private final ConnectionConfigRepository repository;
 
 	@Autowired
-	public ConnectionConfigServiceImpl(ConnectionConfigRepository repository) {
+	public ConnectionConfigServiceImpl(UidGenService uidGenService, ConnectionConfigRepository repository) {
+		this.uidGenService = uidGenService;
 		this.repository = repository;
 	}
 
 	@Override
-	public Page<ConnectionConfig> page(Example<ConnectionConfig> filter, Pageable pageable) {
-		return this.repository.findAll(filter, pageable);
+	public UidGenService getUidGenService() {
+		return this.uidGenService;
 	}
 
 	@Override
-	public Optional<ConnectionConfig> get(Long id) {
-		return this.repository.findById(id);
-	}
-
-	@Override
-	public Optional<ConnectionConfig> findOne(Example<ConnectionConfig> filter) {
-		return this.repository.findOne(filter);
-	}
-
-	@Override
-	public ConnectionConfig save(ConnectionConfig entity) {
-		beforeSave(entity);
-
-		return this.repository.save(entity);
-	}
-
-	@Override
-	public void fixDataBeforeSave(ConnectionConfig entity) {
+	public ConnectionConfigRepository getRepository() {
+		return this.repository;
 	}
 
 }

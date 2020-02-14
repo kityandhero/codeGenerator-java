@@ -11,6 +11,11 @@ public class ModelNameCollection {
 	public static final String ENTRANCE_SING_IN = "ENTRANCE_SING_IN";
 
 	/**
+	 * 账户拥有角色
+	 */
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION = "OPERATOR_ROLE_CHANGE_COLLECTION";
+
+	/**
 	 * 注册
 	 */
 	public static final String ENTRANCE_REGISTER = "ENTRANCE_REGISTER";

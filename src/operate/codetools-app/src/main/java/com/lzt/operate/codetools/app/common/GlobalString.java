@@ -94,4 +94,17 @@ public class GlobalString {
 
 	//endregion
 
+	//region OPERATOR_ROLE_CHANGE_COLLECTION
+
+	@ApiSingleParam(modelName = ModelNameCollection.OPERATOR_ROLE_CHANGE_COLLECTION, value = "账户标识", example = "test1")
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID = "operatorId";
+
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_SING_IN, value = "系统角色集合")
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION = "universalCollection";
+
+	@ApiSingleParam(modelName = ModelNameCollection.ENTRANCE_SING_IN, value = "自建角色集合")
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION = "independentEstablishmentCollection";
+
+	//endregion
+
 }

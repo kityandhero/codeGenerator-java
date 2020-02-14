@@ -7,9 +7,6 @@ import com.lzt.operate.codetools.entities.AccessWay;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -37,34 +34,13 @@ public class AccessWayServiceImpl implements AccessWayService {
 	}
 
 	@Override
-	public long generateId() {
-		return uidGenService.getUid();
+	public UidGenService getUidGenService() {
+		return this.uidGenService;
 	}
 
 	@Override
-	public Page<AccessWay> page(Example<AccessWay> filter, Pageable pageable) {
-		return this.repository.findAll(filter, pageable);
-	}
-
-	@Override
-	public Optional<AccessWay> get(Long id) {
-		return this.repository.findById(id);
-	}
-
-	@Override
-	public Optional<AccessWay> findOne(Example<AccessWay> filter) {
-		return this.repository.findOne(filter);
-	}
-
-	@Override
-	public AccessWay save(AccessWay entity) {
-		beforeSave(entity);
-
-		return this.repository.save(entity);
-	}
-
-	@Override
-	public void fixDataBeforeSave(AccessWay entity) {
+	public AccessWayRepository getRepository() {
+		return this.repository;
 	}
 
 	@Override

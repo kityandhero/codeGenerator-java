@@ -1,51 +1,35 @@
 package com.lzt.operate.codetools.dao.service.impl;
 
+import com.baidu.fsg.uid.service.UidGenService;
 import com.lzt.operate.codetools.dao.repositories.CustomConfigRepository;
 import com.lzt.operate.codetools.dao.service.CustomConfigService;
-import com.lzt.operate.codetools.entities.CustomConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * @author luzhitao
  */
 @Service
 public class CustomConfigServiceImpl implements CustomConfigService {
+
+	private final UidGenService uidGenService;
+
 	private final CustomConfigRepository repository;
 
 	@Autowired
-	public CustomConfigServiceImpl(CustomConfigRepository repository) {
+	public CustomConfigServiceImpl(UidGenService uidGenService, CustomConfigRepository repository) {
+		this.uidGenService = uidGenService;
 		this.repository = repository;
 	}
 
 	@Override
-	public Page<CustomConfig> page(Example<CustomConfig> filter, Pageable pageable) {
-		return this.repository.findAll(filter, pageable);
+	public UidGenService getUidGenService() {
+		return this.uidGenService;
 	}
 
 	@Override
-	public Optional<CustomConfig> get(Long id) {
-		return this.repository.findById(id);
+	public CustomConfigRepository getRepository() {
+		return this.repository;
 	}
 
-	@Override
-	public Optional<CustomConfig> findOne(Example<CustomConfig> filter) {
-		return this.repository.findOne(filter);
-	}
-
-	@Override
-	public CustomConfig save(CustomConfig entity) {
-		beforeSave(entity);
-
-		return this.repository.save(entity);
-	}
-
-	@Override
-	public void fixDataBeforeSave(CustomConfig entity) {
-	}
 }

@@ -1,7 +1,9 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.assists.OperatorAssist;
-import com.lzt.operate.codetools.app.common.OperateAuthController;
+import com.lzt.operate.codetools.app.common.GlobalString;
+import com.lzt.operate.codetools.app.common.ModelNameCollection;
+import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.dao.service.OperatorRoleService;
 import com.lzt.operate.codetools.dao.service.OperatorService;
@@ -11,10 +13,16 @@ import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.Operator;
+import com.lzt.operate.swagger2.model.ApiJsonObject;
+import com.lzt.operate.swagger2.model.ApiJsonProperty;
+import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.BaseResultData;
+import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.SerializableData;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -22,9 +30,11 @@ import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -32,11 +42,11 @@ import java.util.Optional;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/business/currentOperator")
-@Api(tags = {"操作者信息"})
-public class CurrentOperator extends OperateAuthController {
+@RequestMapping("/business/operatorRole")
+@Api(tags = {"账户拥有角色管理"})
+public class OperatorRoleController extends OperateBaseController {
 
-	private final CustomJsonWebTokenConfig customJsonWebTokenConfig;
+	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 
 	private OperatorService operatorService;
 
@@ -47,7 +57,7 @@ public class CurrentOperator extends OperateAuthController {
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
 
 	@Autowired
-	public CurrentOperator(
+	public OperatorRoleController(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
 			OperatorServiceImpl operatorService,
 			OperatorRoleServiceImpl operatorRoleService,
@@ -69,41 +79,42 @@ public class CurrentOperator extends OperateAuthController {
 				this.roleCodeToolsService);
 	}
 
-	@ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")
+	@ApiOperation(value = "变更拥有角色", notes = "变更拥有角色", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.OPERATOR_ROLE_CHANGE_COLLECTION, value = {
+			@ApiJsonProperty(name = GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID),
+			@ApiJsonProperty(name = GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION),
+			@ApiJsonProperty(name = GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.OPERATOR_ROLE_CHANGE_COLLECTION)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/getCurrent", produces = "application/json")
-	public BaseResultData getCurrent() {
-		OperatorAssist assist = getOperatorAssist();
+	@PostMapping(path = "/changeCollection", consumes = "application/json", produces = "application/json")
+	public BaseResultData changeCollection(@RequestBody Map<String, String> json) {
+		// 直接将json信息打印出来
+		System.out.println(json);
 
-		Optional<Operator> op = assist.getCurrent();
+		ParamData paramJson = new ParamData(json);
 
-		if (op.isPresent()) {
-			return this.singleData(op.get());
+		// 将获取的json数据封装一层，然后在给返回
+		var operatorId = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID, "0");
+		var universalCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION, "");
+		var independentEstablishmentCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION, "");
+
+		Optional<Operator> optional = operatorService.get(operatorId.toLong());
+
+		if (optional.isPresent()) {
+			Operator operator = optional.get();
+
+			SerializableData data = new SerializableData();
+
+			return singleData(data);
 		} else {
 			var error = ReturnDataCode.NODATA;
 
-			error.setMessage("没有数据");
+			error.setMessage("账户不存在!");
 
-			return this.fail(error);
+			return fail(error);
 		}
+
 	}
 
-	@ApiOperation(value = "当前操作者基本信息", notes = "当前操作者基本信息", httpMethod = "POST")
-	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/getCurrentBasicInfo", produces = "application/json")
-	public BaseResultData getCurrentBasicInfo() {
-		OperatorAssist assist = getOperatorAssist();
-
-		Optional<Operator> op = assist.getCurrent();
-
-		if (op.isPresent()) {
-			return this.singleData(op.get());
-		} else {
-			var error = ReturnDataCode.NODATA;
-
-			error.setMessage("没有数据");
-
-			return this.fail(error);
-		}
-	}
 }

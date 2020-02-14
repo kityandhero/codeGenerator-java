@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.app.assists;
 
 import com.lzt.operate.codetools.app.common.GlobalString;
+import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.utility.pojo.ParamData;
@@ -12,7 +13,8 @@ import java.util.Optional;
  * @author luzhitao
  */
 public class ConnectionConfigAssist {
-	private ConnectionConfigServiceImpl connectionConfigServiceImpl;
+
+	private ConnectionConfigService connectionConfigServiceImpl;
 
 	public ConnectionConfigAssist(ConnectionConfigServiceImpl connectionConfigServiceImpl) {
 		this.connectionConfigServiceImpl = connectionConfigServiceImpl;

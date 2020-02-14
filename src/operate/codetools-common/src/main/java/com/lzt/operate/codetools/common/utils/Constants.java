@@ -27,7 +27,7 @@ public class Constants {
 	/**
 	 * 超级管理员标示
 	 */
-	public static final String SUPER_ROLE_GUID_TAG = "super";
+	public static final String SUPER_ROLE_TAG = "super";
 
 	public static final String DEFAULT_OPERATOR_USER_NAME = "admin";
 

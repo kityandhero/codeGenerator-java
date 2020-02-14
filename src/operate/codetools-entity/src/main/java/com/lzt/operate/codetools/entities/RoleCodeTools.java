@@ -12,13 +12,13 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "role_universal")
+@Table(name = "role_code_tools")
 @EqualsAndHashCode(callSuper = true)
-public class RoleUniversal extends BaseRole {
+public class RoleCodeTools extends BaseRole {
 
-	private static final long serialVersionUID = -7381639390992375293L;
+	private static final long serialVersionUID = -8450387032840618147L;
 
-	public RoleUniversal() {
+	public RoleCodeTools() {
 		super();
 	}
 

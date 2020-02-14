@@ -26,8 +26,23 @@ public class OperatorRole extends BaseEntity {
 	long operatorId;
 
 	/**
-	 * 角色标识
+	 * 系统角色权限题集合
 	 */
-	@Column(name = "role_id")
-	long roleId;
+	@Column(name = "role_universal_collection")
+	String roleUniversalCollection;
+
+	/**
+	 * 自建角色权限题集合
+	 */
+	@Column(name = "role_code_tools_collection")
+	String roleCodeToolsCollection;
+
+	public OperatorRole() {
+		super();
+
+		operatorId = 0;
+		roleUniversalCollection = "";
+		roleCodeToolsCollection = "";
+	}
+
 }

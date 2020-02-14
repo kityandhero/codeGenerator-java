@@ -1,8 +1,7 @@
 package com.lzt.operate.utility.pojo;
 
-import com.lzt.operate.utility.extensions.StringEx;
-import com.lzt.operate.utility.interfaces.IObjectExtensionMethod;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.interfaces.IObjectExtensionMethod;
 import lombok.Data;
 import lombok.var;
 
@@ -20,52 +19,52 @@ public class Competence implements IObjectExtensionMethod {
 	/**
 	 * 名称
 	 */
-	StringEx name;
+	String name;
 
 	/**
 	 * 唯一标识符
 	 */
-	StringEx guidTag;
+	String tag;
 
 	/**
 	 * 路径
 	 */
-	StringEx relativePath;
+	String relativePath;
 
 	/**
 	 * 扩展权限说明
 	 */
-	StringEx explain;
+	String explain;
 
 	/**
 	 * 扩展权限设置
 	 */
-	StringEx expansionSet;
+	String expansionSet;
 
 	public Competence() {
-		guidTag = new StringEx("");
-		name = new StringEx("");
-		relativePath = new StringEx("");
-		explain = new StringEx("");
-		expansionSet = new StringEx("");
+		tag = "";
+		name = "";
+		relativePath = "";
+		explain = "";
+		expansionSet = "";
 	}
 
-	public static Competence plus(Competence competenceBefore, Competence competenceAfter) throws Exception {
-		if (competenceBefore.guidTag != competenceAfter.guidTag) {
-			throw new Exception("合并的两个权限体必须标识一致");
+	public static Competence plus(Competence competenceBefore, Competence competenceAfter) {
+		if (!competenceBefore.tag.equals(competenceAfter.tag)) {
+			throw new RuntimeException("合并的两个权限体必须标识一致");
 		}
 
 		var mergerResult = merger(competenceBefore, competenceAfter);
 		var result = new Competence();
 
-		result.setGuidTag(competenceBefore.guidTag);
-		result.setExpansionSet(new StringEx(mergerResult));
+		result.setTag(competenceBefore.tag);
+		result.setExpansionSet(mergerResult);
 
 		return result;
 	}
 
 	private static String merger(Competence competenceBefore, Competence competenceAfter) {
-		return merger(competenceBefore.expansionSet.toString(), competenceAfter.expansionSet.toString());
+		return merger(competenceBefore.expansionSet, competenceAfter.expansionSet);
 	}
 
 	private static String merger(String expansionSetBefore, String expansionSetAfter) {
@@ -116,19 +115,22 @@ public class Competence implements IObjectExtensionMethod {
 		var list = new ArrayList<String>();
 
 		for (var item : listCompetence) {
-			list.add(item.getGuidTag() + (item.getExpansionSet()
-											  .isNullOrEmpty() ? "" : "|" + item.getExpansionSet()));
+			list.add(item.getTag() + (StringAssist.isNullOrEmpty(item.getExpansionSet())
+					? "" : "|" + item.getExpansionSet()));
 		}
 
-		return StringAssist.join(list, ",").toString();
+		return StringAssist.join(list, ",");
 	}
 
 	public List<SerializableData> getExpansionSetCollection() {
 		var result = new ArrayList<SerializableData>();
 
-		var listExpand = explain.split('|').stream().filter(o -> !StringAssist.isNullOrEmpty(o)).toArray();
+		var listExpand = StringAssist.split(explain, '|')
+									 .stream()
+									 .filter(o -> !StringAssist.isNullOrEmpty(o))
+									 .toArray();
 
-		var listExpansionSet = Stream.of(expansionSet.toString().toCharArray()).map(Object::toString).toArray();
+		var listExpansionSet = Stream.of(expansionSet.toCharArray()).map(Object::toString).toArray();
 
 		if (listExpand.length > 0) {
 			var count = listExpand.length;

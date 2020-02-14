@@ -1,10 +1,17 @@
 package com.lzt.operate.codetools.app.controllers.entrance;
 
+import com.lzt.operate.codetools.app.assists.OperatorAssist;
 import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.dao.service.OperatorRoleService;
+import com.lzt.operate.codetools.dao.service.OperatorService;
+import com.lzt.operate.codetools.dao.service.RoleUniversalService;
+import com.lzt.operate.codetools.dao.service.impl.OperatorRoleServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.Operator;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
@@ -44,14 +51,37 @@ import java.util.Map;
 @Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
-	private CustomJsonWebTokenConfig jwtConfig;
+	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 
-	private OperatorServiceImpl operatorServiceImpl;
+	private OperatorService operatorService;
+
+	private final OperatorRoleService operatorRoleService;
+
+	private final RoleUniversalService roleUniversalService;
+
+	private final RoleCodeToolsServiceImpl roleCodeToolsService;
 
 	@Autowired
-	public EntranceController(OperatorServiceImpl operatorServiceImpl, CustomJsonWebTokenConfig jwtConfig) {
-		this.operatorServiceImpl = operatorServiceImpl;
-		this.jwtConfig = jwtConfig;
+	public EntranceController(
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			OperatorServiceImpl operatorServiceImpl,
+			OperatorRoleServiceImpl operatorRoleService,
+			RoleUniversalServiceImpl roleUniversalService,
+			RoleCodeToolsServiceImpl roleCodeToolsService) {
+		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
+		this.operatorService = operatorServiceImpl;
+		this.operatorRoleService = operatorRoleService;
+		this.roleUniversalService = roleUniversalService;
+		this.roleCodeToolsService = roleCodeToolsService;
+	}
+
+	private OperatorAssist getOperatorAssist() {
+		return new OperatorAssist(
+				this.customJsonWebTokenConfig,
+				this.operatorService,
+				this.operatorRoleService,
+				this.roleUniversalService,
+				this.roleCodeToolsService);
 	}
 
 	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
@@ -75,7 +105,7 @@ public class EntranceController extends OperateBaseController {
 		Operator operator = new Operator();
 		operator.setUserName(userName.toString());
 
-		var optionalResult = operatorServiceImpl.findByUserName(userName.toString());
+		var optionalResult = operatorService.findByUserName(userName.toString());
 
 		if (optionalResult.isPresent()) {
 			var searchResult = optionalResult.get();
@@ -89,11 +119,15 @@ public class EntranceController extends OperateBaseController {
 			}
 
 			String token = CustomJsonWebToken.generateToken(searchResult.getId(), searchResult
-					.getUserName(), searchResult.getPassword(), jwtConfig);
+					.getUserName(), searchResult.getPassword(), customJsonWebTokenConfig);
 
 			SerializableData data = new SerializableData();
 
 			data.append("token", token);
+
+			OperatorAssist operatorAssist = getOperatorAssist();
+
+			data.append("currentAuthority", StringAssist.join(operatorAssist.getCompetenceTagCollection(searchResult.getId()), ","));
 
 			return singleData(data);
 		} else {
@@ -136,7 +170,7 @@ public class EntranceController extends OperateBaseController {
 			return fail(error);
 		}
 
-		var existOperator = operatorServiceImpl.findByUserName(userName.toString());
+		var existOperator = operatorService.findByUserName(userName.toString());
 
 		if (existOperator.isPresent()) {
 			var error = ReturnDataCode.PARAM_ERROR;
@@ -152,7 +186,7 @@ public class EntranceController extends OperateBaseController {
 									 .toLowerCase());
 		operator.setPassword(Md5Assist.toMd5(password, operator.getSlat()));
 
-		operatorServiceImpl.save(operator);
+		operatorService.save(operator);
 
 		return success();
 	}

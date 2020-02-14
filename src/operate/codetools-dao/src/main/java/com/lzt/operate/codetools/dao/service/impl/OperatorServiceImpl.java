@@ -8,9 +8,6 @@ import com.lzt.operate.codetools.entities.Operator;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -39,23 +36,13 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 
 	@Override
-	public long generateId() {
-		return uidGenService.getUid();
+	public UidGenService getUidGenService() {
+		return this.uidGenService;
 	}
 
 	@Override
-	public Page<Operator> page(Example<Operator> filter, Pageable pageable) {
-		return repository.findAll(filter, pageable);
-	}
-
-	@Override
-	public Optional<Operator> get(Long id) {
-		return repository.findById(id);
-	}
-
-	@Override
-	public Optional<Operator> findOne(Example<Operator> filter) {
-		return repository.findOne(filter);
+	public OperatorRepository getRepository() {
+		return this.repository;
 	}
 
 	@Override
@@ -110,17 +97,6 @@ public class OperatorServiceImpl implements OperatorService {
 		}
 
 		return false;
-	}
-
-	@Override
-	public Operator save(Operator entity) {
-		beforeSave(entity);
-
-		return repository.save(entity);
-	}
-
-	@Override
-	public void fixDataBeforeSave(Operator entity) {
 	}
 
 }
