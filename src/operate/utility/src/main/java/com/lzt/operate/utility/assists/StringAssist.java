@@ -56,7 +56,7 @@ public class StringAssist {
 	 * @param parts 合并的源
 	 * @return 已合并的字符串
 	 */
-	public static String join(Iterable<?> parts) {
+	public static String join(String[] parts) {
 		return join(parts, ConstantAssist.SEPARATOR_COMMA);
 	}
 
@@ -135,11 +135,21 @@ public class StringAssist {
 	/**
 	 * 通过分隔符构建字符串
 	 *
+	 * @param parts 合并的源
+	 * @return 已合并的字符串
+	 */
+	public static <TIterable extends Iterable<?>> String join(TIterable parts) {
+		return join(parts, ConstantAssist.SEPARATOR_COMMA);
+	}
+
+	/**
+	 * 通过分隔符构建字符串
+	 *
 	 * @param separator 分隔符
 	 * @param parts     合并的源
 	 * @return 已合并的字符串
 	 */
-	public static String join(Iterable<?> parts, String separator) {
+	public static <TIterable extends Iterable<?>> String join(TIterable parts, String separator) {
 		return join(parts, separator, false);
 	}
 
@@ -151,7 +161,7 @@ public class StringAssist {
 	 * @param ignoreEmpty 是否忽略空白项
 	 * @return 已合并的字符串
 	 */
-	public static String join(Iterable<?> parts, String separator, boolean ignoreEmpty) {
+	public static <TIterable extends Iterable<?>> String join(TIterable parts, String separator, boolean ignoreEmpty) {
 		return join(parts, separator, ignoreEmpty, false);
 	}
 
@@ -164,7 +174,7 @@ public class StringAssist {
 	 * @param whetherTrimItem 是否针对每一项执行trim
 	 * @return 已合并的字符串
 	 */
-	public static String join(Iterable<?> parts, String separator, boolean ignoreEmpty, boolean whetherTrimItem) {
+	public static <TIterable extends Iterable<?>> String join(TIterable parts, String separator, boolean ignoreEmpty, boolean whetherTrimItem) {
 		Iterator<?> iterator = parts.iterator();
 
 		if (iterator.hasNext()) {
@@ -353,7 +363,33 @@ public class StringAssist {
 	 * @param separator 分隔符
 	 * @return 已分隔的结果
 	 */
+	public static List<String> split(String target, String separator) {
+		var list = new ArrayList<String>();
+
+		Splitter.on(separator).omitEmptyStrings().split(target).forEach(list::add);
+
+		return list;
+	}
+
+	/**
+	 * 将字符串按照指定的分隔符分隔为 List<String>
+	 *
+	 * @param target    要处理的源字符串
+	 * @param separator 分隔符
+	 * @return 已分隔的结果
+	 */
 	public static List<String> splitToList(String target, char separator) {
+		return Splitter.on(separator).omitEmptyStrings().splitToList(target);
+	}
+
+	/**
+	 * 将字符串按照指定的分隔符分隔为 List<String>
+	 *
+	 * @param target    要处理的源字符串
+	 * @param separator 分隔符
+	 * @return 已分隔的结果
+	 */
+	public static List<String> splitToList(String target, String separator) {
 		return Splitter.on(separator).omitEmptyStrings().splitToList(target);
 	}
 

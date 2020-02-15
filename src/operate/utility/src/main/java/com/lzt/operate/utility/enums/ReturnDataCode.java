@@ -11,14 +11,19 @@ import com.lzt.operate.utility.pojo.BaseResultData;
 public enum ReturnDataCode {
 
 	/**
-	 * OK
+	 * 未知
 	 */
-	OK(BaseResultData.CODE_ACCESS_SUCCESS, BaseResultData.MESSAGE_ACCESS_SUCCESS, true),
+	Empty(0, "", false),
 
 	/**
-	 * 无可用数据
+	 * 未知
 	 */
-	NODATA(201, "无可用数据", false),
+	Unknown(-1, "未知", false),
+
+	/**
+	 * OK
+	 */
+	Ok(BaseResultData.CODE_ACCESS_SUCCESS, BaseResultData.MESSAGE_ACCESS_SUCCESS, true),
 
 	/**
 	 * 1XX错误
@@ -91,6 +96,36 @@ public enum ReturnDataCode {
 	SYSTEM_ERR(500, "服务器运行异常", false),
 
 	/**
+	 * 无可用数据
+	 */
+	ParamError(1001, "参数错误", false),
+
+	/**
+	 * 无可用数据
+	 */
+	NoData(1002, "无数据", false),
+
+	/**
+	 * 无可用数据
+	 */
+	NoChange(1003, "无操作反馈", false),
+
+	/**
+	 * 无可用数据
+	 */
+	TokenExpired(2001, "标识过期", false),
+
+	/**
+	 * 无可用数据
+	 */
+	IgnoreHandle(2002, "忽略处理", false),
+
+	/**
+	 * 无可用数据
+	 */
+	Exception(5001, "程序异常", false),
+
+	/**
 	 * 该用户不存在或密码错误
 	 */
 	NOT_EXIST_USER_OR_ERROR_PWD(10000, "该用户不存在或密码错误", false),
@@ -144,11 +179,6 @@ public enum ReturnDataCode {
 	 * 该用户已被冻结
 	 */
 	USER_FROZEN(40000, "该用户已被冻结", false),
-
-	/**
-	 * 参数错误
-	 */
-	PARAM_ERROR(50001, "参数错误", false),
 
 	/**
 	 * 程序异常

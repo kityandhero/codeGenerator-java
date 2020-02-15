@@ -111,7 +111,7 @@ public class EntranceController extends OperateBaseController {
 			var searchResult = optionalResult.get();
 
 			if (!Md5Assist.verifyMd5(searchResult.getPassword(), password.toString(), searchResult.getSlat())) {
-				var error = ReturnDataCode.NODATA;
+				var error = ReturnDataCode.NoData;
 
 				error.setMessage("密码错误!");
 
@@ -131,7 +131,7 @@ public class EntranceController extends OperateBaseController {
 
 			return singleData(data);
 		} else {
-			var error = ReturnDataCode.NODATA;
+			var error = ReturnDataCode.NoData;
 
 			error.setMessage("账户不存在!");
 
@@ -164,7 +164,7 @@ public class EntranceController extends OperateBaseController {
 		StringEx rePassword = paramJson.getStringExByKey(GlobalString.REGISTER_RE_PASSWORD);
 
 		if (!password.equals(rePassword)) {
-			var error = ReturnDataCode.PARAM_ERROR;
+			var error = ReturnDataCode.ParamError;
 			error.setMessage("两次密码输入不一致");
 
 			return fail(error);
@@ -173,7 +173,7 @@ public class EntranceController extends OperateBaseController {
 		var existOperator = operatorService.findByUserName(userName.toString());
 
 		if (existOperator.isPresent()) {
-			var error = ReturnDataCode.PARAM_ERROR;
+			var error = ReturnDataCode.ParamError;
 			error.setMessage("登录名已存在");
 
 			return fail(error);

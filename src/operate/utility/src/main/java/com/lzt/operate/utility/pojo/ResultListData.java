@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,24 +17,27 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ResultListData extends BaseResultData {
-    @ApiModelProperty(notes = "列表数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-    public List list;
 
-    public ResultListData() {
-        super();
-        this.list = new ArrayList<>();
-    }
+	private static final long serialVersionUID = -2793790712990675266L;
 
-    public ResultListData(@NonNull ReturnDataCode returnDataCode) {
-        this(returnDataCode, new ArrayList<>());
-    }
+	@ApiModelProperty(notes = "列表数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
+	public List<Serializable> list;
 
-    public ResultListData(@NonNull ReturnDataCode returnDataCode, ArrayList list) {
-        this(returnDataCode, list, new SerializableData());
-    }
+	public ResultListData() {
+		super();
+		this.list = new ArrayList<>();
+	}
 
-    public ResultListData(@NonNull ReturnDataCode returnDataCode, ArrayList list, SerializableData extra) {
-        super(returnDataCode, extra);
-        this.list = list;
-    }
+	public ResultListData(@NonNull ReturnDataCode returnDataCode) {
+		this(returnDataCode, new ArrayList<>());
+	}
+
+	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<Serializable> list) {
+		this(returnDataCode, list, new SerializableData());
+	}
+
+	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<Serializable> list, SerializableData extra) {
+		super(returnDataCode, extra);
+		this.list = list;
+	}
 }

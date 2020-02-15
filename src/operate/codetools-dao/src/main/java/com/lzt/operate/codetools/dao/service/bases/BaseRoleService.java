@@ -16,7 +16,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -36,7 +38,11 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 	 * @param idCollection idCollection
 	 * @return List<S>
 	 */
-	default List<S> findByIdCollection(Iterable<Long> idCollection) {
+	default List<S> findByIdCollection(Collection<Long> idCollection) {
+		if (!Optional.ofNullable(idCollection).isPresent()) {
+			return new ArrayList<>();
+		}
+
 		Specification<S> spec = new Specification<S>() {
 
 			private static final long serialVersionUID = 6315433399074638390L;
@@ -45,9 +51,13 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 			public Predicate toPredicate(Root<S> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
-				list.add(criteriaBuilder.in(root.get(ReflectAssist.getFieldName(S::getId))
-												.as(Long.class)
-												.in(idCollection)));
+				CriteriaBuilder.In<Long> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(S::getId)));
+
+				for (Long v : idCollection) {
+					in.value(v);
+				}
+
+				list.add(in);
 
 				Predicate[] p = new Predicate[list.size()];
 
@@ -65,17 +75,20 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 	 */
 	@Override
 	default void fixDataBeforeSave(S entity) {
-		var competence = entity.getCompetence();
+		if (Optional.ofNullable(entity).isPresent()) {
+			var competence = entity.getCompetence();
 
-		if (StringAssist.isNullOrEmpty(competence)) {
-			entity.setCompetence("");
-			entity.setModuleCount(0);
+			if (StringAssist.isNullOrEmpty(competence)) {
+				entity.setCompetence("");
+				entity.setModuleCount(0);
 
-		} else {
-			var moduleCount = getCompetenceEntityCollection(entity).size();
+			} else {
+				var moduleCount = getCompetenceEntityCollection(entity).size();
 
-			entity.setModuleCount(moduleCount);
+				entity.setModuleCount(moduleCount);
+			}
 		}
+
 	}
 
 	/**
@@ -85,6 +98,10 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 	 * @return List<Competence>
 	 */
 	default List<Competence> getCompetenceEntityCollection(S entity) {
+		if (!Optional.ofNullable(entity).isPresent()) {
+			return new ArrayList<>();
+		}
+
 		var competence = entity.getCompetence();
 
 		List<Competence> result = new ArrayList<>();
@@ -125,7 +142,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 
 					predicate = cb.and(predicate, cb.and(root.get(ReflectAssist.getFieldName(AccessWay::getTag))
 															 .as(String.class)
-															 .in(result.stream().map(Competence::getTag))));
+															 .in(result.stream().map(Competence::getTag).toArray())));
 
 					return predicate;
 				});

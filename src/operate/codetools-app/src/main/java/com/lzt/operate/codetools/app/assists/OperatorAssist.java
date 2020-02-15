@@ -15,15 +15,19 @@ import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.codetools.entities.bases.BaseRole;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.Competence;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Operator辅助方法集合
@@ -55,7 +59,7 @@ public class OperatorAssist {
 		this.roleCodeToolsService = roleCodeToolsService;
 	}
 
-	private OperatorService getOperatorService() {
+	public OperatorService getOperatorService() {
 		Optional<OperatorService> optional = Optional.ofNullable(this.operatorService);
 
 		if (optional.isPresent()) {
@@ -65,7 +69,7 @@ public class OperatorAssist {
 		throw new RuntimeException("OperatorService获取失败");
 	}
 
-	private OperatorRoleService getOperatorRoleService() {
+	public OperatorRoleService getOperatorRoleService() {
 		Optional<OperatorRoleService> optional = Optional.ofNullable(this.operatorRoleService);
 
 		if (optional.isPresent()) {
@@ -75,7 +79,7 @@ public class OperatorAssist {
 		throw new RuntimeException("OperatorRoleService获取失败");
 	}
 
-	private RoleUniversalService getRoleUniversalService() {
+	public RoleUniversalService getRoleUniversalService() {
 		Optional<RoleUniversalService> optional = Optional.ofNullable(this.roleUniversalService);
 
 		if (optional.isPresent()) {
@@ -85,7 +89,7 @@ public class OperatorAssist {
 		throw new RuntimeException("RoleUniversalService获取失败");
 	}
 
-	private RoleCodeToolsService getRoleCodeToolsService() {
+	public RoleCodeToolsService getRoleCodeToolsService() {
 		Optional<RoleCodeToolsService> optional = Optional.ofNullable(this.roleCodeToolsService);
 
 		if (optional.isPresent()) {
@@ -251,6 +255,226 @@ public class OperatorAssist {
 		}
 
 		return ceList;
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId                operatorId
+	 * @param roleUniversalIdCollection roleUniversalIdList
+	 * @param roleCodeToolsIdCollection roleCodeToolsIdList
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRole(long operatorId, String roleUniversalIdCollection, String roleCodeToolsIdCollection) {
+		if (operatorId <= 0) {
+			ExecutiveSimpleResult result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+
+			result.setMessage("指定的账户标识错误");
+
+			return result;
+		}
+
+		List<Long> roleUniversalIdList = StringAssist.isNullOrEmpty(roleUniversalIdCollection) ? new ArrayList<>() : Stream
+				.of(StringAssist
+						.split(roleUniversalIdCollection, ",").toArray())
+				.filter(o -> !StringAssist.isNullOrEmpty(o.toString()))
+				.map(o -> ConvertAssist.stringToLong(o.toString()))
+				.collect(Collectors.toList());
+
+		List<Long> roleCodeToolsIdList = StringAssist.isNullOrEmpty(roleCodeToolsIdCollection) ? new ArrayList<>() : Stream
+				.of(StringAssist
+						.split(roleCodeToolsIdCollection, ",").toArray())
+				.filter(o -> !StringAssist.isNullOrEmpty(o.toString()))
+				.map(o -> ConvertAssist.stringToLong(o.toString()))
+				.collect(Collectors.toList());
+
+		return changeRole(operatorId, roleUniversalIdList, roleCodeToolsIdList);
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId          operatorId
+	 * @param roleUniversalIdList roleUniversalIdList
+	 * @param roleCodeToolsIdList roleCodeToolsIdList
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRole(long operatorId, List<Long> roleUniversalIdList, List<Long> roleCodeToolsIdList) {
+		ExecutiveSimpleResult result;
+
+		if (operatorId <= 0) {
+			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+
+			result.setMessage("指定的账户标识错误");
+
+			return result;
+		}
+
+		ExecutiveSimpleResult changeRoleUniversalResult = changeRoleUniversal(operatorId, roleUniversalIdList);
+		ExecutiveSimpleResult changeRoleCodeToolsResult = changeRoleCodeTools(operatorId, roleCodeToolsIdList);
+
+		if (changeRoleUniversalResult.getSuccess() && changeRoleCodeToolsResult.getSuccess()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Ok);
+		}
+
+		if (!changeRoleUniversalResult.getSuccess()) {
+			return changeRoleUniversalResult;
+		}
+
+		if (!changeRoleCodeToolsResult.getSuccess()) {
+			return changeRoleCodeToolsResult;
+		}
+
+		return new ExecutiveSimpleResult(ReturnDataCode.Unknown);
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId    operatorId
+	 * @param roleUniversal roleUniversal
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRoleUniversal(long operatorId, RoleUniversal roleUniversal) {
+		return changeRoleUniversal(operatorId, roleUniversal.getId());
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId      operatorId
+	 * @param roleUniversalId roleUniversalId
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRoleUniversal(long operatorId, Long roleUniversalId) {
+		return changeRoleUniversal(operatorId, Collections.singletonList(roleUniversalId));
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId          operatorId
+	 * @param roleUniversalIdList roleUniversalIdList
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRoleUniversal(long operatorId, List<Long> roleUniversalIdList) {
+		ExecutiveSimpleResult result;
+
+		if (operatorId <= 0) {
+			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+
+			result.setMessage("指定的账户标识错误");
+
+			return result;
+		}
+
+		Optional<Operator> optionalOperator = operatorService.get(operatorId);
+
+		if (optionalOperator.isPresent()) {
+			List<RoleUniversal> roleUniversalList = getRoleUniversalService().findByIdCollection(roleUniversalIdList);
+
+			OperatorRoleService operatorRoleService = this.getOperatorRoleService();
+
+			Optional<OperatorRole> optionalOperatorRole = operatorRoleService.findByOperatorId(operatorId);
+
+			OperatorRole operatorRole;
+
+			if (optionalOperatorRole.isPresent()) {
+				operatorRole = optionalOperatorRole.get();
+			} else {
+				operatorRole = new OperatorRole();
+
+				operatorRole.setOperatorId(operatorId);
+			}
+
+			operatorRole.setRoleUniversalCollection(StringAssist.join(roleUniversalList.stream()
+																					   .map(o -> Long.toString(o.getId()))
+																					   .collect(Collectors.toList())));
+
+			operatorRoleService.save(operatorRole);
+
+			result = new ExecutiveSimpleResult(ReturnDataCode.Ok);
+		} else {
+			result = new ExecutiveSimpleResult(ReturnDataCode.NoData);
+
+			result.setMessage("指定的账户不存在");
+		}
+
+		return result;
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId    operatorId
+	 * @param roleCodeTools roleCodeTools
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRoleCodeTools(long operatorId, RoleCodeTools roleCodeTools) {
+		return changeRoleCodeTools(operatorId, roleCodeTools.getId());
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId      operatorId
+	 * @param roleCodeToolsId roleCodeToolsId
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRoleCodeTools(long operatorId, Long roleCodeToolsId) {
+		return changeRoleCodeTools(operatorId, Collections.singletonList(roleCodeToolsId));
+	}
+
+	/**
+	 * 更改指定账户拥有的角色
+	 *
+	 * @param operatorId          operatorId
+	 * @param roleCodeToolsIdList roleCodeToolsIdList
+	 * @return ExecutiveSimpleResult
+	 */
+	public ExecutiveSimpleResult changeRoleCodeTools(long operatorId, List<Long> roleCodeToolsIdList) {
+		ExecutiveSimpleResult result;
+
+		if (operatorId <= 0) {
+			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+
+			result.setMessage("指定的账户标识错误");
+
+			return result;
+		}
+
+		Optional<Operator> optionalOperator = operatorService.get(operatorId);
+
+		if (optionalOperator.isPresent()) {
+			List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsService().findByIdCollection(roleCodeToolsIdList);
+
+			OperatorRoleService operatorRoleService = this.getOperatorRoleService();
+
+			Optional<OperatorRole> optionalOperatorRole = operatorRoleService.findByOperatorId(operatorId);
+
+			OperatorRole operatorRole;
+
+			if (optionalOperatorRole.isPresent()) {
+				operatorRole = optionalOperatorRole.get();
+			} else {
+				operatorRole = new OperatorRole();
+
+				operatorRole.setOperatorId(operatorId);
+			}
+
+			operatorRole.setRoleCodeToolsCollection(StringAssist.join(roleCodeToolsList.stream()
+																					   .map(o -> Long.toString(o.getId()))
+																					   .collect(Collectors.toList())));
+			operatorRoleService.save(operatorRole);
+
+			result = new ExecutiveSimpleResult(ReturnDataCode.Ok);
+		} else {
+			result = new ExecutiveSimpleResult(ReturnDataCode.NoData);
+
+			result.setMessage("指定的账户不存在");
+		}
+
+		return result;
 	}
 
 }

@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -54,6 +55,13 @@ public class RoleUniversalServiceImpl implements RoleUniversalService {
 
 	@Override
 	public Boolean existSuper(int channel) {
+		var optional = findSuper(channel);
+
+		return optional.isPresent();
+	}
+
+	@Override
+	public Optional<RoleUniversal> findSuper(int channel) {
 		Specification<RoleUniversal> spec = new Specification<RoleUniversal>() {
 			private static final long serialVersionUID = -2260955832137429106L;
 
@@ -71,9 +79,7 @@ public class RoleUniversalServiceImpl implements RoleUniversalService {
 			}
 		};
 
-		var optional = repository.findOne(spec);
-
-		return optional.isPresent();
+		return repository.findOne(spec);
 	}
 
 }

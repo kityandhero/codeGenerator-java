@@ -80,7 +80,7 @@ public class CurrentOperator extends OperateAuthController {
 		if (op.isPresent()) {
 			return this.singleData(op.get());
 		} else {
-			var error = ReturnDataCode.NODATA;
+			var error = ReturnDataCode.NoData;
 
 			error.setMessage("没有数据");
 
@@ -99,7 +99,7 @@ public class CurrentOperator extends OperateAuthController {
 		if (op.isPresent()) {
 			return this.singleData(op.get());
 		} else {
-			var error = ReturnDataCode.NODATA;
+			var error = ReturnDataCode.NoData;
 
 			error.setMessage("没有数据");
 

@@ -1,11 +1,11 @@
 package com.lzt.operate.utility.web.controllers;
 
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultDataFactory;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
-import com.lzt.operate.utility.enums.ReturnDataCode;
 import io.swagger.annotations.Api;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,7 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	protected ResultListData listData(List list) {
+	protected ResultListData listData(List<Serializable> list) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -67,7 +67,7 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	private ResultListData listData(List list, Serializable extra) {
+	private ResultListData listData(List<Serializable> list, Serializable extra) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -103,22 +103,23 @@ public class BaseController implements ErrorController {
 
 	protected ResultSingleData paramError(String paramName, String description) {
 		var data = new SerializableData();
+
 		data.append("paramName", paramName);
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.PARAM_ERROR);
+		return ResultDataFactory.failData(ReturnDataCode.ParamError);
 	}
 
 	protected ResultSingleData noDataError() {
-
 		return this.noDataError("指定的数据不存在！");
 	}
 
 	private ResultSingleData noDataError(String description) {
 		var data = new SerializableData();
+
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.NODATA);
+		return ResultDataFactory.failData(ReturnDataCode.NoData);
 	}
 
 	protected ResultSingleData exceptionError(Exception e) {
@@ -129,19 +130,19 @@ public class BaseController implements ErrorController {
 		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
 	}
 
-	protected ResultListData pageListData(List list) {
+	protected ResultListData pageListData(List<Serializable> list) {
 		return this.listData(list);
 	}
 
-	protected ResultListData pageListData(List list, Serializable extra) {
+	protected ResultListData pageListData(List<Serializable> list, Serializable extra) {
 		return this.listData(list, extra);
 	}
 
-	protected ResultListData pageData(List list, int pageNo, int pageSize, int total) {
+	protected ResultListData pageData(List<Serializable> list, int pageNo, int pageSize, int total) {
 		return pageData(list, pageNo, pageSize, total, new SerializableData());
 	}
 
-	protected ResultListData pageData(List list, int pageNo, int pageSize, int total, Serializable other) {
+	protected ResultListData pageData(List<Serializable> list, int pageNo, int pageSize, int total, Serializable other) {
 		ResultListData result = this.listData(list);
 
 		SerializableData extra = new SerializableData();

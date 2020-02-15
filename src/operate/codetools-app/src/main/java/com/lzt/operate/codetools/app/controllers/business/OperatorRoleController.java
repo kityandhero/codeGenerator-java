@@ -7,20 +7,20 @@ import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.dao.service.OperatorRoleService;
 import com.lzt.operate.codetools.dao.service.OperatorService;
+import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.dao.service.impl.OperatorRoleServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
-import com.lzt.operate.codetools.entities.Operator;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -54,7 +53,7 @@ public class OperatorRoleController extends OperateBaseController {
 
 	private final RoleUniversalService roleUniversalService;
 
-	private final RoleCodeToolsServiceImpl roleCodeToolsService;
+	private final RoleCodeToolsService roleCodeToolsService;
 
 	@Autowired
 	public OperatorRoleController(
@@ -99,18 +98,18 @@ public class OperatorRoleController extends OperateBaseController {
 		var universalCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION, "");
 		var independentEstablishmentCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION, "");
 
-		Optional<Operator> optional = operatorService.get(operatorId.toLong());
+		ExecutiveSimpleResult result = getOperatorAssist().changeRole(operatorId.toLong(), universalCollection.toString(), independentEstablishmentCollection
+				.toString());
 
-		if (optional.isPresent()) {
-			Operator operator = optional.get();
+		if (result.getSuccess()) {
 
 			SerializableData data = new SerializableData();
 
+			data.append("operatorId", operatorId);
+
 			return singleData(data);
 		} else {
-			var error = ReturnDataCode.NODATA;
-
-			error.setMessage("账户不存在!");
+			var error = result.getCode();
 
 			return fail(error);
 		}
