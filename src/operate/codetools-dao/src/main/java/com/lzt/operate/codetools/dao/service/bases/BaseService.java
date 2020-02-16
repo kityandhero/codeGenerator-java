@@ -4,6 +4,8 @@ import com.baidu.fsg.uid.service.UidGenService;
 import com.lzt.operate.codetools.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
+import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -143,5 +145,27 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 
 		entity.setUpdateTime(Optional.of(updateTime).orElse(LocalDateTime.now()));
 		entity.setUpdateUnixTime(LocalDateTimeAssist.toUnixTime(updateTime));
+	}
+
+	/**
+	 * 逻辑删除
+	 *
+	 * @param id id
+	 * @return ExecutiveSimpleResult
+	 */
+	default ExecutiveSimpleResult removeById(Long id) {
+		return new ExecutiveSimpleResult(ReturnDataCode.NeedOverride);
+	}
+
+	/**
+	 * 物理删除
+	 *
+	 * @param id id
+	 * @return ExecutiveSimpleResult
+	 */
+	default ExecutiveSimpleResult deleteById(Long id) {
+		this.getRepository().deleteById(id);
+
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok);
 	}
 }

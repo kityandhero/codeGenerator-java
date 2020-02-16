@@ -36,4 +36,10 @@ public class ExecutiveSimpleResult {
 		message = returnDataCode.getMessage();
 	}
 
+	public ExecutiveSimpleResult(ReturnDataCode returnDataCode, String customMessage) {
+		this.success = returnDataCode.getSuccess();
+		code = returnDataCode;
+		message = customMessage;
+	}
+
 }

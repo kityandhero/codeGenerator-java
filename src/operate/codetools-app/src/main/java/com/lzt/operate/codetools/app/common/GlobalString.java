@@ -48,7 +48,7 @@ public class GlobalString {
 	//region CONNECTION_MODEL
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
-	public static final String CONNECTION_ConfigId = "connectionConfigId";
+	public static final String CONNECTION_CONFIG_ID = "connectionConfigId";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_MODEL, value = "数据库连接名称", example = "my connection")
 	public static final String CONNECTION_NAME = "connectionName";

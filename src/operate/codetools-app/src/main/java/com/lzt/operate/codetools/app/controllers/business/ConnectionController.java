@@ -5,6 +5,7 @@ import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.util.DbUtil;
+import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
@@ -47,15 +48,15 @@ import java.util.Map;
 public class ConnectionController extends OperateBaseController {
 	private static final String CONTROLLER_DESCRIPTION = "数据库连接/";
 
-	private ConnectionConfigServiceImpl connectionConfigServiceImpl;
+	private ConnectionConfigService connectionConfigService;
 
 	@Autowired
 	public ConnectionController(ConnectionConfigServiceImpl connectionConfigServiceImpl) {
-		this.connectionConfigServiceImpl = connectionConfigServiceImpl;
+		this.connectionConfigService = connectionConfigServiceImpl;
 	}
 
 	private ConnectionConfigAssist getConnectionConfigAssist() {
-		return new ConnectionConfigAssist(this.connectionConfigServiceImpl);
+		return new ConnectionConfigAssist(this.connectionConfigService);
 	}
 
 	@ApiOperation(value = "连接列表", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
@@ -86,28 +87,29 @@ public class ConnectionController extends OperateBaseController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, "createTime");
 
-		var page = this.connectionConfigServiceImpl.page(filter, pageable);
+		var page = this.connectionConfigService.page(filter, pageable);
 
 		return this.pageData(page.getContent(), page.getNumber(), page.getSize(), page.getTotalPages());
 	}
 
 	@ApiOperation(value = "获取连接", notes = "获取数据库连接", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
-			@ApiJsonProperty(name = GlobalString.CONNECTION_ConfigId)},
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
 	public BaseResultData get(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
-		StringEx connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_ConfigId);
+		StringEx connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID);
 
 		if (connectionConfigId.isNullOrEmpty()) {
-			return this.paramError(GlobalString.CONNECTION_ConfigId, "不能为空值");
+			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "不能为空值");
 		}
 
-		var optionalResult = this.connectionConfigServiceImpl.get(ConvertAssist.stringToLong(connectionConfigId.toString()));
+		var optionalResult = this.connectionConfigService.get(ConvertAssist.stringToLong(connectionConfigId.toString()));
 
 		if (!optionalResult.isPresent()) {
 			return this.noDataError();
@@ -135,8 +137,9 @@ public class ConnectionController extends OperateBaseController {
 			result = @ApiJsonResult({}))
 	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
-	public BaseResultData add(@RequestBody Map<String, Serializable> connectionJson) {
+	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
+	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
 		StringEx name = paramJson.getStringExByKey(GlobalString.CONNECTION_NAME);
@@ -158,7 +161,7 @@ public class ConnectionController extends OperateBaseController {
 
 	@ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
-			@ApiJsonProperty(name = GlobalString.CONNECTION_ConfigId),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
@@ -176,11 +179,18 @@ public class ConnectionController extends OperateBaseController {
 			result = @ApiJsonResult({}))
 	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/update", consumes = "application/json", produces = "application/json")
-	public BaseResultData update(@RequestBody Map<String, Serializable> connectionJson) {
+	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "3fab7782-4641-4e8b-832c-3996ddc61b3f")
+	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_NAME);
+		var connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
+
+		if (connectionConfigId <= 0) {
+			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
+		}
+
+		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_NAME, "");
 
 		if (name.isNullOrEmpty()) {
 			return this.paramError(GlobalString.CONNECTION_NAME, "不能为空值");
@@ -195,5 +205,45 @@ public class ConnectionController extends OperateBaseController {
 		} catch (Exception e) {
 			return this.exceptionError(e);
 		}
+	}
+
+	@ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.CONNECTION_MODEL, value = {
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_NAME),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_DB_TYPE),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_HOST),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_PORT),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_SCHEMA),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_USERNAME),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_PASSWORD),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_ENCODING),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_L_PORT),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_R_PORT),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PORT),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_SSH_HOST),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_SSH_USER),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_SSH_PASSWORD)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_MODEL)
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/remove", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "移除连接", tag = "17e57607-d519-4289-9b8a-949bbcff603e")
+	public BaseResultData remove(@RequestBody Map<String, Serializable> connectionJson) {
+		var paramJson = getParamData(connectionJson);
+
+		var connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
+
+		if (connectionConfigId <= 0) {
+			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
+		}
+
+		var result = getConnectionConfigAssist().deleteById(connectionConfigId);
+
+		if (result.getSuccess()) {
+			return this.success();
+		}
+
+		return this.fail(result);
 	}
 }

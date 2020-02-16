@@ -6,6 +6,7 @@ import com.lzt.operate.utility.pojo.ResultDataFactory;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +79,14 @@ public class BaseController implements ErrorController {
 
 	protected ResultSingleData success() {
 		return ResultDataFactory.successSingleData();
+	}
+
+	protected ResultSingleData fail(@NonNull ExecutiveSimpleResult result) {
+		ReturnDataCode returnDataCode = result.getCode();
+
+		returnDataCode.setMessage(result.getMessage());
+
+		return fail(returnDataCode);
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode) {

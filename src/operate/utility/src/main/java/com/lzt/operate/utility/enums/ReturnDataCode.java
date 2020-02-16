@@ -126,6 +126,11 @@ public enum ReturnDataCode {
 	Exception(5001, "程序异常", false),
 
 	/**
+	 * 无可用数据
+	 */
+	NeedOverride(5002, "方法需要重载实现", false),
+
+	/**
 	 * 该用户不存在或密码错误
 	 */
 	NOT_EXIST_USER_OR_ERROR_PWD(10000, "该用户不存在或密码错误", false),

@@ -2,9 +2,10 @@ package com.lzt.operate.codetools.app.assists;
 
 import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
-import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.ParamData;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.var;
 
 import java.util.Optional;
@@ -14,10 +15,28 @@ import java.util.Optional;
  */
 public class ConnectionConfigAssist {
 
-	private ConnectionConfigService connectionConfigServiceImpl;
+	private ConnectionConfigService connectionConfigService;
 
-	public ConnectionConfigAssist(ConnectionConfigServiceImpl connectionConfigServiceImpl) {
-		this.connectionConfigServiceImpl = connectionConfigServiceImpl;
+	public ConnectionConfigAssist(ConnectionConfigService connectionConfigServiceImpl) {
+		this.connectionConfigService = connectionConfigServiceImpl;
+	}
+
+	public ConnectionConfigService getConnectionConfigService() {
+		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("ConnectionConfigService获取失败");
+	}
+
+	public ExecutiveSimpleResult deleteById(Long connectionConfigId) {
+		if (connectionConfigId <= 0) {
+			return new ExecutiveSimpleResult(ReturnDataCode.ParamError, "标识无效");
+		}
+
+		return this.getConnectionConfigService().deleteById(connectionConfigId);
 	}
 
 	public ConnectionConfig fillFromParamJson(ConnectionConfig connectionConfig, ParamData paramJson) {
