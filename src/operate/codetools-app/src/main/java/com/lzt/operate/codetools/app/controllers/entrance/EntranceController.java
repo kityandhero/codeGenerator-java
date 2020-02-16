@@ -5,6 +5,7 @@ import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.common.enums.OperatorStatus;
 import com.lzt.operate.codetools.dao.service.OperatorRoleService;
 import com.lzt.operate.codetools.dao.service.OperatorService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
@@ -185,6 +186,7 @@ public class EntranceController extends OperateBaseController {
 		operator.setSlat(StringAssist.randomAlphanumeric(6)
 									 .toLowerCase());
 		operator.setPassword(Md5Assist.toMd5(password, operator.getSlat()));
+		operator.setStatus(OperatorStatus.Enabled.getValue());
 
 		operatorService.save(operator);
 
