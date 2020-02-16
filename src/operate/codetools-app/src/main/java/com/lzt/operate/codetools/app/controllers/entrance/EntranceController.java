@@ -186,7 +186,7 @@ public class EntranceController extends OperateBaseController {
 		operator.setSlat(StringAssist.randomAlphanumeric(6)
 									 .toLowerCase());
 		operator.setPassword(Md5Assist.toMd5(password, operator.getSlat()));
-		operator.setStatus(OperatorStatus.Enabled.getValue());
+		operator.setStatus(OperatorStatus.Enabled.getFlag());
 
 		operatorService.save(operator);
 

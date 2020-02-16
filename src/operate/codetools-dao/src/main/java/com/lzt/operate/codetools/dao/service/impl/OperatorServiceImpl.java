@@ -93,7 +93,7 @@ public class OperatorServiceImpl implements OperatorService {
 
 			Integer status = operator.getStatus();
 
-			return status.equals(OperatorStatus.Enabled.getValue());
+			return status.equals(OperatorStatus.Enabled.getFlag());
 		}
 
 		return false;

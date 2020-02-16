@@ -99,7 +99,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				operator.setPassword(Md5Assist.toMd5(Constants.DEFAULT_OPERATOR_PASSWORD, operator.getSlat()));
 				operator.setChannel(Channel.CodeTools.getFlag());
 				operator.setChannelNote(Channel.CodeTools.getNote());
-				operator.setStatus(OperatorStatus.Enabled.getValue());
+				operator.setStatus(OperatorStatus.Enabled.getFlag());
 				operator.setStatusNote(RoleUniversalStatus.Enabled.getDescription());
 
 				operatorService.save(operator);
