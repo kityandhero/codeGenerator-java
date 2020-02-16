@@ -128,7 +128,7 @@ public class EntranceController extends OperateBaseController {
 
 			OperatorAssist operatorAssist = getOperatorAssist();
 
-			data.append("currentAuthority", StringAssist.join(operatorAssist.getCompetenceTagCollection(searchResult.getId()), ","));
+			data.append("currentAuthority", operatorAssist.getCompetenceTagCollection(searchResult.getId()).toArray());
 
 			return singleData(data);
 		} else {

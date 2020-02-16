@@ -197,7 +197,7 @@ public class OperatorAssist {
 
 		List<String> result = list.stream().map(Competence::getTag).collect(Collectors.toList());
 
-		result.add("self");
+		result.add("currentCustomer");
 
 		return result;
 	}
