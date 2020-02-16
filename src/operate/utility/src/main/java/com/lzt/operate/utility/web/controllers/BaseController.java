@@ -36,7 +36,7 @@ public class BaseController implements ErrorController {
 	 * @param query json参数
 	 * @return ParamData
 	 */
-	protected ParamData getParamData(Map<String, Serializable> query) {
+	protected ParamData getParamData(Map<String, ? extends Serializable> query) {
 		return new ParamData(query);
 	}
 
@@ -58,7 +58,7 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	protected ResultListData listData(List<Serializable> list) {
+	protected ResultListData listData(List<? extends Serializable> list) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -67,7 +67,7 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	private ResultListData listData(List<Serializable> list, Serializable extra) {
+	private ResultListData listData(List<? extends Serializable> list, Serializable extra) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -130,19 +130,19 @@ public class BaseController implements ErrorController {
 		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
 	}
 
-	protected ResultListData pageListData(List<Serializable> list) {
+	protected ResultListData pageListData(List<? extends Serializable> list) {
 		return this.listData(list);
 	}
 
-	protected ResultListData pageListData(List<Serializable> list, Serializable extra) {
+	protected ResultListData pageListData(List<? extends Serializable> list, Serializable extra) {
 		return this.listData(list, extra);
 	}
 
-	protected ResultListData pageData(List<Serializable> list, int pageNo, int pageSize, int total) {
+	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, int total) {
 		return pageData(list, pageNo, pageSize, total, new SerializableData());
 	}
 
-	protected ResultListData pageData(List<Serializable> list, int pageNo, int pageSize, int total, Serializable other) {
+	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, int total, Serializable other) {
 		ResultListData result = this.listData(list);
 
 		SerializableData extra = new SerializableData();

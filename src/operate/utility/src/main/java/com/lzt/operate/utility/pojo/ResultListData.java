@@ -21,7 +21,7 @@ public class ResultListData extends BaseResultData {
 	private static final long serialVersionUID = -2793790712990675266L;
 
 	@ApiModelProperty(notes = "列表数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-	public List<Serializable> list;
+	public List<? extends Serializable> list;
 
 	public ResultListData() {
 		super();
@@ -32,11 +32,11 @@ public class ResultListData extends BaseResultData {
 		this(returnDataCode, new ArrayList<>());
 	}
 
-	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<Serializable> list) {
+	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<? extends Serializable> list) {
 		this(returnDataCode, list, new SerializableData());
 	}
 
-	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<Serializable> list, SerializableData extra) {
+	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<? extends Serializable> list, SerializableData extra) {
 		super(returnDataCode, extra);
 		this.list = list;
 	}
