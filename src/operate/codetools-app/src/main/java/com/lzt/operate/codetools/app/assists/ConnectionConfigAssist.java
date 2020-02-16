@@ -41,15 +41,15 @@ public class ConnectionConfigAssist {
 
 	public ConnectionConfig fillFromParamJson(ConnectionConfig connectionConfig, ParamData paramJson) {
 		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
-		var dbtype = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DB_TYPE);
+		var databaseType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DATABASE_TYPE);
 		var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
 		var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
 		var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
 		var username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
 		var password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
 		var encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
-		var lPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_L_PORT);
-		var rProt = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_R_PORT);
+		var localPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
+		var remotePort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
 		var sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
 		var sshHost = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_HOST);
 		var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
@@ -58,15 +58,15 @@ public class ConnectionConfigAssist {
 		ConnectionConfig c = Optional.of(connectionConfig).orElse(new ConnectionConfig());
 
 		c.setName(name.toString());
-		c.setDbType(dbtype.toString());
+		c.setDatabaseType(databaseType.toString());
 		c.setHost(host.toString());
 		c.setPort(port.toString());
 		c.setSchema(schema.toString());
 		c.setUsername(username.toString());
 		c.setPassword(password.toString());
 		c.setEncoding(encoding.toString());
-		c.setLport(lPort.toString());
-		c.setRport(rProt.toString());
+		c.setLocalPort(localPort.toString());
+		c.setRemotePort(remotePort.toString());
 		c.setSshPort(sshPort.toString());
 		c.setSshHost(sshHost.toString());
 		c.setSshUser(sshUser.toString());

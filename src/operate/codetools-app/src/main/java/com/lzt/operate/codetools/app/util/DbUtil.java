@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.app.util;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.lzt.operate.codetools.app.enums.DbType;
+import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataColumnInfo;
@@ -41,7 +41,7 @@ public class DbUtil {
 	private static final Logger _LOG = LoggerFactory.getLogger(DbUtil.class);
 	private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 1;
 
-	private static Map<DbType, Driver> drivers = new HashMap<>();
+	private static Map<DatabaseType, Driver> drivers = new HashMap<>();
 
 	private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 	private static volatile boolean portForwaring = false;
@@ -77,9 +77,9 @@ public class DbUtil {
 			AtomicInteger assinged_port = new AtomicInteger();
 			Future<?> result = DbUtil.executorService.submit(() -> {
 				try {
-					Integer localPort = NumberUtils.createInteger(config.getLport());
+					Integer localPort = NumberUtils.createInteger(config.getLocalPort());
 					Integer RemotePort;
-					RemotePort = NumberUtils.createInteger(config.getRport());
+					RemotePort = NumberUtils.createInteger(config.getRemotePort());
 					int lport = localPort != null ? localPort : Integer.parseInt(config.getPort());
 					int rport;
 					if (RemotePort == null) {
@@ -140,7 +140,7 @@ public class DbUtil {
 	}
 
 	private static Connection getConnection(ConnectionConfig config) throws SQLException {
-		DbType dbType = DbType.valueOf(config.getDbType());
+		DatabaseType dbType = DatabaseType.valueOf(config.getDatabaseType());
 		if (DbUtil.drivers.get(dbType) == null) {
 			DbUtil.loadDbDriver(dbType);
 		}
@@ -167,16 +167,16 @@ public class DbUtil {
 			List<DataTableInfo> tables = new ArrayList<>();
 			DatabaseMetaData md = connection.getMetaData();
 			ResultSet rs;
-			if (DbType.valueOf(config.getDbType()) == DbType.SQL_Server) {
+			if (DatabaseType.valueOf(config.getDatabaseType()) == DatabaseType.SQL_Server) {
 				String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
 					tables.add(new DataTableInfo(rs.getString("name")));
 				}
-			} else if (DbType.valueOf(config.getDbType()) == DbType.Oracle) {
+			} else if (DatabaseType.valueOf(config.getDatabaseType()) == DatabaseType.Oracle) {
 				rs = md.getTables(null, config.getUsername()
 											  .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
-			} else if (DbType.valueOf(config.getDbType()) == DbType.Sqlite) {
+			} else if (DatabaseType.valueOf(config.getDatabaseType()) == DatabaseType.Sqlite) {
 				String sql = "Select name from sqlite_master;";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
@@ -223,9 +223,9 @@ public class DbUtil {
 	}
 
 	public static String getConnectionUrlWithSchema(ConnectionConfig dbConfig) {
-		DbType dbType = DbType.valueOf(dbConfig.getDbType());
+		DatabaseType dbType = DatabaseType.valueOf(dbConfig.getDatabaseType());
 		String connectionUrl = String.format(dbType.getConnectionUrlPattern(),
-				DbUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DbUtil.portForwaring ? dbConfig.getLport() : dbConfig
+				DbUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DbUtil.portForwaring ? dbConfig.getLocalPort() : dbConfig
 						.getPort(), dbConfig
 						.getSchema(), dbConfig.getEncoding());
 		DbUtil._LOG.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
@@ -237,7 +237,7 @@ public class DbUtil {
 	 *
 	 * @param dbType 数据库类型
 	 */
-	private static void loadDbDriver(DbType dbType) {
+	private static void loadDbDriver(DatabaseType dbType) {
 		List<String> driverJars = ConfigHelper.getAllJDBCDriverJarPaths();
 		ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
 		try {

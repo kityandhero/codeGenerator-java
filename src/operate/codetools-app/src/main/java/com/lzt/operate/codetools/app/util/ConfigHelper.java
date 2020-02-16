@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.app.util;
 
 import com.alibaba.fastjson.JSON;
-import com.lzt.operate.codetools.app.enums.DbType;
+import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.GeneratorConfig;
 import com.lzt.operate.utility.extensions.StringEx;
@@ -192,7 +192,7 @@ public class ConfigHelper {
 	}
 
 	public static String findConnectorLibPath(String dbType) {
-		DbType type = DbType.valueOf(dbType);
+		DatabaseType type = DatabaseType.valueOf(dbType);
 		URL resource = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
 		ConfigHelper._LOG.info("jar resource: {}", resource);
 		if (resource != null) {

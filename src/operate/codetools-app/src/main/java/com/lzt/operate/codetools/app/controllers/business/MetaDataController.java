@@ -1,7 +1,9 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.common.OperateBaseController;
-import com.lzt.operate.codetools.app.enums.DbType;
+import com.lzt.operate.codetools.app.enums.ConnectionType;
+import com.lzt.operate.codetools.app.enums.DatabaseEncoding;
+import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.OperatorStatus;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -36,14 +39,26 @@ public class MetaDataController extends OperateBaseController {
 
 		var result = new SerializableData();
 
-		result.append("dbType", EnumAssist.buildFlagDataCollection(
-				DbType.values(),
-				DbType::getFlag,
-				DbType::getName,
-				DbType::getDescription).toArray());
+		result.append("databaseTypeList", EnumAssist.buildFlagDataCollection(
+				Arrays.asList(DatabaseType.values()),
+				DatabaseType::getFlag,
+				DatabaseType::getName,
+				DatabaseType::getDescription).toArray());
 
-		result.append("operatorStatus", EnumAssist.buildFlagDataCollection(
-				OperatorStatus.values(),
+		result.append("databaseEncodingList", EnumAssist.buildFlagDataCollection(
+				Arrays.asList(DatabaseEncoding.values()),
+				DatabaseEncoding::getFlag,
+				DatabaseEncoding::getName,
+				DatabaseEncoding::getDescription).toArray());
+
+		result.append("connectionTypeList", EnumAssist.buildFlagDataCollection(
+				Arrays.asList(ConnectionType.values()),
+				ConnectionType::getFlag,
+				ConnectionType::getName,
+				ConnectionType::getDescription).toArray());
+
+		result.append("operatorStatusList", EnumAssist.buildFlagDataCollection(
+				Arrays.asList(OperatorStatus.values()),
 				OperatorStatus::getFlag,
 				OperatorStatus::getName,
 				OperatorStatus::getDescription).toArray());

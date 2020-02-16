@@ -22,8 +22,11 @@ public class ConnectionConfig extends BaseEntity {
 
 	private static final long serialVersionUID = -3628391768513027313L;
 
-	@Column
-	private String dbType;
+	@Column(name = "database_type")
+	private String databaseType;
+
+	@Column(name = "connection_type")
+	private String connectionType;
 
 	@Column
 	private String name;
@@ -46,22 +49,22 @@ public class ConnectionConfig extends BaseEntity {
 	@Column
 	private String encoding;
 
-	@Column
-	private String lport;
+	@Column(name = "local_port")
+	private String localPort;
 
-	@Column
-	private String rport;
+	@Column(name = "remote_port")
+	private String remotePort;
 
-	@Column
+	@Column(name = "ssh_port")
 	private String sshPort;
 
-	@Column
+	@Column(name = "ssh_host")
 	private String sshHost;
 
-	@Column
+	@Column(name = "ssh_user")
 	private String sshUser;
 
-	@Column
+	@Column(name = "ssh_password")
 	private String sshPassword;
 
 	public ConnectionConfig() {
@@ -97,7 +100,7 @@ public class ConnectionConfig extends BaseEntity {
 	public String build() {
 		return "DatabaseConfig{" +
 				"id=" + this.getId() +
-				", dbType='" + this.dbType + '\'' +
+				", dbType='" + this.databaseType + '\'' +
 				", name='" + this.name + '\'' +
 				", host='" + this.host + '\'' +
 				", port='" + this.port + '\'' +
@@ -105,8 +108,8 @@ public class ConnectionConfig extends BaseEntity {
 				", username='" + this.username + '\'' +
 				", password='" + this.password + '\'' +
 				", encoding='" + this.encoding + '\'' +
-				", lport='" + this.lport + '\'' +
-				", rport='" + this.rport + '\'' +
+				", lport='" + this.localPort + '\'' +
+				", rport='" + this.remotePort + '\'' +
 				", sshPort='" + this.sshPort + '\'' +
 				", sshHost='" + this.sshHost + '\'' +
 				", sshUser='" + this.sshUser + '\'' +

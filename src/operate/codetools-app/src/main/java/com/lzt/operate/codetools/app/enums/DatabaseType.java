@@ -7,7 +7,7 @@ import lombok.Getter;
  * Created by Owen on 6/14/16.
  */
 @Getter
-public enum DbType {
+public enum DatabaseType {
 
 	/**
 	 * MySQL
@@ -39,14 +39,14 @@ public enum DbType {
 	 */
 	Sqlite(105, "Sqlite", "Sqlite", "org.sqlite.JDBC", "jdbc:sqlite:%s", "sqlite-jdbc-3.19.3.jar");
 
-	private final int flag;
+	private final Integer flag;
 	private final String name;
 	private final String description;
 	private final String driverClass;
 	private final String connectionUrlPattern;
 	private final String connectorJarFile;
 
-	DbType(int flag, String name, String description, String driverClass, String connectionUrlPattern, String connectorJarFile) {
+	DatabaseType(int flag, String name, String description, String driverClass, String connectionUrlPattern, String connectorJarFile) {
 		this.flag = flag;
 		this.name = name;
 		this.description = description;

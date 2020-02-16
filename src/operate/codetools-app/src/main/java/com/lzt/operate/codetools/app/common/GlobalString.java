@@ -51,10 +51,13 @@ public class GlobalString {
 	public static final String CONNECTION_CONFIG_ID = "connectionConfigId";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "数据库连接名称", example = "my connection")
+	public static final String CONNECTION_CONFIG_CONNECTION_TYPE = "connectionType";
+
+	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "数据库连接名称", example = "my connection")
 	public static final String CONNECTION_CONFIG_NAME = "name";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "数据库类型", example = "mysql")
-	public static final String CONNECTION_CONFIG_DB_TYPE = "dbtype";
+	public static final String CONNECTION_CONFIG_DATABASE_TYPE = "databaseType";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "数据库Host", example = "localhost")
 	public static final String CONNECTION_CONFIG_HOST = "host";
@@ -75,10 +78,10 @@ public class GlobalString {
 	public static final String CONNECTION_CONFIG_ENCODING = "encoding";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "lport", example = "lport")
-	public static final String CONNECTION_CONFIG_L_PORT = "lPort";
+	public static final String CONNECTION_CONFIG_LOCAL_PORT = "localPort";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "rport", example = "rport")
-	public static final String CONNECTION_CONFIG_R_PORT = "rProt";
+	public static final String CONNECTION_CONFIG_REMOTE_PORT = "remotePort";
 
 	@ApiSingleParam(modelName = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = "sshPort", example = "sshPort")
 	public static final String CONNECTION_CONFIG_SSH_PORT = "sshPort";
