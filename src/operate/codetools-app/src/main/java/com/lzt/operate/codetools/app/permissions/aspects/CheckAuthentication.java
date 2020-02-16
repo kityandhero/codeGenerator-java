@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.app.permissions.aspects;
 
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.dao.service.OperatorService;
 import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.aspects.BaseCheckAuthentication;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CheckAuthentication extends BaseCheckAuthentication {
 
-	private final OperatorServiceImpl operatorService;
+	private final OperatorService operatorService;
 
 	@Autowired
 	public CheckAuthentication(CustomJsonWebTokenConfig customJsonWebTokenConfig, OperatorServiceImpl operatorService) {

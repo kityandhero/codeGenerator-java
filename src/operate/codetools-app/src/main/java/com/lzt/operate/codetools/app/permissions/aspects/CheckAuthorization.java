@@ -1,11 +1,17 @@
 package com.lzt.operate.codetools.app.permissions.aspects;
 
+import com.lzt.operate.codetools.app.assists.OperatorAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.OperatorRoleServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.AccessWay;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
@@ -26,14 +32,36 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
-	private final OperatorServiceImpl operatorService;
-	private AccessWayServiceImpl accessWayService;
+	private OperatorAssist operatorAssist;
+
+	private final AccessWayService accessWayService;
 
 	@Autowired
-	public CheckAuthorization(CustomJsonWebTokenConfig customJsonWebTokenConfig, AccessWayServiceImpl accessWayService, OperatorServiceImpl operatorService) {
-		this.setBaseCustomJsonWebTokenConfig(customJsonWebTokenConfig);
+	public CheckAuthorization(
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			OperatorServiceImpl operatorServiceImpl,
+			OperatorRoleServiceImpl operatorRoleService,
+			RoleUniversalServiceImpl roleUniversalService,
+			RoleCodeToolsServiceImpl roleCodeToolsService,
+			AccessWayServiceImpl accessWayService) {
+		this.operatorAssist = new OperatorAssist(
+				customJsonWebTokenConfig,
+				operatorServiceImpl,
+				operatorRoleService,
+				roleUniversalService,
+				roleCodeToolsService
+		);
+
 		this.accessWayService = accessWayService;
-		this.operatorService = operatorService;
+	}
+
+	private OperatorAssist getOperatorAssist() {
+		return this.operatorAssist;
+	}
+
+	@Override
+	protected BaseCustomJsonWebTokenConfig getCustomJsonWebTokenConfig() {
+		return this.operatorAssist.getCustomJsonWebTokenConfig();
 	}
 
 	@Override
@@ -89,6 +117,9 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 
 				return false;
 			}
+
+			return this.getOperatorAssist()
+					   .checkAccessPermission(customJsonWebToken.getId(), tag);
 		}
 
 		return false;

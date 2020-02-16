@@ -69,6 +69,16 @@ public class OperatorAssist {
 		throw new RuntimeException("OperatorService获取失败");
 	}
 
+	public CustomJsonWebTokenConfig getCustomJsonWebTokenConfig() {
+		Optional<CustomJsonWebTokenConfig> optional = Optional.ofNullable(this.jwtConfig);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("CustomJsonWebTokenConfig获取失败");
+	}
+
 	public OperatorRoleService getOperatorRoleService() {
 		Optional<OperatorRoleService> optional = Optional.ofNullable(this.operatorRoleService);
 
@@ -475,6 +485,18 @@ public class OperatorAssist {
 		}
 
 		return result;
+	}
+
+	public boolean checkAccessPermission(long operatorId, String tag) {
+		List<Competence> competenceList = getCompetenceCollection(operatorId);
+
+		for (Competence c : competenceList) {
+			if (c.getTag().equals(tag) || c.getTag().equals(Constants.SUPER_ROLE_TAG)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

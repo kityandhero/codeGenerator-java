@@ -154,6 +154,9 @@ public class CustomJsonWebToken {
 	 * @return Optional<CustomJsonWebToken>
 	 */
 	public static Optional<CustomJsonWebToken> getFromCurrentHttpToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+		if (!Optional.ofNullable(customJsonWebTokenConfig).isPresent()) {
+			return Optional.empty();
+		}
 
 		HttpServletRequest request = RequestAssist.getHttpServletRequest();
 

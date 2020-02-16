@@ -18,15 +18,12 @@ import java.util.Optional;
  */
 public abstract class BaseCheckAuthorization {
 
-	private BaseCustomJsonWebTokenConfig customJsonWebTokenConfig;
-
-	protected BaseCustomJsonWebTokenConfig getCustomJsonWebTokenConfig() {
-		return this.customJsonWebTokenConfig;
-	}
-
-	protected void setBaseCustomJsonWebTokenConfig(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
-		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
-	}
+	/**
+	 * getCustomJsonWebTokenConfig
+	 *
+	 * @return BaseCustomJsonWebTokenConfig
+	 */
+	protected abstract BaseCustomJsonWebTokenConfig getCustomJsonWebTokenConfig();
 
 	/**
 	 * 声明以注解的方式来定义切点
@@ -40,7 +37,7 @@ public abstract class BaseCheckAuthorization {
 	 */
 	@Before("checkDataPoint() && @annotation(needAuthorization)")
 	public void checkBefore(JoinPoint joinPoint, NeedAuthorization needAuthorization) throws AuthenticationException {
-		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getEffectiveCurrent(customJsonWebTokenConfig);
+		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getEffectiveCurrent(getCustomJsonWebTokenConfig());
 
 		if (!optional.isPresent()) {
 			throw new AuthorizationException("无有效登录凭证，禁止访问");
