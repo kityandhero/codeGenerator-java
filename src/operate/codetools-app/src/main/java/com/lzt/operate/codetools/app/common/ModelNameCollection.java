@@ -20,16 +20,16 @@ public class ModelNameCollection {
 	 */
 	public static final String ENTRANCE_REGISTER = "ENTRANCE_REGISTER";
 
-	public static final String CONNECTION_MODEL = "CONNECTION_MODEL";
+	public static final String CONNECTION_CONFIG_MODEL = "CONNECTION_CONFIG_MODEL";
 
 	/**
 	 * 数据库连接列表
 	 */
-	public static final String CONNECTION_LIST = "CONNECTION_LIST";
+	public static final String CONNECTION_CONFIG_LIST = "CONNECTION_CONFIG_LIST";
 
 	/**
 	 * 打开数据库
 	 */
-	public static final String CONNECTION_OPEN = "CONNECTION_OPEN";
+	public static final String CONNECTION_CONFIG_OPEN = "CONNECTION_CONFIG_OPEN";
 
 }

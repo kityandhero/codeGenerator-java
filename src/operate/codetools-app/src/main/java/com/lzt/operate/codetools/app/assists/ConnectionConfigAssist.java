@@ -40,20 +40,20 @@ public class ConnectionConfigAssist {
 	}
 
 	public ConnectionConfig fillFromParamJson(ConnectionConfig connectionConfig, ParamData paramJson) {
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_NAME);
-		var dbtype = paramJson.getStringExByKey(GlobalString.CONNECTION_DB_TYPE);
-		var host = paramJson.getStringExByKey(GlobalString.CONNECTION_HOST);
-		var port = paramJson.getStringExByKey(GlobalString.CONNECTION_PORT);
-		var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_SCHEMA);
-		var username = paramJson.getStringExByKey(GlobalString.CONNECTION_USERNAME);
-		var password = paramJson.getStringExByKey(GlobalString.CONNECTION_PASSWORD);
-		var encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_ENCODING);
-		var lPort = paramJson.getStringExByKey(GlobalString.CONNECTION_L_PORT);
-		var rProt = paramJson.getStringExByKey(GlobalString.CONNECTION_R_PORT);
-		var sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_SSH_PORT);
-		var sshHost = paramJson.getStringExByKey(GlobalString.CONNECTION_SSH_HOST);
-		var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_SSH_USER);
-		var sshPassword = paramJson.getStringExByKey(GlobalString.CONNECTION_SSH_PASSWORD);
+		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
+		var dbtype = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DB_TYPE);
+		var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
+		var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
+		var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
+		var username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
+		var password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
+		var encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
+		var lPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_L_PORT);
+		var rProt = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_R_PORT);
+		var sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
+		var sshHost = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_HOST);
+		var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
+		var sshPassword = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PASSWORD);
 
 		ConnectionConfig c = Optional.of(connectionConfig).orElse(new ConnectionConfig());
 
