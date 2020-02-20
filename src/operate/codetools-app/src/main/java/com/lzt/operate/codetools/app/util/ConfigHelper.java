@@ -24,7 +24,9 @@ import java.util.List;
 /**
  * XML based config file help class
  * <p>
- * Created by Owen on 6/16/16.
+ *
+ * @author luzhitao
+ * @date 6/16/16
  */
 public class ConfigHelper {
 
