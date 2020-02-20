@@ -3,6 +3,7 @@ package com.lzt.operate.utility.permissions.aspects;
 import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import org.aspectj.lang.annotation.Before;
 
 /**
@@ -27,12 +28,16 @@ public abstract class BaseCheckAuthentication {
 	 */
 	@Before("checkDataPoint()")
 	public void checkBefore() throws AuthenticationException {
-		CustomJsonWebToken customJsonWebToken = CustomJsonWebToken.checkToken(customJsonWebTokenConfig);
+		ExecutiveResult<CustomJsonWebToken> result = CustomJsonWebToken.checkToken(customJsonWebTokenConfig);
 
-		boolean checkResult = checkAccount(customJsonWebToken);
+		if (result.getSuccess()) {
+			boolean checkResult = checkAccount(result.getData());
 
-		if (!checkResult) {
-			throw new AuthenticationException("登录信息异常");
+			if (!checkResult) {
+				throw new AuthenticationException("登录信息异常");
+			}
+		} else {
+			throw new AuthenticationException(result.getMessage());
 		}
 	}
 

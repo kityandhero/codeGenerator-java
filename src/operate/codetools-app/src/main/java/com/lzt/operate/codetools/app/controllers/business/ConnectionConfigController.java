@@ -6,20 +6,18 @@ import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
-import com.lzt.operate.codetools.app.util.DbUtil;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
-import com.lzt.operate.utility.extensions.StringEx;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -107,19 +105,15 @@ public class ConnectionConfigController extends OperateBaseController {
 	public BaseResultData get(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
-		StringEx connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID);
+		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
-		if (connectionConfigId.isNullOrEmpty()) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "不能为空值");
+		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().getConnectionConfig(connectionConfigId);
+
+		if (result.getSuccess()) {
+			return this.singleData(result.getData());
 		}
 
-		var optionalResult = this.connectionConfigService.get(ConvertAssist.stringToLong(connectionConfigId.toString()));
-
-		if (!optionalResult.isPresent()) {
-			return this.noDataError();
-		}
-
-		return this.singleData(optionalResult.get());
+		return this.fail(result);
 	}
 
 	@ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
@@ -147,51 +141,13 @@ public class ConnectionConfigController extends OperateBaseController {
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
+		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().addConnectionConfig(paramJson);
 
-		if (name.isNullOrEmpty()) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_NAME, "不能为空值");
+		if (result.getSuccess()) {
+			return this.singleData(result.getData());
 		}
 
-		var connectionType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, ConnectionType.TCP_IP
-				.getFlag().toString()).toInt();
-
-		if (EnumAssist.existTargetValue(Arrays.asList(ConnectionType.values()), ConnectionType::getFlag, connectionType)) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
-		}
-
-		var databaseType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DATABASE_TYPE).toInt();
-
-		if (EnumAssist.existTargetValue(Arrays.asList(DatabaseType.values()), DatabaseType::getFlag, databaseType)) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
-		}
-
-		var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
-		var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
-		var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
-		var username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
-		var password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
-		var encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
-		var localPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
-		var remotePort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
-		var sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
-		var sshHost = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_HOST);
-		var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
-		var sshPassword = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PASSWORD);
-
-		if (name.isNullOrEmpty()) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_NAME, "不能为空值");
-		}
-
-		var connectionConfig = new ConnectionConfig();
-		connectionConfig = getConnectionConfigAssist().fillFromParamJson(connectionConfig, paramJson);
-
-		try {
-			var listTableName = DbUtil.getTableNames(connectionConfig);
-			return this.listData(listTableName);
-		} catch (Exception e) {
-			return this.exceptionError(e);
-		}
+		return this.fail(result);
 	}
 
 	@ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
@@ -226,21 +182,72 @@ public class ConnectionConfigController extends OperateBaseController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
 		}
 
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME, "");
+		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
 
 		if (name.isNullOrEmpty()) {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_NAME, "不能为空值");
 		}
 
-		var connectionConfig = new ConnectionConfig();
-		connectionConfig = getConnectionConfigAssist().fillFromParamJson(connectionConfig, paramJson);
+		var connectionType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, ConnectionType.TCP_IP
+				.getFlag().toString()).toInt();
 
-		try {
-			var listTableName = DbUtil.getTableNames(connectionConfig);
-			return this.listData(listTableName);
-		} catch (Exception e) {
-			return this.exceptionError(e);
+		if (!EnumAssist.existTargetValue(Arrays.asList(ConnectionType.values()), ConnectionType::getFlag, connectionType)) {
+			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
 		}
+
+		var databaseType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DATABASE_TYPE).toInt();
+
+		if (!EnumAssist.existTargetValue(Arrays.asList(DatabaseType.values()), DatabaseType::getFlag, databaseType)) {
+			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
+		}
+
+		ConnectionConfigAssist connectionConfigAssist = getConnectionConfigAssist();
+
+		ExecutiveResult<ConnectionConfig> result = connectionConfigAssist.getConnectionConfig(connectionConfigId);
+
+		if (result.getSuccess()) {
+			ConnectionConfig connectionConfig = result.getData();
+
+			var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
+			var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
+			var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
+			var username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
+			var password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
+			var encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
+			var localPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
+			var remotePort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
+			var sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
+			var sshHost = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_HOST);
+			var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
+			var sshPassword = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PASSWORD);
+
+			connectionConfig.setName(name.toString());
+			connectionConfig.setConnectionType(connectionType);
+			connectionConfig.setDatabaseType(databaseType);
+			connectionConfig.setHost(host.toString());
+			connectionConfig.setPort(port.toString());
+			connectionConfig.setSchema(schema.toString());
+			connectionConfig.setUsername(username.toString());
+			connectionConfig.setPassword(password.toString());
+			connectionConfig.setEncoding(encoding.toString());
+			connectionConfig.setLocalPort(localPort.toString());
+			connectionConfig.setRemotePort(remotePort.toString());
+			connectionConfig.setSshPort(sshPort.toString());
+			connectionConfig.setSshHost(sshHost.toString());
+			connectionConfig.setSshUser(sshUser.toString());
+			connectionConfig.setSshPassword(sshPassword.toString());
+
+			ExecutiveResult<ConnectionConfig> saveResult = connectionConfigAssist.saveConnectionConfig(connectionConfig);
+
+			if (saveResult.getSuccess()) {
+				return this.singleData(saveResult.getData());
+			}
+
+			return this.fail(saveResult);
+		}
+
+		return this.fail(result);
+
 	}
 
 	@ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")

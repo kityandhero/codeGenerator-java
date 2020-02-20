@@ -19,6 +19,7 @@ import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.Competence;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 
 import java.util.ArrayList;
@@ -109,18 +110,14 @@ public class OperatorAssist {
 		throw new RuntimeException("RoleCodeToolsService");
 	}
 
-	public Optional<Operator> getCurrent() {
-		Optional<CustomJsonWebToken> op = CustomJsonWebToken.getFromCurrentHttpToken(jwtConfig);
+	public ExecutiveResult<Operator> getCurrent() {
+		ExecutiveResult<CustomJsonWebToken> result = CustomJsonWebToken.getFromCurrentHttpToken(jwtConfig);
 
-		return op.flatMap(customIdentificationToken -> {
-			try {
-				return operatorService.get(customIdentificationToken.getId());
-			} catch (Exception e) {
-				e.printStackTrace();
+		if (result.getSuccess()) {
+			return operatorService.get(result.getData().getId());
+		}
 
-				return Optional.empty();
-			}
-		});
+		return new ExecutiveResult<>(result.getCode());
 	}
 
 	public List<RoleUniversal> getRoleUniversalCollection(long operatorId) {
@@ -378,9 +375,9 @@ public class OperatorAssist {
 			return result;
 		}
 
-		Optional<Operator> optionalOperator = operatorService.get(operatorId);
+		ExecutiveResult<Operator> resultGet = operatorService.get(operatorId);
 
-		if (optionalOperator.isPresent()) {
+		if (resultGet.getSuccess()) {
 			List<RoleUniversal> roleUniversalList = getRoleUniversalService().findByIdCollection(roleUniversalIdList);
 
 			OperatorRoleService operatorRoleService = this.getOperatorRoleService();
@@ -453,9 +450,9 @@ public class OperatorAssist {
 			return result;
 		}
 
-		Optional<Operator> optionalOperator = operatorService.get(operatorId);
+		ExecutiveResult<Operator> resultGet = operatorService.get(operatorId);
 
-		if (optionalOperator.isPresent()) {
+		if (resultGet.getSuccess()) {
 			List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsService().findByIdCollection(roleCodeToolsIdList);
 
 			OperatorRoleService operatorRoleService = this.getOperatorRoleService();

@@ -23,10 +23,10 @@ public class ConnectionConfig extends BaseEntity {
 	private static final long serialVersionUID = -3628391768513027313L;
 
 	@Column(name = "database_type")
-	private String databaseType;
+	private int databaseType;
 
 	@Column(name = "connection_type")
-	private String connectionType;
+	private int connectionType;
 
 	@Column
 	private String name;

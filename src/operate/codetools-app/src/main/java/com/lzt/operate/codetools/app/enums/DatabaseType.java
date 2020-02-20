@@ -1,6 +1,9 @@
 package com.lzt.operate.codetools.app.enums;
 
 import lombok.Getter;
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -56,4 +59,15 @@ public enum DatabaseType {
 
 	}
 
+	public static Optional<DatabaseType> valueOfFlag(@NonNull Integer flag) {
+		DatabaseType[] values = DatabaseType.values();
+
+		for (DatabaseType d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
 }

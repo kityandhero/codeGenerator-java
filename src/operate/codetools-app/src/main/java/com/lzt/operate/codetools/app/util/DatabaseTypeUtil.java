@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -36,9 +37,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by Owen on 6/12/16.
  */
-public class DbUtil {
+public class DatabaseTypeUtil {
 
-	private static final Logger _LOG = LoggerFactory.getLogger(DbUtil.class);
+	private static final Logger _LOG = LoggerFactory.getLogger(DatabaseTypeUtil.class);
 	private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 1;
 
 	private static Map<DatabaseType, Driver> drivers = new HashMap<>();
@@ -75,7 +76,7 @@ public class DbUtil {
 	private static void engagePortForwarding(Session sshSession, ConnectionConfig config) {
 		if (sshSession != null) {
 			AtomicInteger assinged_port = new AtomicInteger();
-			Future<?> result = DbUtil.executorService.submit(() -> {
+			Future<?> result = DatabaseTypeUtil.executorService.submit(() -> {
 				try {
 					Integer localPort = NumberUtils.createInteger(config.getLocalPort());
 					Integer RemotePort;
@@ -87,7 +88,7 @@ public class DbUtil {
 					} else {
 						rport = RemotePort;
 					}
-					Session session = DbUtil.portForwardingSession.get(lport);
+					Session session = DatabaseTypeUtil.portForwardingSession.get(lport);
 					if (session != null && session.isConnected()) {
 						String s = session.getPortForwardingL()[0];
 						String[] split = StringUtils.split(s, ":");
@@ -99,11 +100,11 @@ public class DbUtil {
 					}
 					sshSession.connect();
 					assinged_port.set(sshSession.setPortForwardingL(lport, config.getHost(), rport));
-					DbUtil.portForwardingSession.put(lport, sshSession);
-					DbUtil.portForwaring = true;
-					DbUtil._LOG.info("portForwarding Enabled, {}", assinged_port);
+					DatabaseTypeUtil.portForwardingSession.put(lport, sshSession);
+					DatabaseTypeUtil.portForwaring = true;
+					DatabaseTypeUtil._LOG.info("portForwarding Enabled, {}", assinged_port);
 				} catch (JSchException e) {
-					DbUtil._LOG.error("Connect Over SSH failed", e);
+					DatabaseTypeUtil._LOG.error("Connect Over SSH failed", e);
 					String a = "Address already in use: JVM_Bind";
 
 					if (e.getCause() != null && a.equals(e.getCause().getMessage())) {
@@ -115,7 +116,7 @@ public class DbUtil {
 			try {
 				result.get(5, TimeUnit.SECONDS);
 			} catch (Exception e) {
-				DbUtil.shutdownPortForwarding(sshSession);
+				DatabaseTypeUtil.shutdownPortForwarding(sshSession);
 				if (e.getCause() instanceof RuntimeException) {
 					throw (RuntimeException) e.getCause();
 				}
@@ -123,7 +124,7 @@ public class DbUtil {
 					throw new RuntimeException("OverSSH 连接超时：超过5秒");
 				}
 
-				DbUtil._LOG.info("executorService isShutdown:{}", DbUtil.executorService.isShutdown());
+				DatabaseTypeUtil._LOG.info("executorService isShutdown:{}", DatabaseTypeUtil.executorService.isShutdown());
 				// AlertUtil.showErrorAlert("OverSSH 失败，请检查连接设置:" + e.getMessage());
 				throw new RuntimeException("OverSSH 失败，请检查连接设置:" + e.getMessage());
 			}
@@ -131,21 +132,28 @@ public class DbUtil {
 	}
 
 	private static void shutdownPortForwarding(Session session) {
-		DbUtil.portForwaring = false;
+		DatabaseTypeUtil.portForwaring = false;
 		if (session != null && session.isConnected()) {
 			session.disconnect();
-			DbUtil._LOG.info("portForwarding turn OFF");
+			DatabaseTypeUtil._LOG.info("portForwarding turn OFF");
 		}
 //		executorService.shutdown();
 	}
 
 	private static Connection getConnection(ConnectionConfig config) throws SQLException {
-		DatabaseType dbType = DatabaseType.valueOf(config.getDatabaseType());
-		if (DbUtil.drivers.get(dbType) == null) {
-			DbUtil.loadDbDriver(dbType);
+		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(config.getDatabaseType());
+
+		if (!optionalDatabaseType.isPresent()) {
+			throw new SQLException("连接字符串无效");
 		}
 
-		String url = DbUtil.getConnectionUrlWithSchema(config);
+		DatabaseType dbType = optionalDatabaseType.get();
+
+		if (DatabaseTypeUtil.drivers.get(dbType) == null) {
+			DatabaseTypeUtil.loadDbDriver(dbType);
+		}
+
+		String url = DatabaseTypeUtil.getConnectionUrlWithSchema(config);
 		Properties props = new Properties();
 
 		// $NON-NLS-1$
@@ -154,29 +162,29 @@ public class DbUtil {
 		//$NON-NLS-1$
 		props.setProperty("password", config.getPassword());
 
-		DriverManager.setLoginTimeout(DbUtil.DB_CONNECTION_TIMEOUTS_SECONDS);
-		Connection connection = DbUtil.drivers.get(dbType).connect(url, props);
-		DbUtil._LOG.info("getConnection, connection url: {}", connection);
+		DriverManager.setLoginTimeout(DatabaseTypeUtil.DB_CONNECTION_TIMEOUTS_SECONDS);
+		Connection connection = DatabaseTypeUtil.drivers.get(dbType).connect(url, props);
+		DatabaseTypeUtil._LOG.info("getConnection, connection url: {}", connection);
 		return connection;
 	}
 
 	public static List<DataTableInfo> getTableNames(ConnectionConfig config) throws Exception {
-		Session sshSession = DbUtil.getSSHSession(config);
-		DbUtil.engagePortForwarding(sshSession, config);
-		try (Connection connection = DbUtil.getConnection(config)) {
+		Session sshSession = DatabaseTypeUtil.getSSHSession(config);
+		DatabaseTypeUtil.engagePortForwarding(sshSession, config);
+		try (Connection connection = DatabaseTypeUtil.getConnection(config)) {
 			List<DataTableInfo> tables = new ArrayList<>();
 			DatabaseMetaData md = connection.getMetaData();
 			ResultSet rs;
-			if (DatabaseType.valueOf(config.getDatabaseType()) == DatabaseType.SQL_Server) {
+			if (config.getDatabaseType() == DatabaseType.SQL_Server.getFlag()) {
 				String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
 					tables.add(new DataTableInfo(rs.getString("name")));
 				}
-			} else if (DatabaseType.valueOf(config.getDatabaseType()) == DatabaseType.Oracle) {
+			} else if (config.getDatabaseType() == DatabaseType.Oracle.getFlag()) {
 				rs = md.getTables(null, config.getUsername()
 											  .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
-			} else if (DatabaseType.valueOf(config.getDatabaseType()) == DatabaseType.Sqlite) {
+			} else if (config.getDatabaseType() == DatabaseType.Sqlite.getFlag()) {
 				String sql = "Select name from sqlite_master;";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
@@ -192,16 +200,16 @@ public class DbUtil {
 			}
 			return tables;
 		} finally {
-			DbUtil.shutdownPortForwarding(sshSession);
+			DatabaseTypeUtil.shutdownPortForwarding(sshSession);
 		}
 	}
 
 	public static List<DataColumnInfo> getTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
-		String url = DbUtil.getConnectionUrlWithSchema(dbConfig);
-		DbUtil._LOG.info("getTableColumns, connection url: {}", url);
-		Session sshSession = DbUtil.getSSHSession(dbConfig);
-		DbUtil.engagePortForwarding(sshSession, dbConfig);
-		try (Connection conn = DbUtil.getConnection(dbConfig)) {
+		String url = DatabaseTypeUtil.getConnectionUrlWithSchema(dbConfig);
+		DatabaseTypeUtil._LOG.info("getTableColumns, connection url: {}", url);
+		Session sshSession = DatabaseTypeUtil.getSSHSession(dbConfig);
+		DatabaseTypeUtil.engagePortForwarding(sshSession, dbConfig);
+		try (Connection conn = DatabaseTypeUtil.getConnection(dbConfig)) {
 			DatabaseMetaData md = conn.getMetaData();
 			ResultSet rs = md.getColumns(dbConfig.getSchema(), null, tableName, null);
 			List<DataColumnInfo> columns = new ArrayList<>();
@@ -218,17 +226,25 @@ public class DbUtil {
 			}
 			return columns;
 		} finally {
-			DbUtil.shutdownPortForwarding(sshSession);
+			DatabaseTypeUtil.shutdownPortForwarding(sshSession);
 		}
 	}
 
-	public static String getConnectionUrlWithSchema(ConnectionConfig dbConfig) {
-		DatabaseType dbType = DatabaseType.valueOf(dbConfig.getDatabaseType());
+	public static String getConnectionUrlWithSchema(ConnectionConfig dbConfig) throws SQLException {
+		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(dbConfig.getDatabaseType());
+
+		if (!optionalDatabaseType.isPresent()) {
+			throw new SQLException("连接字符串无效");
+		}
+
+		DatabaseType dbType = optionalDatabaseType.get();
+
 		String connectionUrl = String.format(dbType.getConnectionUrlPattern(),
-				DbUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DbUtil.portForwaring ? dbConfig.getLocalPort() : dbConfig
+				DatabaseTypeUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DatabaseTypeUtil.portForwaring ? dbConfig
+						.getLocalPort() : dbConfig
 						.getPort(), dbConfig
 						.getSchema(), dbConfig.getEncoding());
-		DbUtil._LOG.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
+		DatabaseTypeUtil._LOG.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
 		return connectionUrl;
 	}
 
@@ -243,10 +259,10 @@ public class DbUtil {
 		try {
 			Class clazz = Class.forName(dbType.getDriverClass(), true, classloader);
 			Driver driver = (Driver) clazz.newInstance();
-			DbUtil._LOG.info("load driver class: {}", driver);
-			DbUtil.drivers.put(dbType, driver);
+			DatabaseTypeUtil._LOG.info("load driver class: {}", driver);
+			DatabaseTypeUtil.drivers.put(dbType, driver);
 		} catch (Exception e) {
-			DbUtil._LOG.error("load driver error", e);
+			DatabaseTypeUtil._LOG.error("load driver error", e);
 			throw new DbDriverLoadingException("找不到" + dbType.getConnectorJarFile() + "驱动");
 		}
 	}

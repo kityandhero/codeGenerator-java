@@ -1,6 +1,11 @@
 package com.lzt.operate.utility.enums;
 
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 操作返回码
@@ -111,9 +116,9 @@ public enum ReturnDataCode {
 	NoChange(1003, "无操作反馈", false),
 
 	/**
-	 * 无可用数据
+	 * 需要登录
 	 */
-	TokenExpired(2001, "标识过期", false),
+	Authentication_FAIL(2001, "Token无效", false),
 
 	/**
 	 * 无可用数据
@@ -193,12 +198,7 @@ public enum ReturnDataCode {
 	/**
 	 * 密码错误
 	 */
-	PASSWORD_ERROR(50003, "密码错误", false),
-
-	/**
-	 * 需要登录
-	 */
-	Authentication_FAIL(2001, "登录验证失败", false);
+	PASSWORD_ERROR(50003, "密码错误", false);
 
 	private int code;
 	private String message;
@@ -214,24 +214,41 @@ public enum ReturnDataCode {
 		return code;
 	}
 
-	public void setCode(int code) {
+	public ReturnDataCode setCode(int code) {
 		this.code = code;
+
+		return this;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public ReturnDataCode setMessage(String message) {
 		this.message = message;
+
+		return this;
+	}
+
+	public ReturnDataCode appendMessage(String... otherMessageList) {
+		List<String> list = new ArrayList<>();
+
+		list.add(this.message);
+		list.addAll(Arrays.asList(otherMessageList));
+
+		this.message = StringAssist.join(list);
+
+		return this;
 	}
 
 	public boolean getSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public ReturnDataCode setSuccess(boolean success) {
 		this.success = success;
+
+		return this;
 	}
 
 }

@@ -11,21 +11,18 @@ import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.Operator;
-import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -75,17 +72,13 @@ public class CurrentOperator extends OperateAuthController {
 	public BaseResultData getCurrent() {
 		OperatorAssist assist = getOperatorAssist();
 
-		Optional<Operator> op = assist.getCurrent();
+		ExecutiveResult<Operator> result = assist.getCurrent();
 
-		if (op.isPresent()) {
-			return this.singleData(op.get());
-		} else {
-			var error = ReturnDataCode.NoData;
-
-			error.setMessage("没有数据");
-
-			return this.fail(error);
+		if (result.getSuccess()) {
+			return this.singleData(result.getData());
 		}
+
+		return this.fail(result.transferToExecutiveSimpleResult());
 	}
 
 	@ApiOperation(value = "当前操作者基本信息", notes = "当前操作者基本信息", httpMethod = "POST")
@@ -94,16 +87,12 @@ public class CurrentOperator extends OperateAuthController {
 	public BaseResultData getCurrentBasicInfo() {
 		OperatorAssist assist = getOperatorAssist();
 
-		Optional<Operator> op = assist.getCurrent();
+		ExecutiveResult<Operator> result = assist.getCurrent();
 
-		if (op.isPresent()) {
-			return this.singleData(op.get());
-		} else {
-			var error = ReturnDataCode.NoData;
-
-			error.setMessage("没有数据");
-
-			return this.fail(error);
+		if (result.getSuccess()) {
+			return this.singleData(result.getData());
 		}
+
+		return this.fail(result.transferToExecutiveSimpleResult());
 	}
 }

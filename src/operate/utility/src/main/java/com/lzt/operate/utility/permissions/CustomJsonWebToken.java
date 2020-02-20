@@ -9,7 +9,8 @@ import com.lzt.operate.utility.assists.DateAssist;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
-import com.lzt.operate.utility.exceptions.AuthenticationException;
+import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,12 +140,12 @@ public class CustomJsonWebToken {
 	 * @param token JWTToken
 	 * @return Optional<CustomJsonWebToken>
 	 */
-	public static Optional<CustomJsonWebToken> getFromHttpToken(String token) {
+	public static ExecutiveResult<CustomJsonWebToken> getFromHttpToken(String token) {
 		if (!StringAssist.isNullOrEmpty(token)) {
-			return Optional.of(new CustomJsonWebToken(token));
+			return new ExecutiveResult<>(ReturnDataCode.Ok, new CustomJsonWebToken(token));
 		}
 
-		return Optional.empty();
+		return new ExecutiveResult<>(ReturnDataCode.NoData.setMessage("无效Token"));
 	}
 
 	/**
@@ -153,9 +154,9 @@ public class CustomJsonWebToken {
 	 * @param customJsonWebTokenConfig customJsonWebTokenConfig
 	 * @return Optional<CustomJsonWebToken>
 	 */
-	public static Optional<CustomJsonWebToken> getFromCurrentHttpToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+	public static ExecutiveResult<CustomJsonWebToken> getFromCurrentHttpToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
 		if (!Optional.ofNullable(customJsonWebTokenConfig).isPresent()) {
-			return Optional.empty();
+			return new ExecutiveResult<>(ReturnDataCode.NoData.setMessage("无效Token"));
 		}
 
 		HttpServletRequest request = RequestAssist.getHttpServletRequest();
@@ -171,34 +172,36 @@ public class CustomJsonWebToken {
 	 * @param customJsonWebTokenConfig customJsonWebTokenConfig
 	 * @return Optional<CustomJsonWebToken>
 	 */
-	public static Optional<CustomJsonWebToken> getEffectiveCurrent(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
-		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
+	public static ExecutiveResult<CustomJsonWebToken> getEffectiveCurrent(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+		ExecutiveResult<CustomJsonWebToken> result = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
 
-		if (optional.isPresent()) {
-			CustomJsonWebToken customJsonWebToken = optional.get();
+		if (result.getSuccess()) {
+			CustomJsonWebToken customJsonWebToken = result.getData();
 
 			if (!customJsonWebToken.isTokenExpired()) {
-				return Optional.of(customJsonWebToken);
+				return new ExecutiveResult<>(ReturnDataCode.Ok, customJsonWebToken);
 			}
+
+			return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("Token过期"));
 		}
 
-		return Optional.empty();
+		return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("缺少Token"));
 	}
 
-	public static CustomJsonWebToken checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
-		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
+	public static ExecutiveResult<CustomJsonWebToken> checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
+		ExecutiveResult<CustomJsonWebToken> result = CustomJsonWebToken.getFromCurrentHttpToken(customJsonWebTokenConfig);
 
-		if (!optional.isPresent()) {
-			throw new AuthenticationException("请登录后访问");
+		if (result.getSuccess()) {
+			CustomJsonWebToken customJsonWebToken = result.getData();
+
+			if (!customJsonWebToken.isTokenExpired()) {
+				return new ExecutiveResult<>(ReturnDataCode.Ok, result.getData());
+			}
+
+			return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("登录超时，请重新登录"));
 		}
 
-		CustomJsonWebToken customJsonWebToken = optional.get();
-
-		if (customJsonWebToken.isTokenExpired()) {
-			throw new AuthenticationException("登录超时，请重新登录");
-		}
-
-		return customJsonWebToken;
+		return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("请登录后访问"));
 	}
 
 	public Object getToken() {

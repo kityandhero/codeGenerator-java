@@ -5,11 +5,10 @@ import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-
-import java.util.Optional;
 
 /**
  * 检验权限基类
@@ -37,13 +36,13 @@ public abstract class BaseCheckAuthorization {
 	 */
 	@Before("checkDataPoint() && @annotation(needAuthorization)")
 	public void checkBefore(JoinPoint joinPoint, NeedAuthorization needAuthorization) throws AuthenticationException {
-		Optional<CustomJsonWebToken> optional = CustomJsonWebToken.getEffectiveCurrent(getCustomJsonWebTokenConfig());
+		ExecutiveResult<CustomJsonWebToken> result = CustomJsonWebToken.getEffectiveCurrent(getCustomJsonWebTokenConfig());
 
-		if (!optional.isPresent()) {
+		if (!result.getSuccess()) {
 			throw new AuthorizationException("无有效登录凭证，禁止访问");
 		}
 
-		CustomJsonWebToken customJsonWebToken = optional.get();
+		CustomJsonWebToken customJsonWebToken = result.getData();
 
 		if (!checkAuthorization(joinPoint, needAuthorization, customJsonWebToken)) {
 			throw new AuthorizationException("无权限访问");

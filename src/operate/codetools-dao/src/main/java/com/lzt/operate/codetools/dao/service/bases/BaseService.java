@@ -5,6 +5,7 @@ import com.lzt.operate.codetools.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.var;
 import org.springframework.data.domain.Example;
@@ -71,11 +72,14 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @param id 数据标识
 	 * @return 数据实体
 	 */
-	default Optional<S> get(Long id) {
+	default ExecutiveResult<S> get(Long id) {
 		Optional<R> optional = Optional.ofNullable(getRepository());
 
 		if (optional.isPresent()) {
-			return optional.get().findById(id);
+			Optional<S> optionalEntity = optional.get().findById(id);
+
+			return optionalEntity.map(s -> new ExecutiveResult<>(ReturnDataCode.Ok, s))
+								 .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.NoData));
 		}
 
 		throw new RuntimeException("默认Repository获取失败");
@@ -87,14 +91,18 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @param filter filter
 	 * @return Optional<S>
 	 */
-	default Optional<S> findOne(Example<S> filter) {
+	default ExecutiveResult<S> findOne(Example<S> filter) {
 		Optional<R> optional = Optional.ofNullable(getRepository());
 
 		if (optional.isPresent()) {
-			return optional.get().findOne(filter);
+			Optional<S> optionalEntity = optional.get().findOne(filter);
+
+			return optionalEntity.map(s -> new ExecutiveResult<>(ReturnDataCode.Ok, s))
+								 .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.NoData));
+
 		}
 
-		throw new RuntimeException("默认Repository获取失败");
+		return new ExecutiveResult<>(ReturnDataCode.Exception.setMessage("默认Repository获取失败"));
 	}
 
 	/**
@@ -103,16 +111,18 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @param entity entity
 	 * @return S
 	 */
-	default S save(S entity) {
+	default ExecutiveResult<S> save(S entity) {
 		Optional<R> optional = Optional.ofNullable(getRepository());
 
 		if (optional.isPresent()) {
 			beforeSave(entity);
 
-			return optional.get().save(entity);
+			S savedEntity = optional.get().save(entity);
+
+			return new ExecutiveResult<>(ReturnDataCode.Ok, savedEntity);
 		}
 
-		throw new RuntimeException("默认Repository获取失败");
+		return new ExecutiveResult<>(ReturnDataCode.Exception.setMessage("默认Repository获取失败"));
 	}
 
 	/**
