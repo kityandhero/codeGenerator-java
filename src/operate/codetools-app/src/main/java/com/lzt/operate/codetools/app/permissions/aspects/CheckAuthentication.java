@@ -1,14 +1,17 @@
 package com.lzt.operate.codetools.app.permissions.aspects;
 
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.dao.service.OperatorService;
-import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.dao.service.AccountService;
+import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.aspects.BaseCheckAuthentication;
+import com.lzt.operate.utility.pojo.BaseOperator;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * 检验登录Aop
@@ -19,10 +22,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class CheckAuthentication extends BaseCheckAuthentication {
 
-	private final OperatorService operatorService;
+	private final AccountService operatorService;
 
 	@Autowired
-	public CheckAuthentication(CustomJsonWebTokenConfig customJsonWebTokenConfig, OperatorServiceImpl operatorService) {
+	public CheckAuthentication(CustomJsonWebTokenConfig customJsonWebTokenConfig, AccountServiceImpl operatorService) {
 		this.setBaseCustomJsonWebTokenConfig(customJsonWebTokenConfig);
 		this.operatorService = operatorService;
 	}
@@ -36,8 +39,9 @@ public class CheckAuthentication extends BaseCheckAuthentication {
 
 	@Override
 	protected boolean checkAccount(CustomJsonWebToken customJsonWebToken) {
-		long operatorId = customJsonWebToken.getId();
+		Optional<BaseOperator> result = customJsonWebToken.getOperator();
 
-		return this.operatorService.existEffective(operatorId);
+		return result.filter(baseOperator -> this.operatorService.existEffective(baseOperator.getOperatorId()))
+					 .isPresent();
 	}
 }

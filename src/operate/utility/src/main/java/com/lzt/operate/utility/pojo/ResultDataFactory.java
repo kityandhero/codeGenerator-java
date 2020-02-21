@@ -34,4 +34,12 @@ public class ResultDataFactory {
 		return new ResultListData(ReturnDataCode.Ok, Collections.emptyList(), new SerializableData());
 	}
 
+	public static ResultListData failListData(ReturnDataCode returnDataCode) {
+		return new ResultListData(returnDataCode, Collections.emptyList(), new SerializableData());
+	}
+
+	public static ResultListData failListData(ReturnDataCode returnDataCode, SerializableData extra) {
+		return new ResultListData(returnDataCode, Collections.emptyList(), extra);
+	}
+
 }

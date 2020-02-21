@@ -5,14 +5,16 @@ import com.lzt.operate.codetools.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
-import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,18 +54,72 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	/**
 	 * 获取分页数据
 	 *
+	 * @param filter filter
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default List<S> list(Example<S> filter) {
+		return getRepository().findAll(filter);
+	}
+
+	/**
+	 * 获取分页数据
+	 *
+	 * @param filter filter
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default List<S> list(Specification<S> filter) {
+		return getRepository().findAll(filter);
+	}
+
+	/**
+	 * 获取分页数据
+	 *
+	 * @param pageable pageable
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default Page<S> page(Pageable pageable) {
+		return getRepository().findAll(pageable);
+	}
+
+	/**
+	 * 获取分页数据
+	 *
 	 * @param filter   filter
 	 * @param pageable pageable
-	 * @return Page<S>
+	 * @return ExecutiveResult<Page < S>>
 	 */
 	default Page<S> page(Example<S> filter, Pageable pageable) {
-		Optional<R> optional = Optional.ofNullable(getRepository());
+		return getRepository().findAll(filter, pageable);
+	}
 
-		if (optional.isPresent()) {
-			return optional.get().findAll(filter, pageable);
-		}
+	/**
+	 * 获取分页数据
+	 *
+	 * @param filter   filter
+	 * @param pageable pageable
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default Page<S> page(Specification<S> filter, Pageable pageable) {
+		return getRepository().findAll(filter, pageable);
+	}
 
-		throw new RuntimeException("默认Repository获取失败");
+	/**
+	 * 获取分页数据
+	 *
+	 * @param filter filter
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default long count(Example<S> filter) {
+		return getRepository().count(filter);
+	}
+
+	/**
+	 * 获取分页数据
+	 *
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default long count() {
+		return getRepository().count();
 	}
 
 	/**
@@ -72,17 +128,8 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @param id 数据标识
 	 * @return 数据实体
 	 */
-	default ExecutiveResult<S> get(Long id) {
-		Optional<R> optional = Optional.ofNullable(getRepository());
-
-		if (optional.isPresent()) {
-			Optional<S> optionalEntity = optional.get().findById(id);
-
-			return optionalEntity.map(s -> new ExecutiveResult<>(ReturnDataCode.Ok, s))
-								 .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.NoData));
-		}
-
-		throw new RuntimeException("默认Repository获取失败");
+	default Optional<S> get(Long id) {
+		return getRepository().findById(id);
 	}
 
 	/**
@@ -91,18 +138,8 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @param filter filter
 	 * @return Optional<S>
 	 */
-	default ExecutiveResult<S> findOne(Example<S> filter) {
-		Optional<R> optional = Optional.ofNullable(getRepository());
-
-		if (optional.isPresent()) {
-			Optional<S> optionalEntity = optional.get().findOne(filter);
-
-			return optionalEntity.map(s -> new ExecutiveResult<>(ReturnDataCode.Ok, s))
-								 .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.NoData));
-
-		}
-
-		return new ExecutiveResult<>(ReturnDataCode.Exception.setMessage("默认Repository获取失败"));
+	default Optional<S> findOne(Example<S> filter) {
+		return getRepository().findOne(filter);
 	}
 
 	/**
@@ -111,18 +148,10 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @param entity entity
 	 * @return S
 	 */
-	default ExecutiveResult<S> save(S entity) {
-		Optional<R> optional = Optional.ofNullable(getRepository());
+	default S save(@NonNull S entity) {
+		beforeSave(entity);
 
-		if (optional.isPresent()) {
-			beforeSave(entity);
-
-			S savedEntity = optional.get().save(entity);
-
-			return new ExecutiveResult<>(ReturnDataCode.Ok, savedEntity);
-		}
-
-		return new ExecutiveResult<>(ReturnDataCode.Exception.setMessage("默认Repository获取失败"));
+		return getRepository().save(entity);
 	}
 
 	/**
@@ -171,11 +200,8 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * 物理删除
 	 *
 	 * @param id id
-	 * @return ExecutiveSimpleResult
 	 */
-	default ExecutiveSimpleResult deleteById(Long id) {
-		this.getRepository().deleteById(id);
-
-		return new ExecutiveSimpleResult(ReturnDataCode.Ok);
+	default void deleteById(Long id) {
+		getRepository().deleteById(id);
 	}
 }

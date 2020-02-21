@@ -1,11 +1,13 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.assists.ConnectionConfigAssist;
+import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
-import com.lzt.operate.codetools.app.common.OperateBaseController;
+import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
+import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
@@ -13,6 +15,8 @@ import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.EnumAssist;
+import com.lzt.operate.utility.assists.ReflectAssist;
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -28,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -47,13 +53,15 @@ import java.util.Map;
 @EnableConfigurationProperties
 @RequestMapping("/business/connectionConfig")
 @Api(tags = {"数据库连接"})
-public class ConnectionConfigController extends OperateBaseController {
+public class ConnectionConfigController extends BaseOperateAuthController {
 	private static final String CONTROLLER_DESCRIPTION = "数据库连接/";
 
 	private ConnectionConfigService connectionConfigService;
 
 	@Autowired
-	public ConnectionConfigController(ConnectionConfigServiceImpl connectionConfigServiceImpl) {
+	public ConnectionConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl) {
+		super(customJsonWebTokenConfig);
+
 		this.connectionConfigService = connectionConfigServiceImpl;
 	}
 
@@ -87,11 +95,11 @@ public class ConnectionConfigController extends OperateBaseController {
 
 		Example<ConnectionConfig> filter = Example.of(connectionConfig, matcher);
 
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, "createTime");
+		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ConnectionConfig::getCreateTime));
 
-		var page = this.connectionConfigService.page(filter, pageable);
+		Page<ConnectionConfig> result = this.connectionConfigService.page(filter, pageable);
 
-		return this.pageData(page.getContent(), page.getNumber(), page.getSize(), page.getTotalPages());
+		return this.pageData(result);
 	}
 
 	@ApiOperation(value = "获取连接", notes = "获取数据库连接", httpMethod = "POST")
@@ -107,13 +115,13 @@ public class ConnectionConfigController extends OperateBaseController {
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
-		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().getConnectionConfig(connectionConfigId);
+		Optional<ConnectionConfig> result = getConnectionConfigAssist().getConnectionConfig(connectionConfigId);
 
-		if (result.getSuccess()) {
-			return this.singleData(result.getData());
+		if (result.isPresent()) {
+			return this.singleData(result.get());
 		}
 
-		return this.fail(result);
+		return this.fail(ReturnDataCode.NoData);
 	}
 
 	@ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
@@ -141,9 +149,19 @@ public class ConnectionConfigController extends OperateBaseController {
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> connectionJson) {
 		var paramJson = getParamData(connectionJson);
 
-		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().addConnectionConfig(paramJson);
+		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().createConnectionConfig(paramJson);
 
 		if (result.getSuccess()) {
+			ConnectionConfig connectionConfig = result.getData();
+
+			connectionConfig.setChannel(Channel.CodeTools.getFlag());
+			connectionConfig.setChannelNote(Channel.CodeTools.getNote());
+
+			long operatorId = getOperatorId();
+
+			connectionConfig.setCreateOperatorId(operatorId);
+			connectionConfig.setUpdateOperatorId(operatorId);
+
 			return this.singleData(result.getData());
 		}
 
@@ -203,10 +221,10 @@ public class ConnectionConfigController extends OperateBaseController {
 
 		ConnectionConfigAssist connectionConfigAssist = getConnectionConfigAssist();
 
-		ExecutiveResult<ConnectionConfig> result = connectionConfigAssist.getConnectionConfig(connectionConfigId);
+		Optional<ConnectionConfig> result = connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
-		if (result.getSuccess()) {
-			ConnectionConfig connectionConfig = result.getData();
+		if (result.isPresent()) {
+			ConnectionConfig connectionConfig = result.get();
 
 			var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
 			var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
@@ -237,16 +255,12 @@ public class ConnectionConfigController extends OperateBaseController {
 			connectionConfig.setSshUser(sshUser.toString());
 			connectionConfig.setSshPassword(sshPassword.toString());
 
-			ExecutiveResult<ConnectionConfig> saveResult = connectionConfigAssist.saveConnectionConfig(connectionConfig);
+			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(connectionConfig);
 
-			if (saveResult.getSuccess()) {
-				return this.singleData(saveResult.getData());
-			}
-
-			return this.fail(saveResult);
+			return this.singleData(saveResult);
 		}
 
-		return this.fail(result);
+		return this.fail(ReturnDataCode.NoData);
 
 	}
 
@@ -267,12 +281,8 @@ public class ConnectionConfigController extends OperateBaseController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
 		}
 
-		var result = getConnectionConfigAssist().deleteById(connectionConfigId);
+		getConnectionConfigAssist().deleteById(connectionConfigId);
 
-		if (result.getSuccess()) {
-			return this.success();
-		}
-
-		return this.fail(result);
+		return this.success();
 	}
 }

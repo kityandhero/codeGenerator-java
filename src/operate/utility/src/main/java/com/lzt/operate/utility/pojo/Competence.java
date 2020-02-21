@@ -2,7 +2,6 @@ package com.lzt.operate.utility.pojo;
 
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.interfaces.IObjectExtensionMethod;
-import lombok.Data;
 import lombok.var;
 
 import java.io.Serializable;
@@ -13,33 +12,32 @@ import java.util.stream.Stream;
 /**
  * @author luzhitao
  */
-@Data
 public class Competence implements IObjectExtensionMethod {
 	private static final long serialVersionUID = -6020503546833401610L;
 	/**
 	 * 名称
 	 */
-	String name;
+	private String name;
 
 	/**
 	 * 唯一标识符
 	 */
-	String tag;
+	private String tag;
 
 	/**
 	 * 路径
 	 */
-	String relativePath;
+	private String relativePath;
 
 	/**
 	 * 扩展权限说明
 	 */
-	String explain;
+	private String explain;
 
 	/**
 	 * 扩展权限设置
 	 */
-	String expansionSet;
+	private String expansionSet;
 
 	public Competence() {
 		tag = "";
@@ -47,6 +45,46 @@ public class Competence implements IObjectExtensionMethod {
 		relativePath = "";
 		explain = "";
 		expansionSet = "";
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
+
+	public String getExplain() {
+		return explain;
+	}
+
+	public void setExplain(String explain) {
+		this.explain = explain;
+	}
+
+	private String getExpansionSet() {
+		return expansionSet;
+	}
+
+	public void setExpansionSet(String expansionSet) {
+		this.expansionSet = expansionSet;
 	}
 
 	public static Competence plus(Competence competenceBefore, Competence competenceAfter) {

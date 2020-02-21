@@ -1,7 +1,6 @@
 package com.lzt.operate.codetools.entities;
 
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
@@ -11,7 +10,6 @@ import javax.persistence.Table;
 /**
  * @author luzhitao
  */
-@Data
 @Entity
 @Table(name = "custom_config")
 @EqualsAndHashCode(callSuper = false)
@@ -34,4 +32,27 @@ public class CustomConfig extends BaseEntity {
 		this.description = "";
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

@@ -4,7 +4,7 @@ import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseEncoding;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
-import com.lzt.operate.codetools.common.enums.OperatorStatus;
+import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -58,10 +58,10 @@ public class MetaDataController extends OperateBaseController {
 				ConnectionType::getDescription).toArray());
 
 		result.append("operatorStatusList", EnumAssist.buildFlagDataCollection(
-				Arrays.asList(OperatorStatus.values()),
-				OperatorStatus::getFlag,
-				OperatorStatus::getName,
-				OperatorStatus::getDescription).toArray());
+				Arrays.asList(AccountStatus.values()),
+				AccountStatus::getFlag,
+				AccountStatus::getName,
+				AccountStatus::getDescription).toArray());
 
 		return this.singleData(result);
 	}

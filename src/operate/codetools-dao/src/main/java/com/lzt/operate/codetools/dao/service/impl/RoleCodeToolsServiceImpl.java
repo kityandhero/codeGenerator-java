@@ -7,6 +7,8 @@ import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * @author luzhitao
  */
@@ -31,12 +33,20 @@ public class RoleCodeToolsServiceImpl implements RoleCodeToolsService {
 
 	@Override
 	public RoleCodeToolsRepository getRepository() {
-		return this.repository;
+		if (Optional.ofNullable(this.repository).isPresent()) {
+			return this.repository;
+		}
+
+		throw new RuntimeException("Repository不存在");
 	}
 
 	@Override
 	public AccessWayRepository getAccessWayRepository() {
-		return this.accessWayRepository;
+		if (Optional.ofNullable(this.accessWayRepository).isPresent()) {
+			return this.accessWayRepository;
+		}
+
+		throw new RuntimeException("AccessWayRepository不存在");
 	}
 
 }

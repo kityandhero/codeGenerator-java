@@ -1,7 +1,6 @@
 package com.lzt.operate.codetools.entities.bases;
 
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
@@ -13,7 +12,6 @@ import javax.persistence.MappedSuperclass;
  * @author luzhitao
  * @see MappedSuperclass 标识的类表示其不能映射到数据库表，因为其不是一个完整的实体类，但是它所拥有的属性能够隐射在其子类对用的数据库表中
  */
-@Data
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = false)
 public abstract class BaseRole extends BaseEntity {
@@ -67,6 +65,53 @@ public abstract class BaseRole extends BaseEntity {
 		this.whetherSuper = WhetherSuper.No.getValue();
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public int getModuleCount() {
+		return moduleCount;
+	}
+
+	public void setModuleCount(int moduleCount) {
+		this.moduleCount = moduleCount;
+	}
+
+	public String getCompetence() {
+		return competence;
+	}
+
+	public void setCompetence(String competence) {
+		this.competence = competence;
+	}
+
+	public Integer getWhetherSuper() {
+		return whetherSuper;
+	}
+
+	public void setWhetherSuper(Integer whetherSuper) {
+		this.whetherSuper = whetherSuper;
+	}
 }
 
 

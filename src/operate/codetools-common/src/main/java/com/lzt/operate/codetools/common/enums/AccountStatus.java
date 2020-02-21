@@ -8,7 +8,7 @@ import lombok.Getter;
  * @author lzt
  */
 @Getter
-public enum OperatorStatus {
+public enum AccountStatus {
 
 	/**
 	 * 已启用
@@ -40,13 +40,13 @@ public enum OperatorStatus {
 	 */
 	private String description;
 
-	OperatorStatus(int flag, String name) {
+	AccountStatus(int flag, String name) {
 		this.flag = flag;
 		this.name = name;
 		this.description = "";
 	}
 
-	OperatorStatus(int flag, String name, String description) {
+	AccountStatus(int flag, String name, String description) {
 		this.flag = flag;
 		this.name = name;
 		this.description = description;

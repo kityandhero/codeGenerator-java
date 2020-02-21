@@ -1,11 +1,11 @@
 package com.lzt.operate.codetools.app.permissions.aspects;
 
-import com.lzt.operate.codetools.app.assists.OperatorAssist;
+import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
-import com.lzt.operate.codetools.dao.service.impl.OperatorRoleServiceImpl;
-import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.AccountRoleServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.AccessWay;
@@ -16,6 +16,7 @@ import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.permissions.aspects.BaseCheckAuthorization;
+import com.lzt.operate.utility.pojo.BaseOperator;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,22 +33,22 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
-	private OperatorAssist operatorAssist;
+	private AccountAssist accountAssist;
 
 	private final AccessWayService accessWayService;
 
 	@Autowired
 	public CheckAuthorization(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			OperatorServiceImpl operatorServiceImpl,
-			OperatorRoleServiceImpl operatorRoleService,
+			AccountServiceImpl accountService,
+			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService,
 			AccessWayServiceImpl accessWayService) {
-		this.operatorAssist = new OperatorAssist(
+		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
-				operatorServiceImpl,
-				operatorRoleService,
+				accountService,
+				accountRoleService,
 				roleUniversalService,
 				roleCodeToolsService
 		);
@@ -55,13 +56,13 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 		this.accessWayService = accessWayService;
 	}
 
-	private OperatorAssist getOperatorAssist() {
-		return this.operatorAssist;
+	private AccountAssist getAccountAssist() {
+		return this.accountAssist;
 	}
 
 	@Override
 	protected BaseCustomJsonWebTokenConfig getCustomJsonWebTokenConfig() {
-		return this.operatorAssist.getCustomJsonWebTokenConfig();
+		return this.accountAssist.getCustomJsonWebTokenConfig();
 	}
 
 	@Override
@@ -118,8 +119,11 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 				return false;
 			}
 
-			return this.getOperatorAssist()
-					   .checkAccessPermission(customJsonWebToken.getId(), tag);
+			Optional<BaseOperator> resultBaseOperator = customJsonWebToken.getOperator();
+
+			return resultBaseOperator.filter(baseOperator -> this.getAccountAssist()
+																 .checkAccessPermission(baseOperator.getOperatorId(), tag))
+									 .isPresent();
 		}
 
 		return false;

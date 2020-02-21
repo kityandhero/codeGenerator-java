@@ -1,15 +1,15 @@
 package com.lzt.operate.codetools.dao.service;
 
-import com.lzt.operate.codetools.dao.repositories.OperatorRepository;
+import com.lzt.operate.codetools.dao.repositories.AccountRepository;
 import com.lzt.operate.codetools.dao.service.bases.BaseService;
-import com.lzt.operate.codetools.entities.Operator;
+import com.lzt.operate.codetools.entities.Account;
 
 import java.util.Optional;
 
 /**
  * @author luzhitao
  */
-public interface OperatorService extends BaseService<OperatorRepository, Operator> {
+public interface AccountService extends BaseService<AccountRepository, Account> {
 
 	/**
 	 * 通过登录名获取信息
@@ -17,7 +17,7 @@ public interface OperatorService extends BaseService<OperatorRepository, Operato
 	 * @param userName 登录名
 	 * @return Optional<Operator>
 	 */
-	Optional<Operator> findByUserName(String userName);
+	Optional<Account> findByUserName(String userName);
 
 	/**
 	 * 是否存在任意用户

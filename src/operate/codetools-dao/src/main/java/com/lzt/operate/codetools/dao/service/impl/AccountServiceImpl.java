@@ -1,10 +1,10 @@
 package com.lzt.operate.codetools.dao.service.impl;
 
 import com.baidu.fsg.uid.service.UidGenService;
-import com.lzt.operate.codetools.common.enums.OperatorStatus;
-import com.lzt.operate.codetools.dao.repositories.OperatorRepository;
-import com.lzt.operate.codetools.dao.service.OperatorService;
-import com.lzt.operate.codetools.entities.Operator;
+import com.lzt.operate.codetools.common.enums.AccountStatus;
+import com.lzt.operate.codetools.dao.repositories.AccountRepository;
+import com.lzt.operate.codetools.dao.service.AccountService;
+import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
@@ -24,13 +24,13 @@ import java.util.Optional;
  * @author luzhitao
  */
 @Service
-public class OperatorServiceImpl implements OperatorService {
+public class AccountServiceImpl implements AccountService {
 
 	private final UidGenService uidGenService;
 
-	private final OperatorRepository repository;
+	private final AccountRepository repository;
 
-	public OperatorServiceImpl(UidGenService uidGenService, OperatorRepository repository) {
+	public AccountServiceImpl(UidGenService uidGenService, AccountRepository repository) {
 		this.uidGenService = uidGenService;
 		this.repository = repository;
 	}
@@ -41,18 +41,22 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 
 	@Override
-	public OperatorRepository getRepository() {
-		return this.repository;
+	public AccountRepository getRepository() {
+		if (Optional.ofNullable(this.repository).isPresent()) {
+			return this.repository;
+		}
+
+		throw new RuntimeException("Repository不存在");
 	}
 
 	@Override
-	public Optional<Operator> findByUserName(String userName) {
-		Specification<Operator> spec = new Specification<Operator>() {
+	public Optional<Account> findByUserName(String userName) {
+		Specification<Account> spec = new Specification<Account>() {
 			private static final long serialVersionUID = -2260955832137429106L;
 
 			@Override
-			public Predicate toPredicate(Root<Operator> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				Path<Object> path = root.get(ReflectAssist.getFieldName(Operator::getUserName));
+			public Predicate toPredicate(Root<Account> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+				Path<Object> path = root.get(ReflectAssist.getFieldName(Account::getUserName));
 
 				return criteriaBuilder.equal(path, userName);
 			}
@@ -63,15 +67,15 @@ public class OperatorServiceImpl implements OperatorService {
 
 	@Override
 	public boolean existAny(int channel) {
-		Specification<Operator> spec = new Specification<Operator>() {
+		Specification<Account> spec = new Specification<Account>() {
 
 			private static final long serialVersionUID = 7150353365384278625L;
 
 			@Override
-			public Predicate toPredicate(Root<Operator> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Account> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
-				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Operator::getChannel)), channel));
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getChannel)), channel));
 
 				Predicate[] p = new Predicate[list.size()];
 
@@ -89,11 +93,11 @@ public class OperatorServiceImpl implements OperatorService {
 		var optional = repository.findById(id);
 
 		if (optional.isPresent()) {
-			Operator operator = optional.get();
+			Account operator = optional.get();
 
 			Integer status = operator.getStatus();
 
-			return status.equals(OperatorStatus.Enabled.getFlag());
+			return status.equals(AccountStatus.Enabled.getFlag());
 		}
 
 		return false;

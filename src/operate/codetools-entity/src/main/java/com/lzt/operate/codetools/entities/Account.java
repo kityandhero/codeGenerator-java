@@ -13,9 +13,9 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "operator")
+@Table(name = "account")
 @EqualsAndHashCode(callSuper = true)
-public class Operator extends BaseEntity {
+public class Account extends BaseEntity {
 
 	private static final long serialVersionUID = 6804364620994420244L;
 
@@ -43,9 +43,41 @@ public class Operator extends BaseEntity {
 	@Column(length = 50)
 	String slat;
 
-	public Operator() {
+	public Account() {
 		this.userName = "";
 		this.password = "";
 		this.name = "";
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSlat() {
+		return slat;
+	}
+
+	public void setSlat(String slat) {
+		this.slat = slat;
 	}
 }

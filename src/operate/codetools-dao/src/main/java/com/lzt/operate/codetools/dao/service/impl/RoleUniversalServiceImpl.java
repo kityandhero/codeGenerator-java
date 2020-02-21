@@ -7,7 +7,6 @@ import com.lzt.operate.codetools.dao.repositories.RoleUniversalRepository;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -45,23 +44,33 @@ public class RoleUniversalServiceImpl implements RoleUniversalService {
 
 	@Override
 	public RoleUniversalRepository getRepository() {
-		return this.repository;
+		if (Optional.ofNullable(this.repository).isPresent()) {
+			return this.repository;
+		}
+
+		throw new RuntimeException("Repository不存在");
 	}
 
 	@Override
 	public AccessWayRepository getAccessWayRepository() {
-		return this.accessWayRepository;
+		if (Optional.ofNullable(this.accessWayRepository).isPresent()) {
+			return this.accessWayRepository;
+		}
+
+		throw new RuntimeException("AccessWayRepository不存在");
 	}
 
 	@Override
 	public Boolean existSuper(int channel) {
-		var optional = findSuper(channel);
+		Optional<RoleUniversal> result = findSuper(channel);
 
-		return optional.isPresent();
+		return result.isPresent();
 	}
 
 	@Override
 	public Optional<RoleUniversal> findSuper(int channel) {
+		RoleUniversalRepository resultRepository = getRepository();
+
 		Specification<RoleUniversal> spec = new Specification<RoleUniversal>() {
 			private static final long serialVersionUID = -2260955832137429106L;
 
@@ -79,7 +88,7 @@ public class RoleUniversalServiceImpl implements RoleUniversalService {
 			}
 		};
 
-		return repository.findOne(spec);
+		return resultRepository.findOne(spec);
 	}
 
 }

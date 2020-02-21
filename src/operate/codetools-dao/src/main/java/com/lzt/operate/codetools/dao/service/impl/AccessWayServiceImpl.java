@@ -40,7 +40,11 @@ public class AccessWayServiceImpl implements AccessWayService {
 
 	@Override
 	public AccessWayRepository getRepository() {
-		return this.repository;
+		if (Optional.ofNullable(this.repository).isPresent()) {
+			return this.repository;
+		}
+
+		throw new RuntimeException("Repository不存在");
 	}
 
 	@Override

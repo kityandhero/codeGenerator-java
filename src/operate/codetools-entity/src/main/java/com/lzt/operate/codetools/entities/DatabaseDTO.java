@@ -1,13 +1,8 @@
 package com.lzt.operate.codetools.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author luzhitao
  */
-@Getter
-@Setter
 public class DatabaseDTO {
 
 	private String name;
@@ -19,4 +14,19 @@ public class DatabaseDTO {
 		return this.name;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public String getDriverClass() {
+		return driverClass;
+	}
+
+	public void setDriverClass(String driverClass) {
+		this.driverClass = driverClass;
+	}
 }

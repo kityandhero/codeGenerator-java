@@ -39,11 +39,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 	 * @return List<S>
 	 */
 	default List<S> findByIdCollection(Collection<Long> idCollection) {
-		if (!Optional.ofNullable(idCollection).isPresent()) {
-			return new ArrayList<>();
-		}
-
-		Specification<S> spec = new Specification<S>() {
+		Specification<S> specification = new Specification<S>() {
 
 			private static final long serialVersionUID = 6315433399074638390L;
 
@@ -65,7 +61,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 			}
 		};
 
-		return getRepository().findAll(spec);
+		return list(specification);
 	}
 
 	/**
@@ -83,7 +79,9 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 				entity.setModuleCount(0);
 
 			} else {
-				var moduleCount = getCompetenceEntityCollection(entity).size();
+				List<Competence> result = getCompetenceEntityCollection(entity);
+
+				var moduleCount = result.size();
 
 				entity.setModuleCount(moduleCount);
 			}
@@ -98,6 +96,8 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 	 * @return List<Competence>
 	 */
 	default List<Competence> getCompetenceEntityCollection(S entity) {
+		AccessWayRepository resultAccessWayRepository = getAccessWayRepository();
+
 		if (!Optional.ofNullable(entity).isPresent()) {
 			return new ArrayList<>();
 		}
@@ -137,7 +137,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 
 			if (result.size() > 0) {
 
-				var listPermission = getAccessWayRepository().findAll((root, query, cb) -> {
+				var listPermission = resultAccessWayRepository.findAll((root, query, cb) -> {
 					Predicate predicate = root.isNotNull();
 
 					predicate = cb.and(predicate, cb.and(root.get(ReflectAssist.getFieldName(AccessWay::getTag))

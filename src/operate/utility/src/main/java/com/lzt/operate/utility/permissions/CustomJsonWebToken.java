@@ -5,11 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Payload;
-import com.lzt.operate.utility.assists.DateAssist;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.BaseOperator;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,30 +28,54 @@ public class CustomJsonWebToken {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private String token;
 
-	public CustomJsonWebToken(String token) {
+	private CustomJsonWebToken(String token) {
 		this.token = token;
 	}
 
-	public Long getId() {
-		Optional<Map<String, Claim>> op = parseToken();
+	public Optional<BaseOperator> getOperator() {
+		ExecutiveResult<Map<String, Claim>> result = parseToken();
 
-		return op.map(longClaimMap -> longClaimMap.get("id").asLong()).orElse((long) 0);
+		if (result.getSuccess()) {
+			Optional<Map<String, Claim>> op = Optional.of(result.getData());
+
+			long id = op.map(longClaimMap -> longClaimMap.get("id").asLong()).orElse((long) 0);
+			String userName = op.map(stringClaimMap -> stringClaimMap.get("userName").asString()).orElse("");
+
+			BaseOperator operator = new BaseOperator();
+
+			operator.setOperatorId(id);
+			operator.setUserName(userName);
+
+			return Optional.of(operator);
+		}
+
+		return Optional.empty();
+	}
+
+	public long getId() {
+		Optional<BaseOperator> result = getOperator();
+
+		return result.map(BaseOperator::getOperatorId).orElse(0L);
 	}
 
 	public String getUserName() {
-		Optional<Map<String, Claim>> op = parseToken();
+		Optional<BaseOperator> result = getOperator();
 
-		return op.map(stringClaimMap -> stringClaimMap.get("userName").asString()).orElse("");
-	}
-
-	public Date getExpiration() {
-		Optional<DecodedJWT> op = decode();
-
-		if (op.isPresent()) {
-			return op.get().getExpiresAt();
+		if (result.isPresent()) {
+			return result.get().getUserName();
 		}
 
-		return DateAssist.addDays(DateAssist.now(), -90);
+		return "";
+	}
+
+	private ExecutiveResult<Date> getExpiration() {
+		ExecutiveResult<DecodedJWT> result = decode();
+
+		if (result.getSuccess()) {
+			return new ExecutiveResult<>(ReturnDataCode.Ok, result.getData().getExpiresAt());
+		}
+
+		return new ExecutiveResult<>(result.getCode());
 	}
 
 	/**
@@ -59,10 +83,14 @@ public class CustomJsonWebToken {
 	 *
 	 * @return boolean
 	 */
-	public boolean isTokenExpired() {
-		Date expirationTime = getExpiration();
+	private boolean isTokenExpired() {
+		ExecutiveResult<Date> result = getExpiration();
 
-		return expirationTime.before(new Date());
+		if (result.getSuccess()) {
+			return result.getData().before(new Date());
+		}
+
+		return true;
 	}
 
 	// /**
@@ -113,13 +141,16 @@ public class CustomJsonWebToken {
 		}
 	}
 
-	public Optional<DecodedJWT> decode() {
+	public ExecutiveResult<DecodedJWT> decode() {
 		try {
-			return Optional.of(JWT.decode(token));
+			Optional<DecodedJWT> optional = Optional.of(JWT.decode(token));
+
+			return optional.map(decodedJwt -> new ExecutiveResult<>(ReturnDataCode.Ok, decodedJwt))
+						   .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("Token数据无效")));
 		} catch (Exception e) {
 			logger.info("解析token出错");
 
-			return Optional.empty();
+			return new ExecutiveResult<>(ReturnDataCode.Exception.setMessage(e.getMessage()));
 		}
 	}
 
@@ -128,10 +159,17 @@ public class CustomJsonWebToken {
 	 *
 	 * @return Map<String, Claim>
 	 */
-	public Optional<Map<String, Claim>> parseToken() {
-		Optional<DecodedJWT> op = decode();
+	private ExecutiveResult<Map<String, Claim>> parseToken() {
+		ExecutiveResult<DecodedJWT> result = decode();
 
-		return op.map(Payload::getClaims);
+		if (result.getSuccess()) {
+			Optional<Map<String, Claim>> optional = Optional.of(result.getData()).map(Payload::getClaims);
+
+			return optional.map(stringClaimMap -> new ExecutiveResult<>(ReturnDataCode.Ok, stringClaimMap))
+						   .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.Exception.setMessage("解析Token失败")));
+		}
+
+		return new ExecutiveResult<>(result.getCode());
 	}
 
 	/**
@@ -140,7 +178,7 @@ public class CustomJsonWebToken {
 	 * @param token JWTToken
 	 * @return Optional<CustomJsonWebToken>
 	 */
-	public static ExecutiveResult<CustomJsonWebToken> getFromHttpToken(String token) {
+	private static ExecutiveResult<CustomJsonWebToken> getFromHttpToken(String token) {
 		if (!StringAssist.isNullOrEmpty(token)) {
 			return new ExecutiveResult<>(ReturnDataCode.Ok, new CustomJsonWebToken(token));
 		}

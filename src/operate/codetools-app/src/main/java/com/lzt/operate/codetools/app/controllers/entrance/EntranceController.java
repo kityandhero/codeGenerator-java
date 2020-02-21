@@ -1,19 +1,19 @@
 package com.lzt.operate.codetools.app.controllers.entrance;
 
-import com.lzt.operate.codetools.app.assists.OperatorAssist;
+import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.common.enums.OperatorStatus;
-import com.lzt.operate.codetools.dao.service.OperatorRoleService;
-import com.lzt.operate.codetools.dao.service.OperatorService;
+import com.lzt.operate.codetools.common.enums.AccountStatus;
+import com.lzt.operate.codetools.dao.service.AccountRoleService;
+import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
-import com.lzt.operate.codetools.dao.service.impl.OperatorRoleServiceImpl;
-import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.AccountRoleServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
-import com.lzt.operate.codetools.entities.Operator;
+import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -54,9 +54,9 @@ public class EntranceController extends OperateBaseController {
 
 	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 
-	private OperatorService operatorService;
+	private AccountService accountService;
 
-	private final OperatorRoleService operatorRoleService;
+	private final AccountRoleService accountRoleService;
 
 	private final RoleUniversalService roleUniversalService;
 
@@ -65,22 +65,22 @@ public class EntranceController extends OperateBaseController {
 	@Autowired
 	public EntranceController(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			OperatorServiceImpl operatorServiceImpl,
-			OperatorRoleServiceImpl operatorRoleService,
+			AccountServiceImpl accountService,
+			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
-		this.operatorService = operatorServiceImpl;
-		this.operatorRoleService = operatorRoleService;
+		this.accountService = accountService;
+		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
 		this.roleCodeToolsService = roleCodeToolsService;
 	}
 
-	private OperatorAssist getOperatorAssist() {
-		return new OperatorAssist(
+	private AccountAssist getAccountAssist() {
+		return new AccountAssist(
 				this.customJsonWebTokenConfig,
-				this.operatorService,
-				this.operatorRoleService,
+				this.accountService,
+				this.accountRoleService,
 				this.roleUniversalService,
 				this.roleCodeToolsService);
 	}
@@ -103,10 +103,10 @@ public class EntranceController extends OperateBaseController {
 		var userName = paramJson.getStringExByKey(GlobalString.LOGIN_USERNAME);
 		var password = paramJson.getStringExByKey(GlobalString.LOGIN_PASSWORD);
 
-		Operator operator = new Operator();
+		Account operator = new Account();
 		operator.setUserName(userName.toString());
 
-		var optionalResult = operatorService.findByUserName(userName.toString());
+		var optionalResult = accountService.findByUserName(userName.toString());
 
 		if (optionalResult.isPresent()) {
 			var searchResult = optionalResult.get();
@@ -126,7 +126,7 @@ public class EntranceController extends OperateBaseController {
 
 			data.append("token", token);
 
-			OperatorAssist operatorAssist = getOperatorAssist();
+			AccountAssist operatorAssist = getAccountAssist();
 
 			data.append("currentAuthority", operatorAssist.getCompetenceTagCollection(searchResult.getId()).toArray());
 
@@ -171,24 +171,24 @@ public class EntranceController extends OperateBaseController {
 			return fail(error);
 		}
 
-		var existOperator = operatorService.findByUserName(userName.toString());
+		var existAccount = accountService.findByUserName(userName.toString());
 
-		if (existOperator.isPresent()) {
+		if (existAccount.isPresent()) {
 			var error = ReturnDataCode.ParamError;
 			error.setMessage("登录名已存在");
 
 			return fail(error);
 		}
 
-		var operator = new Operator();
+		var operator = new Account();
 
 		operator.setUserName(userName.toString());
 		operator.setSlat(StringAssist.randomAlphanumeric(6)
 									 .toLowerCase());
 		operator.setPassword(Md5Assist.toMd5(password, operator.getSlat()));
-		operator.setStatus(OperatorStatus.Enabled.getFlag());
+		operator.setStatus(AccountStatus.Enabled.getFlag());
 
-		operatorService.save(operator);
+		accountService.save(operator);
 
 		return success();
 	}

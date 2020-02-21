@@ -6,6 +6,8 @@ import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * @author luzhitao
  */
@@ -29,7 +31,11 @@ public class ConnectionConfigServiceImpl implements ConnectionConfigService {
 
 	@Override
 	public ConnectionConfigRepository getRepository() {
-		return this.repository;
+		if (Optional.ofNullable(this.repository).isPresent()) {
+			return this.repository;
+		}
+
+		throw new RuntimeException("Repository不存在");
 	}
 
 }

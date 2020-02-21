@@ -3,7 +3,6 @@ package com.lzt.operate.utility.pojo;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 import lombok.NonNull;
 
 import java.io.Serializable;
@@ -13,7 +12,6 @@ import java.util.Optional;
  * @author luzhitao
  * @date 2019-05-07 19:43
  */
-@Data
 public abstract class BaseResultData implements Serializable {
 
 	private static final long serialVersionUID = 7488513125692159039L;
@@ -41,14 +39,14 @@ public abstract class BaseResultData implements Serializable {
 		this.extra = new SerializableData();
 	}
 
-	protected BaseResultData(int code, boolean success, String message) {
+	BaseResultData(int code, boolean success, String message) {
 		this.code = code;
 		this.success = success;
 		this.message = message;
 		this.extra = new SerializableData();
 	}
 
-	protected BaseResultData(@NonNull ReturnDataCode returnDataCode, SerializableData extra) {
+	BaseResultData(@NonNull ReturnDataCode returnDataCode, SerializableData extra) {
 		this.code = returnDataCode.getCode();
 		this.success = returnDataCode.getSuccess();
 		this.message = returnDataCode.getMessage();
@@ -57,5 +55,37 @@ public abstract class BaseResultData implements Serializable {
 
 	public String serialize() {
 		return ConvertAssist.serializeObject(this);
+	}
+
+	public int getCode() {
+		return code;
+	}
+
+	public void setCode(int code) {
+		this.code = code;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Serializable getExtra() {
+		return extra;
+	}
+
+	public void setExtra(Serializable extra) {
+		this.extra = extra;
 	}
 }

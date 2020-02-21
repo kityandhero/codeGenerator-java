@@ -7,11 +7,14 @@ import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
+import com.lzt.operate.utility.pojo.results.ListResult;
+import com.lzt.operate.utility.pojo.results.PageListResult;
 import io.swagger.annotations.Api;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -57,6 +60,18 @@ public class BaseController implements ErrorController {
 		result.extra = extra;
 
 		return result;
+	}
+
+	protected ResultListData listData(ListResult<? extends Serializable> listResult) {
+		return this.listData(listResult.getList(), new SerializableData());
+	}
+
+	protected ResultListData listData(ListResult<? extends Serializable> listResult, SerializableData extra) {
+		if (listResult.getSuccess()) {
+			return this.listData(listResult.getList(), extra);
+		}
+
+		return ResultDataFactory.failListData(listResult.getCode(), extra);
 	}
 
 	protected ResultListData listData(List<? extends Serializable> list) {
@@ -139,26 +154,40 @@ public class BaseController implements ErrorController {
 		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
 	}
 
-	protected ResultListData pageListData(List<? extends Serializable> list) {
-		return this.listData(list);
+	protected ResultListData pageData(Page<? extends Serializable> pageListResult) {
+		return this.pageData(pageListResult, new SerializableData());
 	}
 
-	protected ResultListData pageListData(List<? extends Serializable> list, Serializable extra) {
-		return this.listData(list, extra);
+	protected ResultListData pageData(Page<? extends Serializable> pageListResult, SerializableData extra) {
+		return this.pageData(pageListResult.getContent(), pageListResult.getNumber(), pageListResult.getSize(), pageListResult
+				.getTotalPages(), extra);
 	}
 
-	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, int total) {
-		return pageData(list, pageNo, pageSize, total, new SerializableData());
+	protected ResultListData pageData(PageListResult<? extends Serializable> pageListResult) {
+		return this.pageData(pageListResult, new SerializableData());
 	}
 
-	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, int total, Serializable other) {
+	protected ResultListData pageData(PageListResult<? extends Serializable> pageListResult, SerializableData extra) {
+		if (pageListResult.getSuccess()) {
+			return this.pageData(pageListResult.getList(), pageListResult.getPageIndex(), pageListResult.getPageSize(), pageListResult
+					.getTotalSize(), extra);
+		}
+
+		return ResultDataFactory.failListData(pageListResult.getCode(), extra);
+	}
+
+	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, long totalPage) {
+		return pageData(list, pageNo, pageSize, totalPage, new SerializableData());
+	}
+
+	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, long totalPage, Serializable other) {
 		ResultListData result = this.listData(list);
 
 		SerializableData extra = new SerializableData();
 
 		extra.put("pageNo", pageNo);
 		extra.put("pageSize", pageSize);
-		extra.put("total", total);
+		extra.put("total", totalPage);
 		extra.put("other", other);
 
 		result.extra = extra;

@@ -1,16 +1,16 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
-import com.lzt.operate.codetools.app.assists.OperatorAssist;
+import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.dao.service.OperatorRoleService;
-import com.lzt.operate.codetools.dao.service.OperatorService;
+import com.lzt.operate.codetools.dao.service.AccountRoleService;
+import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
-import com.lzt.operate.codetools.dao.service.impl.OperatorRoleServiceImpl;
-import com.lzt.operate.codetools.dao.service.impl.OperatorServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.AccountRoleServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
@@ -43,37 +43,37 @@ import java.util.Map;
 @EnableConfigurationProperties
 @RequestMapping("/business/operatorRole")
 @Api(tags = {"账户拥有角色管理"})
-public class OperatorRoleController extends OperateBaseController {
+public class AccountRoleController extends OperateBaseController {
 
 	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 
-	private OperatorService operatorService;
+	private AccountService accountService;
 
-	private final OperatorRoleService operatorRoleService;
+	private final AccountRoleService accountRoleService;
 
 	private final RoleUniversalService roleUniversalService;
 
 	private final RoleCodeToolsService roleCodeToolsService;
 
 	@Autowired
-	public OperatorRoleController(
+	public AccountRoleController(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			OperatorServiceImpl operatorService,
-			OperatorRoleServiceImpl operatorRoleService,
+			AccountServiceImpl accountService,
+			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
-		this.operatorService = operatorService;
-		this.operatorRoleService = operatorRoleService;
+		this.accountService = accountService;
+		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
 		this.roleCodeToolsService = roleCodeToolsService;
 	}
 
-	private OperatorAssist getOperatorAssist() {
-		return new OperatorAssist(
+	private AccountAssist getAccountAssist() {
+		return new AccountAssist(
 				this.customJsonWebTokenConfig,
-				this.operatorService,
-				this.operatorRoleService,
+				this.accountService,
+				this.accountRoleService,
 				this.roleUniversalService,
 				this.roleCodeToolsService);
 	}
@@ -98,7 +98,7 @@ public class OperatorRoleController extends OperateBaseController {
 		var universalCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION, "");
 		var independentEstablishmentCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION, "");
 
-		ExecutiveSimpleResult result = getOperatorAssist().changeRole(operatorId.toLong(), universalCollection.toString(), independentEstablishmentCollection
+		ExecutiveSimpleResult result = getAccountAssist().changeRole(operatorId.toLong(), universalCollection.toString(), independentEstablishmentCollection
 				.toString());
 
 		if (result.getSuccess()) {

@@ -1,15 +1,15 @@
 package com.lzt.operate.codetools.app.assists;
 
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.common.enums.OperatorRoleCreateMode;
+import com.lzt.operate.codetools.common.enums.AccountRoleCreateMode;
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
 import com.lzt.operate.codetools.common.utils.Constants;
-import com.lzt.operate.codetools.dao.service.OperatorRoleService;
-import com.lzt.operate.codetools.dao.service.OperatorService;
+import com.lzt.operate.codetools.dao.service.AccountRoleService;
+import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
-import com.lzt.operate.codetools.entities.Operator;
-import com.lzt.operate.codetools.entities.OperatorRole;
+import com.lzt.operate.codetools.entities.Account;
+import com.lzt.operate.codetools.entities.AccountRole;
 import com.lzt.operate.codetools.entities.RoleCodeTools;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.codetools.entities.bases.BaseRole;
@@ -17,6 +17,7 @@ import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
+import com.lzt.operate.utility.pojo.BaseOperator;
 import com.lzt.operate.utility.pojo.Competence;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
@@ -31,43 +32,43 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Operator辅助方法集合
+ * Account辅助方法集合
  *
  * @author luzhitao
  */
-public class OperatorAssist {
+public class AccountAssist {
 
 	private CustomJsonWebTokenConfig jwtConfig;
 
-	private OperatorService operatorService;
+	private AccountService accountService;
 
-	private OperatorRoleService operatorRoleService;
+	private AccountRoleService accountRoleService;
 
 	private RoleUniversalService roleUniversalService;
 
 	private RoleCodeToolsService roleCodeToolsService;
 
-	public OperatorAssist(
+	public AccountAssist(
 			CustomJsonWebTokenConfig jwtConfig,
-			OperatorService operatorRepository,
-			OperatorRoleService operatorRoleService,
+			AccountService accountService,
+			AccountRoleService accountRoleService,
 			RoleUniversalService roleUniversalService,
 			RoleCodeToolsService roleCodeToolsService) {
 		this.jwtConfig = jwtConfig;
-		this.operatorService = operatorRepository;
-		this.operatorRoleService = operatorRoleService;
+		this.accountService = accountService;
+		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
 		this.roleCodeToolsService = roleCodeToolsService;
 	}
 
-	public OperatorService getOperatorService() {
-		Optional<OperatorService> optional = Optional.ofNullable(this.operatorService);
+	public AccountService getAccountService() {
+		Optional<AccountService> optional = Optional.ofNullable(this.accountService);
 
 		if (optional.isPresent()) {
 			return optional.get();
 		}
 
-		throw new RuntimeException("OperatorService获取失败");
+		throw new RuntimeException("AccountService获取失败");
 	}
 
 	public CustomJsonWebTokenConfig getCustomJsonWebTokenConfig() {
@@ -80,14 +81,14 @@ public class OperatorAssist {
 		throw new RuntimeException("CustomJsonWebTokenConfig获取失败");
 	}
 
-	public OperatorRoleService getOperatorRoleService() {
-		Optional<OperatorRoleService> optional = Optional.ofNullable(this.operatorRoleService);
+	private AccountRoleService getAccountRoleService() {
+		Optional<AccountRoleService> optional = Optional.ofNullable(this.accountRoleService);
 
 		if (optional.isPresent()) {
 			return optional.get();
 		}
 
-		throw new RuntimeException("OperatorRoleService获取失败");
+		throw new RuntimeException("AccountRoleService获取失败");
 	}
 
 	public RoleUniversalService getRoleUniversalService() {
@@ -100,33 +101,39 @@ public class OperatorAssist {
 		throw new RuntimeException("RoleUniversalService获取失败");
 	}
 
-	public RoleCodeToolsService getRoleCodeToolsService() {
+	private RoleCodeToolsService getRoleCodeToolsService() {
 		Optional<RoleCodeToolsService> optional = Optional.ofNullable(this.roleCodeToolsService);
 
 		if (optional.isPresent()) {
 			return optional.get();
 		}
 
-		throw new RuntimeException("RoleCodeToolsService");
+		throw new RuntimeException("RoleCodeToolsService获取失败");
 	}
 
-	public ExecutiveResult<Operator> getCurrent() {
+	public Optional<Account> getCurrent() {
 		ExecutiveResult<CustomJsonWebToken> result = CustomJsonWebToken.getFromCurrentHttpToken(jwtConfig);
 
 		if (result.getSuccess()) {
-			return operatorService.get(result.getData().getId());
+			Optional<BaseOperator> resultBaseOperator = result.getData().getOperator();
+
+			if (resultBaseOperator.isPresent()) {
+				return accountService.get(resultBaseOperator.get().getOperatorId());
+			}
 		}
 
-		return new ExecutiveResult<>(result.getCode());
+		return Optional.empty();
 	}
 
-	public List<RoleUniversal> getRoleUniversalCollection(long operatorId) {
-		OperatorRoleService operatorRoleService = this.getOperatorRoleService();
+	private List<RoleUniversal> getRoleUniversalCollection(long accountId) {
+		AccountRoleService accountRoleService = this.getAccountRoleService();
 
-		Optional<OperatorRole> optional = operatorRoleService.findByOperatorId(operatorId);
+		RoleUniversalService roleUniversalService = this.getRoleUniversalService();
 
-		if (optional.isPresent()) {
-			List<String> list = Arrays.asList(Optional.of(optional.get().getRoleUniversalCollection())
+		Optional<AccountRole> resultAccountRole = accountRoleService.findByAccountId(accountId);
+
+		if (resultAccountRole.isPresent()) {
+			List<String> list = Arrays.asList(Optional.of(resultAccountRole.get().getRoleUniversalCollection())
 													  .orElse("")
 													  .split(","));
 
@@ -135,19 +142,19 @@ public class OperatorAssist {
 										.map(o -> ConvertAssist.stringToLong(o, (long) 0))
 										.filter(o -> o > 0).collect(Collectors.toList());
 
-			return this.getRoleUniversalService().findByIdCollection(roleIdList);
-		} else {
-			return new ArrayList<>();
+			return roleUniversalService.findByIdCollection(roleIdList);
 		}
+
+		return new ArrayList<>();
 	}
 
-	public List<RoleCodeTools> getRoleCodeToolsCollection(long operatorId) {
-		OperatorRoleService operatorRoleService = this.getOperatorRoleService();
+	private List<RoleCodeTools> getRoleCodeToolsCollection(long accountId) {
+		AccountRoleService accountRoleService = this.getAccountRoleService();
 
-		Optional<OperatorRole> optional = operatorRoleService.findByOperatorId(operatorId);
+		Optional<AccountRole> resultAccountRole = accountRoleService.findByAccountId(accountId);
 
-		if (optional.isPresent()) {
-			List<String> list = Arrays.asList(Optional.of(optional.get().getRoleCodeToolsCollection())
+		if (resultAccountRole.isPresent()) {
+			List<String> list = Arrays.asList(Optional.of(resultAccountRole.get().getRoleUniversalCollection())
 													  .orElse("")
 													  .split(","));
 
@@ -156,22 +163,24 @@ public class OperatorAssist {
 										.map(o -> ConvertAssist.stringToLong(o, (long) 0))
 										.filter(o -> o > 0).collect(Collectors.toList());
 
-			return this.getRoleCodeToolsService().findByIdCollection(roleIdList);
-		} else {
-			return new ArrayList<>();
+			RoleCodeToolsService roleCodeToolsService = this.getRoleCodeToolsService();
+
+			return roleCodeToolsService.findByIdCollection(roleIdList);
 		}
+
+		return new ArrayList<>();
 	}
 
-	public List<SerializableData> getAuthorityCollection(long operatorId) {
-		List<RoleUniversal> roleUniversalList = getRoleUniversalCollection(operatorId);
-		List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsCollection(operatorId);
+	public List<SerializableData> getAuthorityCollection(long accountId) {
+		List<RoleUniversal> roleUniversalList = getRoleUniversalCollection(accountId);
+		List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsCollection(accountId);
 
 		List<SerializableData> result = roleUniversalList.stream().map(role -> {
 			SerializableData data = new SerializableData();
 
 			data.append("key", role.getId());
 			data.append("name", role.getName());
-			data.append("createMode", OperatorRoleCreateMode.FromUniversal.getValue());
+			data.append("createMode", AccountRoleCreateMode.FromUniversal.getValue());
 
 			return data;
 		}).collect(Collectors.toList());
@@ -181,7 +190,7 @@ public class OperatorAssist {
 
 			data.append("key", role.getId());
 			data.append("name", role.getName());
-			data.append("createMode", OperatorRoleCreateMode.IndependentEstablishment.getValue());
+			data.append("createMode", AccountRoleCreateMode.IndependentEstablishment.getValue());
 
 			return data;
 		}).collect(Collectors.toList()));
@@ -189,28 +198,31 @@ public class OperatorAssist {
 		return result;
 	}
 
-	public List<String> getCompetenceTagCollection(long operatorId) {
-		List<Competence> list = getCompetenceCollection(operatorId);
+	public List<String> getCompetenceTagCollection(long accountId) {
+		List<Competence> listResult = getCompetenceCollection(accountId);
 
-		List<String> result = list.stream().map(Competence::getTag).collect(Collectors.toList());
+		List<String> result = listResult.stream().map(Competence::getTag).collect(Collectors.toList());
 
 		result.add("currentCustomer");
 
 		return result;
 	}
 
-	private List<Competence> getCompetenceCollection(long operatorId) {
+	private List<Competence> getCompetenceCollection(long accountId) {
+		RoleUniversalService resultRoleUniversalService = this.getRoleUniversalService();
+		RoleCodeToolsService resultRoleCodeToolsService = this.getRoleCodeToolsService();
+
 		List<Competence> ceList = new ArrayList<>();
 
 		List<BaseRole> baseRoleList = new ArrayList<>();
 
-		List<RoleUniversal> roleUniversalList = getRoleUniversalCollection(operatorId);
+		List<RoleUniversal> roleUniversalList = getRoleUniversalCollection(accountId);
 
 		if (!roleUniversalList.isEmpty()) {
 			baseRoleList.addAll(roleUniversalList);
 		}
 
-		List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsCollection(operatorId);
+		List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsCollection(accountId);
 
 		if (!roleCodeToolsList.isEmpty()) {
 			baseRoleList.addAll(roleCodeToolsList);
@@ -228,11 +240,13 @@ public class OperatorAssist {
 				List<Competence> competenceList = new ArrayList<>();
 
 				if (role instanceof RoleUniversal) {
-					competenceList = this.getRoleUniversalService().getCompetenceEntityCollection((RoleUniversal) role);
+					competenceList = resultRoleUniversalService
+							.getCompetenceEntityCollection((RoleUniversal) role);
 				}
 
 				if (role instanceof RoleCodeTools) {
-					competenceList = this.getRoleCodeToolsService().getCompetenceEntityCollection((RoleCodeTools) role);
+					competenceList = resultRoleCodeToolsService
+							.getCompetenceEntityCollection((RoleCodeTools) role);
 				}
 
 				for (Competence c : competenceList) {
@@ -267,13 +281,13 @@ public class OperatorAssist {
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId                operatorId
+	 * @param accountId                 accountId
 	 * @param roleUniversalIdCollection roleUniversalIdList
 	 * @param roleCodeToolsIdCollection roleCodeToolsIdList
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRole(long operatorId, String roleUniversalIdCollection, String roleCodeToolsIdCollection) {
-		if (operatorId <= 0) {
+	public ExecutiveSimpleResult changeRole(long accountId, String roleUniversalIdCollection, String roleCodeToolsIdCollection) {
+		if (accountId <= 0) {
 			ExecutiveSimpleResult result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
 
 			result.setMessage("指定的账户标识错误");
@@ -295,21 +309,21 @@ public class OperatorAssist {
 				.map(o -> ConvertAssist.stringToLong(o.toString()))
 				.collect(Collectors.toList());
 
-		return changeRole(operatorId, roleUniversalIdList, roleCodeToolsIdList);
+		return changeRole(accountId, roleUniversalIdList, roleCodeToolsIdList);
 	}
 
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId          operatorId
+	 * @param accountId           accountId
 	 * @param roleUniversalIdList roleUniversalIdList
 	 * @param roleCodeToolsIdList roleCodeToolsIdList
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRole(long operatorId, List<Long> roleUniversalIdList, List<Long> roleCodeToolsIdList) {
+	public ExecutiveSimpleResult changeRole(long accountId, List<Long> roleUniversalIdList, List<Long> roleCodeToolsIdList) {
 		ExecutiveSimpleResult result;
 
-		if (operatorId <= 0) {
+		if (accountId <= 0) {
 			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
 
 			result.setMessage("指定的账户标识错误");
@@ -317,8 +331,8 @@ public class OperatorAssist {
 			return result;
 		}
 
-		ExecutiveSimpleResult changeRoleUniversalResult = changeRoleUniversal(operatorId, roleUniversalIdList);
-		ExecutiveSimpleResult changeRoleCodeToolsResult = changeRoleCodeTools(operatorId, roleCodeToolsIdList);
+		ExecutiveSimpleResult changeRoleUniversalResult = changeRoleUniversal(accountId, roleUniversalIdList);
+		ExecutiveSimpleResult changeRoleCodeToolsResult = changeRoleCodeTools(accountId, roleCodeToolsIdList);
 
 		if (changeRoleUniversalResult.getSuccess() && changeRoleCodeToolsResult.getSuccess()) {
 			return new ExecutiveSimpleResult(ReturnDataCode.Ok);
@@ -338,36 +352,40 @@ public class OperatorAssist {
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId    operatorId
+	 * @param accountId     accountId
 	 * @param roleUniversal roleUniversal
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRoleUniversal(long operatorId, RoleUniversal roleUniversal) {
-		return changeRoleUniversal(operatorId, roleUniversal.getId());
+	public ExecutiveSimpleResult changeRoleUniversal(long accountId, RoleUniversal roleUniversal) {
+		return changeRoleUniversal(accountId, roleUniversal.getId());
 	}
 
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId      operatorId
+	 * @param accountId       accountId
 	 * @param roleUniversalId roleUniversalId
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRoleUniversal(long operatorId, Long roleUniversalId) {
-		return changeRoleUniversal(operatorId, Collections.singletonList(roleUniversalId));
+	private ExecutiveSimpleResult changeRoleUniversal(long accountId, Long roleUniversalId) {
+		return changeRoleUniversal(accountId, Collections.singletonList(roleUniversalId));
 	}
 
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId          operatorId
+	 * @param accountId           accountId
 	 * @param roleUniversalIdList roleUniversalIdList
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRoleUniversal(long operatorId, List<Long> roleUniversalIdList) {
+	private ExecutiveSimpleResult changeRoleUniversal(long accountId, List<Long> roleUniversalIdList) {
+		RoleUniversalService roleUniversalService = this.getRoleUniversalService();
+
+		AccountRoleService accountRoleService = this.getAccountRoleService();
+
 		ExecutiveSimpleResult result;
 
-		if (operatorId <= 0) {
+		if (accountId <= 0) {
 			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
 
 			result.setMessage("指定的账户标识错误");
@@ -375,30 +393,30 @@ public class OperatorAssist {
 			return result;
 		}
 
-		ExecutiveResult<Operator> resultGet = operatorService.get(operatorId);
+		Optional<Account> resultGet = accountService.get(accountId);
 
-		if (resultGet.getSuccess()) {
-			List<RoleUniversal> roleUniversalList = getRoleUniversalService().findByIdCollection(roleUniversalIdList);
+		if (resultGet.isPresent()) {
+			List<RoleUniversal> roleUniversalListResult = roleUniversalService
+					.findByIdCollection(roleUniversalIdList);
 
-			OperatorRoleService operatorRoleService = this.getOperatorRoleService();
+			Optional<AccountRole> optionalAccountRole = accountRoleService
+					.findByAccountId(accountId);
 
-			Optional<OperatorRole> optionalOperatorRole = operatorRoleService.findByOperatorId(operatorId);
+			AccountRole accountRole;
 
-			OperatorRole operatorRole;
-
-			if (optionalOperatorRole.isPresent()) {
-				operatorRole = optionalOperatorRole.get();
+			if (optionalAccountRole.isPresent()) {
+				accountRole = optionalAccountRole.get();
 			} else {
-				operatorRole = new OperatorRole();
+				accountRole = new AccountRole();
 
-				operatorRole.setOperatorId(operatorId);
+				accountRole.setAccountId(accountId);
 			}
 
-			operatorRole.setRoleUniversalCollection(StringAssist.join(roleUniversalList.stream()
-																					   .map(o -> Long.toString(o.getId()))
-																					   .collect(Collectors.toList())));
+			accountRole.setRoleUniversalCollection(StringAssist.join(roleUniversalListResult.stream()
+																							.map(o -> Long.toString(o.getId()))
+																							.collect(Collectors.toList())));
 
-			operatorRoleService.save(operatorRole);
+			accountRoleService.save(accountRole);
 
 			result = new ExecutiveSimpleResult(ReturnDataCode.Ok);
 		} else {
@@ -413,36 +431,40 @@ public class OperatorAssist {
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId    operatorId
+	 * @param accountId     accountId
 	 * @param roleCodeTools roleCodeTools
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRoleCodeTools(long operatorId, RoleCodeTools roleCodeTools) {
-		return changeRoleCodeTools(operatorId, roleCodeTools.getId());
+	public ExecutiveSimpleResult changeRoleCodeTools(long accountId, RoleCodeTools roleCodeTools) {
+		return changeRoleCodeTools(accountId, roleCodeTools.getId());
 	}
 
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId      operatorId
+	 * @param accountId       accountId
 	 * @param roleCodeToolsId roleCodeToolsId
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRoleCodeTools(long operatorId, Long roleCodeToolsId) {
-		return changeRoleCodeTools(operatorId, Collections.singletonList(roleCodeToolsId));
+	private ExecutiveSimpleResult changeRoleCodeTools(long accountId, Long roleCodeToolsId) {
+		return changeRoleCodeTools(accountId, Collections.singletonList(roleCodeToolsId));
 	}
 
 	/**
 	 * 更改指定账户拥有的角色
 	 *
-	 * @param operatorId          operatorId
+	 * @param accountId           accountId
 	 * @param roleCodeToolsIdList roleCodeToolsIdList
 	 * @return ExecutiveSimpleResult
 	 */
-	public ExecutiveSimpleResult changeRoleCodeTools(long operatorId, List<Long> roleCodeToolsIdList) {
+	private ExecutiveSimpleResult changeRoleCodeTools(long accountId, List<Long> roleCodeToolsIdList) {
+		RoleCodeToolsService roleCodeToolsService = this.getRoleCodeToolsService();
+
+		AccountRoleService accountRoleService = this.getAccountRoleService();
+
 		ExecutiveSimpleResult result;
 
-		if (operatorId <= 0) {
+		if (accountId <= 0) {
 			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
 
 			result.setMessage("指定的账户标识错误");
@@ -450,29 +472,29 @@ public class OperatorAssist {
 			return result;
 		}
 
-		ExecutiveResult<Operator> resultGet = operatorService.get(operatorId);
+		Optional<Account> resultGet = accountService.get(accountId);
 
-		if (resultGet.getSuccess()) {
-			List<RoleCodeTools> roleCodeToolsList = getRoleCodeToolsService().findByIdCollection(roleCodeToolsIdList);
+		if (resultGet.isPresent()) {
+			List<RoleCodeTools> roleCodeToolsList = roleCodeToolsService
+					.findByIdCollection(roleCodeToolsIdList);
 
-			OperatorRoleService operatorRoleService = this.getOperatorRoleService();
+			Optional<AccountRole> optionalAccountRole = accountRoleService
+					.findByAccountId(accountId);
 
-			Optional<OperatorRole> optionalOperatorRole = operatorRoleService.findByOperatorId(operatorId);
+			AccountRole accountRole;
 
-			OperatorRole operatorRole;
-
-			if (optionalOperatorRole.isPresent()) {
-				operatorRole = optionalOperatorRole.get();
+			if (optionalAccountRole.isPresent()) {
+				accountRole = optionalAccountRole.get();
 			} else {
-				operatorRole = new OperatorRole();
+				accountRole = new AccountRole();
 
-				operatorRole.setOperatorId(operatorId);
+				accountRole.setAccountId(accountId);
 			}
 
-			operatorRole.setRoleCodeToolsCollection(StringAssist.join(roleCodeToolsList.stream()
-																					   .map(o -> Long.toString(o.getId()))
-																					   .collect(Collectors.toList())));
-			operatorRoleService.save(operatorRole);
+			accountRole.setRoleCodeToolsCollection(StringAssist.join(roleCodeToolsList.stream()
+																					  .map(o -> Long.toString(o.getId()))
+																					  .collect(Collectors.toList())));
+			accountRoleService.save(accountRole);
 
 			result = new ExecutiveSimpleResult(ReturnDataCode.Ok);
 		} else {
@@ -484,8 +506,8 @@ public class OperatorAssist {
 		return result;
 	}
 
-	public boolean checkAccessPermission(long operatorId, String tag) {
-		List<Competence> competenceList = getCompetenceCollection(operatorId);
+	public boolean checkAccessPermission(long accountId, String tag) {
+		List<Competence> competenceList = getCompetenceCollection(accountId);
 
 		for (Competence c : competenceList) {
 			if (c.getTag().equals(tag) || c.getTag().equals(Constants.SUPER_ROLE_TAG)) {

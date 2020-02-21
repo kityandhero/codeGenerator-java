@@ -1,10 +1,10 @@
 package com.lzt.operate.codetools.dao.repositories;
 
 import com.lzt.operate.codetools.dao.jpa.JpaRepositoryEx;
-import com.lzt.operate.codetools.entities.OperatorRole;
+import com.lzt.operate.codetools.entities.AccountRole;
 
 /**
  * @author luzhitao
  */
-public interface OperatorRoleRepository extends JpaRepositoryEx<OperatorRole, Long> {
+public interface AccountRoleRepository extends JpaRepositoryEx<AccountRole, Long> {
 }

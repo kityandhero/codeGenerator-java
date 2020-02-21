@@ -13,17 +13,17 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "operator_role")
+@Table(name = "account_role")
 @EqualsAndHashCode(callSuper = true)
-public class OperatorRole extends BaseEntity {
+public class AccountRole extends BaseEntity {
 
 	private static final long serialVersionUID = -3413222825054232328L;
 
 	/**
 	 * 账户标识
 	 */
-	@Column(name = "operator_id")
-	long operatorId;
+	@Column(name = "account_id")
+	long accountId;
 
 	/**
 	 * 系统角色权限题集合
@@ -37,12 +37,35 @@ public class OperatorRole extends BaseEntity {
 	@Column(name = "role_code_tools_collection")
 	String roleCodeToolsCollection;
 
-	public OperatorRole() {
+	public AccountRole() {
 		super();
 
-		operatorId = 0;
+		accountId = 0;
 		roleUniversalCollection = "";
 		roleCodeToolsCollection = "";
 	}
 
+	public long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(long accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getRoleUniversalCollection() {
+		return roleUniversalCollection;
+	}
+
+	public void setRoleUniversalCollection(String roleUniversalCollection) {
+		this.roleUniversalCollection = roleUniversalCollection;
+	}
+
+	public String getRoleCodeToolsCollection() {
+		return roleCodeToolsCollection;
+	}
+
+	public void setRoleCodeToolsCollection(String roleCodeToolsCollection) {
+		this.roleCodeToolsCollection = roleCodeToolsCollection;
+	}
 }

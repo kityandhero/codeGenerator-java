@@ -2,7 +2,6 @@ package com.lzt.operate.utility.pojo;
 
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
@@ -14,7 +13,6 @@ import java.util.List;
  * @author luzhitao
  * @date 2019-05-07 19:44
  */
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class ResultListData extends BaseResultData {
 
@@ -32,11 +30,19 @@ public class ResultListData extends BaseResultData {
 		this(returnDataCode, new ArrayList<>());
 	}
 
-	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<? extends Serializable> list) {
+	public List<? extends Serializable> getList() {
+		return list;
+	}
+
+	public void setList(List<? extends Serializable> list) {
+		this.list = list;
+	}
+
+	private ResultListData(@NonNull ReturnDataCode returnDataCode, List<? extends Serializable> list) {
 		this(returnDataCode, list, new SerializableData());
 	}
 
-	public ResultListData(@NonNull ReturnDataCode returnDataCode, List<? extends Serializable> list, SerializableData extra) {
+	ResultListData(@NonNull ReturnDataCode returnDataCode, List<? extends Serializable> list, SerializableData extra) {
 		super(returnDataCode, extra);
 		this.list = list;
 	}

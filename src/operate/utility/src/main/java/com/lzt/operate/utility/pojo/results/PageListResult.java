@@ -1,6 +1,6 @@
 package com.lzt.operate.utility.pojo.results;
 
-import lombok.Data;
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
@@ -9,7 +9,6 @@ import java.util.List;
  * @author luzhitao
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
 public class PageListResult<T> extends ListResult<T> {
 
 	private int pageIndex;
@@ -18,16 +17,16 @@ public class PageListResult<T> extends ListResult<T> {
 
 	private long totalSize;
 
-	public PageListResult() {
-		super();
+	public PageListResult(ReturnDataCode returnDataCode) {
+		super(returnDataCode);
 
 		this.pageIndex = 1;
 		this.pageSize = 10;
 		this.totalSize = 0;
 	}
 
-	public PageListResult(List<T> listData, int index, int size, long total) {
-		super(listData);
+	public PageListResult(ReturnDataCode returnDataCode, List<T> listData, int index, int size, long total) {
+		super(returnDataCode, listData);
 
 		this.pageSize = index;
 		this.pageSize = size;
@@ -43,5 +42,29 @@ public class PageListResult<T> extends ListResult<T> {
 		int size = getCount();
 
 		return size > 0;
+	}
+
+	public int getPageIndex() {
+		return pageIndex;
+	}
+
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public long getTotalSize() {
+		return totalSize;
+	}
+
+	public void setTotalSize(long totalSize) {
+		this.totalSize = totalSize;
 	}
 }

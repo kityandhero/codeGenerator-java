@@ -38,12 +38,6 @@ public class ExecutiveResult<T> extends ExecutiveSimpleResult {
 		return Optional.of(data).orElse(null);
 	}
 
-	public ExecutiveResult() {
-		super();
-
-		data = null;
-	}
-
 	public ExecutiveResult(ReturnDataCode returnDataCode) {
 		super(returnDataCode);
 

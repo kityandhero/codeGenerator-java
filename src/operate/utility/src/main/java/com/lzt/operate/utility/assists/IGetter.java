@@ -12,8 +12,8 @@ public interface IGetter<T> extends Serializable {
 	/**
 	 * apply
 	 *
-	 * @param source
-	 * @return
+	 * @param source source
+	 * @return Object
 	 */
 	Object apply(T source);
 }

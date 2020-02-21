@@ -8,7 +8,7 @@ import lombok.Getter;
  * @author lzt
  */
 @Getter
-public enum OperatorRoleCreateMode {
+public enum AccountRoleCreateMode {
 
 	/**
 	 * 系统角色
@@ -30,7 +30,7 @@ public enum OperatorRoleCreateMode {
 	 */
 	private String description;
 
-	OperatorRoleCreateMode(int value, String descriptor) {
+	AccountRoleCreateMode(int value, String descriptor) {
 		this.value = value;
 		this.description = descriptor;
 	}
