@@ -30,8 +30,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,17 +85,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		ConnectionConfig connectionConfig = new ConnectionConfig();
-
-		ExampleMatcher matcher = ExampleMatcher.matching()
-											   .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
-											   .withIgnorePaths("createTime", "password", "friendlyName");
-
-		Example<ConnectionConfig> filter = Example.of(connectionConfig, matcher);
-
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ConnectionConfig::getCreateTime));
 
-		Page<ConnectionConfig> result = this.connectionConfigService.page(filter, pageable);
+		Page<ConnectionConfig> result = this.connectionConfigService.page(pageable);
 
 		return this.pageData(result);
 	}
@@ -161,6 +151,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 			connectionConfig.setCreateOperatorId(operatorId);
 			connectionConfig.setUpdateOperatorId(operatorId);
+
+			getConnectionConfigAssist().saveConnectionConfig(connectionConfig);
 
 			return this.singleData(result.getData());
 		}
