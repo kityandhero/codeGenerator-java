@@ -13,10 +13,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiJsonObject {
 
-    ApiJsonProperty[] value(); //对象属性值
+	ApiJsonProperty[] value(); //对象属性值
 
-    ApiJsonResult result() default @ApiJsonResult({});
+	ApiJsonResult result() default @ApiJsonResult({});
 
-    String name() default "";
+	String name() default "";
 
 }

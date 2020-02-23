@@ -28,6 +28,7 @@ import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.secret.Md5Assist;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -90,10 +91,12 @@ public class EntranceController extends OperateBaseController {
 			@ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
 			@ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_SING_IN)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_SING_IN),
+	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
+	public BaseResultData signIn(@RequestBody Map<String, String> json, Long ak) throws Exception {
 		// 直接将json信息打印出来
 		System.out.println(json);
 

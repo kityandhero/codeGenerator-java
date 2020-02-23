@@ -20,12 +20,20 @@ public class ModelNameCollection {
 	 */
 	public static final String ENTRANCE_REGISTER = "ENTRANCE_REGISTER";
 
+	//region CONNECTION_CONFIG
+
 	public static final String CONNECTION_CONFIG_MODEL = "CONNECTION_CONFIG_MODEL";
 
 	/**
 	 * 数据库连接列表
 	 */
 	public static final String CONNECTION_CONFIG_LIST = "CONNECTION_CONFIG_LIST";
+
+	public static final String CONNECTION_CONFIG_GET = "CONNECTION_CONFIG_GET";
+
+	public static final String CONNECTION_CONFIG_ADD_BASIC_INFO = "CONNECTION_CONFIG_ADD_BASIC_INFO";
+
+	//endregion
 
 	/**
 	 * 打开数据库

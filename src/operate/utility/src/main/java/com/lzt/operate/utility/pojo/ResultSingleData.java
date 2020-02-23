@@ -14,8 +14,9 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class ResultSingleData extends BaseResultData {
 
-    private static final long serialVersionUID = 5710902373699158999L;
-    @ApiModelProperty(notes = "数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
+	private static final long serialVersionUID = 5710902373699158999L;
+
+	@ApiModelProperty(notes = "数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
 	public Serializable data;
 
 	public ResultSingleData() {

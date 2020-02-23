@@ -47,107 +47,107 @@ import static springfox.documentation.swagger.readers.operation.ResponseHeaders.
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 3)
 public class ResponseMessageReader extends SwaggerResponseMessageReader {
 
-    private final TypeNameExtractor typeNameExtractor;
-    private final TypeResolver typeResolver;
+	private final TypeNameExtractor typeNameExtractor;
+	private final TypeResolver typeResolver;
 
-    public ResponseMessageReader(TypeNameExtractor typeNameExtractor, TypeResolver typeResolver) {
-        super(typeNameExtractor, typeResolver);
-        this.typeNameExtractor = typeNameExtractor;
-        this.typeResolver = typeResolver;
-    }
+	public ResponseMessageReader(TypeNameExtractor typeNameExtractor, TypeResolver typeResolver) {
+		super(typeNameExtractor, typeResolver);
+		this.typeNameExtractor = typeNameExtractor;
+		this.typeResolver = typeResolver;
+	}
 
-    private static boolean isSuccessful(int code) {
-        try {
-            return HttpStatus.Series.SUCCESSFUL.equals(HttpStatus.Series.valueOf(code));
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
+	private static boolean isSuccessful(int code) {
+		try {
+			return HttpStatus.Series.SUCCESSFUL.equals(HttpStatus.Series.valueOf(code));
+		} catch (Exception ignored) {
+			return false;
+		}
+	}
 
-    @Override
-    protected Set<ResponseMessage> read(OperationContext context) {
-        ResolvedType defaultResponse = context.getReturnType();
-        Optional<ApiOperation> operationAnnotation = context.findAnnotation(ApiOperation.class);
-        Optional<ResolvedType> operationResponse =
-                operationAnnotation.transform(resolvedTypeFromOperation(this.typeResolver, defaultResponse));
-        Optional<ResponseHeader[]> defaultResponseHeaders = operationAnnotation.transform(responseHeaders());
-        Map<String, Header> defaultHeaders = newHashMap();
-        if (defaultResponseHeaders.isPresent()) {
-            defaultHeaders.putAll(headers(defaultResponseHeaders.get()));
-        }
+	@Override
+	protected Set<ResponseMessage> read(OperationContext context) {
+		ResolvedType defaultResponse = context.getReturnType();
+		Optional<ApiOperation> operationAnnotation = context.findAnnotation(ApiOperation.class);
+		Optional<ResolvedType> operationResponse =
+				operationAnnotation.transform(resolvedTypeFromOperation(this.typeResolver, defaultResponse));
+		Optional<ResponseHeader[]> defaultResponseHeaders = operationAnnotation.transform(responseHeaders());
+		Map<String, Header> defaultHeaders = newHashMap();
+		if (defaultResponseHeaders.isPresent()) {
+			defaultHeaders.putAll(headers(defaultResponseHeaders.get()));
+		}
 
-        List<ApiResponses> allApiResponses = context.findAllAnnotations(ApiResponses.class);
-        Set<ResponseMessage> responseMessages = newHashSet();
+		List<ApiResponses> allApiResponses = context.findAllAnnotations(ApiResponses.class);
+		Set<ResponseMessage> responseMessages = newHashSet();
 
-        Map<Integer, ApiResponse> seenResponsesByCode = newHashMap();
-        for (ApiResponses apiResponses : allApiResponses) {
-            ApiResponse[] apiResponseAnnotations = apiResponses.value();
-            for (ApiResponse apiResponse : apiResponseAnnotations) {
+		Map<Integer, ApiResponse> seenResponsesByCode = newHashMap();
+		for (ApiResponses apiResponses : allApiResponses) {
+			ApiResponse[] apiResponseAnnotations = apiResponses.value();
+			for (ApiResponse apiResponse : apiResponseAnnotations) {
 
-                if (!seenResponsesByCode.containsKey(apiResponse.code())) {
-                    seenResponsesByCode.put(apiResponse.code(), apiResponse);
+				if (!seenResponsesByCode.containsKey(apiResponse.code())) {
+					seenResponsesByCode.put(apiResponse.code(), apiResponse);
 
-                    java.util.Optional<ModelReference> responseModel = java.util.Optional.empty();
-                    java.util.Optional<ResolvedType> type = this.resolvedType(null, apiResponse);
+					java.util.Optional<ModelReference> responseModel = java.util.Optional.empty();
+					java.util.Optional<ResolvedType> type = this.resolvedType(null, apiResponse);
 
-                    // if (isSuccessful(apiResponse.code())) {
-                    //     type = java.util.Optional.ofNullable(type.orElseGet(operationResponse::get));
-                    // }
+					// if (isSuccessful(apiResponse.code())) {
+					//     type = java.util.Optional.ofNullable(type.orElseGet(operationResponse::get));
+					// }
 
-                    // if (type.isPresent()) {
-                    //     responseModel = java.util.Optional.of(new ModelRef(apiResponse.reference() + "-result"));
-                    // }
+					// if (type.isPresent()) {
+					//     responseModel = java.util.Optional.of(new ModelRef(apiResponse.reference() + "-result"));
+					// }
 
-                    Map<String, Header> headers = newHashMap(defaultHeaders);
-                    headers.putAll(headers(apiResponse.responseHeaders()));
+					Map<String, Header> headers = newHashMap(defaultHeaders);
+					headers.putAll(headers(apiResponse.responseHeaders()));
 
-                    responseMessages.add(new ResponseMessageBuilder()
-                            .code(apiResponse.code())
-                            .message(apiResponse.message())
-                            .responseModel(responseModel.orElse(null))
-                            .headersWithDescription(headers)
-                            .build());
-                }
-            }
-        }
-        if (operationResponse.isPresent()) {
-            ModelContext modelContext = returnValue(
-                    context.getGroupName(),
-                    operationResponse.get(),
-                    context.getDocumentationType(),
-                    context.getAlternateTypeProvider(),
-                    context.getGenericsNamingStrategy(),
-                    context.getIgnorableParameterTypes());
-            ResolvedType resolvedType = context.alternateFor(operationResponse.get());
+					responseMessages.add(new ResponseMessageBuilder()
+							.code(apiResponse.code())
+							.message(apiResponse.message())
+							.responseModel(responseModel.orElse(null))
+							.headersWithDescription(headers)
+							.build());
+				}
+			}
+		}
+		if (operationResponse.isPresent()) {
+			ModelContext modelContext = returnValue(
+					context.getGroupName(),
+					operationResponse.get(),
+					context.getDocumentationType(),
+					context.getAlternateTypeProvider(),
+					context.getGenericsNamingStrategy(),
+					context.getIgnorableParameterTypes());
+			ResolvedType resolvedType = context.alternateFor(operationResponse.get());
 
-            ModelReference responseModel = modelRefFactory(modelContext, this.typeNameExtractor).apply(resolvedType);
-            context.operationBuilder().responseModel(responseModel);
-            ResponseMessage defaultMessage = new ResponseMessageBuilder()
-                    .code(httpStatusCode(context))
-                    .message(message(context))
-                    .responseModel(responseModel)
-                    .build();
+			ModelReference responseModel = modelRefFactory(modelContext, this.typeNameExtractor).apply(resolvedType);
+			context.operationBuilder().responseModel(responseModel);
+			ResponseMessage defaultMessage = new ResponseMessageBuilder()
+					.code(httpStatusCode(context))
+					.message(message(context))
+					.responseModel(responseModel)
+					.build();
 
-            String v = "void";
-            if (!responseMessages.contains(defaultMessage) && !v.equals(Objects.requireNonNull(responseModel)
-                                                                               .getType())) {
-                responseMessages.add(defaultMessage);
-            }
-        }
+			String v = "void";
+			if (!responseMessages.contains(defaultMessage) && !v.equals(Objects.requireNonNull(responseModel)
+																			   .getType())) {
+				responseMessages.add(defaultMessage);
+			}
+		}
 
-        return responseMessages;
-    }
+		return responseMessages;
+	}
 
-    @Override
-    public boolean supports(DocumentationType delimiter) {
-        return true;
-    }
+	@Override
+	public boolean supports(DocumentationType delimiter) {
+		return true;
+	}
 
-    private java.util.Optional<ResolvedType> resolvedType(
-            ResolvedType resolvedType,
-            ApiResponse apiResponse) {
-        return java.util.Optional.ofNullable(resolvedTypeFromResponse(
-                this.typeResolver,
-                resolvedType).apply(apiResponse));
-    }
+	private java.util.Optional<ResolvedType> resolvedType(
+			ResolvedType resolvedType,
+			ApiResponse apiResponse) {
+		return java.util.Optional.ofNullable(resolvedTypeFromResponse(
+				this.typeResolver,
+				resolvedType).apply(apiResponse));
+	}
 }

@@ -28,19 +28,28 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.var;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,12 +76,13 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		return new ConnectionConfigAssist(this.connectionConfigService);
 	}
 
-	@ApiOperation(value = "连接列表", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+	@ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_LIST, value = {
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_NAME),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionConfig", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_LIST)
+	@ApiImplicitParam(name = "query", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_LIST)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
@@ -85,18 +95,38 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
+		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
+
+		Specification<ConnectionConfig> specification = new Specification<ConnectionConfig>() {
+
+			private static final long serialVersionUID = 8024589834916855002L;
+
+			@Override
+			public Predicate toPredicate(@NonNull Root<ConnectionConfig> root, @NotNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+				List<Predicate> list = new ArrayList<>();
+
+				if (!name.isNullOrEmpty()) {
+					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(ConnectionConfig::getName)), name));
+				}
+
+				Predicate[] p = new Predicate[list.size()];
+
+				return criteriaBuilder.and(list.toArray(p));
+			}
+		};
+
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ConnectionConfig::getCreateTime));
 
-		Page<ConnectionConfig> result = this.connectionConfigService.page(pageable);
+		Page<ConnectionConfig> result = this.connectionConfigService.page(specification, pageable);
 
 		return this.pageData(result);
 	}
 
 	@ApiOperation(value = "获取连接", notes = "获取数据库连接", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = {
+	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_GET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_MODEL)
+	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_GET)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
@@ -114,8 +144,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		return this.fail(ReturnDataCode.NoData);
 	}
 
-	@ApiOperation(value = "创建连接", notes = "创建数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = {
+	@ApiOperation(value = "创建连接", notes = "创建数据库连接", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_ADD_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_NAME),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_DATABASE_TYPE),
@@ -132,7 +162,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_USER),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PASSWORD)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_MODEL)
+	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_ADD_BASIC_INFO)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
@@ -160,7 +190,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		return this.fail(result);
 	}
 
-	@ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+	@ApiOperation(value = "更新连接", notes = "更新数据库连接", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE),
@@ -256,7 +286,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 	}
 
-	@ApiOperation(value = "更新连接", notes = "更新数据库连接,如果链接有效则直接打开数据库获取数据表", httpMethod = "POST")
+	@ApiOperation(value = "移除连接", notes = "移除数据库连接", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID)},
 			result = @ApiJsonResult({}))

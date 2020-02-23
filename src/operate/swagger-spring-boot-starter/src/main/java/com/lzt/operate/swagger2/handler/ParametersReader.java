@@ -34,83 +34,87 @@ import static springfox.documentation.spi.schema.contexts.ModelContext.inputPara
 import static springfox.documentation.swagger.common.SwaggerPluginSupport.pluginDoesApply;
 
 /**
- * Created by yueh on 2018/9/10.
+ * @author yueh
+ * @date 2018/9/10
  */
 @SuppressWarnings("Guava")
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ParametersReader implements OperationBuilderPlugin {
-    private final DescriptionResolver descriptions;
+	private final DescriptionResolver descriptions;
 
-    private final TypeNameExtractor nameExtractor;
-    private final TypeResolver resolver;
+	private final TypeNameExtractor nameExtractor;
+	private final TypeResolver resolver;
 
-    @Autowired
-    public ParametersReader(DescriptionResolver descriptions, TypeNameExtractor nameExtractor, TypeResolver resolver) {
-        this.nameExtractor = nameExtractor;
-        this.resolver = resolver;
-        this.descriptions = descriptions;
-    }
+	@Autowired
+	public ParametersReader(DescriptionResolver descriptions, TypeNameExtractor nameExtractor, TypeResolver resolver) {
+		this.nameExtractor = nameExtractor;
+		this.resolver = resolver;
+		this.descriptions = descriptions;
+	}
 
-    @Override
-    public void apply(OperationContext context) {
-        context.operationBuilder().parameters(this.readParameters(context));
-    }
+	@Override
+	public void apply(OperationContext context) {
+		context.operationBuilder().parameters(this.readParameters(context));
+	}
 
-    @Override
-    public boolean supports(DocumentationType delimiter) {
-        return pluginDoesApply(delimiter);
-    }
+	@Override
+	public boolean supports(DocumentationType delimiter) {
+		return pluginDoesApply(delimiter);
+	}
 
-    private List<Parameter> readParameters(OperationContext context) {
-        List<Parameter> parameters = Lists.newArrayList();
-        List<ResolvedMethodParameter> methodParameters = context.getParameters();
+	private List<Parameter> readParameters(OperationContext context) {
+		List<Parameter> parameters = Lists.newArrayList();
+		List<ResolvedMethodParameter> methodParameters = context.getParameters();
 
-        Map<String, ApiSingleParam> paramMap = new HashMap<>();
-        Field[] fields = ModelCache.getInstance().getParamClass().getDeclaredFields();
-        String type = "";
-        for (Field field : fields) {
-            field.setAccessible(true);
+		Map<String, ApiSingleParam> paramMap = new HashMap<>();
 
-            if (field.isAnnotationPresent(ApiSingleParam.class)) {
-                ApiSingleParam param = field.getAnnotation(ApiSingleParam.class);
-                try {
-                    String name = (String) field.get(type);
-                    paramMap.put(param.modelName() + "_" + name, param);
-                } catch (Exception ignored) {
-                }
-            }
-        }
+		ModelCache modelCache = ModelCache.getInstance();
 
-        for (ResolvedMethodParameter methodParameter : methodParameters) {
-            ParameterContext parameterContext = new ParameterContext(methodParameter,
-                    new ParameterBuilder(),
-                    context.getDocumentationContext(),
-                    context.getGenericsNamingStrategy(),
-                    context);
-            Function<ResolvedType, ? extends ModelReference> factory = this.createModelRefFactory(parameterContext);
-            Optional<ApiJsonObject> annotation = context.findAnnotation(ApiJsonObject.class);
+		Field[] fields = modelCache.getParamClass().getDeclaredFields();
+		String type = "";
+		for (Field field : fields) {
+			field.setAccessible(true);
 
-            if (annotation.isPresent()) {
-                ModelCache.getInstance().setFactory(factory)
-                          .setParamMap(paramMap)
-                          .addModel(annotation.get());
+			if (field.isAnnotationPresent(ApiSingleParam.class)) {
+				ApiSingleParam param = field.getAnnotation(ApiSingleParam.class);
+				try {
+					String name = (String) field.get(type);
+					paramMap.put(name, param);
+				} catch (Exception ignored) {
+				}
+			}
+		}
 
-            }
-        }
+		for (ResolvedMethodParameter methodParameter : methodParameters) {
+			ParameterContext parameterContext = new ParameterContext(methodParameter,
+					new ParameterBuilder(),
+					context.getDocumentationContext(),
+					context.getGenericsNamingStrategy(),
+					context);
+			Function<ResolvedType, ? extends ModelReference> factory = this.createModelRefFactory(parameterContext);
+			Optional<ApiJsonObject> annotation = context.findAnnotation(ApiJsonObject.class);
 
-        return parameters;
-    }
+			if (annotation.isPresent()) {
+				ModelCache.getInstance().setFactory(factory)
+						  .setParamMap(paramMap)
+						  .addModel(annotation.get());
 
-    private Function<ResolvedType, ? extends ModelReference> createModelRefFactory(ParameterContext context) {
-        ModelContext modelContext = inputParam(
-                context.getGroupName(),
-                context.resolvedMethodParameter().getParameterType(),
-                context.getDocumentationType(),
-                context.getAlternateTypeProvider(),
-                context.getGenericNamingStrategy(),
-                context.getIgnorableParameterTypes());
-        return ResolvedTypes.modelRefFactory(modelContext, this.nameExtractor);
-    }
+			}
+		}
+
+		return parameters;
+	}
+
+	private Function<ResolvedType, ? extends ModelReference> createModelRefFactory(ParameterContext context) {
+		ModelContext modelContext = inputParam(
+				context.getGroupName(),
+				context.resolvedMethodParameter().getParameterType(),
+				context.getDocumentationType(),
+				context.getAlternateTypeProvider(),
+				context.getGenericNamingStrategy(),
+				context.getIgnorableParameterTypes());
+		return ResolvedTypes.modelRefFactory(modelContext, this.nameExtractor);
+	}
 
 }

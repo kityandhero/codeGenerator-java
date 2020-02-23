@@ -50,6 +50,7 @@ public class AccessWayServiceImpl implements AccessWayService {
 	@Override
 	public Optional<AccessWay> findByTag(String tag) {
 		Specification<AccessWay> spec = new Specification<AccessWay>() {
+
 			private static final long serialVersionUID = 4482864256737131456L;
 
 			@Override
