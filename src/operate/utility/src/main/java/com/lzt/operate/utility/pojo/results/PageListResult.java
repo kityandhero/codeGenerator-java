@@ -1,7 +1,8 @@
 package com.lzt.operate.utility.pojo.results;
 
-import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import lombok.EqualsAndHashCode;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -11,24 +12,20 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class PageListResult<T> extends ListResult<T> {
 
-	private int pageIndex;
+	private int pageIndex = 1;
 
-	private int pageSize;
+	private int pageSize = 10;
 
-	private long totalSize;
+	private long totalSize = 0;
 
-	public PageListResult(ReturnDataCode returnDataCode) {
-		super(returnDataCode);
-
-		this.pageIndex = 1;
-		this.pageSize = 10;
-		this.totalSize = 0;
+	public PageListResult(@NonNull ReturnMessage returnMessage) {
+		super(returnMessage);
 	}
 
-	public PageListResult(ReturnDataCode returnDataCode, List<T> listData, int index, int size, long total) {
-		super(returnDataCode, listData);
+	public PageListResult(@NonNull ReturnMessage returnMessage, List<T> listData, int index, int size, long total) {
+		super(returnMessage, listData);
 
-		this.pageSize = index;
+		this.pageIndex = index;
 		this.pageSize = size;
 		this.totalSize = total;
 	}

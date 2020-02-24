@@ -40,8 +40,6 @@ public class Md5Assist {
 	 * @return md5 结果
 	 */
 	public static String toMd5(String target) throws NoSuchAlgorithmException {
-		String v = Optional.of(target).orElse("");
-
 		return toMd5(target, "");
 	}
 

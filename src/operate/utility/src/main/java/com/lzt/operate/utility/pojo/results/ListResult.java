@@ -1,6 +1,7 @@
 package com.lzt.operate.utility.pojo.results;
 
-import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.ReturnMessage;
+import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +25,14 @@ public class ListResult<T> extends ExecutiveSimpleResult {
 		return optional.map(List::size).orElse(0);
 	}
 
-	public ListResult(ReturnDataCode returnDataCode) {
-		super(returnDataCode);
+	public ListResult(@NonNull ReturnMessage returnMessage) {
+		super(returnMessage);
 
 		list = new ArrayList<>();
 	}
 
-	public ListResult(ReturnDataCode returnDataCode, List<T> listData) {
-		super(returnDataCode);
+	public ListResult(@NonNull ReturnMessage returnMessage, List<T> listData) {
+		super(returnMessage);
 
 		this.list = listData;
 	}
@@ -42,5 +43,31 @@ public class ListResult<T> extends ExecutiveSimpleResult {
 
 	public void setList(List<T> list) {
 		this.list = list;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (!(o instanceof ListResult)) {
+			return false;
+		}
+
+		if (!super.equals(o)) {
+			return false;
+		}
+
+		ListResult<?> that = (ListResult<?>) o;
+
+		return getList() != null ? getList().equals(that.getList()) : that.getList() == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (getList() != null ? getList().hashCode() : 0);
+		return result;
 	}
 }

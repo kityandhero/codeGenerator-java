@@ -145,12 +145,12 @@ public class CustomJsonWebToken {
 		try {
 			Optional<DecodedJWT> optional = Optional.of(JWT.decode(token));
 
-			return optional.map(decodedJwt -> new ExecutiveResult<>(ReturnDataCode.Ok, decodedJwt))
-						   .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("Token数据无效")));
+			return optional.map(decodedJwt -> new ExecutiveResult<>(ReturnDataCode.Ok.toMessage(), decodedJwt))
+						   .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.toMessage("Token数据无效")));
 		} catch (Exception e) {
 			logger.info("解析token出错");
 
-			return new ExecutiveResult<>(ReturnDataCode.Exception.setMessage(e.getMessage()));
+			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage(e.getMessage()));
 		}
 	}
 
@@ -165,8 +165,8 @@ public class CustomJsonWebToken {
 		if (result.getSuccess()) {
 			Optional<Map<String, Claim>> optional = Optional.of(result.getData()).map(Payload::getClaims);
 
-			return optional.map(stringClaimMap -> new ExecutiveResult<>(ReturnDataCode.Ok, stringClaimMap))
-						   .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.Exception.setMessage("解析Token失败")));
+			return optional.map(stringClaimMap -> new ExecutiveResult<>(ReturnDataCode.Ok.toMessage(), stringClaimMap))
+						   .orElseGet(() -> new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("解析Token失败")));
 		}
 
 		return new ExecutiveResult<>(result.getCode());
@@ -180,10 +180,10 @@ public class CustomJsonWebToken {
 	 */
 	private static ExecutiveResult<CustomJsonWebToken> getFromHttpToken(String token) {
 		if (!StringAssist.isNullOrEmpty(token)) {
-			return new ExecutiveResult<>(ReturnDataCode.Ok, new CustomJsonWebToken(token));
+			return new ExecutiveResult<>(ReturnDataCode.Ok.toMessage(), new CustomJsonWebToken(token));
 		}
 
-		return new ExecutiveResult<>(ReturnDataCode.NoData.setMessage("无效Token"));
+		return new ExecutiveResult<>(ReturnDataCode.NoData.toMessage("无效Token"));
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class CustomJsonWebToken {
 	 */
 	public static ExecutiveResult<CustomJsonWebToken> getFromCurrentHttpToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
 		if (!Optional.ofNullable(customJsonWebTokenConfig).isPresent()) {
-			return new ExecutiveResult<>(ReturnDataCode.NoData.setMessage("无效Token"));
+			return new ExecutiveResult<>(ReturnDataCode.NoData.toMessage("无效Token"));
 		}
 
 		HttpServletRequest request = RequestAssist.getHttpServletRequest();
@@ -220,10 +220,10 @@ public class CustomJsonWebToken {
 				return new ExecutiveResult<>(ReturnDataCode.Ok, customJsonWebToken);
 			}
 
-			return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("Token过期"));
+			return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.toMessage("Token过期"));
 		}
 
-		return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("缺少Token"));
+		return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.toMessage("缺少Token"));
 	}
 
 	public static ExecutiveResult<CustomJsonWebToken> checkToken(BaseCustomJsonWebTokenConfig customJsonWebTokenConfig) {
@@ -236,10 +236,10 @@ public class CustomJsonWebToken {
 				return new ExecutiveResult<>(ReturnDataCode.Ok, result.getData());
 			}
 
-			return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("登录超时，请重新登录"));
+			return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.toMessage("登录超时，请重新登录"));
 		}
 
-		return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.setMessage("请登录后访问"));
+		return new ExecutiveResult<>(ReturnDataCode.Authentication_FAIL.toMessage("请登录后访问"));
 	}
 
 	public Object getToken() {

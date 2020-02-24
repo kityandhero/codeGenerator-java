@@ -1,7 +1,9 @@
 package com.lzt.operate.utility.pojo.results;
 
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import lombok.EqualsAndHashCode;
+import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ public class ExecutiveResult<T> extends ExecutiveSimpleResult {
 		return Optional.of(data).orElse(null);
 	}
 
-	public ExecutiveResult(ReturnDataCode returnDataCode) {
+	public ExecutiveResult(@NonNull ReturnMessage returnDataCode) {
 		super(returnDataCode);
 
 		data = null;
@@ -51,12 +53,24 @@ public class ExecutiveResult<T> extends ExecutiveSimpleResult {
 	}
 
 	public ExecutiveResult(ReturnDataCode returnDataCode, T resultData) {
+		super(returnDataCode.toMessage());
+
+		data = resultData;
+	}
+
+	public ExecutiveResult(ReturnMessage returnDataCode, T resultData) {
 		super(returnDataCode);
 
 		data = resultData;
 	}
 
 	public ExecutiveResult(ReturnDataCode returnDataCode, String customMessage, T resultData) {
+		super(returnDataCode.toMessage(), customMessage);
+
+		data = resultData;
+	}
+
+	public ExecutiveResult(@NonNull ReturnMessage returnDataCode, String customMessage, T resultData) {
 		super(returnDataCode, customMessage);
 
 		data = resultData;

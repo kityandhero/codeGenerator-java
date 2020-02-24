@@ -1,11 +1,11 @@
 package com.lzt.operate.utility.exceptionhandlers;
 
-import com.lzt.operate.utility.pojo.ResultSingleData;
-import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
-import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.SerializableData;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.springframework.http.HttpStatus;
@@ -48,13 +48,13 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleHttpMessageNotReadableException(Exception e) {
 		log.error("参数解析失败", e);
 		if (e instanceof BindException) {
-			var error = new ResultSingleData(ReturnDataCode.BAD_REQUEST);
+			var error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
 
 			error.setMessage(error.getMessage() + "," + e.getMessage());
 
 			return error;
 		} else {
-			var error = new ResultSingleData(ReturnDataCode.BAD_REQUEST);
+			var error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
 
 			error.setMessage(error.getMessage() + "," + e.getMessage());
 
@@ -71,7 +71,7 @@ public abstract class BaseGlobalExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResultSingleData handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 		log.error("不支持当前请求方法", e);
-		return new ResultSingleData(ReturnDataCode.METHOD_NOT_ALLOWED);
+		return new ResultSingleData(ReturnDataCode.METHOD_NOT_ALLOWED.toMessage());
 	}
 
 	/**
@@ -87,12 +87,12 @@ public abstract class BaseGlobalExceptionHandler {
 
 		if (e instanceof AuthenticationException) {
 
-			var ex = ReturnDataCode.Authentication_FAIL;
+			var ex = ReturnDataCode.Authentication_FAIL.toMessage();
 
 			var message = e.getMessage();
 
 			if (!StringAssist.isNullOrEmpty(message)) {
-				ex.setMessage(message);
+				ex.toMessage(message);
 			}
 
 			return new ResultSingleData(ex);
@@ -102,16 +102,16 @@ public abstract class BaseGlobalExceptionHandler {
 			var message = e.getMessage();
 
 			if (!StringAssist.isNullOrEmpty(message)) {
-				ex.setMessage(message);
+				ex.toMessage(message);
 			}
 
-			return new ResultSingleData(ex);
+			return new ResultSingleData(ex.toMessage());
 		} else if (e instanceof JedisConnectionException) {
 			//redis连接异常
-			return new ResultSingleData(ReturnDataCode.REDIS_CONNECT_ERROR);
+			return new ResultSingleData(ReturnDataCode.REDIS_CONNECT_ERROR.toMessage());
 		} else if (e instanceof JedisException) {
 			//redis异常
-			return new ResultSingleData(ReturnDataCode.REDIS_ERROR);
+			return new ResultSingleData(ReturnDataCode.REDIS_ERROR.toMessage());
 		}
 
 		var serializableData = new SerializableData();
@@ -120,6 +120,6 @@ public abstract class BaseGlobalExceptionHandler {
 		serializableData.append("localizedMessage", e.getLocalizedMessage());
 		serializableData.append("stackTrace", e.getStackTrace());
 
-		return new ResultSingleData(ReturnDataCode.SYSTEM_ERR, serializableData);
+		return new ResultSingleData(ReturnDataCode.SYSTEM_ERR.toMessage(), serializableData);
 	}
 }

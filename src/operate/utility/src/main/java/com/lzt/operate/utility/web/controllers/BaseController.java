@@ -5,6 +5,7 @@ import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultDataFactory;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import com.lzt.operate.utility.pojo.results.ListResult;
@@ -97,27 +98,27 @@ public class BaseController implements ErrorController {
 	}
 
 	protected ResultSingleData fail(@NonNull ExecutiveSimpleResult result) {
-		ReturnDataCode returnDataCode = result.getCode();
+		ReturnMessage returnMessage = result.getCode();
 
-		returnDataCode.setMessage(result.getMessage());
+		returnMessage.toMessage(result.getMessage());
 
-		return fail(returnDataCode);
+		return fail(returnMessage);
 	}
 
-	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode) {
-		return ResultDataFactory.failData(returnDataCode);
+	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage) {
+		return ResultDataFactory.failData(returnMessage);
 	}
 
-	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, SerializableData data) {
-		ResultSingleData result = ResultDataFactory.failData(returnDataCode);
+	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage, SerializableData data) {
+		ResultSingleData result = ResultDataFactory.failData(returnMessage);
 
 		result.data = data;
 
 		return result;
 	}
 
-	protected ResultSingleData fail(@NonNull ReturnDataCode returnDataCode, Serializable data, Serializable extra) {
-		ResultSingleData result = ResultDataFactory.failData(returnDataCode);
+	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage, Serializable data, Serializable extra) {
+		ResultSingleData result = ResultDataFactory.failData(returnMessage);
 
 		result.data = data;
 		result.extra = extra;
@@ -131,7 +132,7 @@ public class BaseController implements ErrorController {
 		data.append("paramName", paramName);
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.ParamError);
+		return ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage());
 	}
 
 	protected ResultSingleData noDataError() {
@@ -143,15 +144,15 @@ public class BaseController implements ErrorController {
 
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.NoData);
+		return ResultDataFactory.failData(ReturnDataCode.NoData.toMessage());
 	}
 
 	protected ResultSingleData exceptionError(Exception e) {
-		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
+		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage());
 	}
 
 	protected ResultSingleData customError(int code, boolean success, String message) {
-		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR);
+		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage());
 	}
 
 	protected ResultListData pageData(Page<? extends Serializable> pageListResult) {

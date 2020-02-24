@@ -1,7 +1,7 @@
 package com.lzt.operate.utility.pojo;
 
 import com.lzt.operate.utility.enums.ReturnDataCode;
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 
 import java.util.Collections;
 
@@ -18,28 +18,28 @@ public class ResultDataFactory {
 		return new ResultSingleData(code, success, message);
 	}
 
-	public static ResultSingleData failData(@NonNull ReturnDataCode returnDataCode) {
+	public static ResultSingleData failData(@NonNull ReturnMessage returnDataCode) {
 		return new ResultSingleData(returnDataCode, new SerializableData(), new SerializableData());
 	}
 
-	public static ResultSingleData failData(@NonNull ReturnDataCode returnDataCode, SerializableData data) {
-		return new ResultSingleData(returnDataCode, data, new SerializableData());
+	public static ResultSingleData failData(@NonNull ReturnMessage returnMessage, SerializableData data) {
+		return new ResultSingleData(returnMessage, data, new SerializableData());
 	}
 
 	public static ResultSingleData successSingleData() {
-		return new ResultSingleData(ReturnDataCode.Ok, new SerializableData(), new SerializableData());
+		return new ResultSingleData(ReturnDataCode.Ok.toMessage(), new SerializableData(), new SerializableData());
 	}
 
 	public static ResultListData successListData() {
-		return new ResultListData(ReturnDataCode.Ok, Collections.emptyList(), new SerializableData());
+		return new ResultListData(ReturnDataCode.Ok.toMessage(), Collections.emptyList(), new SerializableData());
 	}
 
-	public static ResultListData failListData(ReturnDataCode returnDataCode) {
-		return new ResultListData(returnDataCode, Collections.emptyList(), new SerializableData());
+	public static ResultListData failListData(@NonNull ReturnMessage returnMessage) {
+		return new ResultListData(returnMessage, Collections.emptyList(), new SerializableData());
 	}
 
-	public static ResultListData failListData(ReturnDataCode returnDataCode, SerializableData extra) {
-		return new ResultListData(returnDataCode, Collections.emptyList(), extra);
+	public static ResultListData failListData(@NonNull ReturnMessage returnMessage, SerializableData extra) {
+		return new ResultListData(returnMessage, Collections.emptyList(), extra);
 	}
 
 }

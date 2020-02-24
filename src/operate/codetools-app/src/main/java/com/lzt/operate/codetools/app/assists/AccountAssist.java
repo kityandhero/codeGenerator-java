@@ -288,7 +288,7 @@ public class AccountAssist {
 	 */
 	public ExecutiveSimpleResult changeRole(long accountId, String roleUniversalIdCollection, String roleCodeToolsIdCollection) {
 		if (accountId <= 0) {
-			ExecutiveSimpleResult result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+			ExecutiveSimpleResult result = new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage());
 
 			result.setMessage("指定的账户标识错误");
 
@@ -324,7 +324,7 @@ public class AccountAssist {
 		ExecutiveSimpleResult result;
 
 		if (accountId <= 0) {
-			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage());
 
 			result.setMessage("指定的账户标识错误");
 
@@ -335,7 +335,7 @@ public class AccountAssist {
 		ExecutiveSimpleResult changeRoleCodeToolsResult = changeRoleCodeTools(accountId, roleCodeToolsIdList);
 
 		if (changeRoleUniversalResult.getSuccess() && changeRoleCodeToolsResult.getSuccess()) {
-			return new ExecutiveSimpleResult(ReturnDataCode.Ok);
+			return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 		}
 
 		if (!changeRoleUniversalResult.getSuccess()) {
@@ -346,7 +346,7 @@ public class AccountAssist {
 			return changeRoleCodeToolsResult;
 		}
 
-		return new ExecutiveSimpleResult(ReturnDataCode.Unknown);
+		return new ExecutiveSimpleResult(ReturnDataCode.Unknown.toMessage());
 	}
 
 	/**
@@ -386,7 +386,7 @@ public class AccountAssist {
 		ExecutiveSimpleResult result;
 
 		if (accountId <= 0) {
-			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage());
 
 			result.setMessage("指定的账户标识错误");
 
@@ -418,9 +418,9 @@ public class AccountAssist {
 
 			accountRoleService.save(accountRole);
 
-			result = new ExecutiveSimpleResult(ReturnDataCode.Ok);
+			result = new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 		} else {
-			result = new ExecutiveSimpleResult(ReturnDataCode.NoData);
+			result = new ExecutiveSimpleResult(ReturnDataCode.NoData.toMessage());
 
 			result.setMessage("指定的账户不存在");
 		}
@@ -465,7 +465,7 @@ public class AccountAssist {
 		ExecutiveSimpleResult result;
 
 		if (accountId <= 0) {
-			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError);
+			result = new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage());
 
 			result.setMessage("指定的账户标识错误");
 
@@ -496,9 +496,9 @@ public class AccountAssist {
 																					  .collect(Collectors.toList())));
 			accountRoleService.save(accountRole);
 
-			result = new ExecutiveSimpleResult(ReturnDataCode.Ok);
+			result = new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 		} else {
-			result = new ExecutiveSimpleResult(ReturnDataCode.NoData);
+			result = new ExecutiveSimpleResult(ReturnDataCode.NoData.toMessage());
 
 			result.setMessage("指定的账户不存在");
 		}

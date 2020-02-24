@@ -193,7 +193,7 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 * @return ExecutiveSimpleResult
 	 */
 	default ExecutiveSimpleResult removeById(Long id) {
-		return new ExecutiveSimpleResult(ReturnDataCode.NeedOverride);
+		return new ExecutiveSimpleResult(ReturnDataCode.NeedOverride.toMessage());
 	}
 
 	/**

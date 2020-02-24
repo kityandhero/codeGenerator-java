@@ -51,7 +51,7 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 
 		if (StringAssist.isNullOrEmpty(v) || v.length() <= Constants.ACCOUNT_PASSWORD_MIN_LENGTH || v
 				.length() > Constants.ACCOUNT_USER_NAME_MAX_LENGTH) {
-			return new ExecutiveSimpleResult(ReturnDataCode.ParamError.setMessage(
+			return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(
 					StringAssist.merge(
 							GlobalString.ACCOUNT_NAME,
 							"账户名不能为空，长度应在",
@@ -61,7 +61,7 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 							"之间")));
 		}
 
-		return new ExecutiveSimpleResult(ReturnDataCode.Ok);
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
 	/**
@@ -87,7 +87,7 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 
 		if (StringAssist.isNullOrEmpty(v) || v.length() <= Constants.ACCOUNT_PASSWORD_MIN_LENGTH || v
 				.length() > Constants.ACCOUNT_USER_NAME_MAX_LENGTH) {
-			return new ExecutiveSimpleResult(ReturnDataCode.ParamError.setMessage(
+			return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(
 					StringAssist.merge(
 							GlobalString.ACCOUNT_NAME,
 							"密码不能为空，长度应在",
@@ -101,15 +101,15 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 			String cv = Optional.ofNullable(rePassword).orElse("");
 
 			if (StringAssist.isNullOrEmpty(cv)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.ParamError.setMessage(StringAssist.merge(GlobalString.RE_PASSWORD, "确认密码无效")));
+				return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(StringAssist.merge(GlobalString.RE_PASSWORD, "确认密码无效")));
 			}
 
 			if (!v.equals(cv)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.ParamError.setMessage("密码与确认密码不一致"));
+				return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage("密码与确认密码不一致"));
 			}
 		}
 
-		return new ExecutiveSimpleResult(ReturnDataCode.Ok);
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
 }

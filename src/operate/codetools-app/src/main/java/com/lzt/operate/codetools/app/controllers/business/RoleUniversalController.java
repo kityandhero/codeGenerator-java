@@ -152,7 +152,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 			return this.singleData(result.get());
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "创建公共角色", notes = "创建公共角色", httpMethod = "POST")
@@ -241,7 +241,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 			return this.singleData(new SerializableData().append(GlobalString.ROLE_UNIVERSAL_ID, data.getId()));
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 }

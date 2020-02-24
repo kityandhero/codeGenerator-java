@@ -147,7 +147,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.singleData(result.get());
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "创建连接", notes = "创建数据库连接", httpMethod = "POST")
@@ -299,7 +299,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.singleData(saveResult);
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 
 	}
 

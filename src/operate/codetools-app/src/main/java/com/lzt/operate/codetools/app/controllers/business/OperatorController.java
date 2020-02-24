@@ -79,7 +79,7 @@ public class OperatorController extends BaseOperateAuthController {
 			return this.singleData(result.get());
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "当前操作者基本信息", notes = "当前操作者基本信息", httpMethod = "POST")
@@ -94,6 +94,6 @@ public class OperatorController extends BaseOperateAuthController {
 			return this.singleData(result.get());
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 }

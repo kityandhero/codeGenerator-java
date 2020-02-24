@@ -153,7 +153,7 @@ public class AccountController extends BaseOperateAuthController {
 			return this.singleData(result.get());
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "创建账户", notes = "创建账户", httpMethod = "POST")
@@ -194,8 +194,9 @@ public class AccountController extends BaseOperateAuthController {
 		var existAccount = accountService.findByUserName(userName);
 
 		if (existAccount.isPresent()) {
-			var error = ReturnDataCode.ParamError;
-			error.setMessage("登录名已存在");
+			var error = ReturnDataCode.ParamError.toMessage();
+
+			error.toMessage("登录名已存在");
 
 			return this.paramError(GlobalString.ACCOUNT_USERNAME, "登录名已存在");
 		}
@@ -263,7 +264,7 @@ public class AccountController extends BaseOperateAuthController {
 			return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 		}
 
-		return this.fail(ReturnDataCode.NoData);
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "重置密码", notes = "重置密码", httpMethod = "POST")

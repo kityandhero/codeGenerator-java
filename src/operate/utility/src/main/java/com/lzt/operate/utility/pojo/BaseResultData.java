@@ -46,10 +46,10 @@ public abstract class BaseResultData implements Serializable {
 		this.extra = new SerializableData();
 	}
 
-	BaseResultData(@NonNull ReturnDataCode returnDataCode, SerializableData extra) {
-		this.code = returnDataCode.getCode();
-		this.success = returnDataCode.getSuccess();
-		this.message = returnDataCode.getMessage();
+	BaseResultData(@NonNull ReturnMessage returnMessage, SerializableData extra) {
+		this.code = returnMessage.getCode();
+		this.success = returnMessage.getSuccess();
+		this.message = returnMessage.getMessage();
 		this.extra = Optional.of(extra).orElse(new SerializableData());
 	}
 

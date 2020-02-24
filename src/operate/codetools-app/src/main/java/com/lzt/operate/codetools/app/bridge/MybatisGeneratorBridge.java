@@ -79,7 +79,7 @@ public class MybatisGeneratorBridge {
 		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(this.selectedConnectionConfig.getDatabaseType());
 
 		if (!optionalDatabaseType.isPresent()) {
-			return new ExecutiveSimpleResult(ReturnDataCode.Exception.setMessage("databaseType无效"));
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("databaseType无效"));
 		}
 		DatabaseType databaseType = optionalDatabaseType.get();
 
@@ -298,7 +298,7 @@ public class MybatisGeneratorBridge {
 		}
 		myBatisGenerator.generate(this.progressCallback, contexts, fullyqualifiedTables);
 
-		return new ExecutiveSimpleResult(ReturnDataCode.Ok);
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
 	private String getMappingXMLFilePath(GeneratorConfig generatorConfig) {

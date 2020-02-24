@@ -5,15 +5,17 @@ import java.time.LocalDateTime;
 
 /**
  * 日期时间类扩展方法
+ *
+ * @author luzhitao
  */
 public class LocalDateTimeEx {
-    private LocalDateTime time;
+	private LocalDateTime time;
 
-    public LocalDateTimeEx(LocalDateTime time) {
-        this.time = time;
-    }
+	public LocalDateTimeEx(LocalDateTime time) {
+		this.time = time;
+	}
 
-    public java.time.Duration Duration(LocalDateTime time) {
-        return Duration.between(this.time, time);
-    }
+	public java.time.Duration duration(LocalDateTime time) {
+		return Duration.between(this.time, time);
+	}
 }

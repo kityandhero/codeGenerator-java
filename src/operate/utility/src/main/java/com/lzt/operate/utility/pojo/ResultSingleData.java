@@ -36,16 +36,25 @@ public class ResultSingleData extends BaseResultData {
 		super(code, success, message);
 	}
 
-	public ResultSingleData(@NonNull ReturnDataCode returnDataCode) {
-		this(returnDataCode, new SerializableData());
+	public ResultSingleData(ReturnDataCode returnDataCode) {
+		this(returnDataCode.toMessage(), new SerializableData());
 	}
 
-	public ResultSingleData(@NonNull ReturnDataCode returnDataCode, SerializableData data) {
-		this(returnDataCode, data, new SerializableData());
+	public ResultSingleData(@NonNull ReturnMessage returnMessage) {
+		this(returnMessage, new SerializableData());
 	}
 
-	ResultSingleData(@NonNull ReturnDataCode returnDataCode, SerializableData data, SerializableData extra) {
-		super(returnDataCode, extra);
+	public ResultSingleData(ReturnDataCode returnDataCode, SerializableData data) {
+		this(returnDataCode.toMessage(), data, new SerializableData());
+	}
+
+	public ResultSingleData(@NonNull ReturnMessage returnMessage, SerializableData data) {
+		this(returnMessage, data, new SerializableData());
+	}
+
+	ResultSingleData(@NonNull ReturnMessage returnMessage, SerializableData data, SerializableData extra) {
+		super(returnMessage, extra);
+
 		this.data = data;
 	}
 }

@@ -1,9 +1,9 @@
 package com.lzt.operate.utility.secret;
 
-import com.lzt.operate.utility.extensions.LocalDateTimeEx;
-import com.lzt.operate.utility.extensions.StringEx;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.extensions.LocalDateTimeEx;
+import com.lzt.operate.utility.extensions.StringEx;
 import lombok.var;
 
 import java.time.LocalDateTime;
@@ -111,7 +111,7 @@ public class SecretAssist {
 
 			var localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
 
-			var duration = new LocalDateTimeEx(localDateTime).Duration(LocalDateTime.now());
+			var duration = new LocalDateTimeEx(localDateTime).duration(LocalDateTime.now());
 			var expired = duration.toMillis() < 0;
 
 			text = text.substring(19);

@@ -55,8 +55,6 @@ public class EnumAssist {
 			Collection<T> valueCollection,
 			IGetter<T> flagGetter,
 			IGetter<T> nameGetter) {
-		List<SerializableData> list = new ArrayList<>();
-
 		return buildFlagDataCollection(valueCollection, flagGetter, nameGetter, null);
 	}
 

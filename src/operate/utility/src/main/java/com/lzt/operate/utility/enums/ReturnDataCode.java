@@ -2,6 +2,7 @@ package com.lzt.operate.utility.enums;
 
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -213,23 +214,15 @@ public enum ReturnDataCode {
 		return code;
 	}
 
-	public ReturnDataCode setCode(int code) {
-		this.code = code;
-
-		return this;
-	}
-
 	public String getMessage() {
 		return message;
 	}
 
-	public ReturnDataCode setMessage(String message) {
-		this.message = message;
-
-		return this;
+	public boolean getSuccess() {
+		return success;
 	}
 
-	public ReturnDataCode appendMessage(String... otherMessageList) {
+	public ReturnMessage appendMessage(String... otherMessageList) {
 		List<String> list = new ArrayList<>();
 
 		list.add(this.message);
@@ -237,17 +230,23 @@ public enum ReturnDataCode {
 
 		this.message = StringAssist.join(list);
 
-		return this;
+		return toMessage(StringAssist.join(list));
 	}
 
-	public boolean getSuccess() {
-		return success;
+	public ReturnMessage toMessage() {
+		return ReturnMessage.create(this.getCode(), this.getMessage(), this.getSuccess());
 	}
 
-	public ReturnDataCode setSuccess(boolean success) {
-		this.success = success;
+	public ReturnMessage toMessage(boolean success) {
+		return ReturnMessage.create(this.getCode(), this.getMessage(), success);
+	}
 
-		return this;
+	public ReturnMessage toMessage(String message) {
+		return ReturnMessage.create(this.getCode(), message, this.getSuccess());
+	}
+
+	public ReturnMessage toMessage(int code) {
+		return ReturnMessage.create(code, this.getMessage(), this.getSuccess());
 	}
 
 }
