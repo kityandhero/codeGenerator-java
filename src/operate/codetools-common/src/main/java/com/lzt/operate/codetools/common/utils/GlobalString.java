@@ -1,4 +1,4 @@
-package com.lzt.operate.codetools.app.common;
+package com.lzt.operate.codetools.common.utils;
 
 import com.lzt.operate.swagger2.model.ApiSingleParam;
 
@@ -12,49 +12,32 @@ public class GlobalString {
 	 */
 	public static final String AUTH_TOKEN = "token";
 
-	//region CONNECTION_LIST
+	//region COMMON
 
 	@ApiSingleParam(value = "页码", example = "1")
-	public static final String CONNECTION_CONFIG_LIST_PAGE_NO = "pageNo";
+	public static final String LIST_PAGE_NO = "pageNo";
 
 	@ApiSingleParam(value = "页条目数", example = "10")
-	public static final String CONNECTION_CONFIG_LIST_PAGE_SIZE = "pageSize";
-
-	//endregion
-
-	//region Entrance_SING_IN
-
-	@ApiSingleParam(value = "用户名称", example = "admin")
-	public static final String LOGIN_USERNAME = "userName";
-
-	@ApiSingleParam(value = "登录密码", example = "123456")
-	public static final String LOGIN_PASSWORD = "password";
-
-	//endregion
-
-	//region ENTRANCE_REGISTER
-
-	@ApiSingleParam(value = "用户名称", example = "test1")
-	public static final String REGISTER_USERNAME = "userName";
-
-	@ApiSingleParam(value = "登录密码", example = "123456")
-	public static final String REGISTER_PASSWORD = "password";
+	public static final String LIST_PAGE_SIZE = "pageSize";
 
 	@ApiSingleParam(value = "验证密码", example = "123456")
-	public static final String REGISTER_RE_PASSWORD = "rePassword";
+	public static final String RE_PASSWORD = "rePassword";
 
 	//endregion
 
 	//region CONNECTION_MODEL
 
-	@ApiSingleParam(value = "数据库连接标识", type = Long.class, example = "0")
+	@ApiSingleParam(value = "标识", type = Long.class, example = "201")
 	public static final String CONNECTION_CONFIG_ID = "connectionConfigId";
 
-	@ApiSingleParam(value = "数据库连接类型", example = "100")
+	@ApiSingleParam(value = "连接类型", example = "100")
 	public static final String CONNECTION_CONFIG_CONNECTION_TYPE = "connectionType";
 
-	@ApiSingleParam(value = "数据库连接名称", example = "my connection")
+	@ApiSingleParam(value = "名称", example = "my connection")
 	public static final String CONNECTION_CONFIG_NAME = "name";
+
+	@ApiSingleParam(value = "简介描述", example = "简单描述")
+	public static final String CONNECTION_CONFIG_DESCRIPTION = "description";
 
 	@ApiSingleParam(value = "数据库类型", example = "mysql")
 	public static final String CONNECTION_CONFIG_DATABASE_TYPE = "databaseType";
@@ -94,6 +77,38 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "sshPassword", example = "sshPassword")
 	public static final String CONNECTION_CONFIG_SSH_PASSWORD = "sshPassword";
+
+	//endregion
+
+	//region ACCOUNT
+
+	@ApiSingleParam(value = "用户标识", type = Long.class, example = "101")
+	public static final String ACCOUNT_ID = "ACCOUNT_ID";
+
+	@ApiSingleParam(value = "用户名称", example = "admin")
+	public static final String ACCOUNT_USERNAME = "userName";
+
+	@ApiSingleParam(value = "登录密码", example = "123456")
+	public static final String ACCOUNT_PASSWORD = "password";
+
+	@ApiSingleParam(value = "姓名", example = "张三")
+	public static final String ACCOUNT_NAME = "name";
+
+	@ApiSingleParam(value = "姓名", example = "张三")
+	public static final String ACCOUNT_DESCRIPTION = "description";
+
+	//endregion
+
+	//region ROLE_UNIVERSAL
+
+	@ApiSingleParam(value = "角色标识", type = Long.class, example = "101")
+	public static final String ROLE_UNIVERSAL_ID = "ACCOUNT_ID";
+
+	@ApiSingleParam(value = "角色名称", example = "管理员")
+	public static final String ROLE_UNIVERSAL_NAME = "name";
+
+	@ApiSingleParam(value = "简介描述", example = "描述信息")
+	public static final String ROLE_UNIVERSAL_DESCRIPTION = "description";
 
 	//endregion
 

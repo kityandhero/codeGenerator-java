@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public class SerializableMap<String, Serializable> extends HashMap<String, Serializable> {
 
+	private static final long serialVersionUID = 7303682875593752763L;
+
 	SerializableMap() {
 		super();
 	}
@@ -19,12 +21,16 @@ public class SerializableMap<String, Serializable> extends HashMap<String, Seria
 		this.appends(data);
 	}
 
-	public void append(String key, Serializable value) {
+	public SerializableMap<String, Serializable> append(String key, Serializable value) {
 		this.put(key, value);
+
+		return this;
 	}
 
-	public void appends(Map<String, ? extends Serializable> data) {
+	public SerializableMap<String, Serializable> appends(Map<String, ? extends Serializable> data) {
 		this.putAll(data);
+
+		return this;
 	}
 
 	public java.lang.String serialize() {

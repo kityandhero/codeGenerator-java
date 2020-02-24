@@ -1,10 +1,10 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.assists.AccountAssist;
-import com.lzt.operate.codetools.app.common.GlobalString;
-import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.common.utils.GlobalString;
+import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;

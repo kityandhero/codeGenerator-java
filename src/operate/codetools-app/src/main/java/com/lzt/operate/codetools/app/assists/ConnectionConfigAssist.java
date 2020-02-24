@@ -1,8 +1,8 @@
 package com.lzt.operate.codetools.app.assists;
 
-import com.lzt.operate.codetools.app.common.GlobalString;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
+import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.dao.assists.BaseConnectionConfigAssist;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
@@ -51,6 +51,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 			return new ExecutiveResult<>(ReturnDataCode.ParamError.appendMessage(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值"));
 		}
 
+		StringEx description = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DESCRIPTION);
 		StringEx host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
 		StringEx port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
 		StringEx schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
@@ -67,6 +68,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 		ConnectionConfig connectionConfig = new ConnectionConfig();
 
 		connectionConfig.setName(name.toString());
+		connectionConfig.setDescription(description.toString());
 		connectionConfig.setConnectionType(connectionType);
 		connectionConfig.setDatabaseType(databaseType);
 		connectionConfig.setHost(host.toString());

@@ -105,7 +105,7 @@ public abstract class BaseEntity implements Serializable {
 	private long updateUnixTime;
 
 	protected BaseEntity() {
-		channel = Channel.Unknown.getFlag();
+		channel = Channel.Unknown.getValue();
 		channelNote = Channel.Unknown.getNote();
 		autoRemark = "";
 		status = 0;

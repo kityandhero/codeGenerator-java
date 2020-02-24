@@ -38,6 +38,12 @@ public class Account extends BaseEntity {
 	String name;
 
 	/**
+	 * 名称
+	 */
+	@Column(length = 300)
+	String description;
+
+	/**
 	 * 密码混淆值
 	 */
 	@Column(length = 50)
@@ -71,6 +77,14 @@ public class Account extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getSlat() {

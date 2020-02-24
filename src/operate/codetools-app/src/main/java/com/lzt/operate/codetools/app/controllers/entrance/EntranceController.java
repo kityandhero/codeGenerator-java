@@ -1,11 +1,11 @@
 package com.lzt.operate.codetools.app.controllers.entrance;
 
 import com.lzt.operate.codetools.app.assists.AccountAssist;
-import com.lzt.operate.codetools.app.common.GlobalString;
-import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
+import com.lzt.operate.codetools.common.utils.GlobalString;
+import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
@@ -88,8 +88,8 @@ public class EntranceController extends OperateBaseController {
 
 	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ENTRANCE_SING_IN, value = {
-			@ApiJsonProperty(name = GlobalString.LOGIN_USERNAME),
-			@ApiJsonProperty(name = GlobalString.LOGIN_PASSWORD)},
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_PASSWORD)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_SING_IN),
@@ -103,8 +103,8 @@ public class EntranceController extends OperateBaseController {
 		ParamData paramJson = new ParamData(json);
 
 		// 将获取的json数据封装一层，然后在给返回
-		var userName = paramJson.getStringExByKey(GlobalString.LOGIN_USERNAME);
-		var password = paramJson.getStringExByKey(GlobalString.LOGIN_PASSWORD);
+		var userName = paramJson.getStringExByKey(GlobalString.ACCOUNT_USERNAME);
+		var password = paramJson.getStringExByKey(GlobalString.ACCOUNT_PASSWORD);
 
 		Account operator = new Account();
 		operator.setUserName(userName.toString());
@@ -152,9 +152,9 @@ public class EntranceController extends OperateBaseController {
 
 	@ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ENTRANCE_REGISTER, value = {
-			@ApiJsonProperty(name = GlobalString.REGISTER_USERNAME),
-			@ApiJsonProperty(name = GlobalString.REGISTER_PASSWORD),
-			@ApiJsonProperty(name = GlobalString.REGISTER_RE_PASSWORD)},
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_PASSWORD),
+			@ApiJsonProperty(name = GlobalString.RE_PASSWORD)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
@@ -163,9 +163,9 @@ public class EntranceController extends OperateBaseController {
 
 		var paramJson = getParamData(json);
 
-		StringEx userName = paramJson.getStringExByKey(GlobalString.REGISTER_USERNAME);
-		StringEx password = paramJson.getStringExByKey(GlobalString.REGISTER_PASSWORD);
-		StringEx rePassword = paramJson.getStringExByKey(GlobalString.REGISTER_RE_PASSWORD);
+		StringEx userName = paramJson.getStringExByKey(GlobalString.ACCOUNT_NAME);
+		StringEx password = paramJson.getStringExByKey(GlobalString.ACCOUNT_PASSWORD);
+		StringEx rePassword = paramJson.getStringExByKey(GlobalString.RE_PASSWORD);
 
 		if (!password.equals(rePassword)) {
 			var error = ReturnDataCode.ParamError;
@@ -183,15 +183,15 @@ public class EntranceController extends OperateBaseController {
 			return fail(error);
 		}
 
-		var operator = new Account();
+		var account = new Account();
 
-		operator.setUserName(userName.toString());
-		operator.setSlat(StringAssist.randomAlphanumeric(6)
-									 .toLowerCase());
-		operator.setPassword(Md5Assist.toMd5(password, operator.getSlat()));
-		operator.setStatus(AccountStatus.Enabled.getFlag());
+		account.setUserName(userName.toString());
+		account.setSlat(StringAssist.randomAlphanumeric(6)
+									.toLowerCase());
+		account.setPassword(Md5Assist.toMd5(password, account.getSlat()));
+		account.setStatus(AccountStatus.Enabled.getValue());
 
-		accountService.save(operator);
+		accountService.save(account);
 
 		return success();
 	}

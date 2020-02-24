@@ -1,13 +1,10 @@
 package com.lzt.operate.codetools.common.enums;
 
-import lombok.Getter;
-
 /**
  * 公共角色状态
  *
  * @author lzt
  */
-@Getter
 public enum AccountStatus {
 
 	/**
@@ -28,7 +25,7 @@ public enum AccountStatus {
 	/**
 	 * 值
 	 */
-	private int flag;
+	private int value;
 
 	/**
 	 * 描述
@@ -40,16 +37,27 @@ public enum AccountStatus {
 	 */
 	private String description;
 
-	AccountStatus(int flag, String name) {
-		this.flag = flag;
+	AccountStatus(int value, String name) {
+		this.value = value;
 		this.name = name;
 		this.description = "";
 	}
 
-	AccountStatus(int flag, String name, String description) {
-		this.flag = flag;
+	AccountStatus(int value, String name, String description) {
+		this.value = value;
 		this.name = name;
 		this.description = description;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 }

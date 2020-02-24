@@ -51,6 +51,16 @@ public class StringAssist {
 	}
 
 	/**
+	 * 合并字符串
+	 *
+	 * @param values values
+	 * @return String
+	 */
+	public static String merge(String... values) {
+		return join(values, "");
+	}
+
+	/**
 	 * 通过分隔符构建字符串
 	 *
 	 * @param parts 合并的源

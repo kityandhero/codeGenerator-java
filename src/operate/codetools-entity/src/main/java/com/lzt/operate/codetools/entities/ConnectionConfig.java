@@ -28,6 +28,9 @@ public class ConnectionConfig extends BaseEntity {
 	@Column
 	private String name;
 
+	@Column(length = 300)
+	private String description;
+
 	@Column
 	private String host;
 
@@ -90,6 +93,14 @@ public class ConnectionConfig extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getHost() {

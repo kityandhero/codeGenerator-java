@@ -33,4 +33,12 @@ public class Constants {
 
 	public static final String DEFAULT_OPERATOR_PASSWORD = "123456";
 
+	public static final Integer ACCOUNT_USER_NAME_MIN_LENGTH = 6;
+
+	public static final Integer ACCOUNT_USER_NAME_MAX_LENGTH = 32;
+
+	public static final Integer ACCOUNT_PASSWORD_MIN_LENGTH = 6;
+
+	public static final Integer ACCOUNT_PASSWORD_MAX_LENGTH = 32;
+
 }

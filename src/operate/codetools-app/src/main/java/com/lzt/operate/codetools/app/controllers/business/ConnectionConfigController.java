@@ -2,12 +2,12 @@ package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
-import com.lzt.operate.codetools.app.common.GlobalString;
-import com.lzt.operate.codetools.app.common.ModelNameCollection;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.Channel;
+import com.lzt.operate.codetools.common.utils.GlobalString;
+import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
@@ -16,6 +16,7 @@ import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.ReflectAssist;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
@@ -24,6 +25,7 @@ import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -79,23 +81,25 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_NAME),
-			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_LIST_PAGE_NO),
-			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_LIST_PAGE_SIZE)},
+			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
+			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "query", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_LIST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_LIST)
+	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
-	public ResultListData list(@RequestBody Map<String, Serializable> query) {
-		var paramJson = getParamData(query);
+	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+		var paramJson = getParamData(json);
 
-		var pageNo = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LIST_PAGE_NO, "1").toInt();
-		var pageSize = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LIST_PAGE_SIZE, "20").toInt();
+		var pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
+		var pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
 
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
+		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME, "").toString();
 
 		Specification<ConnectionConfig> specification = new Specification<ConnectionConfig>() {
 
@@ -105,7 +109,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			public Predicate toPredicate(@NonNull Root<ConnectionConfig> root, @NotNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
-				if (!name.isNullOrEmpty()) {
+				if (!StringAssist.isNullOrEmpty(name)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(ConnectionConfig::getName)), name));
 				}
 
@@ -126,12 +130,14 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_GET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_GET)
+	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
-	public BaseResultData get(@RequestBody Map<String, Serializable> connectionJson) {
-		var paramJson = getParamData(connectionJson);
+	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+		var paramJson = getParamData(json);
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
@@ -147,6 +153,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiOperation(value = "创建连接", notes = "创建数据库连接", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_ADD_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_NAME),
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_DESCRIPTION),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_DATABASE_TYPE),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_HOST),
@@ -162,27 +169,29 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_USER),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PASSWORD)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_ADD_BASIC_INFO)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_ADD_BASIC_INFO)
+	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
-	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> connectionJson) {
-		var paramJson = getParamData(connectionJson);
+	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
+		var paramJson = getParamData(json);
 
 		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().createConnectionConfig(paramJson);
 
 		if (result.getSuccess()) {
-			ConnectionConfig connectionConfig = result.getData();
+			ConnectionConfig data = result.getData();
 
-			connectionConfig.setChannel(Channel.CodeTools.getFlag());
-			connectionConfig.setChannelNote(Channel.CodeTools.getNote());
+			data.setChannel(Channel.CodeTools.getValue());
+			data.setChannelNote(Channel.CodeTools.getNote());
 
 			long operatorId = getOperatorId();
 
-			connectionConfig.setCreateOperatorId(operatorId);
-			connectionConfig.setUpdateOperatorId(operatorId);
+			data.setCreateOperatorId(operatorId);
+			data.setUpdateOperatorId(operatorId);
 
-			getConnectionConfigAssist().saveConnectionConfig(connectionConfig);
+			getConnectionConfigAssist().saveConnectionConfig(data);
 
 			return this.singleData(result.getData());
 		}
@@ -191,7 +200,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "更新连接", notes = "更新数据库连接", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = {
+	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_UPDATE_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_NAME),
@@ -209,12 +218,14 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_USER),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PASSWORD)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_MODEL)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_UPDATE_BASIC_INFO)
+	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "3fab7782-4641-4e8b-832c-3996ddc61b3f")
-	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> connectionJson) {
-		var paramJson = getParamData(connectionJson);
+	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
+		var paramJson = getParamData(json);
 
 		var connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
@@ -246,8 +257,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		Optional<ConnectionConfig> result = connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
-			ConnectionConfig connectionConfig = result.get();
+			ConnectionConfig data = result.get();
 
+			var description = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DESCRIPTION);
 			var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
 			var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
 			var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
@@ -261,23 +273,28 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
 			var sshPassword = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PASSWORD);
 
-			connectionConfig.setName(name.toString());
-			connectionConfig.setConnectionType(connectionType);
-			connectionConfig.setDatabaseType(databaseType);
-			connectionConfig.setHost(host.toString());
-			connectionConfig.setPort(port.toString());
-			connectionConfig.setSchema(schema.toString());
-			connectionConfig.setUsername(username.toString());
-			connectionConfig.setPassword(password.toString());
-			connectionConfig.setEncoding(encoding.toString());
-			connectionConfig.setLocalPort(localPort.toString());
-			connectionConfig.setRemotePort(remotePort.toString());
-			connectionConfig.setSshPort(sshPort.toString());
-			connectionConfig.setSshHost(sshHost.toString());
-			connectionConfig.setSshUser(sshUser.toString());
-			connectionConfig.setSshPassword(sshPassword.toString());
+			data.setName(name.toString());
+			data.setDescription(description.toString());
+			data.setConnectionType(connectionType);
+			data.setDatabaseType(databaseType);
+			data.setHost(host.toString());
+			data.setPort(port.toString());
+			data.setSchema(schema.toString());
+			data.setUsername(username.toString());
+			data.setPassword(password.toString());
+			data.setEncoding(encoding.toString());
+			data.setLocalPort(localPort.toString());
+			data.setRemotePort(remotePort.toString());
+			data.setSshPort(sshPort.toString());
+			data.setSshHost(sshHost.toString());
+			data.setSshUser(sshUser.toString());
+			data.setSshPassword(sshPassword.toString());
 
-			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(connectionConfig);
+			long operatorId = getOperatorId();
+
+			data.setUpdateOperatorId(operatorId);
+
+			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(data);
 
 			return this.singleData(saveResult);
 		}
@@ -287,15 +304,17 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "移除连接", notes = "移除数据库连接", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_MODEL, value = {
+	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_REMOVE, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID)},
 			result = @ApiJsonResult({}))
-	@ApiImplicitParam(name = "connectionJson", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_MODEL)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_REMOVE)
+	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/remove", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "移除连接", tag = "17e57607-d519-4289-9b8a-949bbcff603e")
-	public BaseResultData remove(@RequestBody Map<String, Serializable> connectionJson) {
-		var paramJson = getParamData(connectionJson);
+	public BaseResultData remove(@RequestBody Map<String, Serializable> json) {
+		var paramJson = getParamData(json);
 
 		var connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
@@ -307,4 +326,5 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 		return this.success();
 	}
+
 }

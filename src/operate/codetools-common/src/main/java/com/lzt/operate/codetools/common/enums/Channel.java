@@ -1,13 +1,10 @@
 package com.lzt.operate.codetools.common.enums;
 
-import lombok.Getter;
-
 /**
  * 渠道枚举集合
  *
  * @author luzhitao
  */
-@Getter
 public enum Channel {
 
 	/**
@@ -23,16 +20,23 @@ public enum Channel {
 	/**
 	 * 标志
 	 */
-	private int flag;
+	private int value;
 
 	/**
 	 * 标志
 	 */
 	private String note;
 
-	Channel(int flag, String note) {
-		this.flag = flag;
+	Channel(int value, String note) {
+		this.value = value;
 		this.note = note;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public String getNote() {
+		return note;
+	}
 }

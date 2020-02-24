@@ -77,14 +77,14 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	private void checkSuperRoleCompleteness() {
 		RoleUniversalService roleUniversalService = accountAssist.getRoleUniversalService();
 
-		boolean exist = roleUniversalService.existSuper(Channel.CodeTools.getFlag());
+		boolean exist = roleUniversalService.existSuper(Channel.CodeTools.getValue());
 
 		if (!exist) {
 			RoleUniversal roleUniversal = new RoleUniversal();
 
 			roleUniversal.setName(Constants.SUPER_ROLE_NAME);
 			roleUniversal.setWhetherSuper(WhetherSuper.Yes.getValue());
-			roleUniversal.setChannel(Channel.CodeTools.getFlag());
+			roleUniversal.setChannel(Channel.CodeTools.getValue());
 			roleUniversal.setChannelNote(Channel.CodeTools.getNote());
 			roleUniversal.setStatus(RoleUniversalStatus.Enabled.getValue());
 			roleUniversal.setStatusNote(RoleUniversalStatus.Enabled.getDescription());
@@ -101,7 +101,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	private void checkExistAnyAccount() {
 		AccountService accountService = accountAssist.getAccountService();
 
-		boolean exist = accountService.existAny(Channel.CodeTools.getFlag());
+		boolean exist = accountService.existAny(Channel.CodeTools.getValue());
 
 		if (!exist) {
 
@@ -112,9 +112,9 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				account.setSlat(StringAssist.randomAlphanumeric(6)
 											.toLowerCase());
 				account.setPassword(Md5Assist.toMd5(Constants.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
-				account.setChannel(Channel.CodeTools.getFlag());
+				account.setChannel(Channel.CodeTools.getValue());
 				account.setChannelNote(Channel.CodeTools.getNote());
-				account.setStatus(AccountStatus.Enabled.getFlag());
+				account.setStatus(AccountStatus.Enabled.getValue());
 				account.setStatusNote(RoleUniversalStatus.Enabled.getDescription());
 				account.setCreateOperatorId(OperatorCollection.System.getId());
 				account.setUpdateOperatorId(OperatorCollection.System.getId());
@@ -122,7 +122,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				accountService.save(account);
 
 				Optional<RoleUniversal> optionalRoleUniversal = accountAssist.getRoleUniversalService()
-																			 .findSuper(Channel.CodeTools.getFlag());
+																			 .findSuper(Channel.CodeTools.getValue());
 
 				optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 			} catch (NoSuchAlgorithmException e) {

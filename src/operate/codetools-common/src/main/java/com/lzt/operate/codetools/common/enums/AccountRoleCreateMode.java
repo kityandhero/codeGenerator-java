@@ -1,13 +1,10 @@
 package com.lzt.operate.codetools.common.enums;
 
-import lombok.Getter;
-
 /**
  * 创建模式
  *
  * @author lzt
  */
-@Getter
 public enum AccountRoleCreateMode {
 
 	/**
@@ -35,4 +32,11 @@ public enum AccountRoleCreateMode {
 		this.description = descriptor;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 }

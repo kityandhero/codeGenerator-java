@@ -1,13 +1,10 @@
 package com.lzt.operate.codetools.common.enums;
 
-import lombok.Getter;
-
 /**
  * 公共角色状态
  *
  * @author lzt
  */
-@Getter
 public enum RoleUniversalStatus {
 
 	/**
@@ -40,4 +37,11 @@ public enum RoleUniversalStatus {
 		this.description = descriptor;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 }

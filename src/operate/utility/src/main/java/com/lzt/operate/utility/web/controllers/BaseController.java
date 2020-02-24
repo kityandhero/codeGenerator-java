@@ -138,7 +138,7 @@ public class BaseController implements ErrorController {
 		return this.noDataError("指定的数据不存在！");
 	}
 
-	private ResultSingleData noDataError(String description) {
+	protected ResultSingleData noDataError(String description) {
 		var data = new SerializableData();
 
 		data.append("description", description);

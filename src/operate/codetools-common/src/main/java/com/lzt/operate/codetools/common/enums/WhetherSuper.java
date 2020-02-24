@@ -1,13 +1,10 @@
 package com.lzt.operate.codetools.common.enums;
 
-import lombok.Getter;
-
 /**
  * 是否超级管理员
  *
  * @author luzhitao
  */
-@Getter
 public enum WhetherSuper {
 
 	/**
@@ -29,4 +26,7 @@ public enum WhetherSuper {
 		this.value = value;
 	}
 
+	public Integer getValue() {
+		return value;
+	}
 }
