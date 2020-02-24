@@ -1,7 +1,6 @@
 package com.lzt.operate.utility.assists;
 
 import com.lzt.operate.utility.pojo.SerializableData;
-import lombok.var;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,14 +67,14 @@ public class EnumAssist {
 		for (T item : valueCollection) {
 			SerializableData data = new SerializableData();
 
-			var flag = flagGetter.apply(item);
-			var name = nameGetter.apply(item);
+			Object flag = flagGetter.apply(item);
+			Object name = nameGetter.apply(item);
 
 			data.append("flag", flag.toString());
 			data.append("name", name.toString());
 
 			if (Optional.ofNullable(descriptionGetter).isPresent()) {
-				var description = descriptionGetter.apply(item);
+				Object description = descriptionGetter.apply(item);
 
 				data.append("description", description.toString());
 			}

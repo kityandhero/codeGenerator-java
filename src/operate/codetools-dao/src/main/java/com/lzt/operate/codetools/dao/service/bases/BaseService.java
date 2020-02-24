@@ -6,7 +6,6 @@ import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
-import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -170,14 +169,14 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	default void beforeSave(S entity) {
 		fixDataBeforeSave(entity);
 
-		var id = entity.getId();
+		long id = entity.getId();
 
 		id = id > 0 ? id : generateId();
 
 		entity.setId(id);
 
-		var createTime = entity.getCreateTime();
-		var updateTime = entity.getUpdateTime();
+		LocalDateTime createTime = entity.getCreateTime();
+		LocalDateTime updateTime = entity.getUpdateTime();
 
 		entity.setCreateTime(Optional.of(createTime).orElse(LocalDateTime.now()));
 		entity.setCreateUnixTime(LocalDateTimeAssist.toUnixTime(createTime));

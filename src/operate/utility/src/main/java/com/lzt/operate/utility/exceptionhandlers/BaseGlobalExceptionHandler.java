@@ -5,9 +5,9 @@ import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -48,13 +48,13 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleHttpMessageNotReadableException(Exception e) {
 		log.error("参数解析失败", e);
 		if (e instanceof BindException) {
-			var error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
+			ResultSingleData error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
 
 			error.setMessage(error.getMessage() + "," + e.getMessage());
 
 			return error;
 		} else {
-			var error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
+			ResultSingleData error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
 
 			error.setMessage(error.getMessage() + "," + e.getMessage());
 
@@ -87,9 +87,9 @@ public abstract class BaseGlobalExceptionHandler {
 
 		if (e instanceof AuthenticationException) {
 
-			var ex = ReturnDataCode.Authentication_FAIL.toMessage();
+			ReturnMessage ex = ReturnDataCode.Authentication_FAIL.toMessage();
 
-			var message = e.getMessage();
+			String message = e.getMessage();
 
 			if (!StringAssist.isNullOrEmpty(message)) {
 				ex.toMessage(message);
@@ -97,9 +97,9 @@ public abstract class BaseGlobalExceptionHandler {
 
 			return new ResultSingleData(ex);
 		} else if (e instanceof AuthorizationException) {
-			var ex = ReturnDataCode.UNAUTHORIZED_ERROR;
+			ReturnDataCode ex = ReturnDataCode.UNAUTHORIZED_ERROR;
 
-			var message = e.getMessage();
+			String message = e.getMessage();
 
 			if (!StringAssist.isNullOrEmpty(message)) {
 				ex.toMessage(message);
@@ -114,7 +114,7 @@ public abstract class BaseGlobalExceptionHandler {
 			return new ResultSingleData(ReturnDataCode.REDIS_ERROR.toMessage());
 		}
 
-		var serializableData = new SerializableData();
+		SerializableData serializableData = new SerializableData();
 
 		serializableData.append("message", e.getMessage());
 		serializableData.append("localizedMessage", e.getLocalizedMessage());

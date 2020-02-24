@@ -3,7 +3,6 @@ package com.lzt.operate.utility.assists;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import lombok.var;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -116,7 +115,7 @@ public class StringAssist {
 				String item = iterator.next();
 
 				if (ignoreEmpty) {
-					var se = Optional.of(item).orElse("");
+					String se = Optional.of(item).orElse("");
 					if (!"".equals(Optional.of(item).orElse(""))) {
 						if (whetherTrimItem) {
 							String handleTrimItem = Optional.of(item)
@@ -359,7 +358,7 @@ public class StringAssist {
 	 * @return 已分隔的结果
 	 */
 	public static List<String> split(String target, char separator) {
-		var list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 
 		Splitter.on(separator).omitEmptyStrings().split(target).forEach(list::add);
 
@@ -374,7 +373,7 @@ public class StringAssist {
 	 * @return 已分隔的结果
 	 */
 	public static List<String> split(String target, String separator) {
-		var list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 
 		Splitter.on(separator).omitEmptyStrings().split(target).forEach(list::add);
 

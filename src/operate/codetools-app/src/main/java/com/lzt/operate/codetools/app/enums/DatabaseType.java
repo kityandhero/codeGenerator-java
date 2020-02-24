@@ -1,6 +1,5 @@
 package com.lzt.operate.codetools.app.enums;
 
-import lombok.Getter;
 import org.springframework.lang.NonNull;
 
 import java.util.Optional;
@@ -9,7 +8,6 @@ import java.util.Optional;
  * @author luzhitao
  * Created by Owen on 6/14/16.
  */
-@Getter
 public enum DatabaseType {
 
 	/**
@@ -69,5 +67,29 @@ public enum DatabaseType {
 		}
 
 		return Optional.empty();
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getDriverClass() {
+		return driverClass;
+	}
+
+	public String getConnectionUrlPattern() {
+		return connectionUrlPattern;
+	}
+
+	public String getConnectorJarFile() {
+		return connectorJarFile;
 	}
 }

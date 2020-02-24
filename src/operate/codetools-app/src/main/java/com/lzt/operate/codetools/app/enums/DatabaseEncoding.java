@@ -1,11 +1,8 @@
 package com.lzt.operate.codetools.app.enums;
 
-import lombok.Getter;
-
 /**
  * @author lzt
  */
-@Getter
 public enum DatabaseEncoding {
 
 	/**
@@ -33,4 +30,15 @@ public enum DatabaseEncoding {
 		this.description = description;
 	}
 
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 }

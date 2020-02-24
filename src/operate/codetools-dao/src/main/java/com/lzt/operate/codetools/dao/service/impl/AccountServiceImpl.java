@@ -6,7 +6,6 @@ import com.lzt.operate.codetools.dao.repositories.AccountRepository;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -83,14 +82,14 @@ public class AccountServiceImpl implements AccountService {
 			}
 		};
 
-		var optional = repository.findOne(spec);
+		Optional<Account> optional = repository.findOne(spec);
 
 		return optional.isPresent();
 	}
 
 	@Override
 	public boolean existEffective(long id) {
-		var optional = repository.findById(id);
+		Optional<Account> optional = repository.findById(id);
 
 		if (optional.isPresent()) {
 			Account operator = optional.get();

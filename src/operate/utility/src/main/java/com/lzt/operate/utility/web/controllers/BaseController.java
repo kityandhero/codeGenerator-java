@@ -11,12 +11,11 @@ import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import com.lzt.operate.utility.pojo.results.ListResult;
 import com.lzt.operate.utility.pojo.results.PageListResult;
 import io.swagger.annotations.Api;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -127,7 +126,7 @@ public class BaseController implements ErrorController {
 	}
 
 	protected ResultSingleData paramError(String paramName, String description) {
-		var data = new SerializableData();
+		SerializableData data = new SerializableData();
 
 		data.append("paramName", paramName);
 		data.append("description", description);
@@ -140,7 +139,7 @@ public class BaseController implements ErrorController {
 	}
 
 	protected ResultSingleData noDataError(String description) {
-		var data = new SerializableData();
+		SerializableData data = new SerializableData();
 
 		data.append("description", description);
 

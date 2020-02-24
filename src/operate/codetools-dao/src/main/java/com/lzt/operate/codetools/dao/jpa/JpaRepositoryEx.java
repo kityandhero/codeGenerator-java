@@ -1,12 +1,12 @@
 package com.lzt.operate.codetools.dao.jpa;
 
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
-import lombok.var;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,10 +26,10 @@ public interface JpaRepositoryEx<T extends BaseEntity, ID> extends JpaRepository
 	 */
 	default <S extends T> Optional<S> findFirst(Example<S> example, Sort sort) {
 
-		var list = this.findAll(example, sort);
+		List<S> list = this.findAll(example, sort);
 
 		if (list.size() > 0) {
-			var o = list.get(0);
+			S o = list.get(0);
 
 			return Optional.of(o);
 		}

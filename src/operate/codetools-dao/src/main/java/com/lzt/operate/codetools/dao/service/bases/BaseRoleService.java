@@ -7,7 +7,6 @@ import com.lzt.operate.codetools.entities.bases.BaseRole;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.Competence;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author luzhitao
@@ -72,7 +72,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 	@Override
 	default void fixDataBeforeSave(S entity) {
 		if (Optional.ofNullable(entity).isPresent()) {
-			var competence = entity.getCompetence();
+			String competence = entity.getCompetence();
 
 			if (StringAssist.isNullOrEmpty(competence)) {
 				entity.setCompetence("");
@@ -81,7 +81,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 			} else {
 				List<Competence> result = getCompetenceEntityCollection(entity);
 
-				var moduleCount = result.size();
+				int moduleCount = result.size();
 
 				entity.setModuleCount(moduleCount);
 			}
@@ -102,23 +102,25 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 			return new ArrayList<>();
 		}
 
-		var competence = entity.getCompetence();
+		String competence = entity.getCompetence();
 
 		List<Competence> result = new ArrayList<>();
 
 		if (!StringAssist.isNullOrEmpty(competence)) {
-			var list = StringAssist.split(competence, ',').stream().filter(o -> !StringAssist.isNullOrEmpty(o));
+			Stream<String> list = StringAssist.split(competence, ',')
+											  .stream()
+											  .filter(o -> !StringAssist.isNullOrEmpty(o));
 
 			final String splitTag = "|";
 
 			list.forEach(item -> {
-				var c = new Competence();
+				Competence c = new Competence();
 
 				if (item.contains(splitTag)) {
-					var cv = StringAssist.split(item, '|')
-										 .stream()
-										 .filter(o -> !StringAssist.isNullOrEmpty(o))
-										 .toArray();
+					Object[] cv = StringAssist.split(item, '|')
+											  .stream()
+											  .filter(o -> !StringAssist.isNullOrEmpty(o))
+											  .toArray();
 
 					final int mustValue = 2;
 
@@ -137,7 +139,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 
 			if (result.size() > 0) {
 
-				var listPermission = resultAccessWayRepository.findAll((root, query, cb) -> {
+				List<AccessWay> listPermission = resultAccessWayRepository.findAll((root, query, cb) -> {
 					Predicate predicate = root.isNotNull();
 
 					predicate = cb.and(predicate, cb.and(root.get(ReflectAssist.getFieldName(AccessWay::getTag))
@@ -147,8 +149,8 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 					return predicate;
 				});
 
-				for (var c : result) {
-					for (var aw : listPermission) {
+				for (Competence c : result) {
+					for (AccessWay aw : listPermission) {
 						if (aw.getTag().equals(c.getTag())) {
 							c.setName(aw.getName());
 							c.setExplain(aw.getExpand());

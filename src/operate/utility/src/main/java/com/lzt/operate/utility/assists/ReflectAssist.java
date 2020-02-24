@@ -1,6 +1,5 @@
 package com.lzt.operate.utility.assists;
 
-import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,7 @@ public class ReflectAssist {
 	/***
 	 * 转换方法引用为属性名
 	 * @param fn 方法名
-	 * @return
+	 * @return String
 	 */
 	public static <T> String getFieldName(IGetter<T> fn) {
 		SerializedLambda lambda = getSerializedLambda(fn);
@@ -34,15 +33,14 @@ public class ReflectAssist {
 		}
 
 		// 截取get/is之后的字符串并转换首字母为小写
-		var result = StringAssist.toFirstLower(StringAssist.substringAfter(methodName, prefix));
 
-		return result;
+		return StringAssist.toFirstLower(StringAssist.substringAfter(methodName, prefix));
 	}
 
 	/***
 	 * 转换setter方法引用为属性名
-	 * @param fn
-	 * @return
+	 * @param fn ISetter<T, R>
+	 * @return String
 	 */
 	public static <T, R> String getFieldName(ISetter<T, R> fn) {
 		SerializedLambda lambda = getSerializedLambda(fn);
@@ -52,15 +50,13 @@ public class ReflectAssist {
 			log.warn("无效的setter方法: " + methodName);
 		}
 
-		var result = StringAssist.toFirstLower(StringAssist.substringAfter(methodName, "set"));
-
-		return result;
+		return StringAssist.toFirstLower(StringAssist.substringAfter(methodName, "set"));
 	}
 
 	/***
 	 * 获取类对应的Lambda
-	 * @param fn
-	 * @return
+	 * @param fn Serializable
+	 * @return SerializedLambda
 	 */
 	private static SerializedLambda getSerializedLambda(Serializable fn) {
 		//先检查缓存中是否已存在

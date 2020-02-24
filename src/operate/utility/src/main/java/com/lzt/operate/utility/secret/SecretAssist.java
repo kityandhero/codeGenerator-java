@@ -4,8 +4,8 @@ import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.extensions.LocalDateTimeEx;
 import com.lzt.operate.utility.extensions.StringEx;
-import lombok.var;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -109,10 +109,10 @@ public class SecretAssist {
 
 			String timeString = new StringEx(text).substring(0, 19).toString();
 
-			var localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
+			LocalDateTime localDateTime = ConvertAssist.stringToLocalDateTime(timeString);
 
-			var duration = new LocalDateTimeEx(localDateTime).duration(LocalDateTime.now());
-			var expired = duration.toMillis() < 0;
+			Duration duration = new LocalDateTimeEx(localDateTime).duration(LocalDateTime.now());
+			boolean expired = duration.toMillis() < 0;
 
 			text = text.substring(19);
 

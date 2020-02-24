@@ -1,11 +1,8 @@
 package com.lzt.operate.codetools.app.enums;
 
-import lombok.Getter;
-
 /**
  * @author luzhitao
  */
-@Getter
 public enum ConnectionType {
 
 	/**
@@ -28,4 +25,15 @@ public enum ConnectionType {
 		this.description = description;
 	}
 
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 }

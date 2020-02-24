@@ -2,7 +2,6 @@ package com.lzt.operate.utility.pojo;
 
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.extensions.StringEx;
-import lombok.var;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	}
 
 	public StringEx getStringExByKey(String key, String defaultValue) {
-		var v = Optional.ofNullable(get(key)).orElse(defaultValue);
+		Serializable v = Optional.ofNullable(get(key)).orElse(defaultValue);
 
 		return new StringEx(StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString());
 	}
@@ -38,13 +37,13 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	}
 
 	public String getStringByKey(String key, String defaultValue) {
-		var v = Optional.ofNullable(get(key)).orElse(defaultValue);
+		Serializable v = Optional.ofNullable(get(key)).orElse(defaultValue);
 
 		return StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString();
 	}
 
 	public boolean isNullOrEmpty(String key) {
-		var v = get(key);
+		Serializable v = get(key);
 
 		return StringAssist.isNullOrEmpty((String) v);
 	}

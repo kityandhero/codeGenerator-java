@@ -24,6 +24,7 @@ import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.secret.Md5Assist;
 import io.swagger.annotations.Api;
@@ -32,7 +33,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -103,19 +104,19 @@ public class EntranceController extends OperateBaseController {
 		ParamData paramJson = new ParamData(json);
 
 		// 将获取的json数据封装一层，然后在给返回
-		var userName = paramJson.getStringExByKey(GlobalString.ACCOUNT_USERNAME);
-		var password = paramJson.getStringExByKey(GlobalString.ACCOUNT_PASSWORD);
+		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME);
+		String password = paramJson.getStringByKey(GlobalString.ACCOUNT_PASSWORD);
 
 		Account operator = new Account();
-		operator.setUserName(userName.toString());
+		operator.setUserName(userName);
 
-		var optionalResult = accountService.findByUserName(userName.toString());
+		Optional<Account> optionalResult = accountService.findByUserName(userName);
 
 		if (optionalResult.isPresent()) {
-			var searchResult = optionalResult.get();
+			Account searchResult = optionalResult.get();
 
-			if (!Md5Assist.verifyMd5(searchResult.getPassword(), password.toString(), searchResult.getSlat())) {
-				var error = ReturnDataCode.NoData.toMessage();
+			if (!Md5Assist.verifyMd5(searchResult.getPassword(), password, searchResult.getSlat())) {
+				ReturnMessage error = ReturnDataCode.NoData.toMessage();
 
 				error.toMessage("密码错误!");
 
@@ -135,7 +136,7 @@ public class EntranceController extends OperateBaseController {
 
 			return singleData(data);
 		} else {
-			var error = ReturnDataCode.NoData.toMessage();
+			ReturnMessage error = ReturnDataCode.NoData.toMessage();
 
 			error.toMessage("账户不存在!");
 
@@ -168,24 +169,24 @@ public class EntranceController extends OperateBaseController {
 		StringEx rePassword = paramJson.getStringExByKey(GlobalString.RE_PASSWORD);
 
 		if (!password.equals(rePassword)) {
-			var error = ReturnDataCode.ParamError.toMessage();
+			ReturnMessage error = ReturnDataCode.ParamError.toMessage();
 
 			error.toMessage("两次密码输入不一致");
 
 			return fail(error);
 		}
 
-		var existAccount = accountService.findByUserName(userName.toString());
+		Optional<Account> existAccount = accountService.findByUserName(userName.toString());
 
 		if (existAccount.isPresent()) {
-			var error = ReturnDataCode.ParamError.toMessage();
+			ReturnMessage error = ReturnDataCode.ParamError.toMessage();
 
 			error.toMessage("登录名已存在");
 
 			return fail(error);
 		}
 
-		var account = new Account();
+		Account account = new Account();
 
 		account.setUserName(userName.toString());
 		account.setSlat(StringAssist.randomAlphanumeric(6)

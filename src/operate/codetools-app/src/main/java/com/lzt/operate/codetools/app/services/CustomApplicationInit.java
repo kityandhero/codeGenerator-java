@@ -23,7 +23,6 @@ import com.lzt.operate.utility.enums.OperatorCollection;
 import com.lzt.operate.utility.secret.Md5Assist;
 import com.lzt.operate.utility.services.bases.BaseCustomApplicationInit;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -106,7 +105,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		if (!exist) {
 
 			try {
-				var account = new Account();
+				Account account = new Account();
 
 				account.setUserName(Constants.DEFAULT_OPERATOR_USER_NAME);
 				account.setSlat(StringAssist.randomAlphanumeric(6)
@@ -168,9 +167,9 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 			this.customConfigService.save(customConfig);
 		} else {
-			var value = customConfig.getValue();
+			String value = customConfig.getValue();
 
-			var set = new HashSet<String>();
+			HashSet<String> set = new HashSet<>();
 
 			set.add("");
 			set.add("0");

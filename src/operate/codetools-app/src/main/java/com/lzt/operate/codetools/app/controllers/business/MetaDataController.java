@@ -13,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +36,7 @@ public class MetaDataController extends OperateBaseController {
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	public BaseResultData get(@RequestBody Map<String, String> connectionJson) {
 
-		var result = new SerializableData();
+		SerializableData result = new SerializableData();
 
 		result.append("databaseTypeList", EnumAssist.buildFlagDataCollection(
 				Arrays.asList(DatabaseType.values()),

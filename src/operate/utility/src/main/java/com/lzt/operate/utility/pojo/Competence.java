@@ -2,7 +2,6 @@ package com.lzt.operate.utility.pojo;
 
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.interfaces.IObjectExtensionMethod;
-import lombok.var;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -92,8 +91,8 @@ public class Competence implements IObjectExtensionMethod {
 			throw new RuntimeException("合并的两个权限体必须标识一致");
 		}
 
-		var mergerResult = merger(competenceBefore, competenceAfter);
-		var result = new Competence();
+		String mergerResult = merger(competenceBefore, competenceAfter);
+		Competence result = new Competence();
 
 		result.setTag(competenceBefore.tag);
 		result.setExpansionSet(mergerResult);
@@ -109,15 +108,15 @@ public class Competence implements IObjectExtensionMethod {
 		List<Character> beforeList = new ArrayList<>();
 		List<Character> afterList = new ArrayList<>();
 
-		var beforeArray = expansionSetBefore.toCharArray();
+		char[] beforeArray = expansionSetBefore.toCharArray();
 
-		for (var c : beforeArray) {
+		for (char c : beforeArray) {
 			beforeList.add(c);
 		}
 
-		var afterArray = expansionSetAfter.toCharArray();
+		char[] afterArray = expansionSetAfter.toCharArray();
 
-		for (var c : afterArray) {
+		for (char c : afterArray) {
 			afterList.add(c);
 		}
 
@@ -131,9 +130,9 @@ public class Competence implements IObjectExtensionMethod {
 			minList = beforeList;
 		}
 
-		for (var c : minList) {
+		for (Character c : minList) {
 			if (maxList.contains(c)) {
-				var index = maxList.indexOf(c);
+				int index = maxList.indexOf(c);
 				char be = (maxList.get(index) == '1' ? '1' : '0');
 				char af = (c == '1' ? '1' : '0');
 				if (be == '0' && af == '0') {
@@ -150,9 +149,9 @@ public class Competence implements IObjectExtensionMethod {
 	}
 
 	public static String buildCompetence(List<Competence> listCompetence) {
-		var list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 
-		for (var item : listCompetence) {
+		for (Competence item : listCompetence) {
 			list.add(item.getTag() + (StringAssist.isNullOrEmpty(item.getExpansionSet())
 					? "" : "|" + item.getExpansionSet()));
 		}
@@ -161,22 +160,22 @@ public class Competence implements IObjectExtensionMethod {
 	}
 
 	public List<SerializableData> getExpansionSetCollection() {
-		var result = new ArrayList<SerializableData>();
+		List<SerializableData> result = new ArrayList<>();
 
-		var listExpand = StringAssist.split(explain, '|')
-									 .stream()
-									 .filter(o -> !StringAssist.isNullOrEmpty(o))
-									 .toArray();
+		Object[] listExpand = StringAssist.split(explain, '|')
+										  .stream()
+										  .filter(o -> !StringAssist.isNullOrEmpty(o))
+										  .toArray();
 
-		var listExpansionSet = Stream.of(expansionSet.toCharArray()).map(Object::toString).toArray();
+		Object[] listExpansionSet = Stream.of(expansionSet.toCharArray()).map(Object::toString).toArray();
 
 		if (listExpand.length > 0) {
-			var count = listExpand.length;
+			int count = listExpand.length;
 
 			if (listExpand.length != listExpansionSet.length) {
 
-				for (var i = 0; i < count; i++) {
-					var s = new SerializableData();
+				for (int i = 0; i < count; i++) {
+					SerializableData s = new SerializableData();
 
 					s.append("indexNo", i);
 					s.append("name", (Serializable) listExpand[i]);
@@ -185,8 +184,8 @@ public class Competence implements IObjectExtensionMethod {
 					result.add(s);
 				}
 			} else {
-				for (var i = 0; i < count; i++) {
-					var s = new SerializableData();
+				for (int i = 0; i < count; i++) {
+					SerializableData s = new SerializableData();
 
 					s.append("indexNo", i);
 					s.append("name", (Serializable) listExpand[i]);

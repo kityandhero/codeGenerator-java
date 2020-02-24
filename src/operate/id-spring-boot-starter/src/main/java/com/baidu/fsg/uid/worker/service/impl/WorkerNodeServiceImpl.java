@@ -4,7 +4,6 @@ import com.baidu.fsg.uid.worker.entity.WorkerNodeEntity;
 import com.baidu.fsg.uid.worker.repository.WorkerNodeRepository;
 import com.baidu.fsg.uid.worker.service.WorkerNodeService;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -48,7 +48,7 @@ public class WorkerNodeServiceImpl implements WorkerNodeService {
 			}
 		};
 
-		var op = repository.findOne(spec);
+		Optional<WorkerNodeEntity> op = repository.findOne(spec);
 
 		return op.orElse(null);
 	}
