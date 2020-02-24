@@ -20,6 +20,7 @@ import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
+import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
@@ -29,7 +30,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -91,15 +91,15 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
-		var pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
+		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
+		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
 
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME, "").toString();
+		String name = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_NAME);
 
 		Specification<ConnectionConfig> specification = new Specification<ConnectionConfig>() {
 
@@ -137,7 +137,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
@@ -176,7 +176,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().createConnectionConfig(paramJson);
 
@@ -199,6 +199,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		return this.fail(result);
 	}
 
+	@SuppressWarnings("DuplicatedCode")
 	@ApiOperation(value = "更新连接", notes = "更新数据库连接", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_UPDATE_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
@@ -225,28 +226,28 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "3fab7782-4641-4e8b-832c-3996ddc61b3f")
 	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
+		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
 		if (connectionConfigId <= 0) {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
 		}
 
-		var name = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_NAME);
+		String name = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_NAME);
 
-		if (name.isNullOrEmpty()) {
+		if (StringAssist.isNullOrEmpty(name)) {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_NAME, "不能为空值");
 		}
 
-		var connectionType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, ConnectionType.TCP_IP
+		int connectionType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, ConnectionType.TCP_IP
 				.getFlag().toString()).toInt();
 
 		if (!EnumAssist.existTargetValue(Arrays.asList(ConnectionType.values()), ConnectionType::getFlag, connectionType)) {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
 		}
 
-		var databaseType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DATABASE_TYPE).toInt();
+		int databaseType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DATABASE_TYPE).toInt();
 
 		if (!EnumAssist.existTargetValue(Arrays.asList(DatabaseType.values()), DatabaseType::getFlag, databaseType)) {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
@@ -259,36 +260,36 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (result.isPresent()) {
 			ConnectionConfig data = result.get();
 
-			var description = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DESCRIPTION);
-			var host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
-			var port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
-			var schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
-			var username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
-			var password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
-			var encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
-			var localPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
-			var remotePort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
-			var sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
-			var sshHost = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_HOST);
-			var sshUser = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
-			var sshPassword = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PASSWORD);
+			String description = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_DESCRIPTION);
+			String host = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_HOST);
+			String port = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_PORT);
+			String schema = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
+			String username = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
+			String password = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
+			String encoding = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
+			String localPort = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
+			String remotePort = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
+			String sshPort = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
+			String sshHost = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SSH_HOST);
+			String sshUser = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SSH_USER);
+			String sshPassword = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SSH_PASSWORD);
 
-			data.setName(name.toString());
-			data.setDescription(description.toString());
+			data.setName(name);
+			data.setDescription(description);
 			data.setConnectionType(connectionType);
 			data.setDatabaseType(databaseType);
-			data.setHost(host.toString());
-			data.setPort(port.toString());
-			data.setSchema(schema.toString());
-			data.setUsername(username.toString());
-			data.setPassword(password.toString());
-			data.setEncoding(encoding.toString());
-			data.setLocalPort(localPort.toString());
-			data.setRemotePort(remotePort.toString());
-			data.setSshPort(sshPort.toString());
-			data.setSshHost(sshHost.toString());
-			data.setSshUser(sshUser.toString());
-			data.setSshPassword(sshPassword.toString());
+			data.setHost(host);
+			data.setPort(port);
+			data.setSchema(schema);
+			data.setUsername(username);
+			data.setPassword(password);
+			data.setEncoding(encoding);
+			data.setLocalPort(localPort);
+			data.setRemotePort(remotePort);
+			data.setSshPort(sshPort);
+			data.setSshHost(sshHost);
+			data.setSshUser(sshUser);
+			data.setSshPassword(sshPassword);
 
 			long operatorId = getOperatorId();
 
@@ -314,9 +315,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@PostMapping(path = "/remove", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "移除连接", tag = "17e57607-d519-4289-9b8a-949bbcff603e")
 	public BaseResultData remove(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
+		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
 		if (connectionConfigId <= 0) {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");

@@ -17,8 +17,10 @@ import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
+import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import com.lzt.operate.utility.secret.Md5Assist;
@@ -28,7 +30,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -97,15 +98,15 @@ public class AccountController extends BaseOperateAuthController {
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户列表", tag = "116c5994-2993-4904-8a1b-14ad8318d6b5")
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
-		var pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
+		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
+		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
 
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		var userName = paramJson.getStringExByKey(GlobalString.ACCOUNT_USERNAME, "").toString();
+		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME);
 
 		Specification<Account> specification = new Specification<Account>() {
 
@@ -143,7 +144,7 @@ public class AccountController extends BaseOperateAuthController {
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户详情", tag = "c1dfe241-5b5c-4b44-acac-4b3e0845d005")
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
@@ -170,7 +171,7 @@ public class AccountController extends BaseOperateAuthController {
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增账户", tag = "eb0105b1-f2db-4c44-ae8a-356c6f57e726")
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME).trim();
 
@@ -191,10 +192,10 @@ public class AccountController extends BaseOperateAuthController {
 
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
 
-		var existAccount = accountService.findByUserName(userName);
+		Optional<Account> existAccount = accountService.findByUserName(userName);
 
 		if (existAccount.isPresent()) {
-			var error = ReturnDataCode.ParamError.toMessage();
+			ReturnMessage error = ReturnDataCode.ParamError.toMessage();
 
 			error.toMessage("登录名已存在");
 
@@ -236,9 +237,9 @@ public class AccountController extends BaseOperateAuthController {
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
 	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
+		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
 		if (accountId <= 0) {
 			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");
@@ -280,9 +281,9 @@ public class AccountController extends BaseOperateAuthController {
 	@PostMapping(path = "/resetPassword", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
 	public BaseResultData resetPassword(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
+		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
 		if (accountId <= 0) {
 			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");

@@ -16,6 +16,7 @@ import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
+import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
@@ -25,7 +26,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -96,15 +96,15 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "公共角色列表", tag = "7ab17e1a-4fff-4ed8-8cb0-24e5bcca089b")
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
-		var pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
+		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
+		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
 
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		var name = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_NAME, "").toString();
+		String name = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_NAME);
 
 		Specification<RoleUniversal> specification = new Specification<RoleUniversal>() {
 
@@ -142,7 +142,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "公共角色详情", tag = "15991393-196b-4b7b-b74f-9b773989368f")
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_ID, "0").toLong();
 
@@ -168,7 +168,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增公共角色", tag = "f1fbd4fd-2360-4c6b-bdee-fdd0d030966d")
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		String name = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_NAME).trim();
 
@@ -208,9 +208,9 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "67e38843-c168-486a-9472-484078ad75b4")
 	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
-		var accountId = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_ID, "0").toLong();
+		long accountId = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_ID, "0").toLong();
 
 		if (accountId <= 0) {
 			return this.paramError(GlobalString.ROLE_UNIVERSAL_ID, "数据无效");

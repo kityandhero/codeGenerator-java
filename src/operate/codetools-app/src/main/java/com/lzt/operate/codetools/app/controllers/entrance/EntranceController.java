@@ -161,7 +161,7 @@ public class EntranceController extends OperateBaseController {
 	@PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
 	public BaseResultData register(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
 
-		var paramJson = getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		StringEx userName = paramJson.getStringExByKey(GlobalString.ACCOUNT_NAME);
 		StringEx password = paramJson.getStringExByKey(GlobalString.ACCOUNT_PASSWORD);

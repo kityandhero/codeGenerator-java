@@ -16,9 +16,11 @@ import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
@@ -26,7 +28,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,12 +95,11 @@ public class AccountRoleController extends OperateBaseController {
 		ParamData paramJson = new ParamData(json);
 
 		// 将获取的json数据封装一层，然后在给返回
-		var operatorId = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID, "0");
-		var universalCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION, "");
-		var independentEstablishmentCollection = paramJson.getStringExByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION, "");
+		String operatorId = paramJson.getStringByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID, "0");
+		String universalCollection = paramJson.getStringByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION, "");
+		String independentEstablishmentCollection = paramJson.getStringByKey(GlobalString.OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION, "");
 
-		ExecutiveSimpleResult result = getAccountAssist().changeRole(operatorId.toLong(), universalCollection.toString(), independentEstablishmentCollection
-				.toString());
+		ExecutiveSimpleResult result = getAccountAssist().changeRole(ConvertAssist.stringToLong(operatorId), universalCollection, independentEstablishmentCollection);
 
 		if (result.getSuccess()) {
 
@@ -109,7 +109,7 @@ public class AccountRoleController extends OperateBaseController {
 
 			return singleData(data);
 		} else {
-			var error = result.getCode();
+			ReturnMessage error = result.getCode();
 
 			return fail(error);
 		}
