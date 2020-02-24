@@ -226,6 +226,27 @@ public class ConnectionConfig extends BaseEntity {
 				Objects.equals(this.sshPassword, that.sshPassword);
 	}
 
+	@Override
+	public int hashCode() {
+		int result = getDatabaseType();
+		result = 31 * result + getConnectionType();
+		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+		result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
+		result = 31 * result + (getPort() != null ? getPort().hashCode() : 0);
+		result = 31 * result + (getSchema() != null ? getSchema().hashCode() : 0);
+		result = 31 * result + (getUsername() != null ? getUsername().hashCode() : 0);
+		result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+		result = 31 * result + (getEncoding() != null ? getEncoding().hashCode() : 0);
+		result = 31 * result + (getLocalPort() != null ? getLocalPort().hashCode() : 0);
+		result = 31 * result + (getRemotePort() != null ? getRemotePort().hashCode() : 0);
+		result = 31 * result + (getSshPort() != null ? getSshPort().hashCode() : 0);
+		result = 31 * result + (getSshHost() != null ? getSshHost().hashCode() : 0);
+		result = 31 * result + (getSshUser() != null ? getSshUser().hashCode() : 0);
+		result = 31 * result + (getSshPassword() != null ? getSshPassword().hashCode() : 0);
+		return result;
+	}
+
 	// public String build() {
 	// 	return "DatabaseConfig{" +
 	// 			"id=" + this.getId() +

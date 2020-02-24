@@ -6,7 +6,11 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author luzhitao
@@ -16,8 +20,14 @@ public class DateAssist extends DateUtils {
 	/**
 	 * 星期
 	 */
-	protected static final String[] WEEK = new String[]{"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+	protected static final List<String> WEEK;
 	private static final Logger log = LoggerFactory.getLogger(DateUtils.class);
+
+	static {
+		String[] tempWeek = new String[]{"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+
+		WEEK = Collections.unmodifiableList(Stream.of(tempWeek).collect(Collectors.toList()));
+	}
 
 	/***
 	 * 当前的日期时间
@@ -168,7 +178,7 @@ public class DateAssist extends DateUtils {
 	 * @return String
 	 */
 	public static String getWeek(Date date) {
-		return WEEK[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)];
+		return WEEK.get(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 	}
 
 	/**

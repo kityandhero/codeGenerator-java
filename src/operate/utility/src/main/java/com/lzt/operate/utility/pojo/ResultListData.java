@@ -2,7 +2,6 @@ package com.lzt.operate.utility.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class ResultListData extends BaseResultData {
 		this.list = new ArrayList<>();
 	}
 
-	public ResultListData(@NonNull ReturnMessage returnMessage) {
+	public ResultListData(ReturnMessage returnMessage) {
 		this(returnMessage, new ArrayList<>());
 	}
 
@@ -37,11 +36,11 @@ public class ResultListData extends BaseResultData {
 		this.list = list;
 	}
 
-	private ResultListData(@NonNull ReturnMessage returnMessage, List<? extends Serializable> list) {
+	private ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list) {
 		this(returnMessage, list, new SerializableData());
 	}
 
-	ResultListData(@NonNull ReturnMessage returnMessage, List<? extends Serializable> list, SerializableData extra) {
+	ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list, SerializableData extra) {
 		super(returnMessage, extra);
 
 		this.list = list;

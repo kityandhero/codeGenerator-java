@@ -3,7 +3,6 @@ package com.lzt.operate.utility.pojo;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
 import java.io.Serializable;
 
@@ -40,7 +39,7 @@ public class ResultSingleData extends BaseResultData {
 		this(returnDataCode.toMessage(), new SerializableData());
 	}
 
-	public ResultSingleData(@NonNull ReturnMessage returnMessage) {
+	public ResultSingleData(ReturnMessage returnMessage) {
 		this(returnMessage, new SerializableData());
 	}
 
@@ -48,11 +47,11 @@ public class ResultSingleData extends BaseResultData {
 		this(returnDataCode.toMessage(), data, new SerializableData());
 	}
 
-	public ResultSingleData(@NonNull ReturnMessage returnMessage, SerializableData data) {
+	public ResultSingleData(ReturnMessage returnMessage, SerializableData data) {
 		this(returnMessage, data, new SerializableData());
 	}
 
-	ResultSingleData(@NonNull ReturnMessage returnMessage, SerializableData data, SerializableData extra) {
+	ResultSingleData(ReturnMessage returnMessage, SerializableData data, SerializableData extra) {
 		super(returnMessage, extra);
 
 		this.data = data;

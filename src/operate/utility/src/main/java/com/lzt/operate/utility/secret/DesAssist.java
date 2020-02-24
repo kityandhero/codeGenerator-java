@@ -99,7 +99,7 @@ public class DesAssist {
 			//JDK1.8及以上可直接使用Base64，JDK1.7及以下可以使用BASE64Encoder
 			//Android平台可以使用android.util.Base64
 
-			return new String(Base64.getEncoder().encode(bytes));
+			return new String(Base64.getEncoder().encode(bytes), CHARSET);
 		} catch (Exception e) {
 			e.printStackTrace();
 
