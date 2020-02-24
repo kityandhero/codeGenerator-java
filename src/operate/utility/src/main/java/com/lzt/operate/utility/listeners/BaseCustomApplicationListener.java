@@ -1,7 +1,6 @@
 package com.lzt.operate.utility.listeners;
 
 import com.lzt.operate.utility.services.bases.BaseCustomApplicationInit;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
@@ -11,6 +10,7 @@ import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.lang.NonNull;
 
 /**
  * 应用程序启动事件监听
@@ -91,7 +91,7 @@ public abstract class BaseCustomApplicationListener<T extends BaseCustomApplicat
 	 * @param applicationEvent applicationEvent
 	 */
 	@Override
-	public void onApplicationEvent(@NotNull ApplicationEvent applicationEvent) {
+	public void onApplicationEvent(@NonNull ApplicationEvent applicationEvent) {
 		//springboot应用启动且未作任何处理（除listener注册和初始化）的时候发送ApplicationStartingEvent
 		if (applicationEvent instanceof ApplicationStartingEvent) {
 			handleApplicationStarting((ApplicationStartingEvent) applicationEvent);

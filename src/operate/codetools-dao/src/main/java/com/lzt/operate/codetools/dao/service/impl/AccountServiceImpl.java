@@ -6,8 +6,8 @@ import com.lzt.operate.codetools.dao.repositories.AccountRepository;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -54,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
 			private static final long serialVersionUID = -2260955832137429106L;
 
 			@Override
-			public Predicate toPredicate(Root<Account> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Account> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				Path<Object> path = root.get(ReflectAssist.getFieldName(Account::getUserName));
 
 				return criteriaBuilder.equal(path, userName);
@@ -71,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
 			private static final long serialVersionUID = 7150353365384278625L;
 
 			@Override
-			public Predicate toPredicate(Root<Account> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Account> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getChannel)), channel));

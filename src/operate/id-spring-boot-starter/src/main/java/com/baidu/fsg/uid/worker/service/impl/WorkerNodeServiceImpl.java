@@ -4,10 +4,10 @@ import com.baidu.fsg.uid.worker.entity.WorkerNodeEntity;
 import com.baidu.fsg.uid.worker.repository.WorkerNodeRepository;
 import com.baidu.fsg.uid.worker.service.WorkerNodeService;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -36,7 +36,7 @@ public class WorkerNodeServiceImpl implements WorkerNodeService {
 			private static final long serialVersionUID = -2260955832137429306L;
 
 			@Override
-			public Predicate toPredicate(Root<WorkerNodeEntity> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<WorkerNodeEntity> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 //               1.等于   选择name是“张三”的用户  Predicate equal(Expression<?> var1, Object var2);
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(WorkerNodeEntity::getHostName)), host));

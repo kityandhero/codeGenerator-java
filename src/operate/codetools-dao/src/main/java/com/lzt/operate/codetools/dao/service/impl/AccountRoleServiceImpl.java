@@ -5,8 +5,8 @@ import com.lzt.operate.codetools.dao.repositories.AccountRoleRepository;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
 import com.lzt.operate.codetools.entities.AccountRole;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -57,7 +57,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 			private static final long serialVersionUID = -2260955832137429106L;
 
 			@Override
-			public Predicate toPredicate(Root<AccountRole> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<AccountRole> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				Path<Object> path = root.get(ReflectAssist.getFieldName(AccountRole::getAccountId));
 
 				return criteriaBuilder.equal(path, operatorId);

@@ -26,7 +26,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.domain.Page;
@@ -111,7 +110,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 			private static final long serialVersionUID = 5447618581311966365L;
 
 			@Override
-			public Predicate toPredicate(@NonNull Root<RoleUniversal> root, @NotNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(@NonNull Root<RoleUniversal> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
 				if (!StringAssist.isNullOrEmpty(name)) {

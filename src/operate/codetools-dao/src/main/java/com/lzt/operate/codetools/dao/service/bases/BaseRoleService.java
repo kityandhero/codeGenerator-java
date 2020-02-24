@@ -7,8 +7,8 @@ import com.lzt.operate.codetools.entities.bases.BaseRole;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.Competence;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -44,7 +44,7 @@ public interface BaseRoleService<R extends JpaRepositoryEx<S, Long>, S extends B
 			private static final long serialVersionUID = 6315433399074638390L;
 
 			@Override
-			public Predicate toPredicate(Root<S> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<S> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
 				CriteriaBuilder.In<Long> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(S::getId)));

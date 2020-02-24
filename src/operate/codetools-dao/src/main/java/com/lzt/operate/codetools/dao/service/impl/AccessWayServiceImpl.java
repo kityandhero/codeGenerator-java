@@ -5,9 +5,9 @@ import com.lzt.operate.codetools.dao.repositories.AccessWayRepository;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.entities.AccessWay;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -54,7 +54,7 @@ public class AccessWayServiceImpl implements AccessWayService {
 			private static final long serialVersionUID = 4482864256737131456L;
 
 			@Override
-			public Predicate toPredicate(Root<AccessWay> root, @NotNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<AccessWay> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				Path<Object> path = root.get(ReflectAssist.getFieldName(AccessWay::getTag));
 
 				return criteriaBuilder.equal(path, tag);
