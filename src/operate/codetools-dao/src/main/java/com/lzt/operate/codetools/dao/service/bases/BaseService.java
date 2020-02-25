@@ -3,7 +3,6 @@ package com.lzt.operate.codetools.dao.service.bases;
 import com.baidu.fsg.uid.service.UidGenService;
 import com.lzt.operate.codetools.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
-import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import org.springframework.data.domain.Example;
@@ -179,10 +178,7 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 		LocalDateTime updateTime = entity.getUpdateTime();
 
 		entity.setCreateTime(Optional.of(createTime).orElse(LocalDateTime.now()));
-		entity.setCreateUnixTime(LocalDateTimeAssist.toUnixTime(createTime));
-
 		entity.setUpdateTime(Optional.of(updateTime).orElse(LocalDateTime.now()));
-		entity.setUpdateUnixTime(LocalDateTimeAssist.toUnixTime(updateTime));
 	}
 
 	/**
