@@ -36,8 +36,8 @@ public class ConvertAssist {
 	 * @param s 源字符串
 	 * @return 转换结果
 	 */
-	public static Long stringToLong(String s) {
-		return stringToLong(s, null);
+	public static long stringToLong(String s) {
+		return stringToLong(s, 0);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class ConvertAssist {
 	 * @param defaultLong 默认值
 	 * @return 结果
 	 */
-	public static Long stringToLong(String s, Long defaultLong) {
+	public static long stringToLong(String s, long defaultLong) {
 		if (ValidatorAssist.isEmpty(s)) {
 			return defaultLong;
 		}
@@ -64,7 +64,7 @@ public class ConvertAssist {
 		return stringToInt(v, 0);
 	}
 
-	public static int stringToInt(String v, Integer defaultInt) {
+	public static int stringToInt(String v, int defaultInt) {
 		if (StringAssist.isNullOrEmpty(v)) {
 			return defaultInt;
 		}

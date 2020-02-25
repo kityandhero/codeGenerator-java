@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.dao.service;
 
-import com.lzt.operate.codetools.common.utils.Constants;
+import com.lzt.operate.codetools.common.utils.CustomConstants;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.dao.repositories.AccountRepository;
 import com.lzt.operate.codetools.dao.service.bases.BaseService;
@@ -49,15 +49,15 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 	default ExecutiveSimpleResult verifyUserName(String userName) {
 		String v = Optional.ofNullable(userName).orElse("");
 
-		if (StringAssist.isNullOrEmpty(v) || v.length() <= Constants.ACCOUNT_PASSWORD_MIN_LENGTH || v
-				.length() > Constants.ACCOUNT_USER_NAME_MAX_LENGTH) {
+		if (StringAssist.isNullOrEmpty(v) || v.length() <= CustomConstants.ACCOUNT_PASSWORD_MIN_LENGTH || v
+				.length() > CustomConstants.ACCOUNT_USER_NAME_MAX_LENGTH) {
 			return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(
 					StringAssist.merge(
-							GlobalString.ACCOUNT_NAME,
+							GlobalString.ACCOUNT_USERNAME,
 							"账户名不能为空，长度应在",
-							Constants.ACCOUNT_USER_NAME_MIN_LENGTH.toString(),
+							CustomConstants.ACCOUNT_USER_NAME_MIN_LENGTH.toString(),
 							"~",
-							Constants.ACCOUNT_USER_NAME_MAX_LENGTH.toString(),
+							CustomConstants.ACCOUNT_USER_NAME_MAX_LENGTH.toString(),
 							"之间")));
 		}
 
@@ -85,15 +85,15 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 	default ExecutiveSimpleResult verifyPassword(String password, String rePassword, boolean bothCompare) {
 		String v = Optional.ofNullable(password).orElse("");
 
-		if (StringAssist.isNullOrEmpty(v) || v.length() <= Constants.ACCOUNT_PASSWORD_MIN_LENGTH || v
-				.length() > Constants.ACCOUNT_USER_NAME_MAX_LENGTH) {
+		if (StringAssist.isNullOrEmpty(v) || v.length() <= CustomConstants.ACCOUNT_PASSWORD_MIN_LENGTH || v
+				.length() > CustomConstants.ACCOUNT_USER_NAME_MAX_LENGTH) {
 			return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(
 					StringAssist.merge(
-							GlobalString.ACCOUNT_NAME,
+							GlobalString.ACCOUNT_PASSWORD,
 							"密码不能为空，长度应在",
-							Constants.ACCOUNT_USER_NAME_MIN_LENGTH.toString(),
+							CustomConstants.ACCOUNT_USER_NAME_MIN_LENGTH.toString(),
 							"~",
-							Constants.ACCOUNT_USER_NAME_MAX_LENGTH.toString(),
+							CustomConstants.ACCOUNT_USER_NAME_MAX_LENGTH.toString(),
 							"之间")));
 		}
 
@@ -101,7 +101,7 @@ public interface AccountService extends BaseService<AccountRepository, Account> 
 			String cv = Optional.ofNullable(rePassword).orElse("");
 
 			if (StringAssist.isNullOrEmpty(cv)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(StringAssist.merge(GlobalString.RE_PASSWORD, "确认密码无效")));
+				return new ExecutiveSimpleResult(ReturnDataCode.ParamError.toMessage(StringAssist.merge(GlobalString.RE_PASSWORD, "确认密码不能为空")));
 			}
 
 			if (!v.equals(cv)) {

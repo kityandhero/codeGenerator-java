@@ -16,4 +16,15 @@ public interface IGetter<T> extends Serializable {
 	 * @return Object
 	 */
 	Object apply(T source);
+
+	/**
+	 * apply
+	 *
+	 * @param source source
+	 * @return S
+	 */
+	default <S> S applyConvert(T source) {
+
+		return ObjectAssist.cast(apply(source));
+	}
 }

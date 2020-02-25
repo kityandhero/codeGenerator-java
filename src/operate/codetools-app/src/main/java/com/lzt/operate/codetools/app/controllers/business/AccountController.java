@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.app.controllers.business;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
-import com.lzt.operate.codetools.common.utils.Constants;
+import com.lzt.operate.codetools.common.utils.CustomConstants;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccountService;
@@ -12,9 +12,11 @@ import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.general.Constants;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
@@ -50,6 +52,7 @@ import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -87,6 +90,8 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiOperation(value = "账户列表", notes = "账户列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_STATUS),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
@@ -95,7 +100,7 @@ public class AccountController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户列表", tag = "116c5994-2993-4904-8a1b-14ad8318d6b5")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户列表", description = "账户列表", tag = "116c5994-2993-4904-8a1b-14ad8318d6b5")
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -106,6 +111,13 @@ public class AccountController extends BaseOperateAuthController {
 		pageSize = Math.max(pageSize, 1);
 
 		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME);
+		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
+		Integer status = paramJson.getStringExByKey(GlobalString.ACCOUNT_STATUS, Constants.SEARCH_UNLIMITED_STRING)
+								  .toInt();
+
+		if (!StringAssist.isNullOrEmpty(name) && !EnumAssist.existTargetValue(Arrays.asList(AccountStatus.values()), AccountStatus::getValue, status)) {
+			return this.pageDataEmpty(pageSize);
+		}
 
 		Specification<Account> specification = new Specification<Account>() {
 
@@ -117,6 +129,14 @@ public class AccountController extends BaseOperateAuthController {
 
 				if (!StringAssist.isNullOrEmpty(userName)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getUserName)), userName));
+				}
+
+				if (!StringAssist.isNullOrEmpty(name)) {
+					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getName)), name));
+				}
+
+				if (!status.equals(Constants.SEARCH_UNLIMITED_NUMBER)) {
+					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getStatus)), status));
 				}
 
 				Predicate[] p = new Predicate[list.size()];
@@ -132,7 +152,7 @@ public class AccountController extends BaseOperateAuthController {
 		return this.pageData(result);
 	}
 
-	@ApiOperation(value = "获取账户", notes = "获取账户", httpMethod = "POST")
+	@ApiOperation(value = "获取账户", notes = "获取账户信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_GET, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_ID)},
 			result = @ApiJsonResult({}))
@@ -141,7 +161,7 @@ public class AccountController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户详情", tag = "c1dfe241-5b5c-4b44-acac-4b3e0845d005")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户详情", description = "获取账户信息", tag = "c1dfe241-5b5c-4b44-acac-4b3e0845d005")
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -156,7 +176,7 @@ public class AccountController extends BaseOperateAuthController {
 		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
-	@ApiOperation(value = "创建账户", notes = "创建账户", httpMethod = "POST")
+	@ApiOperation(value = "创建账户", notes = "创建账户信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_ADD_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_PASSWORD),
@@ -168,7 +188,7 @@ public class AccountController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增账户", tag = "eb0105b1-f2db-4c44-ae8a-356c6f57e726")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增账户", description = "创建账户信息", tag = "eb0105b1-f2db-4c44-ae8a-356c6f57e726")
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
 		ParamData paramJson = getParamData(json);
 
@@ -211,7 +231,7 @@ public class AccountController extends BaseOperateAuthController {
 		data.setSlat(StringAssist.randomAlphanumeric(6)
 								 .toLowerCase());
 		data.setPassword(Md5Assist.toMd5(password, data.getSlat()));
-		data.setStatus(AccountStatus.Enabled.getValue());
+		data.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
 
 		long operatorId = getOperatorId();
 
@@ -223,7 +243,7 @@ public class AccountController extends BaseOperateAuthController {
 		return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 	}
 
-	@ApiOperation(value = "更新账户", notes = "更新账户", httpMethod = "POST")
+	@ApiOperation(value = "更新账户", notes = "更新账户信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_UPDATE_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_ID),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
@@ -234,7 +254,7 @@ public class AccountController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", description = "更新账户信息", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
 	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -278,7 +298,7 @@ public class AccountController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/resetPassword", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", description = "重置密码", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
 	public BaseResultData resetPassword(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
 		ParamData paramJson = getParamData(json);
 
@@ -294,7 +314,7 @@ public class AccountController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.ACCOUNT_PASSWORD, "密码无效");
 		}
 
-		if (password.length() <= Constants.ACCOUNT_PASSWORD_MIN_LENGTH || password.length() > Constants.ACCOUNT_PASSWORD_MAX_LENGTH) {
+		if (password.length() <= CustomConstants.ACCOUNT_PASSWORD_MIN_LENGTH || password.length() > CustomConstants.ACCOUNT_PASSWORD_MAX_LENGTH) {
 			return this.paramError(GlobalString.ACCOUNT_PASSWORD, "密码长度为6~32位");
 		}
 
@@ -314,6 +334,66 @@ public class AccountController extends BaseOperateAuthController {
 			Account data = result.get();
 
 			data.setPassword(Md5Assist.toMd5(password, data.getSlat()));
+
+			long operatorId = getOperatorId();
+
+			data.setUpdateOperatorId(operatorId);
+
+			data = getAccountService().save(data);
+
+			return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
+		}
+
+		return this.noDataError();
+	}
+
+	@ApiOperation(value = "启用账户", notes = "设置账户状态为启用状态", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_SET_ENABLED, value = {
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_SET_ENABLED)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/setEnabled", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "启用账户", description = "设置账户状态为启用状态", tag = "72c3771b-6c5e-411c-9e49-d8555ab99743")
+	public BaseResultData setEnabled(@RequestBody Map<String, Serializable> json) {
+		ParamData paramJson = getParamData(json);
+
+		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
+
+		return this.setStatusCore(accountId, AccountStatus.Enabled);
+	}
+
+	@ApiOperation(value = "禁用账户", notes = "设置账户状态为禁用状态", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_SET_DISABLED, value = {
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_SET_DISABLED)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/setDisabled", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "禁用账户", description = "设置账户状态为禁用状态", tag = "2ab71d44-ecda-462c-822c-8f37d3000847")
+	public BaseResultData setDisabled(@RequestBody Map<String, Serializable> json) {
+		ParamData paramJson = getParamData(json);
+
+		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
+
+		return this.setStatusCore(accountId, AccountStatus.Disabled);
+	}
+
+	private BaseResultData setStatusCore(long accountId, AccountStatus status) {
+		if (accountId <= 0) {
+			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");
+		}
+
+		Optional<Account> result = getAccountService().get(accountId);
+
+		if (result.isPresent()) {
+			Account data = result.get();
+
+			data.setStatus(status, AccountStatus::getValue, AccountStatus::getName);
 
 			long operatorId = getOperatorId();
 

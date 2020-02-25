@@ -3,7 +3,6 @@ package com.lzt.operate.codetools.app.assists;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.common.enums.AccountRoleCreateMode;
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
-import com.lzt.operate.codetools.common.utils.Constants;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
@@ -16,6 +15,7 @@ import com.lzt.operate.codetools.entities.bases.BaseRole;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.general.Constants;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.BaseOperator;
 import com.lzt.operate.utility.pojo.Competence;
@@ -139,7 +139,7 @@ public class AccountAssist {
 
 			List<Long> roleIdList = list.stream()
 										.filter(o -> !StringAssist.isNullOrEmpty(o))
-										.map(o -> ConvertAssist.stringToLong(o, (long) 0))
+										.map(o -> ConvertAssist.stringToLong(o, 0))
 										.filter(o -> o > 0).collect(Collectors.toList());
 
 			return roleUniversalService.findByIdCollection(roleIdList);
@@ -160,7 +160,7 @@ public class AccountAssist {
 
 			List<Long> roleIdList = list.stream()
 										.filter(o -> !StringAssist.isNullOrEmpty(o))
-										.map(o -> ConvertAssist.stringToLong(o, (long) 0))
+										.map(o -> ConvertAssist.stringToLong(o, 0))
 										.filter(o -> o > 0).collect(Collectors.toList());
 
 			RoleCodeToolsService roleCodeToolsService = this.getRoleCodeToolsService();

@@ -192,7 +192,7 @@ public class EntranceController extends OperateBaseController {
 		account.setSlat(StringAssist.randomAlphanumeric(6)
 									.toLowerCase());
 		account.setPassword(Md5Assist.toMd5(password, account.getSlat()));
-		account.setStatus(AccountStatus.Enabled.getValue());
+		account.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
 
 		accountService.save(account);
 

@@ -56,7 +56,7 @@ public class MetaDataController extends OperateBaseController {
 				ConnectionType::getName,
 				ConnectionType::getDescription).toArray());
 
-		result.append("operatorStatusList", EnumAssist.buildFlagDataCollection(
+		result.append("accountStatusList", EnumAssist.buildFlagDataCollection(
 				Arrays.asList(AccountStatus.values()),
 				AccountStatus::getValue,
 				AccountStatus::getName,

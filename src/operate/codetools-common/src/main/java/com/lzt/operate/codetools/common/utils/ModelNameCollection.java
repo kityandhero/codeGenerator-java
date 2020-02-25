@@ -46,6 +46,10 @@ public class ModelNameCollection {
 
 	public static final String ACCOUNT_UPDATE_RESET_PASSWORD = "ACCOUNT_UPDATE_RESET_PASSWORD";
 
+	public static final String ACCOUNT_SET_ENABLED = "ACCOUNT_SET_ENABLED";
+
+	public static final String ACCOUNT_SET_DISABLED = "ACCOUNT_SET_DISABLED";
+
 	//endregion
 
 	//region ROLE_UNIVERSAL 公共角色

@@ -46,10 +46,10 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 	}
 
 	@Override
-	public Optional<AccountRole> findByAccountId(long operatorId) {
+	public Optional<AccountRole> findByAccountId(long accountId) {
 		AccountRoleRepository resultRepository = getRepository();
 
-		if (operatorId <= 0) {
+		if (accountId <= 0) {
 			return Optional.empty();
 		}
 
@@ -60,7 +60,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
 			public Predicate toPredicate(Root<AccountRole> root, @NonNull CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				Path<Object> path = root.get(ReflectAssist.getFieldName(AccountRole::getAccountId));
 
-				return criteriaBuilder.equal(path, operatorId);
+				return criteriaBuilder.equal(path, accountId);
 			}
 		};
 

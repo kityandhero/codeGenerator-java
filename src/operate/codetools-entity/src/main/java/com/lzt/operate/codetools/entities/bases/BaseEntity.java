@@ -2,6 +2,8 @@ package com.lzt.operate.codetools.entities.bases;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lzt.operate.codetools.common.enums.Channel;
+import com.lzt.operate.utility.assists.IGetter;
+import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -129,16 +131,13 @@ public abstract class BaseEntity implements Serializable {
 		return channel;
 	}
 
-	public void setChannel(int channel) {
-		this.channel = channel;
+	public void setChannel(Channel channel) {
+		this.channel = channel.getValue();
+		this.channelNote = channel.getNote();
 	}
 
 	public String getChannelNote() {
 		return channelNote;
-	}
-
-	public void setChannelNote(String channelNote) {
-		this.channelNote = channelNote;
 	}
 
 	public String getAutoRemark() {
@@ -153,16 +152,15 @@ public abstract class BaseEntity implements Serializable {
 		return status;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public <T extends Enum<T>> void setStatus(T status, IGetter<T> valueGetter, IGetter<T> noteGetter) {
+		this.status = valueGetter.applyConvert(status);
+
+		this.statusNote = noteGetter.applyConvert(status);
+
 	}
 
 	public String getStatusNote() {
 		return statusNote;
-	}
-
-	public void setStatusNote(String statusNote) {
-		this.statusNote = statusNote;
 	}
 
 	public String getIp() {
@@ -187,14 +185,12 @@ public abstract class BaseEntity implements Serializable {
 
 	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
+
+		this.createUnixTime = LocalDateTimeAssist.toUnixTime(createTime);
 	}
 
 	public long getCreateUnixTime() {
 		return createUnixTime;
-	}
-
-	public void setCreateUnixTime(long createUnixTime) {
-		this.createUnixTime = createUnixTime;
 	}
 
 	public long getUpdateOperatorId() {
@@ -211,13 +207,12 @@ public abstract class BaseEntity implements Serializable {
 
 	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
+
+		this.updateUnixTime = LocalDateTimeAssist.toUnixTime(updateTime);
 	}
 
 	public long getUpdateUnixTime() {
 		return updateUnixTime;
 	}
 
-	public void setUpdateUnixTime(long updateUnixTime) {
-		this.updateUnixTime = updateUnixTime;
-	}
 }

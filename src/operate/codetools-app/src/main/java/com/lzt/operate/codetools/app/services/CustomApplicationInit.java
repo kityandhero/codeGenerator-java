@@ -6,7 +6,6 @@ import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.RoleUniversalStatus;
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
-import com.lzt.operate.codetools.common.utils.Constants;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.CustomConfigService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
@@ -20,6 +19,7 @@ import com.lzt.operate.codetools.entities.CustomConfig;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
+import com.lzt.operate.utility.general.Constants;
 import com.lzt.operate.utility.secret.Md5Assist;
 import com.lzt.operate.utility.services.bases.BaseCustomApplicationInit;
 import lombok.extern.slf4j.Slf4j;
@@ -83,10 +83,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 			roleUniversal.setName(Constants.SUPER_ROLE_NAME);
 			roleUniversal.setWhetherSuper(WhetherSuper.Yes.getValue());
-			roleUniversal.setChannel(Channel.CodeTools.getValue());
-			roleUniversal.setChannelNote(Channel.CodeTools.getNote());
-			roleUniversal.setStatus(RoleUniversalStatus.Enabled.getValue());
-			roleUniversal.setStatusNote(RoleUniversalStatus.Enabled.getDescription());
+			roleUniversal.setChannel(Channel.CodeTools);
+			roleUniversal.setStatus(RoleUniversalStatus.Enabled, RoleUniversalStatus::getValue, RoleUniversalStatus::getName);
 			roleUniversal.setCreateOperatorId(OperatorCollection.System.getId());
 			roleUniversal.setUpdateOperatorId(OperatorCollection.System.getId());
 
@@ -111,10 +109,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				account.setSlat(StringAssist.randomAlphanumeric(6)
 											.toLowerCase());
 				account.setPassword(Md5Assist.toMd5(Constants.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
-				account.setChannel(Channel.CodeTools.getValue());
-				account.setChannelNote(Channel.CodeTools.getNote());
-				account.setStatus(AccountStatus.Enabled.getValue());
-				account.setStatusNote(RoleUniversalStatus.Enabled.getDescription());
+				account.setChannel(Channel.CodeTools);
+				account.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
 				account.setCreateOperatorId(OperatorCollection.System.getId());
 				account.setUpdateOperatorId(OperatorCollection.System.getId());
 

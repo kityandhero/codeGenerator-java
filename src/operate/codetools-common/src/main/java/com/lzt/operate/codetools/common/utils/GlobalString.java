@@ -97,6 +97,9 @@ public class GlobalString {
 	@ApiSingleParam(value = "姓名", example = "张三")
 	public static final String ACCOUNT_DESCRIPTION = "description";
 
+	@ApiSingleParam(value = "状态", example = "1")
+	public static final String ACCOUNT_STATUS = "status";
+
 	//endregion
 
 	//region ROLE_UNIVERSAL

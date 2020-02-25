@@ -1,11 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
 /**
- * 公共角色状态
- *
- * @author lzt
+ * @author luzhitao
  */
-public enum RoleUniversalStatus {
+public enum AccessWayStatus {
 
 	/**
 	 * 已启用
@@ -15,12 +13,7 @@ public enum RoleUniversalStatus {
 	/**
 	 * 已禁用
 	 */
-	Disabled(0, "已禁用", "已禁用"),
-
-	/**
-	 * 已删除
-	 */
-	Remove(-1, "已删除", "已删除");
+	Disabled(0, "已禁用", "已禁用");
 
 	/**
 	 * 值
@@ -37,7 +30,7 @@ public enum RoleUniversalStatus {
 	 */
 	private String description;
 
-	RoleUniversalStatus(int value, String name, String descriptor) {
+	AccessWayStatus(int value, String name, String descriptor) {
 		this.value = value;
 		this.name = name;
 		this.description = descriptor;
@@ -54,4 +47,5 @@ public enum RoleUniversalStatus {
 	public String getDescription() {
 		return description;
 	}
+
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -152,6 +153,22 @@ public class BaseController implements ErrorController {
 
 	protected ResultSingleData customError(int code, boolean success, String message) {
 		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage());
+	}
+
+	protected ResultListData pageDataEmpty() {
+		return this.pageDataEmpty(new SerializableData());
+	}
+
+	protected ResultListData pageDataEmpty(int pageSize) {
+		return this.pageDataEmpty(pageSize, new SerializableData());
+	}
+
+	protected ResultListData pageDataEmpty(SerializableData extra) {
+		return this.pageDataEmpty(10, extra);
+	}
+
+	protected ResultListData pageDataEmpty(int pageSize, SerializableData extra) {
+		return this.pageData(new ArrayList<>(), 1, pageSize, 0, extra);
 	}
 
 	protected ResultListData pageData(Page<? extends Serializable> pageListResult) {

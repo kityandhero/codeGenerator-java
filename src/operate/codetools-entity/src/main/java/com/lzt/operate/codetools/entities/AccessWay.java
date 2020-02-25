@@ -27,6 +27,13 @@ public class AccessWay extends BaseEntity {
 	String name;
 
 	/**
+	 * 名称
+	 */
+	@Column
+	private
+	String description;
+
+	/**
 	 * 标记
 	 */
 	@Column
@@ -62,6 +69,14 @@ public class AccessWay extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getTag() {

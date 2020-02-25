@@ -62,7 +62,7 @@ public class StringEx implements Serializable {
 	}
 
 	public int toInt() {
-		return Integer.parseInt(builder.toString());
+		return ConvertAssist.stringToInt(this.builder.toString());
 	}
 
 	public int toInteger() {

@@ -1,9 +1,20 @@
-package com.lzt.operate.codetools.common.utils;
+package com.lzt.operate.utility.general;
 
 /**
  * @author luzhitao
  */
 public class Constants {
+
+	/**
+	 * 搜索条件不限
+	 */
+	public static final String SEARCH_UNLIMITED_STRING = "-10000";
+
+	/**
+	 * 搜索条件不限
+	 */
+	public static final int SEARCH_UNLIMITED_NUMBER = -10000;
+
 	/**
 	 * 默认日期时间格式
 	 */
@@ -32,13 +43,5 @@ public class Constants {
 	public static final String DEFAULT_OPERATOR_USER_NAME = "admin";
 
 	public static final String DEFAULT_OPERATOR_PASSWORD = "123456";
-
-	public static final Integer ACCOUNT_USER_NAME_MIN_LENGTH = 6;
-
-	public static final Integer ACCOUNT_USER_NAME_MAX_LENGTH = 32;
-
-	public static final Integer ACCOUNT_PASSWORD_MIN_LENGTH = 6;
-
-	public static final Integer ACCOUNT_PASSWORD_MAX_LENGTH = 32;
 
 }

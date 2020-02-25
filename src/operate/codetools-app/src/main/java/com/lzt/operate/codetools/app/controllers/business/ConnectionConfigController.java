@@ -88,7 +88,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", description = "数据库连接列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -134,7 +134,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", description = "获取数据库连接", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -173,7 +173,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", description = "创建数据库连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -182,8 +182,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (result.getSuccess()) {
 			ConnectionConfig data = result.getData();
 
-			data.setChannel(Channel.CodeTools.getValue());
-			data.setChannelNote(Channel.CodeTools.getNote());
+			data.setChannel(Channel.CodeTools);
 
 			long operatorId = getOperatorId();
 
@@ -223,7 +222,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "3fab7782-4641-4e8b-832c-3996ddc61b3f")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", description = "更新数据库连接", tag = "3fab7782-4641-4e8b-832c-3996ddc61b3f")
 	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -312,7 +311,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/remove", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "移除连接", tag = "17e57607-d519-4289-9b8a-949bbcff603e")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "移除连接", description = "移除数据库连接", tag = "17e57607-d519-4289-9b8a-949bbcff603e")
 	public BaseResultData remove(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 

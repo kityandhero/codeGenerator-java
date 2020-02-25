@@ -182,7 +182,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 		data.setName(name);
 		data.setDescription(description);
 
-		data.setStatus(RoleUniversalStatus.Enabled.getValue());
+		data.setStatus(RoleUniversalStatus.Enabled, RoleUniversalStatus::getValue, RoleUniversalStatus::getName);
 
 		long operatorId = getOperatorId();
 

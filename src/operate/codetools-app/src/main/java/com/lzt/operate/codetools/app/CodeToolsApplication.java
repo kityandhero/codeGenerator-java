@@ -13,8 +13,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.lzt.operate.codetools.common.utils.Constants;
 import com.lzt.operate.swagger2.EnableSwagger2Doc;
+import com.lzt.operate.utility.general.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -32,12 +32,14 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * @author luzhitao
+ * <p>
+ * other Bean
+ * SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+ * MapperScan("com.lzt.operate.codetools.mapper")
+ * MapperScan({"com.baidu.fsg.uid.worker.service.impl"})
+ * EnableJpaRepositories("com.lzt.operate.codetools.repository")
  */
-// @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-// @MapperScan("com.lzt.operate.codetools.mapper")
-// @MapperScan({"com.baidu.fsg.uid.worker.service.impl"})
 @SpringBootApplication
-// @EnableJpaRepositories("com.lzt.operate.codetools.repository")
 @EnableSwagger2Doc
 @EnableCaching
 @ComponentScan(basePackages = {"com.lzt.operate.codetools.app.**", "com.lzt.operate.codetools.dao.**", "com.baidu.fsg.uid.worker.**"})
@@ -45,7 +47,7 @@ import java.time.format.DateTimeFormatter;
 @EntityScan(basePackages = {"com.lzt.operate.codetools.entities", "com.baidu.fsg.uid.worker.entity"})
 public class CodeToolsApplication {
 
-	private static final Logger _LOG = LoggerFactory.getLogger(CodeToolsApplication.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CodeToolsApplication.class);
 
 	// private CorsConfig corsConfig;
 

@@ -23,6 +23,11 @@ public @interface NeedAuthorization {
 	String name() default "";
 
 	/**
+	 * 简介描述
+	 */
+	String description() default "";
+
+	/**
 	 * 标识
 	 */
 	String tag() default "";
