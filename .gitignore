@@ -29,3 +29,7 @@ hs_err_pid*
 /temp
 
 rebel.xml
+/src/operate/utility/src/main/java/rebel.xml
+/src/operate/swagger-spring-boot-starter/src/main/resources/rebel.xml
+/src/operate/swagger-spring-boot-starter/src/main/java/rebel.xml
+/src/operate/utility/src/main/resources/rebel.xml
