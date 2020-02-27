@@ -83,7 +83,7 @@ public class GlobalString {
 	//region ACCOUNT
 
 	@ApiSingleParam(value = "用户标识", type = Long.class, example = "101")
-	public static final String ACCOUNT_ID = "ACCOUNT_ID";
+	public static final String ACCOUNT_ID = "accountId";
 
 	@ApiSingleParam(value = "用户名称", example = "admin")
 	public static final String ACCOUNT_USERNAME = "userName";
@@ -102,10 +102,32 @@ public class GlobalString {
 
 	//endregion
 
+	//region ACCESS_WAY
+
+	@ApiSingleParam(value = "模块标识", type = Long.class, example = "101")
+	public static final String ACCESS_WAY_ID = "accessWayId";
+
+	@ApiSingleParam(value = "模块名称", example = "账户列表")
+	public static final String ACCESS_WAY_NAME = "name";
+
+	@ApiSingleParam(value = "简介描述", example = "描述信息")
+	public static final String ACCESS_WAY_DESCRIPTION = "description";
+
+	@ApiSingleParam(value = "模块标记", example = "86592727-3210-4eaf-bead-c785332615f6")
+	public static final String ACCESS_WAY_TAG = "tag";
+
+	@ApiSingleParam(value = "访问路径", example = "/business/account/list")
+	public static final String ACCESS_WAY_RELATIVE_PATH = "relativePath";
+
+	@ApiSingleParam(value = "扩展权限", example = "")
+	public static final String ACCESS_WAY_EXPAND = "expand";
+
+	//endregion
+
 	//region ROLE_UNIVERSAL
 
 	@ApiSingleParam(value = "角色标识", type = Long.class, example = "101")
-	public static final String ROLE_UNIVERSAL_ID = "ACCOUNT_ID";
+	public static final String ROLE_UNIVERSAL_ID = "roleUniversalId";
 
 	@ApiSingleParam(value = "角色名称", example = "管理员")
 	public static final String ROLE_UNIVERSAL_NAME = "name";

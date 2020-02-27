@@ -52,6 +52,14 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region ACCESS_WAY 公共角色
+
+	public static final String ACCESS_WAY_LIST = "ROLE_UNIVERSAL_LIST";
+
+	public static final String ACCESS_WAY_GET = "ROLE_UNIVERSAL_GET";
+
+	//endregion
+
 	//region ROLE_UNIVERSAL 公共角色
 
 	public static final String ROLE_UNIVERSAL_LIST = "ROLE_UNIVERSAL_LIST";
