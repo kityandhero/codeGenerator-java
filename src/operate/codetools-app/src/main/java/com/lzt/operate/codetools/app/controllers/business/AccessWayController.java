@@ -96,7 +96,7 @@ public class AccessWayController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块列表", description = "模块列表", tag = "0d7ad276-9398-415f-a84b-40f31dee695a")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块列表", description = "模块列表", tag = "c44e3865-1fa0-48df-ad0a-bd3f79807a38")
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
@@ -160,7 +160,7 @@ public class AccessWayController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块详情", description = "获取模块信息", tag = "383bee52-0a21-4ec2-a46d-586efb38264d")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块详情", description = "获取模块信息", tag = "a0664bb2-75ff-406b-9463-9e5aae7af56e")
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
