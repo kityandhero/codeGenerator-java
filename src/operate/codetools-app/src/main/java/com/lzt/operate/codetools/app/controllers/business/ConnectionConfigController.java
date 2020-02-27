@@ -11,6 +11,7 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -23,6 +24,7 @@ import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,6 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author luzhitao
@@ -122,7 +125,15 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 		Page<ConnectionConfig> result = this.connectionConfigService.page(specification, pageable);
 
-		return this.pageData(result);
+		List<SerializableData> list = result.getContent()
+											.stream()
+											.map(EntityAssist::toSerializableData)
+											.collect(Collectors.toList());
+
+		int pageIndex = result.getNumber();
+		long totalPages = result.getTotalPages();
+
+		return this.pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取连接", notes = "获取数据库连接", httpMethod = "POST")
@@ -143,7 +154,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		Optional<ConnectionConfig> result = getConnectionConfigAssist().getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
-			return this.singleData(result.get());
+			return this.singleData(EntityAssist.toSerializableData(result.get()));
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());

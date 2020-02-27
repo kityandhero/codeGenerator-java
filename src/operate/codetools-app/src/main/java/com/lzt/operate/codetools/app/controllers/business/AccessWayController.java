@@ -7,6 +7,7 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
 import com.lzt.operate.codetools.entities.AccessWay;
+import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -18,6 +19,7 @@ import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.SerializableData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 权限模块管理
@@ -137,7 +140,15 @@ public class AccessWayController extends BaseOperateAuthController {
 
 		Page<AccessWay> result = this.accessWayService.page(specification, pageable);
 
-		return this.pageData(result);
+		List<SerializableData> list = result.getContent()
+											.stream()
+											.map(EntityAssist::toSerializableData)
+											.collect(Collectors.toList());
+
+		int pageIndex = result.getNumber();
+		long totalPages = result.getTotalPages();
+
+		return this.pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取模块", notes = "获取模块信息", httpMethod = "POST")
@@ -158,7 +169,7 @@ public class AccessWayController extends BaseOperateAuthController {
 		Optional<AccessWay> result = getAccessWayService().get(accessWayId);
 
 		if (result.isPresent()) {
-			return this.singleData(result.get());
+			return this.singleData(EntityAssist.toSerializableData(result.get()));
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());

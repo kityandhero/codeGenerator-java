@@ -204,6 +204,7 @@ public class BaseController implements ErrorController {
 
 		extra.put("pageNo", pageNo);
 		extra.put("pageSize", pageSize);
+
 		extra.put("total", totalPage);
 		extra.put("other", other);
 

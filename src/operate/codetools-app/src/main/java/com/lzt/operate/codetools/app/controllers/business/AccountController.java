@@ -9,6 +9,7 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.entities.Account;
+import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -56,6 +57,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author luzhitao
@@ -149,7 +151,15 @@ public class AccountController extends BaseOperateAuthController {
 
 		Page<Account> result = this.accountService.page(specification, pageable);
 
-		return this.pageData(result);
+		List<SerializableData> list = result.getContent()
+											.stream()
+											.map(EntityAssist::toSerializableData)
+											.collect(Collectors.toList());
+
+		int pageIndex = result.getNumber();
+		long totalPages = result.getTotalPages();
+
+		return this.pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取账户", notes = "获取账户信息", httpMethod = "POST")
@@ -170,7 +180,7 @@ public class AccountController extends BaseOperateAuthController {
 		Optional<Account> result = getAccountService().get(accountId);
 
 		if (result.isPresent()) {
-			return this.singleData(result.get());
+			return this.singleData(EntityAssist.toSerializableData(result.get()));
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());
