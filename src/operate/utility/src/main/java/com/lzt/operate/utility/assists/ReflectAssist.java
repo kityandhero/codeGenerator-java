@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.assists;
 
+import com.lzt.operate.utility.general.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,4 +72,15 @@ public class ReflectAssist {
 
 		return lambda;
 	}
+
+	/***
+	 * 转换方法引用为属性名
+	 * @param clazz Class<T>
+	 * @return String
+	 */
+	public static <T> String getFriendlyIdName(Class<T> clazz) {
+		return StringAssist.merge(StringAssist.toFirstLower(clazz
+				.getSimpleName()), Constants.ENTIRY_ID_FIRST_UPPER);
+	}
+
 }

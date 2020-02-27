@@ -44,4 +44,8 @@ public class Constants {
 
 	public static final String DEFAULT_OPERATOR_PASSWORD = "123456";
 
+	public static final String ENTIRY_ID = "id";
+
+	public static final String ENTIRY_ID_FIRST_UPPER = "Id";
+
 }

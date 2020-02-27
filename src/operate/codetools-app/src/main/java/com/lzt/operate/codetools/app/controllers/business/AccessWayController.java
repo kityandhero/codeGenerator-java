@@ -7,10 +7,10 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
 import com.lzt.operate.codetools.entities.AccessWay;
-import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
@@ -142,7 +142,26 @@ public class AccessWayController extends BaseOperateAuthController {
 
 		List<SerializableData> list = result.getContent()
 											.stream()
-											.map(EntityAssist::toSerializableData)
+											.map(o -> {
+												List<IGetter<AccessWay>> getterList = new ArrayList<>();
+
+												getterList.add(AccessWay::getName);
+												getterList.add(AccessWay::getDescription);
+												getterList.add(AccessWay::getTag);
+												getterList.add(AccessWay::getRelativePath);
+												getterList.add(AccessWay::getExpand);
+												getterList.add(AccessWay::getChannel);
+												getterList.add(AccessWay::getChannelNote);
+												getterList.add(AccessWay::getStatus);
+												getterList.add(AccessWay::getStatusNote);
+												getterList.add(AccessWay::getCreateTime);
+												getterList.add(AccessWay::getUpdateTime);
+
+												SerializableData data = SerializableData.toSerializableData(o, getterList);
+												data.append(ReflectAssist.getFriendlyIdName(AccessWay.class), o.getId());
+
+												return data;
+											})
 											.collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
@@ -169,7 +188,26 @@ public class AccessWayController extends BaseOperateAuthController {
 		Optional<AccessWay> result = getAccessWayService().get(accessWayId);
 
 		if (result.isPresent()) {
-			return this.singleData(EntityAssist.toSerializableData(result.get()));
+			AccessWay accessWay = result.get();
+
+			List<IGetter<AccessWay>> getterList = new ArrayList<>();
+
+			getterList.add(AccessWay::getName);
+			getterList.add(AccessWay::getDescription);
+			getterList.add(AccessWay::getTag);
+			getterList.add(AccessWay::getRelativePath);
+			getterList.add(AccessWay::getExpand);
+			getterList.add(AccessWay::getChannel);
+			getterList.add(AccessWay::getChannelNote);
+			getterList.add(AccessWay::getStatus);
+			getterList.add(AccessWay::getStatusNote);
+			getterList.add(AccessWay::getCreateTime);
+			getterList.add(AccessWay::getUpdateTime);
+
+			SerializableData data = SerializableData.toSerializableData(accessWay, getterList);
+			data.append(ReflectAssist.getFriendlyIdName(AccessWay.class), accessWay.getId());
+
+			return this.singleData(data);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());

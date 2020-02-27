@@ -9,11 +9,11 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.entities.Account;
-import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.EnumAssist;
+import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
@@ -153,7 +153,24 @@ public class AccountController extends BaseOperateAuthController {
 
 		List<SerializableData> list = result.getContent()
 											.stream()
-											.map(EntityAssist::toSerializableData)
+											.map(o -> {
+												List<IGetter<Account>> getterList = new ArrayList<>();
+
+												getterList.add(Account::getUserName);
+												getterList.add(Account::getName);
+												getterList.add(Account::getDescription);
+												getterList.add(Account::getChannel);
+												getterList.add(Account::getChannelNote);
+												getterList.add(Account::getStatus);
+												getterList.add(Account::getStatusNote);
+												getterList.add(Account::getCreateTime);
+												getterList.add(Account::getUpdateTime);
+
+												SerializableData data = SerializableData.toSerializableData(o, getterList);
+												data.append(ReflectAssist.getFriendlyIdName(Account.class), o.getId());
+
+												return data;
+											})
 											.collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
@@ -180,7 +197,24 @@ public class AccountController extends BaseOperateAuthController {
 		Optional<Account> result = getAccountService().get(accountId);
 
 		if (result.isPresent()) {
-			return this.singleData(EntityAssist.toSerializableData(result.get()));
+			Account account = result.get();
+
+			List<IGetter<Account>> getterList = new ArrayList<>();
+
+			getterList.add(Account::getUserName);
+			getterList.add(Account::getName);
+			getterList.add(Account::getDescription);
+			getterList.add(Account::getChannel);
+			getterList.add(Account::getChannelNote);
+			getterList.add(Account::getStatus);
+			getterList.add(Account::getStatusNote);
+			getterList.add(Account::getCreateTime);
+			getterList.add(Account::getUpdateTime);
+
+			SerializableData data = SerializableData.toSerializableData(account, getterList);
+			data.append(ReflectAssist.getFriendlyIdName(Account.class), account.getId());
+
+			return this.singleData(data);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());

@@ -11,11 +11,11 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.EnumAssist;
+import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
@@ -127,7 +127,23 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 		List<SerializableData> list = result.getContent()
 											.stream()
-											.map(EntityAssist::toSerializableData)
+											.map(o -> {
+												List<IGetter<ConnectionConfig>> getterList = new ArrayList<>();
+
+												getterList.add(ConnectionConfig::getName);
+												getterList.add(ConnectionConfig::getDescription);
+												getterList.add(ConnectionConfig::getChannel);
+												getterList.add(ConnectionConfig::getChannelNote);
+												getterList.add(ConnectionConfig::getStatus);
+												getterList.add(ConnectionConfig::getStatusNote);
+												getterList.add(ConnectionConfig::getCreateTime);
+												getterList.add(ConnectionConfig::getUpdateTime);
+
+												SerializableData data = SerializableData.toSerializableData(o, getterList);
+												data.append(ReflectAssist.getFriendlyIdName(ConnectionConfig.class), o.getId());
+
+												return data;
+											})
 											.collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
@@ -154,7 +170,23 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		Optional<ConnectionConfig> result = getConnectionConfigAssist().getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
-			return this.singleData(EntityAssist.toSerializableData(result.get()));
+			ConnectionConfig connectionConfig = result.get();
+
+			List<IGetter<ConnectionConfig>> getterList = new ArrayList<>();
+
+			getterList.add(ConnectionConfig::getName);
+			getterList.add(ConnectionConfig::getDescription);
+			getterList.add(ConnectionConfig::getChannel);
+			getterList.add(ConnectionConfig::getChannelNote);
+			getterList.add(ConnectionConfig::getStatus);
+			getterList.add(ConnectionConfig::getStatusNote);
+			getterList.add(ConnectionConfig::getCreateTime);
+			getterList.add(ConnectionConfig::getUpdateTime);
+
+			SerializableData data = SerializableData.toSerializableData(connectionConfig, getterList);
+			data.append(ReflectAssist.getFriendlyIdName(ConnectionConfig.class), connectionConfig.getId());
+
+			return this.singleData(data);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());

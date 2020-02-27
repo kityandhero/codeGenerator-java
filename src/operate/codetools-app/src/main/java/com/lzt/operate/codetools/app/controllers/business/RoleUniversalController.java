@@ -8,10 +8,10 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.RoleUniversal;
-import com.lzt.operate.codetools.entities.assists.EntityAssist;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
@@ -131,7 +131,23 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 		List<SerializableData> list = result.getContent()
 											.stream()
-											.map(EntityAssist::toSerializableData)
+											.map(o -> {
+												List<IGetter<RoleUniversal>> getterList = new ArrayList<>();
+
+												getterList.add(RoleUniversal::getName);
+												getterList.add(RoleUniversal::getDescription);
+												getterList.add(RoleUniversal::getChannel);
+												getterList.add(RoleUniversal::getChannelNote);
+												getterList.add(RoleUniversal::getStatus);
+												getterList.add(RoleUniversal::getStatusNote);
+												getterList.add(RoleUniversal::getCreateTime);
+												getterList.add(RoleUniversal::getUpdateTime);
+
+												SerializableData data = SerializableData.toSerializableData(o, getterList);
+												data.append(ReflectAssist.getFriendlyIdName(RoleUniversal.class), o.getId());
+
+												return data;
+											})
 											.collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
@@ -158,7 +174,23 @@ public class RoleUniversalController extends BaseOperateAuthController {
 		Optional<RoleUniversal> result = getRoleUniversalService().get(accountId);
 
 		if (result.isPresent()) {
-			return this.singleData(EntityAssist.toSerializableData(result.get()));
+			RoleUniversal roleUniversal = result.get();
+
+			List<IGetter<RoleUniversal>> getterList = new ArrayList<>();
+
+			getterList.add(RoleUniversal::getName);
+			getterList.add(RoleUniversal::getDescription);
+			getterList.add(RoleUniversal::getChannel);
+			getterList.add(RoleUniversal::getChannelNote);
+			getterList.add(RoleUniversal::getStatus);
+			getterList.add(RoleUniversal::getStatusNote);
+			getterList.add(RoleUniversal::getCreateTime);
+			getterList.add(RoleUniversal::getUpdateTime);
+
+			SerializableData data = SerializableData.toSerializableData(roleUniversal, getterList);
+			data.append(ReflectAssist.getFriendlyIdName(RoleUniversal.class), roleUniversal.getId());
+
+			return this.singleData(data);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());

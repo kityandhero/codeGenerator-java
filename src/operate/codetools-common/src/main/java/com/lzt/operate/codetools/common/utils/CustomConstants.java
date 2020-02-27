@@ -13,6 +13,4 @@ public class CustomConstants {
 
 	public static final Integer ACCOUNT_PASSWORD_MAX_LENGTH = 32;
 
-	public static final String ENTIRY_Id = "id";
-
 }
