@@ -140,6 +140,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 												getterList.add(ConnectionConfig::getUpdateTime);
 
 												SerializableData data = SerializableData.toSerializableData(o, getterList);
+
 												data.append(ReflectAssist.getFriendlyIdName(ConnectionConfig.class), o.getId());
 
 												return data;
@@ -184,6 +185,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			getterList.add(ConnectionConfig::getUpdateTime);
 
 			SerializableData data = SerializableData.toSerializableData(connectionConfig, getterList);
+
 			data.append(ReflectAssist.getFriendlyIdName(ConnectionConfig.class), connectionConfig.getId());
 
 			return this.singleData(data);

@@ -167,6 +167,7 @@ public class AccountController extends BaseOperateAuthController {
 												getterList.add(Account::getUpdateTime);
 
 												SerializableData data = SerializableData.toSerializableData(o, getterList);
+
 												data.append(ReflectAssist.getFriendlyIdName(Account.class), o.getId());
 
 												return data;
@@ -212,6 +213,7 @@ public class AccountController extends BaseOperateAuthController {
 			getterList.add(Account::getUpdateTime);
 
 			SerializableData data = SerializableData.toSerializableData(account, getterList);
+
 			data.append(ReflectAssist.getFriendlyIdName(Account.class), account.getId());
 
 			return this.singleData(data);

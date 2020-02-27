@@ -144,6 +144,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 												getterList.add(RoleUniversal::getUpdateTime);
 
 												SerializableData data = SerializableData.toSerializableData(o, getterList);
+
 												data.append(ReflectAssist.getFriendlyIdName(RoleUniversal.class), o.getId());
 
 												return data;
@@ -188,6 +189,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 			getterList.add(RoleUniversal::getUpdateTime);
 
 			SerializableData data = SerializableData.toSerializableData(roleUniversal, getterList);
+
 			data.append(ReflectAssist.getFriendlyIdName(RoleUniversal.class), roleUniversal.getId());
 
 			return this.singleData(data);

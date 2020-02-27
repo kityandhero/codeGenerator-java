@@ -158,6 +158,7 @@ public class AccessWayController extends BaseOperateAuthController {
 												getterList.add(AccessWay::getUpdateTime);
 
 												SerializableData data = SerializableData.toSerializableData(o, getterList);
+
 												data.append(ReflectAssist.getFriendlyIdName(AccessWay.class), o.getId());
 
 												return data;
@@ -205,6 +206,7 @@ public class AccessWayController extends BaseOperateAuthController {
 			getterList.add(AccessWay::getUpdateTime);
 
 			SerializableData data = SerializableData.toSerializableData(accessWay, getterList);
+
 			data.append(ReflectAssist.getFriendlyIdName(AccessWay.class), accessWay.getId());
 
 			return this.singleData(data);
