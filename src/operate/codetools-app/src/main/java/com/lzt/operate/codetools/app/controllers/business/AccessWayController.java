@@ -119,15 +119,18 @@ public class AccessWayController extends BaseOperateAuthController {
 				List<Predicate> list = new ArrayList<>();
 
 				if (!StringAssist.isNullOrEmpty(name)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(AccessWay::getName)), name));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(AccessWay::getName)), StringAssist
+							.merge("%", name, "%")));
 				}
 
 				if (!StringAssist.isNullOrEmpty(tag)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(AccessWay::getTag)), tag));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(AccessWay::getTag)), StringAssist
+							.merge("%", tag, "%")));
 				}
 
 				if (!StringAssist.isNullOrEmpty(relativePath)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(AccessWay::getRelativePath)), relativePath));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(AccessWay::getRelativePath)), StringAssist
+							.merge("%", relativePath, "%")));
 				}
 
 				Predicate[] p = new Predicate[list.size()];

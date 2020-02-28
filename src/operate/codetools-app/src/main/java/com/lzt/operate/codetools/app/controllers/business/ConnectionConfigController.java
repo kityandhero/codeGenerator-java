@@ -112,7 +112,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 				List<Predicate> list = new ArrayList<>();
 
 				if (!StringAssist.isNullOrEmpty(name)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(ConnectionConfig::getName)), name));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(ConnectionConfig::getName)), StringAssist
+							.merge("%", name, "%")));
 				}
 
 				Predicate[] p = new Predicate[list.size()];

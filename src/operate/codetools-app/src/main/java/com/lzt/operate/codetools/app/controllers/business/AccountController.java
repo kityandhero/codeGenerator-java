@@ -130,11 +130,13 @@ public class AccountController extends BaseOperateAuthController {
 				List<Predicate> list = new ArrayList<>();
 
 				if (!StringAssist.isNullOrEmpty(userName)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(Account::getUserName)), userName));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(Account::getUserName)), StringAssist
+							.merge("%", userName, "%")));
 				}
 
 				if (!StringAssist.isNullOrEmpty(name)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(Account::getName)), name));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(Account::getName)), StringAssist
+							.merge("%", name, "%")));
 				}
 
 				if (!status.equals(Constants.SEARCH_UNLIMITED_NUMBER)) {

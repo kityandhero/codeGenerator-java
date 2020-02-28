@@ -116,7 +116,8 @@ public class RoleUniversalController extends BaseOperateAuthController {
 				List<Predicate> list = new ArrayList<>();
 
 				if (!StringAssist.isNullOrEmpty(name)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(RoleUniversal::getName)), name));
+					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(RoleUniversal::getName)), StringAssist
+							.merge("%", name, "%")));
 				}
 
 				Predicate[] p = new Predicate[list.size()];
