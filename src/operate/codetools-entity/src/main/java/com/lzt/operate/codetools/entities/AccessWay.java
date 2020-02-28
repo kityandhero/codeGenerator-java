@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.entities;
 
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
+import com.lzt.operate.codetools.interfaces.IAccessWay;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "access_way")
 @EqualsAndHashCode(callSuper = true)
-public class AccessWay extends BaseEntity {
+public class AccessWay extends BaseEntity implements IAccessWay {
 
 	private static final long serialVersionUID = 7406460829949779042L;
 

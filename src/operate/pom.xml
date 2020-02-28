@@ -19,6 +19,7 @@
         <module>codetools-entity</module>
         <module>codetools-dao</module>
         <module>codetools-common</module>
+        <module>codetools-message-queue</module>
     </modules>
 
     <properties>
