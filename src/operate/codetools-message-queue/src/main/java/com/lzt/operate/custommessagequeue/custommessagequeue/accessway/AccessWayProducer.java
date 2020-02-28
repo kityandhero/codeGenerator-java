@@ -1,6 +1,6 @@
 package com.lzt.operate.custommessagequeue.custommessagequeue.accessway;
 
-import com.lzt.operate.codetools.interfaces.IAccessWay;
+import com.lzt.operate.codetools.entities.AccessWay;
 import com.lzt.operate.utility.custommessagequeue.concurrentlinkeddeque.BaseProducerAdapter;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -8,10 +8,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * @author luzhitao
  */
-public class Producer extends BaseProducerAdapter<IAccessWay, ConcurrentLinkedDeque<IAccessWay>> {
+public class AccessWayProducer extends BaseProducerAdapter<AccessWay, ConcurrentLinkedDeque<AccessWay>> {
 
-	protected Producer() {
-		super(SingletonQueue.getInstance().getQueue());
+	protected AccessWayProducer() {
+		super(SingletonAccessWayQueue.getInstance().getQueue());
 	}
 
 }

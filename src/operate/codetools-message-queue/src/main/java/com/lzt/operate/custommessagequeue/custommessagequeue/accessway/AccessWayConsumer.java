@@ -1,6 +1,6 @@
 package com.lzt.operate.custommessagequeue.custommessagequeue.accessway;
 
-import com.lzt.operate.codetools.interfaces.IAccessWay;
+import com.lzt.operate.codetools.entities.AccessWay;
 import com.lzt.operate.utility.custommessagequeue.concurrentlinkeddeque.BaseConsumerAdapter;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -8,10 +8,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * @author luzhitao
  */
-public class Consumer extends BaseConsumerAdapter<IAccessWay, ConcurrentLinkedDeque<IAccessWay>> {
+public class AccessWayConsumer extends BaseConsumerAdapter<AccessWay, ConcurrentLinkedDeque<AccessWay>> {
 
-	protected Consumer() {
-		super(SingletonQueue.getInstance().getQueue());
+	protected AccessWayConsumer() {
+		super(SingletonAccessWayQueue.getInstance().getQueue());
 	}
 
 }

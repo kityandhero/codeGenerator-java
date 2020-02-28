@@ -22,6 +22,10 @@ public abstract class BaseProducerAdapter<T, Q extends ConcurrentLinkedDeque<T>>
 		return queue;
 	}
 
+	public void push(T message) {
+		this.queue.offer(message);
+	}
+
 	public void push(T message, Q queue) {
 		queue.offer(message);
 	}

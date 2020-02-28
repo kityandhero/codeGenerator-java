@@ -2,8 +2,6 @@ package com.lzt.operate.codetools.app.permissions.aspects;
 
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.common.enums.AccessWayStatus;
-import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.AccountRoleServiceImpl;
@@ -11,10 +9,11 @@ import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.codetools.entities.AccessWay;
+import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayProducer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayProducerFactory;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
-import com.lzt.operate.utility.enums.OperatorCollection;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
@@ -25,7 +24,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -37,9 +35,8 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
-	private AccountAssist accountAssist;
-
 	private final AccessWayService accessWayService;
+	private AccountAssist accountAssist;
 
 	@Autowired
 	public CheckAuthorization(
@@ -83,53 +80,27 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 
 			String expand = StringAssist.join(needAuthorization.config(), "|", true, true);
 
-			if (optional.isPresent()) {
-				AccessWay accessWay = optional.get();
+			String[] config = needAuthorization.config();
 
-				String accessWayName = accessWay.getName();
-				String accessWayRelativePath = accessWay.getRelativePath();
-				String accessWayExpand = accessWay.getExpand();
+			for (String c : config) {
+				int index = c.indexOf("|");
 
-				if (!accessWayName.equals(name) || !accessWayRelativePath.equals(relativePath) || !accessWayExpand.equals(expand)) {
-
-					accessWay.setName(name);
-					accessWay.setDescription(description);
-					accessWay.setRelativePath(relativePath);
-					accessWay.setExpand(expand);
-					accessWay.setChannel(Channel.CodeTools);
-					accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getValue, AccessWayStatus::getName);
-					accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
-					accessWay.setUpdateTime(LocalDateTime.now());
-
-					this.accessWayService.save(accessWay);
+				if (index >= 0) {
+					throw new AuthorizationException("扩展权限中不能含有|");
 				}
-
-			} else {
-				String[] config = needAuthorization.config();
-
-				for (String c : config) {
-					int index = c.indexOf("|");
-
-					if (index >= 0) {
-						throw new AuthorizationException("扩展权限中不能含有|");
-					}
-				}
-
-				AccessWay accessWay = new AccessWay();
-
-				accessWay.setName(name);
-				accessWay.setTag(tag);
-				accessWay.setRelativePath(relativePath);
-				accessWay.setExpand(expand);
-				accessWay.setChannel(Channel.CodeTools);
-				accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getValue, AccessWayStatus::getName);
-				accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
-				accessWay.setUpdateTime(LocalDateTime.now());
-
-				this.accessWayService.save(accessWay);
-
-				return false;
 			}
+
+			AccessWay accessWay = new AccessWay();
+
+			accessWay.setName(name);
+			accessWay.setDescription(description);
+			accessWay.setTag(tag);
+			accessWay.setRelativePath(relativePath);
+			accessWay.setExpand(expand);
+
+			AccessWayProducer producer = AccessWayProducerFactory.getInstance().getProducer();
+
+			producer.push(accessWay);
 
 			Optional<BaseOperator> resultBaseOperator = customJsonWebToken.getOperator();
 
