@@ -3,6 +3,7 @@ package com.lzt.operate.codetools.app.services;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.util.CommandUtil;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.RoleUniversalStatus;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Optional;
@@ -95,6 +97,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.checkExistAnyAccount();
 		this.checkDataIntegrity();
 		this.startAccessWayRunner();
+		this.openOperationPanel();
 	}
 
 	/**
@@ -217,6 +220,17 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		Thread t = factory.newThread(runner);
 
 		t.start();
+	}
+
+	/**
+	 * 打开操作面板
+	 */
+	private void openOperationPanel() {
+		try {
+			CommandUtil.browse(new URI("http://localhost:9090/index.html"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
