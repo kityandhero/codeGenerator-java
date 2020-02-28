@@ -9,5 +9,11 @@ import java.io.Serializable;
  */
 @FunctionalInterface
 public interface ISetter<T, U> extends Serializable {
+	/**
+	 * accept
+	 *
+	 * @param t T
+	 * @param u U
+	 */
 	void accept(T t, U u);
 }
