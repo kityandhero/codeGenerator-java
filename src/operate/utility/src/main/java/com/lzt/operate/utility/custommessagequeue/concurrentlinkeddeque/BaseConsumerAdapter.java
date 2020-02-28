@@ -26,11 +26,11 @@ public abstract class BaseConsumerAdapter<T, Q extends ConcurrentLinkedDeque<T>>
 	}
 
 	public Optional<T> pull(Q queue) {
-		if (queue.size() == 0) {
+		if (queue.isEmpty()) {
 			return Optional.empty();
+		} else {
+			return Optional.ofNullable(queue.poll());
 		}
-
-		return Optional.empty();
 	}
 
 }

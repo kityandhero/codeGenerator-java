@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class AccessWayConsumer extends BaseConsumerAdapter<AccessWay, ConcurrentLinkedDeque<AccessWay>> {
 
-	protected AccessWayConsumer() {
+	public AccessWayConsumer() {
 		super(SingletonAccessWayQueue.getInstance().getQueue());
 	}
 
