@@ -119,7 +119,7 @@ public class GlobalString {
 	@ApiSingleParam(value = "访问路径", example = "/business/account/list")
 	public static final String ACCESS_WAY_RELATIVE_PATH = "relativePath";
 
-	@ApiSingleParam(value = "扩展权限", example = "")
+	@ApiSingleParam(value = "扩展权限", example = "查看价格")
 	public static final String ACCESS_WAY_EXPAND = "expand";
 
 	//endregion
@@ -134,6 +134,19 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "简介描述", example = "描述信息")
 	public static final String ROLE_UNIVERSAL_DESCRIPTION = "description";
+
+	//endregion
+
+	//region ERROR_LOG
+
+	@ApiSingleParam(value = "错误日志标识", type = Long.class, example = "101")
+	public static final String ERROR_LOG_ID = "errorLogId";
+
+	@ApiSingleParam(value = "错误描述", example = "参数错误")
+	public static final String ERROR_LOG_MESSAGE = "message";
+
+	@ApiSingleParam(value = "渠道标识", example = "12")
+	public static final String ERROR_LOG_CHANNEL = "channel";
 
 	//endregion
 
