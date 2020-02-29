@@ -12,6 +12,7 @@ import com.lzt.operate.codetools.dao.service.AccessWayService;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.CustomConfigService;
+import com.lzt.operate.codetools.dao.service.ErrorLogService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.entities.Account;
@@ -19,6 +20,8 @@ import com.lzt.operate.codetools.entities.CustomConfig;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayQueueRunner;
+import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogConsumer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogQueueRunner;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
 import com.lzt.operate.utility.general.Constants;
@@ -51,6 +54,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 	private AccessWayService accessWayService;
 
+	private ErrorLogService errorLogService;
+
 	@Autowired
 	public CustomApplicationInit(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
@@ -59,7 +64,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			RoleUniversalService roleUniversalService,
 			RoleCodeToolsService roleCodeToolsService,
 			CustomConfigService customConfigService,
-			AccessWayService accessWayService) {
+			AccessWayService accessWayService,
+			ErrorLogService errorLogService) {
 		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
 				accountService,
@@ -69,6 +75,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 		this.customConfigService = customConfigService;
 		this.accessWayService = accessWayService;
+		this.errorLogService = errorLogService;
 	}
 
 	public CustomConfigService getCustomConfigService() {
@@ -91,12 +98,23 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		throw new RuntimeException("AccessWayService获取失败");
 	}
 
+	public ErrorLogService getErrorLogService() {
+		Optional<ErrorLogService> optional = Optional.ofNullable(this.errorLogService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("ErrorLogService获取失败");
+	}
+
 	@Override
 	public void init() {
 		this.checkSuperRoleCompleteness();
 		this.checkExistAnyAccount();
 		this.checkDataIntegrity();
 		this.startAccessWayRunner();
+		this.startErrorLogRunner();
 		this.openOperationPanel();
 	}
 
@@ -216,6 +234,19 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		AccessWayQueueRunner runner = new AccessWayQueueRunner(this.getAccessWayService(), new AccessWayConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("accessWay").build();
+
+		Thread t = factory.newThread(runner);
+
+		t.start();
+	}
+
+	/**
+	 * startErrorLogRunner
+	 */
+	private void startErrorLogRunner() {
+		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(this.getErrorLogService(), new ErrorLogConsumer());
+
+		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("errorLog").build();
 
 		Thread t = factory.newThread(runner);
 

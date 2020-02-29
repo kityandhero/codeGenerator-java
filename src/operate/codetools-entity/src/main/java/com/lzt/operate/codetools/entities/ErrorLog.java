@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -36,12 +37,14 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	/**
 	 * 堆栈跟踪
 	 */
+	@Lob
 	@Column(name = "stack_trace")
 	private String stackTrace;
 
 	/**
 	 * 源代码信息
 	 */
+	@Lob
 	@Column
 	private String source;
 
@@ -96,26 +99,30 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	/**
 	 * Uri头信息
 	 */
+	@Lob
 	@Column
 	private String header;
 
 	/**
-	 * Uri参数
+	 * request queryString
 	 */
-	@Column(name = "uri_params")
-	private String uriParams;
+	@Lob
+	@Column(name = "request_query_string")
+	private String requestQueryString;
 
 	/**
-	 * Payload参数
+	 * request body
 	 */
-	@Column(name = "payload_params")
-	private String payloadParams;
+	@Lob
+	@Column(name = "request_body")
+	private String requestBody;
 
 	/**
-	 * form参数
+	 * 域信息
 	 */
-	@Column(name = "form_params")
-	private String formParams;
+	@Lob
+	@Column(name = "request_params")
+	private String requestParams;
 
 	/**
 	 * 域信息
@@ -132,12 +139,14 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	/**
 	 * 其他附属日志
 	 */
+	@Lob
 	@Column(name = "other_log")
 	private String otherLog;
 
 	/**
 	 * 自定义数据
 	 */
+	@Lob
 	@Column
 	private String data;
 
@@ -173,9 +182,9 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.sendResult = 0;
 		this.sendUnixTime = 0;
 		this.header = "";
-		this.uriParams = "";
-		this.payloadParams = "";
-		this.formParams = "";
+		this.requestQueryString = "";
+		this.requestBody = "";
+		this.requestParams = "";
 		this.host = "";
 		this.port = "";
 		this.otherLog = "";
@@ -283,28 +292,28 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.header = header;
 	}
 
-	public String getUriParams() {
-		return uriParams;
+	public String getRequestQueryString() {
+		return requestQueryString;
 	}
 
-	public void setUriParams(String uriParams) {
-		this.uriParams = uriParams;
+	public void setRequestQueryString(String requestQueryString) {
+		this.requestQueryString = requestQueryString;
 	}
 
-	public String getPayloadParams() {
-		return payloadParams;
+	public String getRequestBody() {
+		return requestBody;
 	}
 
-	public void setPayloadParams(String payloadParams) {
-		this.payloadParams = payloadParams;
+	public void setRequestBody(String requestBody) {
+		this.requestBody = requestBody;
 	}
 
-	public String getFormParams() {
-		return formParams;
+	public String getRequestParams() {
+		return requestParams;
 	}
 
-	public void setFormParams(String formParams) {
-		this.formParams = formParams;
+	public void setRequestParams(String requestParams) {
+		this.requestParams = requestParams;
 	}
 
 	public String getHost() {

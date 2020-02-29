@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.assists;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -215,4 +216,29 @@ public class ConvertAssist {
 
 		return stringToDate(StringAssist.join(parts, " "), ConstantAssist.FORMAT_DATETIME_Y4MDHMS);
 	}
+
+	/**
+	 * 序列化
+	 *
+	 * @param o Object
+	 * @return String Json
+	 */
+	public static String serialize(Object o) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		return mapper.writeValueAsString(o);
+	}
+
+	/**
+	 * 序列化
+	 *
+	 * @param json json
+	 * @return String Json
+	 */
+	public static <T> T deserialize(String json, Class<T> clazz) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		return mapper.readValue(json, clazz);
+	}
+
 }

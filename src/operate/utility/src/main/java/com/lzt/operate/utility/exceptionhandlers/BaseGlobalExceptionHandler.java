@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.exceptionhandlers;
 
+import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.net.BindException;
 
@@ -39,6 +41,23 @@ import java.net.BindException;
  */
 @Slf4j
 public abstract class BaseGlobalExceptionHandler {
+
+	/**
+	 * 记录错误
+	 *
+	 * @param e       异常
+	 * @param request request
+	 */
+	protected abstract void recordErrorLog(Exception e, HttpServletRequest request);
+
+	/**
+	 * 记录错误
+	 *
+	 * @param e       异常
+	 * @param request request
+	 */
+	protected abstract void recordErrorLog(Throwable e, HttpServletRequest request);
+
 	/**
 	 * 400 - Bad Request
 	 */
@@ -47,6 +66,11 @@ public abstract class BaseGlobalExceptionHandler {
 			ServletRequestBindingException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class})
 	public ResultSingleData handleHttpMessageNotReadableException(Exception e) {
 		log.error("参数解析失败", e);
+
+		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+
+		this.recordErrorLog(e, request);
+
 		if (e instanceof BindException) {
 			ResultSingleData error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
 
@@ -71,6 +95,11 @@ public abstract class BaseGlobalExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResultSingleData handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 		log.error("不支持当前请求方法", e);
+
+		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+
+		this.recordErrorLog(e, request);
+
 		return new ResultSingleData(ReturnDataCode.METHOD_NOT_ALLOWED.toMessage());
 	}
 
@@ -84,6 +113,10 @@ public abstract class BaseGlobalExceptionHandler {
 	@ExceptionHandler(Throwable.class)
 	public ResultSingleData handleException(Throwable e) {
 		log.error("服务运行异常", e);
+
+		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+
+		this.recordErrorLog(e, request);
 
 		if (e instanceof AuthenticationException) {
 
