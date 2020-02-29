@@ -1,8 +1,8 @@
 package com.lzt.operate.codetools.dao.service.impl;
 
 import com.baidu.fsg.uid.service.UidGenService;
-import com.lzt.operate.codetools.dao.repositories.CustomConfigRepository;
-import com.lzt.operate.codetools.dao.service.CustomConfigService;
+import com.lzt.operate.codetools.dao.repositories.ErrorLogRepository;
+import com.lzt.operate.codetools.dao.service.ErrorLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +12,14 @@ import java.util.Optional;
  * @author luzhitao
  */
 @Service
-public class CustomConfigServiceImpl implements CustomConfigService {
+public class ErrorLogServiceImpl implements ErrorLogService {
 
 	private final UidGenService uidGenService;
 
-	private final CustomConfigRepository repository;
+	private final ErrorLogRepository repository;
 
 	@Autowired
-	public CustomConfigServiceImpl(UidGenService uidGenService, CustomConfigRepository repository) {
+	public ErrorLogServiceImpl(UidGenService uidGenService, ErrorLogRepository repository) {
 		this.uidGenService = uidGenService;
 		this.repository = repository;
 	}
@@ -34,7 +34,7 @@ public class CustomConfigServiceImpl implements CustomConfigService {
 	}
 
 	@Override
-	public CustomConfigRepository getRepository() {
+	public ErrorLogRepository getRepository() {
 		if (Optional.ofNullable(this.repository).isPresent()) {
 			return this.repository;
 		}

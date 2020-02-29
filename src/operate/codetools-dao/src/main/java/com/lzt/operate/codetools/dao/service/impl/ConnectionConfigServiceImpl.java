@@ -26,7 +26,11 @@ public class ConnectionConfigServiceImpl implements ConnectionConfigService {
 
 	@Override
 	public UidGenService getUidGenService() {
-		return this.uidGenService;
+		if (Optional.ofNullable(this.uidGenService).isPresent()) {
+			return this.uidGenService;
+		}
+
+		throw new RuntimeException("UidGenService不存在");
 	}
 
 	@Override

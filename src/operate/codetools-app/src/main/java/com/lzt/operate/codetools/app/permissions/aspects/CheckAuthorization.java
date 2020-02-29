@@ -24,6 +24,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
@@ -76,7 +77,9 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 			String name = needAuthorization.name();
 			String description = needAuthorization.description();
 
-			String relativePath = RequestAssist.getHttpServletRequest().getContextPath();
+			HttpServletRequest request = RequestAssist.getHttpServletRequest();
+
+			String relativePath = request.getRequestURI();
 
 			String expand = StringAssist.join(needAuthorization.config(), "|", true, true);
 
