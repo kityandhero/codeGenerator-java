@@ -18,6 +18,11 @@ public enum WhetherSuper {
 	No(0);
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "whetherSuperList";
+
+	/**
 	 * 值
 	 */
 	private Integer value;

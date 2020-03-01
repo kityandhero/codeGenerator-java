@@ -23,6 +23,11 @@ public enum RoleUniversalStatus {
 	Remove(-1, "已删除", "已删除");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "roleUniversalStatusList";
+
+	/**
 	 * 值
 	 */
 	private int value;

@@ -16,6 +16,11 @@ public enum AccessWayStatus {
 	Disabled(0, "已禁用", "已禁用");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "accessWayStatusList";
+
+	/**
 	 * 值
 	 */
 	private int value;

@@ -18,6 +18,11 @@ public enum AccountRoleCreateMode {
 	IndependentEstablishment(1, "自主建立");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "accountRoleCreateModeList";
+
+	/**
 	 * 值
 	 */
 	private int value;

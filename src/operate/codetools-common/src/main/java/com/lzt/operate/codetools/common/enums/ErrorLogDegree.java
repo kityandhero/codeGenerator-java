@@ -27,6 +27,11 @@ public enum ErrorLogDegree {
 	Urgency(400, "严重错误", "严重错误");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "errorLogDegreeList";
+
+	/**
 	 * 值
 	 */
 	private int value;

@@ -17,6 +17,11 @@ public enum ErrorLogResolve {
 	Resolved(1, "已解决", "已解决");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "errorLogResolveList";
+
+	/**
 	 * 值
 	 */
 	private int value;

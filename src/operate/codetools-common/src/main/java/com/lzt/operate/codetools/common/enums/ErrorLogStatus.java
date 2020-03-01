@@ -12,6 +12,11 @@ public enum ErrorLogStatus {
 	Normal(1, "正常", "正常");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "errorLogStatusList";
+
+	/**
 	 * 值
 	 */
 	private int value;

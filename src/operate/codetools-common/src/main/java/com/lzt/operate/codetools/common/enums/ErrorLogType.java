@@ -17,6 +17,11 @@ public enum ErrorLogType {
 	Exception(110, "程序异常", "程序异常");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "errorLogTypeList";
+
+	/**
 	 * 值
 	 */
 	private int value;
