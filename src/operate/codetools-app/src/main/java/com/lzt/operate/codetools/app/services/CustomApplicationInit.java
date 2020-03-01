@@ -13,6 +13,7 @@ import com.lzt.operate.codetools.dao.service.AccountRoleService;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.CustomConfigService;
 import com.lzt.operate.codetools.dao.service.ErrorLogService;
+import com.lzt.operate.codetools.dao.service.GeneralLogService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.entities.Account;
@@ -22,6 +23,8 @@ import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWay
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayQueueRunner;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogQueueRunner;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogConsumer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
 import com.lzt.operate.utility.general.Constants;
@@ -56,6 +59,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 	private ErrorLogService errorLogService;
 
+	private GeneralLogService generalLogService;
+
 	@Autowired
 	public CustomApplicationInit(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
@@ -65,7 +70,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			RoleCodeToolsService roleCodeToolsService,
 			CustomConfigService customConfigService,
 			AccessWayService accessWayService,
-			ErrorLogService errorLogService) {
+			ErrorLogService errorLogService,
+			GeneralLogService generalLogService) {
 		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
 				accountService,
@@ -76,6 +82,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.customConfigService = customConfigService;
 		this.accessWayService = accessWayService;
 		this.errorLogService = errorLogService;
+		this.generalLogService = generalLogService;
 	}
 
 	public CustomConfigService getCustomConfigService() {
@@ -108,6 +115,16 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		throw new RuntimeException("ErrorLogService获取失败");
 	}
 
+	public GeneralLogService getGeneralLogService() {
+		Optional<GeneralLogService> optional = Optional.ofNullable(this.generalLogService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("GeneralLogService获取失败");
+	}
+
 	@Override
 	public void init() {
 		this.checkSuperRoleCompleteness();
@@ -115,6 +132,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.checkDataIntegrity();
 		this.startAccessWayRunner();
 		this.startErrorLogRunner();
+		this.startGeneralLogRunner();
 		this.openOperationPanel();
 	}
 
@@ -122,7 +140,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测超级管理员角色的完备性
 	 */
 	private void checkSuperRoleCompleteness() {
-		RoleUniversalService roleUniversalService = accountAssist.getRoleUniversalService();
+		RoleUniversalService roleUniversalService = this.accountAssist.getRoleUniversalService();
 
 		boolean exist = roleUniversalService.existSuper(Channel.CodeTools.getValue());
 
@@ -144,7 +162,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测是否存在任意用户，不存在则创建默认账户
 	 */
 	private void checkExistAnyAccount() {
-		AccountService accountService = accountAssist.getAccountService();
+		AccountService accountService = this.accountAssist.getAccountService();
 
 		boolean exist = accountService.existAny(Channel.CodeTools.getValue());
 
@@ -164,12 +182,12 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 				accountService.save(account);
 
-				Optional<RoleUniversal> optionalRoleUniversal = accountAssist.getRoleUniversalService()
-																			 .findSuper(Channel.CodeTools.getValue());
+				Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
+																						.findSuper(Channel.CodeTools.getValue());
 
 				optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 			} catch (NoSuchAlgorithmException e) {
-				log.error("创建默认账户失败", e);
+				CustomApplicationInit.log.error("创建默认账户失败", e);
 
 				e.printStackTrace();
 			}
@@ -193,8 +211,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		customConfig.setName(needLogin);
 
 		ExampleMatcher matcher = ExampleMatcher.matching()
-											   .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
-											   .withIgnorePaths("createTime", "value", "description");
+													 .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
+													 .withIgnorePaths("createTime", "value", "description");
 
 		Example<CustomConfig> example = Example.of(customConfig, matcher);
 
@@ -247,6 +265,19 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(this.getErrorLogService(), new ErrorLogConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("errorLog").build();
+
+		Thread t = factory.newThread(runner);
+
+		t.start();
+	}
+
+	/**
+	 * startErrorLogRunner
+	 */
+	private void startGeneralLogRunner() {
+		GeneralLogQueueRunner runner = new GeneralLogQueueRunner(this.getGeneralLogService(), new GeneralLogConsumer());
+
+		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("generalLog").build();
 
 		Thread t = factory.newThread(runner);
 

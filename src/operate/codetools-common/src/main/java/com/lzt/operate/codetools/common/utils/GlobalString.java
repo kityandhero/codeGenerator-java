@@ -150,6 +150,19 @@ public class GlobalString {
 
 	//endregion
 
+	//region
+
+	@ApiSingleParam(value = "一般日志标识", type = Long.class, example = "101")
+	public static final String GENERAL_LOG_ID = "errorLogId";
+
+	@ApiSingleParam(value = "日志描述", example = "参数错误")
+	public static final String GENERAL_LOG_MESSAGE = "message";
+
+	@ApiSingleParam(value = "渠道标识", example = "12")
+	public static final String GENERAL_LOG_CHANNEL = "channel";
+
+	//endregion
+
 	//region OPERATOR_ROLE_CHANGE_COLLECTION
 
 	@ApiSingleParam(value = "账户标识", example = "test1")

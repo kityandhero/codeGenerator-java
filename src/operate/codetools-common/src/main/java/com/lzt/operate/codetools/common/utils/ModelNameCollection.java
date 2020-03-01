@@ -80,6 +80,14 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region GENERAL_LOG 错误日志
+
+	public static final String GENERAL_LOG_LIST = "GENERAL_LOG_LIST";
+
+	public static final String GENERAL_LOG_GET = "GENERAL_LOG_GET";
+
+	//endregion
+
 	/**
 	 * 打开数据库
 	 */

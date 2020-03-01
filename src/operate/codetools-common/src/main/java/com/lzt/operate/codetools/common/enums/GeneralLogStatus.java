@@ -3,8 +3,7 @@ package com.lzt.operate.codetools.common.enums;
 /**
  * @author luzhitao
  */
-
-public enum ErrorLogStatus {
+public enum GeneralLogStatus {
 
 	/**
 	 * 正常
@@ -26,7 +25,7 @@ public enum ErrorLogStatus {
 	 */
 	private String description;
 
-	ErrorLogStatus(int value, String name, String descriptor) {
+	GeneralLogStatus(int value, String name, String descriptor) {
 		this.value = value;
 		this.name = name;
 		this.description = descriptor;
