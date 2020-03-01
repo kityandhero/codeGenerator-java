@@ -20,6 +20,11 @@ public enum DatabaseEncoding {
 	 */
 	GBK(103, "gbk", "gbk");
 
+	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "databaseEncodingList";
+
 	private final Integer flag;
 	private final String name;
 	private final String description;

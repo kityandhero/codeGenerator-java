@@ -34,6 +34,13 @@ public class GeneralLog extends BaseEntity implements IGeneralLog {
 	@Column
 	private String content;
 
+	public GeneralLog() {
+		super();
+
+		this.message = "";
+		this.content = "";
+	}
+
 	public String getMessage() {
 		return this.message;
 	}

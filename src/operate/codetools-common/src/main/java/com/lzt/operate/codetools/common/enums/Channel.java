@@ -10,33 +10,47 @@ public enum Channel {
 	/**
 	 * 未知
 	 */
-	Unknown(0, "未知"),
+	Unknown(0, "未知", "未知渠道"),
 
 	/**
 	 * 代码工具
 	 */
-	CodeTools(10010, "代码工具");
+	CodeTools(10010, "代码工具", "代码工具");
+
+	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "channelList";
 
 	/**
 	 * 标志
 	 */
-	private int value;
-
+	private int flag;
 	/**
 	 * 标志
 	 */
-	private String note;
+	private String name;
+	/**
+	 * 简介描述
+	 */
+	private String description;
 
-	Channel(int value, String note) {
-		this.value = value;
-		this.note = note;
+	Channel(int flag, String name, String description) {
+		this.flag = flag;
+		this.name = name;
+		this.description = description;
 	}
 
-	public int getValue() {
-		return value;
+	public int getFlag() {
+		return flag;
 	}
 
-	public String getNote() {
-		return note;
+	public String getName() {
+		return name;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
 }

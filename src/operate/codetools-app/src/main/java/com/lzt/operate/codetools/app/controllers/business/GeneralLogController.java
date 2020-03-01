@@ -89,14 +89,14 @@ public class GeneralLogController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "一般日志列表", notes = "一般日志列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.ERROR_LOG_LIST, value = {
-			@ApiJsonProperty(name = GlobalString.ERROR_LOG_MESSAGE),
-			@ApiJsonProperty(name = GlobalString.ERROR_LOG_CHANNEL),
+	@ApiJsonObject(name = ModelNameCollection.GENERAL_LOG_LIST, value = {
+			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_MESSAGE),
+			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_CHANNEL),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ERROR_LOG_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.GENERAL_LOG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
@@ -110,10 +110,11 @@ public class GeneralLogController extends BaseOperateAuthController {
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		String message = paramJson.getStringByKey(GlobalString.ERROR_LOG_MESSAGE);
-		Integer channel = paramJson.getStringExByKey(GlobalString.ERROR_LOG_CHANNEL).toInt();
+		String message = paramJson.getStringByKey(GlobalString.GENERAL_LOG_MESSAGE);
+		Integer channel = paramJson.getStringExByKey(GlobalString.GENERAL_LOG_CHANNEL, Constants.SEARCH_UNLIMITED_STRING)
+								   .toInt();
 
-		if (!EnumAssist.existTargetValue(Arrays.asList(Channel.values()), Channel::getValue, channel)) {
+		if (!channel.equals(Constants.SEARCH_UNLIMITED_NUMBER) && !EnumAssist.existTargetValue(Arrays.asList(Channel.values()), Channel::getFlag, channel)) {
 			return this.pageDataEmpty(pageSize);
 		}
 
@@ -145,8 +146,8 @@ public class GeneralLogController extends BaseOperateAuthController {
 		Page<GeneralLog> result = this.generalLogService.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-												  .stream()
-												  .map(o -> {
+											.stream()
+											.map(o -> {
 												List<IGetter<GeneralLog>> getterList = new ArrayList<>();
 
 												getterList.add(GeneralLog::getMessage);
@@ -163,7 +164,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 
 												return data;
 											})
-												  .collect(Collectors.toList());
+											.collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
@@ -172,11 +173,11 @@ public class GeneralLogController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "获取一般日志", notes = "获取一般日志信息", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.ERROR_LOG_GET, value = {
-			@ApiJsonProperty(name = GlobalString.ERROR_LOG_ID)},
+	@ApiJsonObject(name = ModelNameCollection.GENERAL_LOG_GET, value = {
+			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_ID)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ERROR_LOG_GET)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.GENERAL_LOG_GET)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
@@ -184,7 +185,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = this.getParamData(json);
 
-		long generalLogId = paramJson.getStringExByKey(GlobalString.ERROR_LOG_ID, "0").toLong();
+		long generalLogId = paramJson.getStringExByKey(GlobalString.GENERAL_LOG_ID, "0").toLong();
 
 		Optional<GeneralLog> result = this.getGeneralLogService().get(generalLogId);
 

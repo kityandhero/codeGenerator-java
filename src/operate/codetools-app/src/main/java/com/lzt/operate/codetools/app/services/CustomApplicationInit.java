@@ -18,12 +18,15 @@ import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.codetools.entities.CustomConfig;
+import com.lzt.operate.codetools.entities.GeneralLog;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayQueueRunner;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogQueueRunner;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogConsumer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogProducer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogProducerFactory;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
@@ -134,6 +137,14 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.startErrorLogRunner();
 		this.startGeneralLogRunner();
 		this.openOperationPanel();
+
+		GeneralLogProducer producer = GeneralLogProducerFactory.getInstance().getProducer();
+
+		GeneralLog generalLog = new GeneralLog();
+
+		generalLog.setMessage("codeTools App 启动");
+
+		producer.push(generalLog);
 	}
 
 	/**
@@ -142,7 +153,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	private void checkSuperRoleCompleteness() {
 		RoleUniversalService roleUniversalService = this.accountAssist.getRoleUniversalService();
 
-		boolean exist = roleUniversalService.existSuper(Channel.CodeTools.getValue());
+		boolean exist = roleUniversalService.existSuper(Channel.CodeTools.getFlag());
 
 		if (!exist) {
 			RoleUniversal roleUniversal = new RoleUniversal();
@@ -164,7 +175,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	private void checkExistAnyAccount() {
 		AccountService accountService = this.accountAssist.getAccountService();
 
-		boolean exist = accountService.existAny(Channel.CodeTools.getValue());
+		boolean exist = accountService.existAny(Channel.CodeTools.getFlag());
 
 		if (!exist) {
 
@@ -183,7 +194,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				accountService.save(account);
 
 				Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
-																						.findSuper(Channel.CodeTools.getValue());
+																				  .findSuper(Channel.CodeTools.getFlag());
 
 				optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 			} catch (NoSuchAlgorithmException e) {
@@ -211,8 +222,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		customConfig.setName(needLogin);
 
 		ExampleMatcher matcher = ExampleMatcher.matching()
-													 .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
-													 .withIgnorePaths("createTime", "value", "description");
+											   .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
+											   .withIgnorePaths("createTime", "value", "description");
 
 		Example<CustomConfig> example = Example.of(customConfig, matcher);
 
@@ -262,6 +273,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startErrorLogRunner
 	 */
 	private void startErrorLogRunner() {
+
 		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(this.getErrorLogService(), new ErrorLogConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("errorLog").build();

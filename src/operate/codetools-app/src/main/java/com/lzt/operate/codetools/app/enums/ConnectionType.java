@@ -15,6 +15,11 @@ public enum ConnectionType {
 	 */
 	SSH(101, "SSH", "SSH");
 
+	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "connectionTypeList";
+
 	private final Integer flag;
 	private final String name;
 	private final String description;

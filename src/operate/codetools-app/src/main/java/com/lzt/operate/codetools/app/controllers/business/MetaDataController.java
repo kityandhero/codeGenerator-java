@@ -5,6 +5,7 @@ import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseEncoding;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
+import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -38,25 +39,31 @@ public class MetaDataController extends OperateBaseController {
 
 		SerializableData result = new SerializableData();
 
-		result.append("databaseTypeList", EnumAssist.buildFlagDataCollection(
+		result.append(Channel.META_KEY, EnumAssist.buildFlagDataCollection(
+				Arrays.asList(Channel.values()),
+				Channel::getFlag,
+				Channel::getName,
+				Channel::getDescription).toArray());
+
+		result.append(DatabaseType.META_KEY, EnumAssist.buildFlagDataCollection(
 				Arrays.asList(DatabaseType.values()),
 				DatabaseType::getFlag,
 				DatabaseType::getName,
 				DatabaseType::getDescription).toArray());
 
-		result.append("databaseEncodingList", EnumAssist.buildFlagDataCollection(
+		result.append(DatabaseEncoding.META_KEY, EnumAssist.buildFlagDataCollection(
 				Arrays.asList(DatabaseEncoding.values()),
 				DatabaseEncoding::getFlag,
 				DatabaseEncoding::getName,
 				DatabaseEncoding::getDescription).toArray());
 
-		result.append("connectionTypeList", EnumAssist.buildFlagDataCollection(
+		result.append(ConnectionType.META_KEY, EnumAssist.buildFlagDataCollection(
 				Arrays.asList(ConnectionType.values()),
 				ConnectionType::getFlag,
 				ConnectionType::getName,
 				ConnectionType::getDescription).toArray());
 
-		result.append("accountStatusList", EnumAssist.buildFlagDataCollection(
+		result.append(AccountStatus.META_KEY, EnumAssist.buildFlagDataCollection(
 				Arrays.asList(AccountStatus.values()),
 				AccountStatus::getValue,
 				AccountStatus::getName,

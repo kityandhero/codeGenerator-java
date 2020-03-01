@@ -111,9 +111,10 @@ public class ErrorLogController extends BaseOperateAuthController {
 		pageSize = Math.max(pageSize, 1);
 
 		String message = paramJson.getStringByKey(GlobalString.ERROR_LOG_MESSAGE);
-		Integer channel = paramJson.getStringExByKey(GlobalString.ERROR_LOG_CHANNEL).toInt();
+		Integer channel = paramJson.getStringExByKey(GlobalString.ERROR_LOG_CHANNEL, Constants.SEARCH_UNLIMITED_STRING)
+								   .toInt();
 
-		if (!EnumAssist.existTargetValue(Arrays.asList(Channel.values()), Channel::getValue, channel)) {
+		if (!channel.equals(Constants.SEARCH_UNLIMITED_NUMBER) && !EnumAssist.existTargetValue(Arrays.asList(Channel.values()), Channel::getFlag, channel)) {
 			return this.pageDataEmpty(pageSize);
 		}
 

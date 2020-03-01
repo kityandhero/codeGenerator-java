@@ -107,8 +107,8 @@ public abstract class BaseEntity implements Serializable {
 	private long updateUnixTime;
 
 	protected BaseEntity() {
-		channel = Channel.Unknown.getValue();
-		channelNote = Channel.Unknown.getNote();
+		channel = Channel.Unknown.getFlag();
+		channelNote = Channel.Unknown.getName();
 		autoRemark = "";
 		status = 0;
 		statusNote = "";
@@ -132,8 +132,8 @@ public abstract class BaseEntity implements Serializable {
 	}
 
 	public void setChannel(Channel channel) {
-		this.channel = channel.getValue();
-		this.channelNote = channel.getNote();
+		this.channel = channel.getFlag();
+		this.channelNote = channel.getName();
 	}
 
 	public String getChannelNote() {

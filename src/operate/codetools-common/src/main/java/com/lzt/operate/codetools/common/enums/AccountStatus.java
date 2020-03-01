@@ -23,6 +23,11 @@ public enum AccountStatus {
 	Remove(-1, "已删除", "已删除");
 
 	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "accountStatusList";
+
+	/**
 	 * 值
 	 */
 	private int value;

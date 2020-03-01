@@ -40,6 +40,11 @@ public enum DatabaseType {
 	 */
 	Sqlite(105, "Sqlite", "Sqlite", "org.sqlite.JDBC", "jdbc:sqlite:%s", "sqlite-jdbc-3.19.3.jar");
 
+	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "databaseTypeList";
+
 	private final Integer flag;
 	private final String name;
 	private final String description;
