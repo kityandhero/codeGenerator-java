@@ -2,8 +2,6 @@ package com.lzt.operate.codetools.app.permissions.aspects;
 
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.dao.service.AccessWayService;
-import com.lzt.operate.codetools.dao.service.impl.AccessWayServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.AccountRoleServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
@@ -36,7 +34,6 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
-	private final AccessWayService accessWayService;
 	private AccountAssist accountAssist;
 
 	@Autowired
@@ -45,8 +42,7 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 			AccountServiceImpl accountService,
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
-			RoleCodeToolsServiceImpl roleCodeToolsService,
-			AccessWayServiceImpl accessWayService) {
+			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
 				accountService,
@@ -55,7 +51,6 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 				roleCodeToolsService
 		);
 
-		this.accessWayService = accessWayService;
 	}
 
 	private AccountAssist getAccountAssist() {
@@ -72,14 +67,18 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 		String tag = Optional.of(Optional.of(needAuthorization).orElse(null).tag()).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(tag)) {
-			Optional<AccessWay> optional = this.accessWayService.findByTag(tag);
-
 			String name = needAuthorization.name();
 			String description = needAuthorization.description();
 
-			HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
+			Optional<HttpServletRequest> optional1 = RequestAssist.getCurrentHttpServletRequest();
 
-			String relativePath = request.getRequestURI();
+			String relativePath;
+
+			if (optional1.isPresent()) {
+				relativePath = optional1.get().getRequestURI();
+			} else {
+				throw new AuthorizationException("非有效的Http请求");
+			}
 
 			String expand = StringAssist.join(needAuthorization.config(), "|", true, true);
 

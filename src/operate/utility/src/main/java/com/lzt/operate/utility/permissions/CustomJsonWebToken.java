@@ -83,11 +83,15 @@ public class CustomJsonWebToken {
 			return new ExecutiveResult<>(ReturnDataCode.NoData.toMessage("无效Token"));
 		}
 
-		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
+		Optional<HttpServletRequest> optional = RequestAssist.getCurrentHttpServletRequest();
 
-		String token = request.getHeader(customJsonWebTokenConfig.getHeader());
+		if (optional.isPresent()) {
+			String token = optional.get().getHeader(customJsonWebTokenConfig.getHeader());
 
-		return getFromHttpToken(token);
+			return getFromHttpToken(token);
+		}
+
+		return new ExecutiveResult<>(ReturnDataCode.NoData.toMessage("无效Token"));
 	}
 
 	/**

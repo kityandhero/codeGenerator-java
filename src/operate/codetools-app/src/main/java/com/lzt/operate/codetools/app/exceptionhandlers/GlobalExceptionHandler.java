@@ -44,7 +44,6 @@ public class GlobalExceptionHandler extends BaseGlobalExceptionHandler {
 			if (Optional.ofNullable(request).isPresent()) {
 				errorLog.setHeader(this.getRequestHeaderJson(request));
 			}
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
@@ -63,6 +62,10 @@ public class GlobalExceptionHandler extends BaseGlobalExceptionHandler {
 		try {
 			errorLog.setMessage(e.getMessage());
 			errorLog.setStackTrace(ConvertAssist.serialize(e.getStackTrace()));
+
+			if (Optional.ofNullable(request).isPresent()) {
+				errorLog.setHeader(this.getRequestHeaderJson(request));
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 

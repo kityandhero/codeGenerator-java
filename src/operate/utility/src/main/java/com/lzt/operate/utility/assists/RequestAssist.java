@@ -9,7 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
 import java.util.Enumeration;
+import java.util.Optional;
 
+/**
+ * @author luzhitao
+ */
 public class RequestAssist {
 
 	private static ServletRequestAttributes getServletRequestAttributes() {
@@ -22,10 +26,13 @@ public class RequestAssist {
 	 *
 	 * @return 返回HttpServletRequest
 	 */
-	public static HttpServletRequest getCurrentHttpServletRequest() {
+	public static Optional<HttpServletRequest> getCurrentHttpServletRequest() {
 		ServletRequestAttributes servletRequestAttributes = getServletRequestAttributes();
-		return servletRequestAttributes.getRequest();
+		if (Optional.ofNullable(servletRequestAttributes).isPresent()) {
+			return Optional.of(servletRequestAttributes.getRequest());
+		}
 
+		return Optional.empty();
 	}
 
 	/**
@@ -125,9 +132,13 @@ public class RequestAssist {
 	 * @return String
 	 */
 	public static String getCurrentRequestRemoteAddress() {
-		HttpServletRequest request = getCurrentHttpServletRequest();
+		Optional<HttpServletRequest> optional = getCurrentHttpServletRequest();
 
-		return request.getRemoteAddr();
+		if (optional.isPresent()) {
+			return optional.get().getRemoteAddr();
+		}
+
+		return "";
 	}
 
 	/**
@@ -136,9 +147,13 @@ public class RequestAssist {
 	 * @return String
 	 */
 	public static String getCurrentRequestOriginalUrl() {
-		HttpServletRequest request = getCurrentHttpServletRequest();
+		Optional<HttpServletRequest> optional = getCurrentHttpServletRequest();
 
-		return getRequestOriginalUrl(request);
+		if (optional.isPresent()) {
+			return getRequestOriginalUrl(optional.get());
+		}
+
+		return "";
 	}
 
 }

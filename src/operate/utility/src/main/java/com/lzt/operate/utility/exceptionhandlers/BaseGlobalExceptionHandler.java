@@ -24,6 +24,7 @@ import redis.clients.jedis.exceptions.JedisException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.net.BindException;
+import java.util.Optional;
 
 /**
  * 类描述: 全局异常拦截处理器
@@ -45,10 +46,28 @@ public abstract class BaseGlobalExceptionHandler {
 	/**
 	 * 记录错误
 	 *
+	 * @param e 异常
+	 */
+	protected void recordErrorLog(Exception e) {
+		this.recordErrorLog(e, null);
+	}
+
+	/**
+	 * 记录错误
+	 *
 	 * @param e       异常
 	 * @param request request
 	 */
 	protected abstract void recordErrorLog(Exception e, HttpServletRequest request);
+
+	/**
+	 * 记录错误
+	 *
+	 * @param e 异常
+	 */
+	protected void recordErrorLog(Throwable e) {
+		this.recordErrorLog(e, null);
+	}
 
 	/**
 	 * 记录错误
@@ -67,9 +86,13 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleHttpMessageNotReadableException(Exception e) {
 		log.error("参数解析失败", e);
 
-		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
+		Optional<HttpServletRequest> optional = RequestAssist.getCurrentHttpServletRequest();
 
-		this.recordErrorLog(e, request);
+		if (optional.isPresent()) {
+			this.recordErrorLog(e, optional.get());
+		} else {
+			this.recordErrorLog(e);
+		}
 
 		if (e instanceof BindException) {
 			ResultSingleData error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
@@ -96,9 +119,13 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 		log.error("不支持当前请求方法", e);
 
-		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
+		Optional<HttpServletRequest> optional = RequestAssist.getCurrentHttpServletRequest();
 
-		this.recordErrorLog(e, request);
+		if (optional.isPresent()) {
+			this.recordErrorLog(e, optional.get());
+		} else {
+			this.recordErrorLog(e);
+		}
 
 		return new ResultSingleData(ReturnDataCode.METHOD_NOT_ALLOWED.toMessage());
 	}
@@ -114,9 +141,13 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleException(Throwable e) {
 		log.error("服务运行异常", e);
 
-		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
+		Optional<HttpServletRequest> optional = RequestAssist.getCurrentHttpServletRequest();
 
-		this.recordErrorLog(e, request);
+		if (optional.isPresent()) {
+			this.recordErrorLog(e, optional.get());
+		} else {
+			this.recordErrorLog(e);
+		}
 
 		if (e instanceof AuthenticationException) {
 
