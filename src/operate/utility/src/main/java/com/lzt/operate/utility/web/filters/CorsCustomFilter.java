@@ -1,6 +1,6 @@
 package com.lzt.operate.utility.web.filters;
 
-import com.lzt.operate.utility.components.bases.CorsConfigEntity;
+import com.lzt.operate.utility.components.bases.cors.CorsConfigEntity;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;

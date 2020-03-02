@@ -1,4 +1,4 @@
-package com.lzt.operate.utility.components.bases;
+package com.lzt.operate.utility.components.bases.JsonWebToken;
 
 /**
  * Json Web Token 设置

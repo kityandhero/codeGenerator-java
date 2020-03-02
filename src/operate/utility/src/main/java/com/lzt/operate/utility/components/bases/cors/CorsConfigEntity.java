@@ -1,9 +1,8 @@
-package com.lzt.operate.utility.components.bases;
+package com.lzt.operate.utility.components.bases.cors;
 
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.extensions.StringEx;
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +12,6 @@ import java.util.Set;
 /**
  * @author luzhitao
  */
-@Data
 public class CorsConfigEntity {
 
 	/**
@@ -26,6 +24,34 @@ public class CorsConfigEntity {
 	protected String accessControlAllowHeaders;
 
 	protected String accessControlAllowMethods;
+
+	public String getAllowSites() {
+		return allowSites;
+	}
+
+	public void setAllowSites(String allowSites) {
+		this.allowSites = allowSites;
+	}
+
+	public boolean isAccessControlAllowCredentials() {
+		return accessControlAllowCredentials;
+	}
+
+	public String getAccessControlAllowHeaders() {
+		return accessControlAllowHeaders;
+	}
+
+	public void setAccessControlAllowHeaders(String accessControlAllowHeaders) {
+		this.accessControlAllowHeaders = accessControlAllowHeaders;
+	}
+
+	public String getAccessControlAllowMethods() {
+		return accessControlAllowMethods;
+	}
+
+	public void setAccessControlAllowMethods(String accessControlAllowMethods) {
+		this.accessControlAllowMethods = accessControlAllowMethods;
+	}
 
 	private Set<String> mergeToSet(String firstValue, String secondValue) {
 		StringEx first = new StringEx(firstValue);
@@ -47,11 +73,11 @@ public class CorsConfigEntity {
 		return set;
 	}
 
-	//region AccessControlAllowOrigin Methods
-
 	public List<String> getAccessControlAllowOriginList() {
 		return getAccessControlAllowOriginList("");
 	}
+
+	//region AccessControlAllowOrigin Methods
 
 	private List<String> getAccessControlAllowOriginList(String existingAllowOrigins) {
 		Set<String> set = mergeToSet(existingAllowOrigins, allowSites);
@@ -59,10 +85,14 @@ public class CorsConfigEntity {
 		return new ArrayList<>(set);
 	}
 
-	// endregion
-
 	public boolean getAccessControlAllowCredentials() {
 		return accessControlAllowCredentials;
+	}
+
+	// endregion
+
+	public void setAccessControlAllowCredentials(boolean accessControlAllowCredentials) {
+		this.accessControlAllowCredentials = accessControlAllowCredentials;
 	}
 
 	//region AccessControlAllowHeader Methods

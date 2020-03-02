@@ -1,6 +1,6 @@
 package com.lzt.operate.utility.permissions.aspects;
 
-import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
+import com.lzt.operate.utility.components.bases.JsonWebToken.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.exceptions.AuthenticationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;

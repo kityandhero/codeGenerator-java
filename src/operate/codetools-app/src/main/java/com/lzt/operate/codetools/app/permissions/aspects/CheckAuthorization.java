@@ -13,7 +13,7 @@ import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWay
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayProducerFactory;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
-import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
+import com.lzt.operate.utility.components.bases.JsonWebToken.BaseCustomJsonWebTokenConfig;
 import com.lzt.operate.utility.exceptions.AuthorizationException;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.permissions.NeedAuthorization;

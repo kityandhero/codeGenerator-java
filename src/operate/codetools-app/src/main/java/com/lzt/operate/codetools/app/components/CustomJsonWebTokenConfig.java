@@ -1,6 +1,6 @@
 package com.lzt.operate.codetools.app.components;
 
-import com.lzt.operate.utility.components.bases.BaseCustomJsonWebTokenConfig;
+import com.lzt.operate.utility.components.bases.JsonWebToken.BaseCustomJsonWebTokenConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
