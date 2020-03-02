@@ -30,6 +30,14 @@ public class Constants {
 	 */
 	public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
+	public static final String YES_STRING = "1";
+
+	public static final String NO_STRING = "0";
+
+	public static final int YES_INT = 1;
+
+	public static final int NO_INT = 0;
+
 	/**
 	 * 超级管理员名称
 	 */

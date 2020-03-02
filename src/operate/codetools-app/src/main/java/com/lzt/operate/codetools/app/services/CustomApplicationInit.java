@@ -6,6 +6,7 @@ import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.app.util.CommandUtil;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.enums.Channel;
+import com.lzt.operate.codetools.common.enums.CustomConfigCollection;
 import com.lzt.operate.codetools.common.enums.RoleUniversalStatus;
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
@@ -137,14 +138,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.startErrorLogRunner();
 		this.startGeneralLogRunner();
 		this.openOperationPanel();
-
-		GeneralLogProducer producer = GeneralLogProducerFactory.getInstance().getProducer();
-
-		GeneralLog generalLog = new GeneralLog();
-
-		generalLog.setMessage("codeTools App 启动");
-
-		producer.push(generalLog);
+		this.recordStartLog();
 	}
 
 	/**
@@ -304,6 +298,28 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			CommandUtil.browse(new URI("http://localhost:9090/index.html"));
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 记录启动日志
+	 */
+	private void recordStartLog() {
+		Optional<CustomConfig> optional = this.getCustomConfigService()
+											  .findByUuid(CustomConfigCollection.RecordStartLog.getUuid());
+
+		if (optional.isPresent()) {
+			CustomConfig customConfig = optional.get();
+
+			if (customConfig.getValue().equals(Constants.YES_STRING)) {
+				GeneralLogProducer producer = GeneralLogProducerFactory.getInstance().getProducer();
+
+				GeneralLog generalLog = new GeneralLog();
+
+				generalLog.setMessage("codeTools App 启动");
+
+				producer.push(generalLog);
+			}
 		}
 	}
 

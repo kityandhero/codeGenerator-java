@@ -4,7 +4,9 @@ import com.baidu.fsg.uid.service.UidGenService;
 import com.lzt.operate.codetools.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.RequestAssist;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.net.InternetAddressAssist;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -176,6 +178,10 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 		entity.setId(id);
 
 		String ip = RequestAssist.getCurrentRequestRemoteAddress();
+
+		if (StringAssist.isNullOrEmpty(ip)) {
+			ip = InternetAddressAssist.getLocalHost();
+		}
 
 		entity.setIp(Optional.of(ip).orElse(""));
 

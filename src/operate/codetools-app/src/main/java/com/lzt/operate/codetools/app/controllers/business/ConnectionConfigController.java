@@ -80,7 +80,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		return new ConnectionConfigAssist(this.connectionConfigService);
 	}
 
-	@ApiOperation(value = "连接列表", notes = "数据库连接列表", httpMethod = "POST")
+	@ApiOperation(value = "连接分页列表", notes = "数据库连接分页列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_NAME),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
@@ -90,9 +90,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接列表", description = "数据库连接列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接分页列表", description = "数据库连接分页列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
+	public ResultListData page(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();

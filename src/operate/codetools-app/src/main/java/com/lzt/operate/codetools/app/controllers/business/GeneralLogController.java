@@ -88,7 +88,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 		throw new RuntimeException("GeneralLogService获取失败");
 	}
 
-	@ApiOperation(value = "一般日志列表", notes = "一般日志列表", httpMethod = "POST")
+	@ApiOperation(value = "一般日志分页列表", notes = "一般日志分页列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.GENERAL_LOG_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_MESSAGE),
 			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_CHANNEL),
@@ -99,9 +99,9 @@ public class GeneralLogController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.GENERAL_LOG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = GeneralLogController.CONTROLLER_DESCRIPTION + "一般日志列表", description = "一般日志列表", tag = "93231249-6171-4d8a-b7e1-a66006385bdc")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = GeneralLogController.CONTROLLER_DESCRIPTION + "一般日志分页列表", description = "一般日志分页列表", tag = "93231249-6171-4d8a-b7e1-a66006385bdc")
+	public ResultListData page(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = this.getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -201,7 +201,10 @@ public class GeneralLogController extends BaseOperateAuthController {
 			getterList.add(GeneralLog::getChannelNote);
 			getterList.add(GeneralLog::getStatus);
 			getterList.add(GeneralLog::getStatusNote);
+			getterList.add(GeneralLog::getId);
+			getterList.add(GeneralLog::getCreateOperatorId);
 			getterList.add(GeneralLog::getCreateTime);
+			getterList.add(GeneralLog::getUpdateOperatorId);
 			getterList.add(GeneralLog::getUpdateTime);
 
 			SerializableData data = SerializableData.toSerializableData(generalLog, getterList);

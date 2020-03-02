@@ -84,7 +84,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 		throw new RuntimeException("RoleUniversalService获取失败");
 	}
 
-	@ApiOperation(value = "公共角色列表", notes = "公共角色列表", httpMethod = "POST")
+	@ApiOperation(value = "公共角色分页列表", notes = "公共角色分页列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ROLE_UNIVERSAL_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ROLE_UNIVERSAL_NAME),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
@@ -94,9 +94,9 @@ public class RoleUniversalController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ROLE_UNIVERSAL_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "公共角色列表", tag = "7ab17e1a-4fff-4ed8-8cb0-24e5bcca089b")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "公共角色分页列表", description = "公共角色分页列表", tag = "7ab17e1a-4fff-4ed8-8cb0-24e5bcca089b")
+	public ResultListData page(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();

@@ -17,6 +17,9 @@ public class CustomConfig extends BaseEntity {
 
 	private static final long serialVersionUID = -8937636579334404642L;
 
+	@Column(length = 36)
+	String uuid;
+
 	@Column(length = 50)
 	String name;
 
@@ -30,6 +33,14 @@ public class CustomConfig extends BaseEntity {
 		this.name = "";
 		this.value = "";
 		this.description = "";
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public String getName() {

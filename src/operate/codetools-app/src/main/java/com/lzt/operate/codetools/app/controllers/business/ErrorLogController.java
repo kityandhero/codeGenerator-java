@@ -88,7 +88,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 		throw new RuntimeException("ErrorLogService获取失败");
 	}
 
-	@ApiOperation(value = "错误日志列表", notes = "错误日志列表", httpMethod = "POST")
+	@ApiOperation(value = "错误日志分页列表", notes = "错误日志分页列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ERROR_LOG_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ERROR_LOG_MESSAGE),
 			@ApiJsonProperty(name = GlobalString.ERROR_LOG_CHANNEL),
@@ -99,9 +99,9 @@ public class ErrorLogController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ERROR_LOG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志列表", description = "错误日志列表", tag = "bb6b8151-c999-4ad4-9f0a-7f6ae46cea8b")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志分页列表", description = "错误日志分页列表", tag = "bb6b8151-c999-4ad4-9f0a-7f6ae46cea8b")
+	public ResultListData page(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -223,7 +223,10 @@ public class ErrorLogController extends BaseOperateAuthController {
 			getterList.add(ErrorLog::getChannelNote);
 			getterList.add(ErrorLog::getStatus);
 			getterList.add(ErrorLog::getStatusNote);
+			getterList.add(ErrorLog::getId);
+			getterList.add(ErrorLog::getCreateOperatorId);
 			getterList.add(ErrorLog::getCreateTime);
+			getterList.add(ErrorLog::getUpdateOperatorId);
 			getterList.add(ErrorLog::getUpdateTime);
 
 			SerializableData data = SerializableData.toSerializableData(errorLog, getterList);

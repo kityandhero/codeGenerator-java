@@ -89,7 +89,7 @@ public class AccountController extends BaseOperateAuthController {
 		throw new RuntimeException("AccountService获取失败");
 	}
 
-	@ApiOperation(value = "账户列表", notes = "账户列表", httpMethod = "POST")
+	@ApiOperation(value = "账户分页列表", notes = "账户分页列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
@@ -101,9 +101,9 @@ public class AccountController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户列表", description = "账户列表", tag = "116c5994-2993-4904-8a1b-14ad8318d6b5")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户分页列表", description = "账户分页列表", tag = "116c5994-2993-4904-8a1b-14ad8318d6b5")
+	public ResultListData page(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
