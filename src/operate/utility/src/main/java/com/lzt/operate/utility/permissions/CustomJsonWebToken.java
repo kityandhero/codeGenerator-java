@@ -83,7 +83,7 @@ public class CustomJsonWebToken {
 			return new ExecutiveResult<>(ReturnDataCode.NoData.toMessage("无效Token"));
 		}
 
-		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
 
 		String token = request.getHeader(customJsonWebTokenConfig.getHeader());
 

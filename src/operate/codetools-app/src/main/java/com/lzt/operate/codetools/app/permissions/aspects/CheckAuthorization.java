@@ -77,7 +77,7 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 			String name = needAuthorization.name();
 			String description = needAuthorization.description();
 
-			HttpServletRequest request = RequestAssist.getHttpServletRequest();
+			HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
 
 			String relativePath = request.getRequestURI();
 

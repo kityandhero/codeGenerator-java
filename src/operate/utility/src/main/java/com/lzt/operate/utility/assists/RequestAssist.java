@@ -1,12 +1,12 @@
 package com.lzt.operate.utility.assists;
 
 import com.lzt.operate.utility.pojo.SerializableData;
-import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
 import java.util.Enumeration;
 
@@ -22,7 +22,7 @@ public class RequestAssist {
 	 *
 	 * @return 返回HttpServletRequest
 	 */
-	public static HttpServletRequest getHttpServletRequest() {
+	public static HttpServletRequest getCurrentHttpServletRequest() {
 		ServletRequestAttributes servletRequestAttributes = getServletRequestAttributes();
 		return servletRequestAttributes.getRequest();
 
@@ -44,7 +44,7 @@ public class RequestAssist {
 	 * @param request HttpServletRequest
 	 * @return SerializableData
 	 */
-	public static SerializableData getRequestHeaderData(@NonNull HttpServletRequest request) {
+	public static SerializableData getRequestHeaderData(@NotNull HttpServletRequest request) {
 		Enumeration<String> names = request.getHeaderNames();
 
 		SerializableData data = new SerializableData();
@@ -64,7 +64,7 @@ public class RequestAssist {
 	 * @param request HttpServletRequest
 	 * @return SerializableData
 	 */
-	public static SerializableData getRequestFormData(@NonNull HttpServletRequest request) {
+	public static SerializableData getRequestFormData(@NotNull HttpServletRequest request) {
 		Enumeration<String> names = request.getParameterNames();
 
 		SerializableData data = new SerializableData();
@@ -84,7 +84,7 @@ public class RequestAssist {
 	 * @param request HttpServletRequest
 	 * @return String
 	 */
-	public static String getRequestBody(@NonNull HttpServletRequest request) {
+	public static String getRequestBody(@NotNull HttpServletRequest request) {
 		StringBuilder stringBuilder = new StringBuilder();
 
 		try {
@@ -98,6 +98,47 @@ public class RequestAssist {
 		}
 
 		return stringBuilder.toString();
+	}
+
+	/**
+	 * 获取请求路径
+	 *
+	 * @param request HttpServletRequest
+	 * @return String
+	 */
+	public static String getRequestOriginalUrl(@NotNull HttpServletRequest request) {
+
+		String url = (request).getRequestURL().toString();
+
+		String queryString = request.getQueryString();
+
+		if (StringAssist.isNullOrEmpty(queryString)) {
+			return url;
+		}
+
+		return StringAssist.merge(url, "?", queryString);
+	}
+
+	/**
+	 * getCurrentRequestOriginalUrl
+	 *
+	 * @return String
+	 */
+	public static String getCurrentRequestRemoteAddress() {
+		HttpServletRequest request = getCurrentHttpServletRequest();
+
+		return request.getRemoteAddr();
+	}
+
+	/**
+	 * getCurrentRequestOriginalUrl
+	 *
+	 * @return String
+	 */
+	public static String getCurrentRequestOriginalUrl() {
+		HttpServletRequest request = getCurrentHttpServletRequest();
+
+		return getRequestOriginalUrl(request);
 	}
 
 }

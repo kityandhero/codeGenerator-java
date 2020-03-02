@@ -67,7 +67,7 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleHttpMessageNotReadableException(Exception e) {
 		log.error("参数解析失败", e);
 
-		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
 
 		this.recordErrorLog(e, request);
 
@@ -96,7 +96,7 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 		log.error("不支持当前请求方法", e);
 
-		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
 
 		this.recordErrorLog(e, request);
 
@@ -114,7 +114,7 @@ public abstract class BaseGlobalExceptionHandler {
 	public ResultSingleData handleException(Throwable e) {
 		log.error("服务运行异常", e);
 
-		HttpServletRequest request = RequestAssist.getHttpServletRequest();
+		HttpServletRequest request = RequestAssist.getCurrentHttpServletRequest();
 
 		this.recordErrorLog(e, request);
 

@@ -153,7 +153,7 @@ public class GlobalString {
 	//region
 
 	@ApiSingleParam(value = "一般日志标识", type = Long.class, example = "101")
-	public static final String GENERAL_LOG_ID = "errorLogId";
+	public static final String GENERAL_LOG_ID = "generalLogId";
 
 	@ApiSingleParam(value = "日志描述", example = "参数错误")
 	public static final String GENERAL_LOG_MESSAGE = "message";
