@@ -163,6 +163,18 @@ public class GlobalString {
 
 	//endregion
 
+	//region CUSTOM_CONFIG
+
+	@ApiSingleParam(value = "设置项标识", type = Long.class, example = "101")
+	public static final String CUSTOM_CONFIG_ID = "customConfigId";
+
+	@ApiSingleParam(value = "设置项类别", example = "10")
+	public static final String CUSTOM_CONFIG_CATEGORY = "category";
+
+	//endregion
+
+
+
 	//region OPERATOR_ROLE_CHANGE_COLLECTION
 
 	@ApiSingleParam(value = "账户标识", example = "test1")

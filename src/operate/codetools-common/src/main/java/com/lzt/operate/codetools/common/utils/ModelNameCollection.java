@@ -88,6 +88,16 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region CUSTOM_CONFIG 自定义设置
+
+	public static final String CUSTOM_CONFIG_LIST = "CUSTOM_CONFIG_LIST";
+
+	public static final String GENERAL_LOG_SET = "GENERAL_LOG_SET";
+
+	//endregion
+
+
+
 	/**
 	 * 打开数据库
 	 */
