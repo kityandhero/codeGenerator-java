@@ -19,14 +19,18 @@ import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
@@ -40,6 +44,10 @@ import java.util.stream.Collectors;
 /**
  * @author luzhitao
  */
+@RestController
+@EnableConfigurationProperties
+@RequestMapping("/business/customConfig")
+@Api(tags = {"设置项管理"})
 public class CustomConfigController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "模块管理/";
@@ -63,7 +71,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 		throw new RuntimeException("CustomConfigService获取失败");
 	}
 
-	@ApiOperation(value = "设置列表", notes = "设置列表", httpMethod = "POST")
+	@ApiOperation(value = "设置项列表", notes = "设置项列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.CUSTOM_CONFIG_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.CUSTOM_CONFIG_CATEGORY)},
 			result = @ApiJsonResult({}))
@@ -72,7 +80,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置列表", description = "设置列表", tag = "c44e3865-1fa0-48df-ad0a-bd3f79807a38")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置项列表", description = "设置项列表", tag = "c44e3865-1fa0-48df-ad0a-bd3f79807a38")
 	public ResultListData list(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
