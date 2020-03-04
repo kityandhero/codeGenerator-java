@@ -1,6 +1,8 @@
 server:
   port: 9090
 spring:
+  profiles:
+    active: dev
   #thymeleaf start
   thymeleaf:
     #开发时关闭缓存,不然没法看到实时页面
