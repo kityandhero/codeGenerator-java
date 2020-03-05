@@ -13,6 +13,22 @@ import java.util.stream.Collectors;
  */
 public class EnumAssist {
 
+	public static <T extends Enum<T>> Optional<T> getTargetValue(
+			Collection<T> valueCollection,
+			IGetter<T> targetGetter,
+			Object targetValue) {
+
+		for (T item : valueCollection) {
+			Object target = targetGetter.apply(item);
+
+			if (target.equals(targetValue)) {
+				return Optional.of(item);
+			}
+		}
+
+		return Optional.empty();
+	}
+
 	public static <T extends Enum<T>> boolean existTargetValue(
 			Collection<T> valueCollection,
 			IGetter<T> targetGetter,
@@ -25,7 +41,6 @@ public class EnumAssist {
 			IGetter<T> targetGetter,
 			Object targetValue,
 			Collection<T> excludeCollection) {
-
 		Collection<T> filteredCollection;
 
 		if (!excludeCollection.isEmpty()) {

@@ -17,7 +17,7 @@ import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
-import com.lzt.operate.utility.general.Constants;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
@@ -93,6 +93,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_PHONE),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_STATUS),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
@@ -114,7 +115,7 @@ public class AccountController extends BaseOperateAuthController {
 
 		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME);
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
-		Integer status = paramJson.getStringExByKey(GlobalString.ACCOUNT_STATUS, Constants.SEARCH_UNLIMITED_STRING)
+		Integer status = paramJson.getStringExByKey(GlobalString.ACCOUNT_STATUS, ConstantCollection.SEARCH_UNLIMITED_STRING)
 								  .toInt();
 
 		if (!StringAssist.isNullOrEmpty(name) && !EnumAssist.existTargetValue(Arrays.asList(AccountStatus.values()), AccountStatus::getValue, status)) {
@@ -139,7 +140,7 @@ public class AccountController extends BaseOperateAuthController {
 							.merge("%", name, "%")));
 				}
 
-				if (!status.equals(Constants.SEARCH_UNLIMITED_NUMBER)) {
+				if (!status.equals(ConstantCollection.SEARCH_UNLIMITED_NUMBER)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getStatus)), status));
 				}
 
@@ -226,9 +227,11 @@ public class AccountController extends BaseOperateAuthController {
 
 	@ApiOperation(value = "创建账户", notes = "创建账户信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_ADD_BASIC_INFO, value = {
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_PASSWORD),
+			@ApiJsonProperty(name = GlobalString.RE_PASSWORD),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_PHONE),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_DESCRIPTION)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
@@ -240,24 +243,22 @@ public class AccountController extends BaseOperateAuthController {
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
 		ParamData paramJson = getParamData(json);
 
-		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME).trim();
-
-		ExecutiveSimpleResult result = getAccountService().verifyUserName(userName);
-
-		if (!result.getSuccess()) {
-			return this.fail(result);
-		}
-
 		String password = paramJson.getStringByKey(GlobalString.ACCOUNT_PASSWORD);
 		String rePassword = paramJson.getStringByKey(GlobalString.RE_PASSWORD);
 
-		result = getAccountService().verifyPassword(password, rePassword, true);
+		ExecutiveSimpleResult result = getAccountService().verifyPassword(password, rePassword, true);
 
 		if (!result.getSuccess()) {
 			return this.fail(result);
 		}
 
-		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
+		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME).trim();
+
+		result = getAccountService().verifyUserName(userName);
+
+		if (!result.getSuccess()) {
+			return this.fail(result);
+		}
 
 		Optional<Account> existAccount = accountService.findByUserName(userName);
 
@@ -269,12 +270,15 @@ public class AccountController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.ACCOUNT_USERNAME, "登录名已存在");
 		}
 
+		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
+		String phone = paramJson.getStringByKey(GlobalString.ACCOUNT_PHONE);
 		String description = paramJson.getStringByKey(GlobalString.ACCOUNT_DESCRIPTION);
 
 		Account data = new Account();
 
 		data.setUserName(userName);
 		data.setName(name);
+		data.setPhone(phone);
 		data.setDescription(description);
 		data.setSlat(StringAssist.randomAlphanumeric(6)
 								 .toLowerCase());
@@ -295,6 +299,11 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_UPDATE_BASIC_INFO, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_ID),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_CITY_NAME),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_CITY_CODE),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_EMAIL),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_PHONE),
+			@ApiJsonProperty(name = GlobalString.ACCOUNT_AVATAR),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_DESCRIPTION)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
@@ -313,6 +322,11 @@ public class AccountController extends BaseOperateAuthController {
 		}
 
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
+		String cityName = paramJson.getStringByKey(GlobalString.ACCOUNT_CITY_NAME);
+		long cityCode = paramJson.getStringExByKey(GlobalString.ACCOUNT_CITY_CODE).toLong();
+		String email = paramJson.getStringByKey(GlobalString.ACCOUNT_EMAIL);
+		String phone = paramJson.getStringByKey(GlobalString.ACCOUNT_PHONE);
+		String avatar = paramJson.getStringByKey(GlobalString.ACCOUNT_AVATAR);
 		String description = paramJson.getStringByKey(GlobalString.ACCOUNT_DESCRIPTION);
 
 		Optional<Account> result = getAccountService().get(accountId);
@@ -321,6 +335,11 @@ public class AccountController extends BaseOperateAuthController {
 			Account data = result.get();
 
 			data.setName(name);
+			data.setCityName(cityName);
+			data.setCityCode(cityCode);
+			data.setEmail(email);
+			data.setPhone(phone);
+			data.setAvatar(avatar);
 			data.setDescription(description);
 
 			long operatorId = getOperatorId();

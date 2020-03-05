@@ -44,6 +44,36 @@ public class Account extends BaseEntity {
 	String description;
 
 	/**
+	 * 名称
+	 */
+	@Column(name = "city_name)")
+	String cityName;
+
+	/**
+	 * 名称
+	 */
+	@Column(name = "city_code)")
+	long cityCode;
+
+	/**
+	 * 名称
+	 */
+	@Column
+	String email;
+
+	/**
+	 * 名称
+	 */
+	@Column
+	String phone;
+
+	/**
+	 * 名称
+	 */
+	@Column
+	String avatar;
+
+	/**
 	 * 密码混淆值
 	 */
 	@Column(length = 50)
@@ -53,6 +83,13 @@ public class Account extends BaseEntity {
 		this.userName = "";
 		this.password = "";
 		this.name = "";
+		this.description = "";
+		this.cityName = "";
+		this.cityCode = 0;
+		this.email = "";
+		this.phone = "";
+		this.avatar = "";
+		this.slat = "";
 	}
 
 	public String getUserName() {
@@ -85,6 +122,46 @@ public class Account extends BaseEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public long getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(long cityCode) {
+		this.cityCode = cityCode;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public String getSlat() {

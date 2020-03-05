@@ -17,7 +17,7 @@ import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
-import com.lzt.operate.utility.general.Constants;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
@@ -111,10 +111,11 @@ public class ErrorLogController extends BaseOperateAuthController {
 		pageSize = Math.max(pageSize, 1);
 
 		String message = paramJson.getStringByKey(GlobalString.ERROR_LOG_MESSAGE);
-		Integer channel = paramJson.getStringExByKey(GlobalString.ERROR_LOG_CHANNEL, Constants.SEARCH_UNLIMITED_STRING)
+		Integer channel = paramJson.getStringExByKey(GlobalString.ERROR_LOG_CHANNEL, ConstantCollection.SEARCH_UNLIMITED_STRING)
 								   .toInt();
 
-		if (!channel.equals(Constants.SEARCH_UNLIMITED_NUMBER) && !EnumAssist.existTargetValue(Arrays.asList(Channel.values()), Channel::getFlag, channel)) {
+		if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_NUMBER) && !EnumAssist.existTargetValue(Arrays.asList(Channel
+				.values()), Channel::getFlag, channel)) {
 			return this.pageDataEmpty(pageSize);
 		}
 
@@ -131,7 +132,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 							.merge("%", message, "%")));
 				}
 
-				if (!channel.equals(Constants.SEARCH_UNLIMITED_NUMBER)) {
+				if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_NUMBER)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getStatus)), channel));
 				}
 

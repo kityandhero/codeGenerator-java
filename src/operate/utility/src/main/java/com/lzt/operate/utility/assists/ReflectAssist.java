@@ -1,6 +1,6 @@
 package com.lzt.operate.utility.assists;
 
-import com.lzt.operate.utility.general.Constants;
+import com.lzt.operate.utility.general.ConstantCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public class ReflectAssist {
 	 */
 	public static <T> String getFriendlyIdName(Class<T> clazz) {
 		return StringAssist.merge(StringAssist.toFirstLower(clazz
-				.getSimpleName()), Constants.ENTIRY_ID_FIRST_UPPER);
+				.getSimpleName()), ConstantCollection.ENTIRY_ID_FIRST_UPPER);
 	}
 
 }

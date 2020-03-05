@@ -2,12 +2,15 @@ package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.CustomConfigCollection;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.CustomConfigService;
 import com.lzt.operate.codetools.dao.service.impl.CustomConfigServiceImpl;
 import com.lzt.operate.codetools.entities.CustomConfig;
+import com.lzt.operate.custommessagequeue.custommessagequeue.customconfig.CustomConfigProducer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.customconfig.CustomConfigProducerFactory;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -99,7 +102,20 @@ public class CustomConfigController extends BaseOperateAuthController {
 			return predicate;
 		});
 
-		List<SerializableData> list = customConfigList
+		List<CustomConfig> customConfigSourceList = this.getCustomConfigService().listSource(category);
+
+		customConfigSourceList = customConfigSourceList.stream().map(source -> {
+
+			for (CustomConfig c : customConfigList) {
+				if (source.getUuid().equals(c.getUuid())) {
+					return c;
+				}
+			}
+
+			return source;
+		}).collect(Collectors.toList());
+
+		List<SerializableData> list = customConfigSourceList
 				.stream()
 				.map(o -> {
 					List<IGetter<CustomConfig>> getterList = new ArrayList<>();
@@ -125,6 +141,36 @@ public class CustomConfigController extends BaseOperateAuthController {
 				.collect(Collectors.toList());
 
 		return this.listData(list);
+	}
+
+	@ApiOperation(value = "获取错误日志", notes = "获取错误日志信息", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.CUSTOM_CONFIG_SET, value = {
+			@ApiJsonProperty(name = GlobalString.CUSTOM_CONFIG_UUID),
+			@ApiJsonProperty(name = GlobalString.CUSTOM_CONFIG_VALUE)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CUSTOM_CONFIG_SET)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志详情", description = "获取错误日志信息", tag = "a0664bb2-75ff-406b-9463-9e5aae7af56e")
+	public BaseResultData set(@RequestBody Map<String, Serializable> json) {
+		ParamData paramJson = getParamData(json);
+
+		String uuid = paramJson.getStringByKey(GlobalString.CUSTOM_CONFIG_UUID);
+		String value = paramJson.getStringByKey(GlobalString.CUSTOM_CONFIG_VALUE);
+
+		CustomConfig customConfig = new CustomConfig();
+
+		customConfig.setUuid(uuid);
+		customConfig.setValue(value);
+		customConfig.setChannel(Channel.CodeTools);
+
+		CustomConfigProducer customConfigProducer = CustomConfigProducerFactory.getInstance().getProducer();
+
+		customConfigProducer.push(customConfig);
+
+		return this.success();
 	}
 
 }

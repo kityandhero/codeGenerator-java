@@ -94,7 +94,22 @@ public class GlobalString {
 	@ApiSingleParam(value = "姓名", example = "张三")
 	public static final String ACCOUNT_NAME = "name";
 
-	@ApiSingleParam(value = "姓名", example = "张三")
+	@ApiSingleParam(value = "所在地区", example = "北京")
+	public static final String ACCOUNT_CITY_NAME = "cityName";
+
+	@ApiSingleParam(value = "地区代码", example = "100000000")
+	public static final String ACCOUNT_CITY_CODE = "cityCode";
+
+	@ApiSingleParam(value = "电子邮箱", example = "XXX@XXX.com")
+	public static final String ACCOUNT_EMAIL = "email";
+
+	@ApiSingleParam(value = "联系方式", example = "15612562365")
+	public static final String ACCOUNT_PHONE = "phone";
+
+	@ApiSingleParam(value = "头像", example = "http://XXX/user.png")
+	public static final String ACCOUNT_AVATAR = "avatar";
+
+	@ApiSingleParam(value = "姓名", example = "张三的简介")
 	public static final String ACCOUNT_DESCRIPTION = "description";
 
 	@ApiSingleParam(value = "状态", example = "1")
@@ -171,9 +186,13 @@ public class GlobalString {
 	@ApiSingleParam(value = "设置项类别", example = "10")
 	public static final String CUSTOM_CONFIG_CATEGORY = "category";
 
+	@ApiSingleParam(value = "uuid标记", example = "e111b44a-aa06-4adb-b082-229bb11ab6e7")
+	public static final String CUSTOM_CONFIG_UUID = "uuid";
+
+	@ApiSingleParam(value = "设置项值", example = "1")
+	public static final String CUSTOM_CONFIG_VALUE = "value";
+
 	//endregion
-
-
 
 	//region OPERATOR_ROLE_CHANGE_COLLECTION
 

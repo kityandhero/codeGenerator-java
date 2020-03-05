@@ -92,11 +92,9 @@ public class ModelNameCollection {
 
 	public static final String CUSTOM_CONFIG_LIST = "CUSTOM_CONFIG_LIST";
 
-	public static final String GENERAL_LOG_SET = "GENERAL_LOG_SET";
+	public static final String CUSTOM_CONFIG_SET = "CUSTOM_CONFIG_SET";
 
 	//endregion
-
-
 
 	/**
 	 * 打开数据库

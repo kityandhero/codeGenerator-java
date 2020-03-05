@@ -3,7 +3,7 @@ package com.lzt.operate.utility.general;
 /**
  * @author luzhitao
  */
-public class Constants {
+public class ConstantCollection {
 
 	/**
 	 * 搜索条件不限

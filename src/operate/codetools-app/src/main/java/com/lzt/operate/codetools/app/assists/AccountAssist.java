@@ -15,7 +15,7 @@ import com.lzt.operate.codetools.entities.bases.BaseRole;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
-import com.lzt.operate.utility.general.Constants;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.BaseOperator;
 import com.lzt.operate.utility.pojo.Competence;
@@ -232,8 +232,8 @@ public class AccountAssist {
 			if (role.getWhetherSuper().equals(WhetherSuper.Yes.getValue())) {
 				Competence c = new Competence();
 
-				c.setName(Constants.SUPER_ROLE_NAME);
-				c.setTag(Constants.SUPER_ROLE_TAG);
+				c.setName(ConstantCollection.SUPER_ROLE_NAME);
+				c.setTag(ConstantCollection.SUPER_ROLE_TAG);
 
 				ceList.add(c);
 			} else {
@@ -510,7 +510,7 @@ public class AccountAssist {
 		List<Competence> competenceList = getCompetenceCollection(accountId);
 
 		for (Competence c : competenceList) {
-			if (c.getTag().equals(tag) || c.getTag().equals(Constants.SUPER_ROLE_TAG)) {
+			if (c.getTag().equals(tag) || c.getTag().equals(ConstantCollection.SUPER_ROLE_TAG)) {
 				return true;
 			}
 		}

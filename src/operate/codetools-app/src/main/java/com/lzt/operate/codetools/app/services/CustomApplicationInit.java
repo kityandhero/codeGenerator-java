@@ -23,6 +23,8 @@ import com.lzt.operate.codetools.entities.GeneralLog;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayQueueRunner;
+import com.lzt.operate.custommessagequeue.custommessagequeue.customconfig.CustomConfigConsumer;
+import com.lzt.operate.custommessagequeue.custommessagequeue.customconfig.CustomConfigQueueRunner;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogQueueRunner;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogConsumer;
@@ -31,18 +33,15 @@ import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralL
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
-import com.lzt.operate.utility.general.Constants;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.secret.Md5Assist;
 import com.lzt.operate.utility.services.bases.BaseCustomApplicationInit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.concurrent.ThreadFactory;
 
@@ -133,10 +132,10 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	public void init() {
 		this.checkSuperRoleCompleteness();
 		this.checkExistAnyAccount();
-		this.checkDataIntegrity();
 		this.startAccessWayRunner();
 		this.startErrorLogRunner();
 		this.startGeneralLogRunner();
+		this.startCustomConfigRunner();
 		this.openOperationPanel();
 		this.recordStartLog();
 	}
@@ -152,7 +151,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		if (!exist) {
 			RoleUniversal roleUniversal = new RoleUniversal();
 
-			roleUniversal.setName(Constants.SUPER_ROLE_NAME);
+			roleUniversal.setName(ConstantCollection.SUPER_ROLE_NAME);
 			roleUniversal.setWhetherSuper(WhetherSuper.Yes.getValue());
 			roleUniversal.setChannel(Channel.CodeTools);
 			roleUniversal.setStatus(RoleUniversalStatus.Enabled, RoleUniversalStatus::getValue, RoleUniversalStatus::getName);
@@ -176,10 +175,10 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			try {
 				Account account = new Account();
 
-				account.setUserName(Constants.DEFAULT_OPERATOR_USER_NAME);
+				account.setUserName(ConstantCollection.DEFAULT_OPERATOR_USER_NAME);
 				account.setSlat(StringAssist.randomAlphanumeric(6)
 											.toLowerCase());
-				account.setPassword(Md5Assist.toMd5(Constants.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
+				account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
 				account.setChannel(Channel.CodeTools);
 				account.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
 				account.setCreateOperatorId(OperatorCollection.System.getId());
@@ -195,57 +194,6 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				CustomApplicationInit.log.error("创建默认账户失败", e);
 
 				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * 检测配饰数据的完整性
-	 */
-	private void checkDataIntegrity() {
-		this.checkLoginConfig();
-	}
-
-	/**
-	 * 检测时候启用账户登陆设置
-	 */
-	private void checkLoginConfig() {
-		final String needLogin = "needLogin";
-
-		CustomConfig customConfig = new CustomConfig();
-		customConfig.setName(needLogin);
-
-		ExampleMatcher matcher = ExampleMatcher.matching()
-											   .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase())
-											   .withIgnorePaths("createTime", "value", "description");
-
-		Example<CustomConfig> example = Example.of(customConfig, matcher);
-
-		Optional<CustomConfig> result = this.getCustomConfigService().findOne(example);
-
-		if (!result.isPresent()) {
-			customConfig = new CustomConfig();
-
-			customConfig.setName(needLogin);
-			customConfig.setValue("");
-			customConfig.setDescription("请设置是否需要登陆使用，如数据需要保密，请启用账户登陆");
-			customConfig.setCreateOperatorId(OperatorCollection.System.getId());
-			customConfig.setUpdateOperatorId(OperatorCollection.System.getId());
-
-			this.getCustomConfigService().save(customConfig);
-		} else {
-			String value = customConfig.getValue();
-
-			HashSet<String> set = new HashSet<>();
-
-			set.add("");
-			set.add("0");
-			set.add("1");
-
-			if (!set.contains(value)) {
-				customConfig.setValue("");
-
-				this.getCustomConfigService().save(customConfig);
 			}
 		}
 	}
@@ -291,6 +239,19 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	/**
+	 * startErrorLogRunner
+	 */
+	private void startCustomConfigRunner() {
+		CustomConfigQueueRunner runner = new CustomConfigQueueRunner(this.getCustomConfigService(), new CustomConfigConsumer());
+
+		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("customConfig").build();
+
+		Thread t = factory.newThread(runner);
+
+		t.start();
+	}
+
+	/**
 	 * 打开操作面板
 	 */
 	private void openOperationPanel() {
@@ -308,18 +269,24 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		Optional<CustomConfig> optional = this.getCustomConfigService()
 											  .findByUuid(CustomConfigCollection.RecordStartLog.getUuid());
 
+		boolean recordLog;
+
 		if (optional.isPresent()) {
 			CustomConfig customConfig = optional.get();
 
-			if (customConfig.getValue().equals(Constants.YES_STRING)) {
-				GeneralLogProducer producer = GeneralLogProducerFactory.getInstance().getProducer();
+			recordLog = customConfig.getValue().equals(ConstantCollection.YES_STRING);
+		} else {
+			recordLog = CustomConfigCollection.RecordStartLog.getDefaultValue().equals(ConstantCollection.YES_STRING);
+		}
 
-				GeneralLog generalLog = new GeneralLog();
+		if (recordLog) {
+			GeneralLogProducer producer = GeneralLogProducerFactory.getInstance().getProducer();
 
-				generalLog.setMessage("codeTools App 启动");
+			GeneralLog generalLog = new GeneralLog();
 
-				producer.push(generalLog);
-			}
+			generalLog.setMessage("codeTools App 启动");
+
+			producer.push(generalLog);
 		}
 	}
 

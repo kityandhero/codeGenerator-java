@@ -10,6 +10,11 @@ public enum CustomConfigCategory {
 	/**
 	 * 日志记录
 	 */
+	Common(1, "一般设置", "一般设置"),
+
+	/**
+	 * 日志记录
+	 */
 	Log(10, "日志记录", "日志记录相关");
 
 	/**
