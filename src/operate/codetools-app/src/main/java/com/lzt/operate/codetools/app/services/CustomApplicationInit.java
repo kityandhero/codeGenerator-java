@@ -15,11 +15,14 @@ import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.dao.service.CustomConfigService;
 import com.lzt.operate.codetools.dao.service.ErrorLogService;
 import com.lzt.operate.codetools.dao.service.GeneralLogService;
+import com.lzt.operate.codetools.dao.service.HelpCategoryService;
 import com.lzt.operate.codetools.dao.service.RoleCodeToolsService;
 import com.lzt.operate.codetools.dao.service.RoleUniversalService;
+import com.lzt.operate.codetools.dao.service.impl.HelpCategoryServiceImpl;
 import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.codetools.entities.CustomConfig;
 import com.lzt.operate.codetools.entities.GeneralLog;
+import com.lzt.operate.codetools.entities.HelpCategory;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayQueueRunner;
@@ -63,6 +66,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	private AccessWayService accessWayService;
 	private ErrorLogService errorLogService;
 	private GeneralLogService generalLogService;
+	private HelpCategoryService helpCategoryService;
 
 	@Autowired
 	public CustomApplicationInit(
@@ -75,7 +79,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			CustomConfigService customConfigService,
 			AccessWayService accessWayService,
 			ErrorLogService errorLogService,
-			GeneralLogService generalLogService) {
+			GeneralLogService generalLogService,
+			HelpCategoryServiceImpl helpCategoryService) {
 
 		this.environment = environment;
 
@@ -90,6 +95,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.accessWayService = accessWayService;
 		this.errorLogService = errorLogService;
 		this.generalLogService = generalLogService;
+		this.helpCategoryService = helpCategoryService;
 	}
 
 	public CustomConfigService getCustomConfigService() {
@@ -132,6 +138,16 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		throw new RuntimeException("GeneralLogService获取失败");
 	}
 
+	public HelpCategoryService getHelpCategoryService() {
+		Optional<HelpCategoryService> optional = Optional.ofNullable(this.helpCategoryService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("HelpCategoryService获取失败");
+	}
+
 	@Override
 	public void init() {
 		this.checkSuperRoleCompleteness();
@@ -142,6 +158,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.startCustomConfigRunner();
 		this.openOperationPanel();
 		this.recordStartLog();
+		this.checkHelpCategory();
 	}
 
 	/**
@@ -310,6 +327,22 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			generalLog.setMessage("codeTools App 启动");
 
 			producer.push(generalLog);
+		}
+	}
+
+	/**
+	 * 检测默认帮助分类
+	 */
+	private void checkHelpCategory() {
+		Long helpCategoryCount = this.getHelpCategoryService().count();
+
+		if (helpCategoryCount.equals(ConstantCollection.ZERO_LONG)) {
+			HelpCategory helpCategory = new HelpCategory();
+
+			helpCategory.setName("未分类");
+			helpCategory.setDescription("");
+
+			this.getHelpCategoryService().save(helpCategory);
 		}
 	}
 

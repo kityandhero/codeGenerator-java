@@ -38,6 +38,8 @@ public class ConstantCollection {
 
 	public static final int NO_INT = 0;
 
+	public static final Long ZERO_LONG = 0L;
+
 	/**
 	 * 超级管理员名称
 	 */
@@ -54,8 +56,8 @@ public class ConstantCollection {
 
 	public static final String DEFAULT_OPERATOR_PASSWORD = "123456";
 
-	public static final String ENTIRY_ID = "id";
+	public static final String ENTITY_ID = "id";
 
-	public static final String ENTIRY_ID_FIRST_UPPER = "Id";
+	public static final String ENTITY_ID_FIRST_UPPER = "Id";
 
 }

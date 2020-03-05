@@ -80,7 +80,7 @@ public class ReflectAssist {
 	 */
 	public static <T> String getFriendlyIdName(Class<T> clazz) {
 		return StringAssist.merge(StringAssist.toFirstLower(clazz
-				.getSimpleName()), ConstantCollection.ENTIRY_ID_FIRST_UPPER);
+				.getSimpleName()), ConstantCollection.ENTITY_ID_FIRST_UPPER);
 	}
 
 }
