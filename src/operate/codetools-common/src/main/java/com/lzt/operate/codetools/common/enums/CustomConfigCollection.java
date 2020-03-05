@@ -15,6 +15,18 @@ public enum CustomConfigCollection {
 	/**
 	 * 记录启用日志
 	 */
+	AutoOpenOperatePanel(
+			"e7cdc419-6217-4ae0-a813-4daaba5ce245",
+			"自动打开Web操作面板",
+			CustomConfigCategory.Common,
+			boolean.class.getTypeName(),
+			Arrays.asList(ConstantCollection.NO_STRING, ConstantCollection.YES_STRING),
+			ConstantCollection.YES_STRING,
+			"启动后是否自动打开Web操作面板"),
+
+	/**
+	 * 记录启用日志
+	 */
 	NeedLogin(
 			"d4f21d37-c35d-48cb-ac1c-843bc0dacc87",
 			"需要登录使用",

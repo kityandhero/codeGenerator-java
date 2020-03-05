@@ -38,6 +38,7 @@ import com.lzt.operate.utility.secret.Md5Assist;
 import com.lzt.operate.utility.services.bases.BaseCustomApplicationInit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -54,18 +55,18 @@ import java.util.concurrent.ThreadFactory;
 @Slf4j
 public class CustomApplicationInit extends BaseCustomApplicationInit {
 
+	final
+	Environment environment;
+
 	private AccountAssist accountAssist;
-
 	private CustomConfigService customConfigService;
-
 	private AccessWayService accessWayService;
-
 	private ErrorLogService errorLogService;
-
 	private GeneralLogService generalLogService;
 
 	@Autowired
 	public CustomApplicationInit(
+			Environment environment,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
 			AccountService accountService,
 			AccountRoleService accountRoleService,
@@ -75,6 +76,9 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			AccessWayService accessWayService,
 			ErrorLogService errorLogService,
 			GeneralLogService generalLogService) {
+
+		this.environment = environment;
+
 		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
 				accountService,
@@ -176,6 +180,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				Account account = new Account();
 
 				account.setUserName(ConstantCollection.DEFAULT_OPERATOR_USER_NAME);
+				account.setName(ConstantCollection.DEFAULT_OPERATOR_NAME);
 				account.setSlat(StringAssist.randomAlphanumeric(6)
 											.toLowerCase());
 				account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
@@ -255,10 +260,28 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 打开操作面板
 	 */
 	private void openOperationPanel() {
-		try {
-			CommandUtil.browse(new URI("http://localhost:9090/index.html"));
-		} catch (Exception e) {
-			e.printStackTrace();
+		Optional<CustomConfig> optional = this.getCustomConfigService()
+											  .findByUuid(CustomConfigCollection.AutoOpenOperatePanel.getUuid());
+
+		boolean autoOpenOperationPanel;
+
+		if (optional.isPresent()) {
+			CustomConfig customConfig = optional.get();
+
+			autoOpenOperationPanel = customConfig.getValue().equals(ConstantCollection.YES_STRING);
+		} else {
+			autoOpenOperationPanel = CustomConfigCollection.AutoOpenOperatePanel.getDefaultValue()
+																				.equals(ConstantCollection.YES_STRING);
+		}
+
+		if (autoOpenOperationPanel) {
+			try {
+				String port = environment.getProperty("local.server.port");
+
+				CommandUtil.browse(new URI(StringAssist.merge("http://localhost:", port, "/index.html")));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

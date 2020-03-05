@@ -40,19 +40,13 @@ public class Account extends BaseEntity {
 	/**
 	 * 名称
 	 */
-	@Column(length = 300)
-	String description;
-
-	/**
-	 * 名称
-	 */
-	@Column(name = "city_name)")
+	@Column(name = "city_name")
 	String cityName;
 
 	/**
 	 * 名称
 	 */
-	@Column(name = "city_code)")
+	@Column(name = "city_code")
 	long cityCode;
 
 	/**
@@ -72,6 +66,12 @@ public class Account extends BaseEntity {
 	 */
 	@Column
 	String avatar;
+
+	/**
+	 * 名称
+	 */
+	@Column(length = 300)
+	String description;
 
 	/**
 	 * 密码混淆值

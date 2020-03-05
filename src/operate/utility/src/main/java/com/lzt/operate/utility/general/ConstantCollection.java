@@ -50,6 +50,8 @@ public class ConstantCollection {
 
 	public static final String DEFAULT_OPERATOR_USER_NAME = "admin";
 
+	public static final String DEFAULT_OPERATOR_NAME = "管理员";
+
 	public static final String DEFAULT_OPERATOR_PASSWORD = "123456";
 
 	public static final String ENTIRY_ID = "id";

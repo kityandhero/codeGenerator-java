@@ -20,6 +20,9 @@ public class GlobalString {
 	@ApiSingleParam(value = "页条目数", example = "10")
 	public static final String LIST_PAGE_SIZE = "pageSize";
 
+	@ApiSingleParam(value = "原始密码", example = "111111")
+	public static final String ORIGINAL_PASSWORD = "originalPassword";
+
 	@ApiSingleParam(value = "验证密码", example = "123456")
 	public static final String RE_PASSWORD = "rePassword";
 

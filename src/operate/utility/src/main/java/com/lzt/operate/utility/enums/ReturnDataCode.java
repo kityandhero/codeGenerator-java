@@ -128,6 +128,11 @@ public enum ReturnDataCode {
 	/**
 	 * 无可用数据
 	 */
+	PasswordNotMatch(3001, "密码不匹配", false),
+
+	/**
+	 * 无可用数据
+	 */
 	Exception(5001, "程序异常", false),
 
 	/**
