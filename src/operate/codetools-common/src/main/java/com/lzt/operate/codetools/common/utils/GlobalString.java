@@ -197,6 +197,32 @@ public class GlobalString {
 
 	//endregion
 
+	//region HELP_CATEGORY
+
+	@ApiSingleParam(value = "帮助列别标识", type = Long.class, example = "101")
+	public static final String HELP_CATEGORY_ID = "helpCategoryId";
+
+	@ApiSingleParam(value = "名称", example = "10")
+	public static final String HELP_CATEGORY_NAME = "name";
+
+	//endregion
+
+	//region CUSTOM_CONFIG
+
+	@ApiSingleParam(value = "帮助标识", type = Long.class, example = "101")
+	public static final String HELP_ID = "helpId";
+
+	@ApiSingleParam(value = "标题", example = "帮助标题")
+	public static final String HELP_TITLE = "title";
+
+	@ApiSingleParam(value = "标识标识", type = Long.class, example = "1")
+	public static final String HELP_HELP_CATEGORY_ID = "helpCategoryId";
+
+	@ApiSingleParam(value = "简介描述", example = "帮助简介")
+	public static final String HELP_DESCRIPTION = "description";
+
+	//endregion
+
 	//region OPERATOR_ROLE_CHANGE_COLLECTION
 
 	@ApiSingleParam(value = "账户标识", example = "test1")

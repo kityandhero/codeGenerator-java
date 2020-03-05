@@ -24,38 +24,50 @@ public class Help extends BaseEntity {
 	 * 名称
 	 */
 	@Column
-	private
-	String name;
+	private String title;
+
+	/**
+	 * 名称
+	 */
+	@Column(name = "help_category_id")
+	private int helpCategoryId;
 
 	/**
 	 * 简介描述
 	 */
 	@Column
-	private
-	String description;
+	private String description;
 
 	/**
 	 * 简介描述
 	 */
 	@Lob
 	@Column
-	private
-	String content;
+	private String content;
 
 	public Help() {
 		super();
 
-		this.name = "";
+		this.title = "";
+		this.helpCategoryId = 0;
 		this.description = "";
 		this.content = "";
 	}
 
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String name) {
+		this.title = name;
+	}
+
+	public int getHelpCategoryId() {
+		return helpCategoryId;
+	}
+
+	public void setHelpCategoryId(int helpCategoryId) {
+		this.helpCategoryId = helpCategoryId;
 	}
 
 	public String getDescription() {

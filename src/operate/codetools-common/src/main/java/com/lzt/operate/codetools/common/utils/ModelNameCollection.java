@@ -96,6 +96,22 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region HELP_CATEGORY 帮助信息类别
+
+	public static final String HELP_CATEGORY_LIST = "HELP_CATEGORY_LIST";
+
+	public static final String HELP_CATEGORY_GET = "HELP_CATEGORY_GET";
+
+	//endregion
+
+	//region HELP 帮助信息类别
+
+	public static final String HELP_LIST = "HELP_LIST";
+
+	public static final String HELP_GET = "HELP_GET";
+
+	//endregion
+
 	/**
 	 * 打开数据库
 	 */
