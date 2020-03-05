@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.web.controllers;
 
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultDataFactory;
@@ -132,7 +133,7 @@ public class BaseController implements ErrorController {
 		data.append("paramName", paramName);
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage());
+		return ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage(StringAssist.merge("参数：", paramName, "【", description, "】")), data);
 	}
 
 	protected ResultSingleData noDataError() {
@@ -144,7 +145,7 @@ public class BaseController implements ErrorController {
 
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.NoData.toMessage());
+		return ResultDataFactory.failData(ReturnDataCode.NoData.toMessage(description));
 	}
 
 	protected ResultSingleData exceptionError(Exception e) {

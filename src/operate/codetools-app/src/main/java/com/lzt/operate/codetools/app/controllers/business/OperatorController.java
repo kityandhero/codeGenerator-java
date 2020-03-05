@@ -205,7 +205,7 @@ public class OperatorController extends BaseOperateAuthController {
 			Account data = optional.get();
 
 			if (!data.getPassword().equals(Md5Assist.toMd5(originalPassword, data.getSlat()))) {
-				this.fail(ReturnDataCode.PasswordNotMatch.toMessage().toMessage("原密码错误"));
+				return this.fail(ReturnDataCode.PasswordNotMatch.toMessage().toMessage("原密码错误"));
 			}
 
 			data.setPassword(Md5Assist.toMd5(password, data.getSlat()));
