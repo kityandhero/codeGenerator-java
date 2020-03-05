@@ -7,6 +7,7 @@ import com.lzt.operate.codetools.app.util.CommandUtil;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.CustomConfigCollection;
+import com.lzt.operate.codetools.common.enums.HelpCategoryStatus;
 import com.lzt.operate.codetools.common.enums.RoleUniversalStatus;
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
 import com.lzt.operate.codetools.dao.service.AccessWayService;
@@ -341,6 +342,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 			helpCategory.setName("未分类");
 			helpCategory.setDescription("");
+			helpCategory.setChannel(Channel.CodeTools);
+			helpCategory.setStatus(HelpCategoryStatus.Enabled, HelpCategoryStatus::getValue, HelpCategoryStatus::getName);
 
 			this.getHelpCategoryService().save(helpCategory);
 		}
