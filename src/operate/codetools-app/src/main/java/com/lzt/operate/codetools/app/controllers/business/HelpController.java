@@ -176,11 +176,14 @@ public class HelpController extends BaseOperateAuthController {
 											})
 											.collect(Collectors.toList());
 
+		int pageIndex = result.getNumber();
+		long totalPages = result.getTotalPages();
+
 		SerializableData extra = new SerializableData();
 
 		extra.append("helpCategoryName", helpCategoryName);
 
-		return this.listData(list, extra);
+		return this.pageData(list, pageIndex, pageSize, totalPages, extra);
 	}
 
 	@ApiOperation(value = "帮助类别详情", notes = "帮助类别详情", httpMethod = "POST")
