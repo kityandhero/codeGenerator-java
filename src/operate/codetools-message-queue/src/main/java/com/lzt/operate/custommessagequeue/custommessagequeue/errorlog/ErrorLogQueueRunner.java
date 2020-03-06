@@ -43,7 +43,7 @@ public class ErrorLogQueueRunner implements Runnable {
 					errorLog.setUpdateTime(LocalDateTime.now());
 
 					this.errorLogService.save(errorLog);
-
+				} else {
 					Thread.sleep(1000);
 				}
 			} catch (Exception e) {

@@ -72,7 +72,7 @@ public class CustomConfigQueueRunner implements Runnable {
 							}
 						}
 					}
-
+				} else {
 					Thread.sleep(1000);
 				}
 			} catch (Exception e) {

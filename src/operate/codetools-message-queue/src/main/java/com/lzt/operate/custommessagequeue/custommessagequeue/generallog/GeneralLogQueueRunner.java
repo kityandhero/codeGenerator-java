@@ -43,7 +43,7 @@ public class GeneralLogQueueRunner implements Runnable {
 					generalLog.setUpdateTime(LocalDateTime.now());
 
 					this.generalLogService.save(generalLog);
-
+				} else {
 					Thread.sleep(1000);
 				}
 			} catch (Exception e) {
