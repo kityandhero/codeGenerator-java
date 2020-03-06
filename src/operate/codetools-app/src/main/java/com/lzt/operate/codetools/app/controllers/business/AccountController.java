@@ -140,7 +140,7 @@ public class AccountController extends BaseOperateAuthController {
 							.merge("%", name, "%")));
 				}
 
-				if (!status.equals(ConstantCollection.SEARCH_UNLIMITED_NUMBER)) {
+				if (!status.equals(ConstantCollection.SEARCH_UNLIMITED_INT)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getStatus)), status));
 				}
 

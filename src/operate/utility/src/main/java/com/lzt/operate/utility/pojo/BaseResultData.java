@@ -14,12 +14,9 @@ import java.util.Optional;
  */
 public abstract class BaseResultData implements Serializable {
 
-	private static final long serialVersionUID = 7488513125692159039L;
-
 	public static final int CODE_ACCESS_SUCCESS = 200;
-
 	public static final String MESSAGE_ACCESS_SUCCESS = "OK";
-
+	private static final long serialVersionUID = 7488513125692159039L;
 	@ApiModelProperty(notes = "返回码", example = "200", position = 1)
 	public int code;
 
@@ -46,7 +43,7 @@ public abstract class BaseResultData implements Serializable {
 		this.extra = new SerializableData();
 	}
 
-	BaseResultData(@NonNull ReturnMessage returnMessage, SerializableData extra) {
+	BaseResultData(@NonNull ReturnMessage returnMessage, Serializable extra) {
 		this.code = returnMessage.getCode();
 		this.success = returnMessage.getSuccess();
 		this.message = returnMessage.getMessage();

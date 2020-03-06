@@ -23,14 +23,6 @@ public class ResultSingleData extends BaseResultData {
 		this.data = new SerializableData();
 	}
 
-	public Serializable getData() {
-		return data;
-	}
-
-	public void setData(Serializable data) {
-		this.data = data;
-	}
-
 	ResultSingleData(int code, boolean success, String message) {
 		super(code, success, message);
 	}
@@ -43,17 +35,25 @@ public class ResultSingleData extends BaseResultData {
 		this(returnMessage, new SerializableData());
 	}
 
-	public ResultSingleData(ReturnDataCode returnDataCode, SerializableData data) {
+	public ResultSingleData(ReturnDataCode returnDataCode, Serializable data) {
 		this(returnDataCode.toMessage(), data, new SerializableData());
 	}
 
-	public ResultSingleData(ReturnMessage returnMessage, SerializableData data) {
+	public ResultSingleData(ReturnMessage returnMessage, Serializable data) {
 		this(returnMessage, data, new SerializableData());
 	}
 
-	ResultSingleData(ReturnMessage returnMessage, SerializableData data, SerializableData extra) {
+	ResultSingleData(ReturnMessage returnMessage, Serializable data, Serializable extra) {
 		super(returnMessage, extra);
 
+		this.data = data;
+	}
+
+	public Serializable getData() {
+		return data;
+	}
+
+	public void setData(Serializable data) {
 		this.data = data;
 	}
 }

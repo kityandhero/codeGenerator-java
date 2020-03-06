@@ -28,21 +28,21 @@ public class ResultListData extends BaseResultData {
 		this(returnMessage, new ArrayList<>());
 	}
 
+	private ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list) {
+		this(returnMessage, list, new SerializableData());
+	}
+
+	ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list, Serializable extra) {
+		super(returnMessage, extra);
+
+		this.list = list;
+	}
+
 	public List<? extends Serializable> getList() {
 		return list;
 	}
 
 	public void setList(List<? extends Serializable> list) {
-		this.list = list;
-	}
-
-	private ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list) {
-		this(returnMessage, list, new SerializableData());
-	}
-
-	ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list, SerializableData extra) {
-		super(returnMessage, extra);
-
 		this.list = list;
 	}
 }

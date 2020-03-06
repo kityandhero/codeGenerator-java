@@ -3,6 +3,7 @@ package com.lzt.operate.utility.pojo;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import org.springframework.lang.NonNull;
 
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
@@ -22,7 +23,7 @@ public class ResultDataFactory {
 		return new ResultSingleData(returnDataCode, new SerializableData(), new SerializableData());
 	}
 
-	public static ResultSingleData failData(@NonNull ReturnMessage returnMessage, SerializableData data) {
+	public static <T extends Serializable> ResultSingleData failData(@NonNull ReturnMessage returnMessage, T data) {
 		return new ResultSingleData(returnMessage, data, new SerializableData());
 	}
 
@@ -38,7 +39,7 @@ public class ResultDataFactory {
 		return new ResultListData(returnMessage, Collections.emptyList(), new SerializableData());
 	}
 
-	public static ResultListData failListData(@NonNull ReturnMessage returnMessage, SerializableData extra) {
+	public static <T extends Serializable> ResultListData failListData(@NonNull ReturnMessage returnMessage, T extra) {
 		return new ResultListData(returnMessage, Collections.emptyList(), extra);
 	}
 

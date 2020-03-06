@@ -64,11 +64,11 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	protected ResultListData listData(ListResult<? extends Serializable> listResult) {
+	protected <T extends Serializable> ResultListData listData(ListResult<T> listResult) {
 		return this.listData(listResult.getList(), new SerializableData());
 	}
 
-	protected ResultListData listData(ListResult<? extends Serializable> listResult, SerializableData extra) {
+	protected <T extends Serializable, E extends Serializable> ResultListData listData(ListResult<T> listResult, E extra) {
 		if (listResult.getSuccess()) {
 			return this.listData(listResult.getList(), extra);
 		}
@@ -76,7 +76,7 @@ public class BaseController implements ErrorController {
 		return ResultDataFactory.failListData(listResult.getCode(), extra);
 	}
 
-	protected ResultListData listData(List<? extends Serializable> list) {
+	protected <T extends Serializable> ResultListData listData(List<T> list) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -85,7 +85,7 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	private ResultListData listData(List<? extends Serializable> list, Serializable extra) {
+	protected <T extends Serializable, E extends Serializable> ResultListData listData(List<T> list, E extra) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;

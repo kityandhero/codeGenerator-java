@@ -4,10 +4,13 @@ import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
+import com.lzt.operate.codetools.dao.service.HelpCategoryService;
 import com.lzt.operate.codetools.dao.service.HelpService;
+import com.lzt.operate.codetools.dao.service.impl.HelpCategoryServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.HelpServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.Help;
+import com.lzt.operate.codetools.entities.HelpCategory;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -15,6 +18,7 @@ import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -64,10 +68,13 @@ public class HelpController extends BaseOperateAuthController {
 
 	private HelpService helpService;
 
+	private HelpCategoryService helpCategoryService;
+
 	@Autowired
-	public HelpController(CustomJsonWebTokenConfig customJsonWebTokenConfig, HelpServiceImpl helpService) {
+	public HelpController(CustomJsonWebTokenConfig customJsonWebTokenConfig, HelpCategoryServiceImpl helpCategoryService, HelpServiceImpl helpService) {
 		super(customJsonWebTokenConfig);
 
+		this.helpCategoryService = helpCategoryService;
 		this.helpService = helpService;
 	}
 
@@ -81,9 +88,20 @@ public class HelpController extends BaseOperateAuthController {
 		throw new RuntimeException("HelpService获取失败");
 	}
 
+	public HelpCategoryService getHelpCategoryService() {
+		Optional<HelpCategoryService> optional = Optional.ofNullable(this.helpCategoryService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("HelpCategoryService获取失败");
+	}
+
 	@ApiOperation(value = "帮助类别列表", notes = "帮助类别列表", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.HELP_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.HELP_TITLE),
+			@ApiJsonProperty(name = GlobalString.HELP_HELP_CATEGORY_ID),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
@@ -102,6 +120,17 @@ public class HelpController extends BaseOperateAuthController {
 		pageSize = Math.max(pageSize, 1);
 
 		String title = paramJson.getStringByKey(GlobalString.HELP_TITLE);
+		Long helpCategoryId = paramJson.getStringExByKey(GlobalString.HELP_HELP_CATEGORY_ID).toLong();
+
+		String helpCategoryName = "";
+
+		if (!helpCategoryId.equals(ConstantCollection.SEARCH_UNLIMITED_LONG)) {
+			Optional<HelpCategory> optional = this.getHelpCategoryService().get(helpCategoryId);
+
+			if (optional.isPresent()) {
+				helpCategoryName = optional.get().getName();
+			}
+		}
 
 		Specification<Help> specification = new Specification<Help>() {
 
@@ -114,6 +143,10 @@ public class HelpController extends BaseOperateAuthController {
 				if (!StringAssist.isNullOrEmpty(title)) {
 					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(Help::getTitle)), StringAssist
 							.merge("%", title, "%")));
+				}
+
+				if (!helpCategoryId.equals(ConstantCollection.SEARCH_UNLIMITED_LONG)) {
+					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Help::getHelpCategoryId)), helpCategoryId));
 				}
 
 				Predicate[] p = new Predicate[list.size()];
@@ -143,7 +176,11 @@ public class HelpController extends BaseOperateAuthController {
 											})
 											.collect(Collectors.toList());
 
-		return this.listData(list);
+		SerializableData extra = new SerializableData();
+
+		extra.append("helpCategoryName", helpCategoryName);
+
+		return this.listData(list, extra);
 	}
 
 	@ApiOperation(value = "帮助类别详情", notes = "帮助类别详情", httpMethod = "POST")

@@ -114,7 +114,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 		Integer channel = paramJson.getStringExByKey(GlobalString.GENERAL_LOG_CHANNEL, ConstantCollection.SEARCH_UNLIMITED_STRING)
 								   .toInt();
 
-		if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_NUMBER) && !EnumAssist.existTargetValue(Arrays.asList(Channel
+		if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_INT) && !EnumAssist.existTargetValue(Arrays.asList(Channel
 				.values()), Channel::getFlag, channel)) {
 			return this.pageDataEmpty(pageSize);
 		}
@@ -132,7 +132,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 							.merge("%", message, "%")));
 				}
 
-				if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_NUMBER)) {
+				if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_INT)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(Account::getStatus)), channel));
 				}
 
