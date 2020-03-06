@@ -2,6 +2,7 @@ package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.common.pojos.HelpCategoryTreeItem;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.HelpCategoryService;
@@ -125,6 +126,15 @@ public class HelpCategoryController extends BaseOperateAuthController {
 					return data;
 				})
 				.collect(Collectors.toList());
+
+		return this.listData(list);
+	}
+
+	@ApiOperation(value = "帮助类别树列表", notes = "帮助类别树列表", httpMethod = "POST")
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/treeList", consumes = "application/json", produces = "application/json")
+	public ResultListData treeList(@RequestBody Map<String, Serializable> json) {
+		List<HelpCategoryTreeItem> list = this.getHelpCategoryService().treeList();
 
 		return this.listData(list);
 	}

@@ -23,15 +23,19 @@ public class HelpCategory extends BaseEntity {
 	 * 名称
 	 */
 	@Column
-	private
-	String name;
+	private String name;
+
+	/**
+	 * 名称
+	 */
+	@Column(name = "parent_id")
+	private long parentId;
 
 	/**
 	 * 简介描述
 	 */
 	@Column
-	private
-	String description;
+	private String description;
 
 	public HelpCategory() {
 		super();
@@ -46,6 +50,14 @@ public class HelpCategory extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(long parentId) {
+		this.parentId = parentId;
 	}
 
 	public String getDescription() {

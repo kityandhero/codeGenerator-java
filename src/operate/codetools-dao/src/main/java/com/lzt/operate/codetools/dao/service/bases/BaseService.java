@@ -63,6 +63,15 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	}
 
 	/**
+	 * 获取列表数据
+	 *
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default List<S> list() {
+		return getRepository().findAll();
+	}
+
+	/**
 	 * 获取分页数据
 	 *
 	 * @param filter filter
