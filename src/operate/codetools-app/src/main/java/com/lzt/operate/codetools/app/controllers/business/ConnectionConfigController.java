@@ -133,6 +133,12 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 												getterList.add(ConnectionConfig::getName);
 												getterList.add(ConnectionConfig::getDescription);
+												getterList.add(ConnectionConfig::getConnectionType);
+												getterList.add(ConnectionConfig::getDatabaseType);
+												getterList.add(ConnectionConfig::getHost);
+												getterList.add(ConnectionConfig::getPort);
+												getterList.add(ConnectionConfig::getSchema);
+												getterList.add(ConnectionConfig::getEncoding);
 												getterList.add(ConnectionConfig::getChannel);
 												getterList.add(ConnectionConfig::getChannelNote);
 												getterList.add(ConnectionConfig::getStatus);
