@@ -99,9 +99,9 @@ public class ErrorLogController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ERROR_LOG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志分页列表", description = "错误日志分页列表", tag = "bb6b8151-c999-4ad4-9f0a-7f6ae46cea8b")
-	public ResultListData page(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();

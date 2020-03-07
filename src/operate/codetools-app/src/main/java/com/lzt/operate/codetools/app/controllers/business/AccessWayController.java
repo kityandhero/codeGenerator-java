@@ -95,9 +95,9 @@ public class AccessWayController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCESS_WAY_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块分页列表", description = "模块分页列表", tag = "c44e3865-1fa0-48df-ad0a-bd3f79807a38")
-	public ResultListData page(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();

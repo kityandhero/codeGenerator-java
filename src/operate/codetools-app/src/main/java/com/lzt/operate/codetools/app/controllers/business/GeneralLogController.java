@@ -99,9 +99,9 @@ public class GeneralLogController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.GENERAL_LOG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = GeneralLogController.CONTROLLER_DESCRIPTION + "一般日志分页列表", description = "一般日志分页列表", tag = "93231249-6171-4d8a-b7e1-a66006385bdc")
-	public ResultListData page(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = this.getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();

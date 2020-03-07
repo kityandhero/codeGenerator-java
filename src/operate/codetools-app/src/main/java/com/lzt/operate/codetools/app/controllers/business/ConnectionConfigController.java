@@ -90,9 +90,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接分页列表", description = "数据库连接分页列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
-	public ResultListData page(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();

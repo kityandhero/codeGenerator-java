@@ -109,8 +109,8 @@ public class HelpController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.HELP_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/page", consumes = "application/json", produces = "application/json")
-	public ResultListData page(@RequestBody Map<String, Serializable> json) {
+	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
+	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
