@@ -17,12 +17,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * @author luzhitao
@@ -36,7 +34,7 @@ public class MetaDataController extends OperateBaseController {
 	@ApiOperation(value = "公共数据", notes = "公共数据资源", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultListData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	public BaseResultData get(@RequestBody Map<String, String> connectionJson) {
+	public BaseResultData get() {
 
 		SerializableData result = new SerializableData();
 

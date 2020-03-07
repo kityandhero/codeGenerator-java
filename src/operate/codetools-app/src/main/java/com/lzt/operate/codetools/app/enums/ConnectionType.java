@@ -18,7 +18,7 @@ public enum ConnectionType {
 	/**
 	 * 元数据键值集合中的key
 	 */
-	public static final String META_KEY = "connectionTypeList";
+	public static final String META_KEY = "databaseConnectionTypeList";
 
 	private final Integer flag;
 	private final String name;

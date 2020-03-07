@@ -43,7 +43,7 @@ public enum DatabaseType {
 	/**
 	 * 元数据键值集合中的key
 	 */
-	public static final String META_KEY = "databaseTypeList";
+	public static final String META_KEY = "databaseDatabaseTypeList";
 
 	private final Integer flag;
 	private final String name;
