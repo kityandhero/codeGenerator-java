@@ -392,4 +392,28 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		return this.success();
 	}
 
+	@ApiOperation(value = "打开数据库连接", notes = "打开数据库连接", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.CONNECTION_CONFIG_OPEN_CONNECTION, value = {
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_OPEN_CONNECTION)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/openConnection", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "打开数据库连接", description = "打开数据库连接", tag = "042ae8f2-a6c5-4c81-ba17-9acbb7e7b41f")
+	public BaseResultData openConnection(@RequestBody Map<String, Serializable> json) {
+		ParamData paramJson = getParamData(json);
+
+		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
+
+		if (connectionConfigId <= 0) {
+			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
+		}
+
+		getConnectionConfigAssist().deleteById(connectionConfigId);
+
+		return this.success();
+	}
+
 }

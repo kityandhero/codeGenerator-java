@@ -32,6 +32,8 @@ public class ModelNameCollection {
 
 	public static final String CONNECTION_CONFIG_REMOVE = "CONNECTION_CONFIG_REMOVE";
 
+	public static final String CONNECTION_CONFIG_OPEN_CONNECTION = "CONNECTION_CONFIG_OPEN_CONNECTION";
+
 	//endregion
 
 	//region ACCOUNT 账户
