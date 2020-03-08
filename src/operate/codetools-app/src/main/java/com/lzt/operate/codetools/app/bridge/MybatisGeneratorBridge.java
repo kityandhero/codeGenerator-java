@@ -114,7 +114,7 @@ public class MybatisGeneratorBridge {
 				tableConfig.setSchema(this.selectedConnectionConfig.getSchema());
 			} else if (DatabaseType.Oracle.name().equals(databaseType)) {
 				//Oracle的schema为用户名，如果连接用户拥有dba等高级权限，若不设schema，会导致把其他用户下同名的表也生成一遍导致mapper中代码重复
-				tableConfig.setSchema(this.selectedConnectionConfig.getUsername());
+				tableConfig.setSchema(this.selectedConnectionConfig.getUserName());
 			} else {
 				tableConfig.setCatalog(this.selectedConnectionConfig.getSchema());
 			}
@@ -169,7 +169,7 @@ public class MybatisGeneratorBridge {
 		}
 		jdbcConfig.setDriverClass(databaseType.getDriverClass());
 		jdbcConfig.setConnectionURL(DatabaseTypeUtil.getConnectionUrlWithSchema(this.selectedConnectionConfig));
-		jdbcConfig.setUserId(this.selectedConnectionConfig.getUsername());
+		jdbcConfig.setUserId(this.selectedConnectionConfig.getUserName());
 		jdbcConfig.setPassword(this.selectedConnectionConfig.getPassword());
 		if (DatabaseType.Oracle.name().equals(databaseType)) {
 			jdbcConfig.getProperties().setProperty("remarksReporting", "true");

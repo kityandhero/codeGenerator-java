@@ -74,7 +74,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 		connectionConfig.setHost(host.toString());
 		connectionConfig.setPort(port.toString());
 		connectionConfig.setSchema(schema.toString());
-		connectionConfig.setUsername(username.toString());
+		connectionConfig.setUserName(username.toString());
 		connectionConfig.setPassword(password.toString());
 		connectionConfig.setEncoding(encoding.toString());
 		connectionConfig.setLocalPort(localPort.toString());
@@ -134,7 +134,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 		connectionConfig.setHost(host.toString());
 		connectionConfig.setPort(port.toString());
 		connectionConfig.setSchema(schema.toString());
-		connectionConfig.setUsername(username.toString());
+		connectionConfig.setUserName(username.toString());
 		connectionConfig.setPassword(password.toString());
 		connectionConfig.setEncoding(encoding.toString());
 		connectionConfig.setLocalPort(localPort.toString());

@@ -40,8 +40,8 @@ public class ConnectionConfig extends BaseEntity {
 	@Column
 	private String schema;
 
-	@Column
-	private String username;
+	@Column(name = "user_name")
+	private String userName;
 
 	@Column
 	private String password;
@@ -127,12 +127,12 @@ public class ConnectionConfig extends BaseEntity {
 		this.schema = schema;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String username) {
+		this.userName = username;
 	}
 
 	public String getPassword() {
@@ -215,7 +215,7 @@ public class ConnectionConfig extends BaseEntity {
 				Objects.equals(this.host, that.host) &&
 				Objects.equals(this.port, that.port) &&
 				Objects.equals(this.schema, that.schema) &&
-				Objects.equals(this.username, that.username) &&
+				Objects.equals(this.userName, that.userName) &&
 				Objects.equals(this.password, that.password) &&
 				Objects.equals(this.encoding, that.encoding) &&
 				Objects.equals(this.localPort, that.localPort) &&
@@ -235,7 +235,7 @@ public class ConnectionConfig extends BaseEntity {
 		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
 		result = 31 * result + (getPort() != null ? getPort().hashCode() : 0);
 		result = 31 * result + (getSchema() != null ? getSchema().hashCode() : 0);
-		result = 31 * result + (getUsername() != null ? getUsername().hashCode() : 0);
+		result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
 		result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
 		result = 31 * result + (getEncoding() != null ? getEncoding().hashCode() : 0);
 		result = 31 * result + (getLocalPort() != null ? getLocalPort().hashCode() : 0);

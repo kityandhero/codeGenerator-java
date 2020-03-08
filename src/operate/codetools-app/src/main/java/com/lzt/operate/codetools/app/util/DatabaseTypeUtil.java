@@ -157,7 +157,7 @@ public class DatabaseTypeUtil {
 		Properties props = new Properties();
 
 		// $NON-NLS-1$
-		props.setProperty("user", config.getUsername());
+		props.setProperty("user", config.getUserName());
 
 		//$NON-NLS-1$
 		props.setProperty("password", config.getPassword());
@@ -182,7 +182,7 @@ public class DatabaseTypeUtil {
 					tables.add(new DataTableInfo(rs.getString("name")));
 				}
 			} else if (config.getDatabaseType() == DatabaseType.Oracle.getFlag()) {
-				rs = md.getTables(null, config.getUsername()
+				rs = md.getTables(null, config.getUserName()
 											  .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
 			} else if (config.getDatabaseType() == DatabaseType.Sqlite.getFlag()) {
 				String sql = "Select name from sqlite_master;";

@@ -189,7 +189,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			getterList.add(ConnectionConfig::getHost);
 			getterList.add(ConnectionConfig::getPort);
 			getterList.add(ConnectionConfig::getSchema);
-			getterList.add(ConnectionConfig::getUsername);
+			getterList.add(ConnectionConfig::getUserName);
 			getterList.add(ConnectionConfig::getPassword);
 			getterList.add(ConnectionConfig::getEncoding);
 			getterList.add(ConnectionConfig::getLocalPort);
@@ -345,7 +345,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			data.setHost(host);
 			data.setPort(port);
 			data.setSchema(schema);
-			data.setUsername(username);
+			data.setUserName(username);
 			data.setPassword(password);
 			data.setEncoding(encoding);
 			data.setLocalPort(localPort);
