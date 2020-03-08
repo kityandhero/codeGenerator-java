@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>projectName</contextName>
+    <property name="contextName" value="projectName"/>
+    <property name="log_dir" value="./logs/"/>
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 级别过滤器。如果日志级别低于WARN，将被过滤掉。 ALL TRACE DEBUG INFO WARN ERROR-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %msg - %file:%line%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 每天记录info级别日志文件 -->
+    <appender name="InfoRollingFileAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Prudent>true</Prudent>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %msg - %file:%line%n</Pattern>
+        </layout>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log_dir}/${contextName}_info%d{yyyy-MM-dd}.log
+            </FileNamePattern>
+        </rollingPolicy>
+        <!-- 级别过滤器。如果日志级别低于WARN，将被过滤掉。ALL TRACE DEBUG INFO WARN ERROR-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <!-- 除了DEBUG级别的日志，其它什么级别的日志都不要 -->
+        <!-- <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY </onMismatch>
+        </filter> -->
+    </appender>
+
+    <!-- 每天记录ERROR级别日志文件 -->
+    <appender name="ErrorRollingFileAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Prudent>true</Prudent>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %msg - %file:%line%n</Pattern>
+        </layout>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log_dir}/${contextName}_error%d{yyyy-MM-dd}.log
+            </FileNamePattern>
+        </rollingPolicy>
+        <!-- 级别过滤器。如果日志级别低于WARN，将被过滤掉。 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!-- 除了DEBUG级别的日志，其它什么级别的日志都不要 -->
+        <!-- <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY </onMismatch>
+        </filter> -->
+    </appender>
+
+    <root>
+        <appender-ref ref="console"/>
+        <appender-ref ref="InfoRollingFileAppender"/>
+        <appender-ref ref="ErrorRollingFileAppender"/>
+    </root>
+</configuration>

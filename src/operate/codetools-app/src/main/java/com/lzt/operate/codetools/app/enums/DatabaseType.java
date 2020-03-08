@@ -13,12 +13,12 @@ public enum DatabaseType {
 	/**
 	 * MySQL
 	 */
-	MySQL(100, "MySQL", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-5.1.38.jar"),
+	MySQL(100, "MySQL", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-5.1.47.jar"),
 
 	/**
 	 * MySQL_8
 	 */
-	MySQL_8(101, "MySQL_8", "MySQL_8", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-8.0.11.jar"),
+	MySQL_8(101, "MySQL_8", "MySQL_8", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-8.0.19.jar"),
 
 	/**
 	 * Oracle

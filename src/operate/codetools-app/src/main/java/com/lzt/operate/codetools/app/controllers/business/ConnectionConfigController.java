@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.assists.ConnectionConfigAssist;
+import com.lzt.operate.codetools.app.assists.DatabaseAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
@@ -11,6 +12,7 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -400,9 +402,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_OPEN_CONNECTION)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/openConnection", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/openDatabase", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "打开数据库连接", description = "打开数据库连接", tag = "042ae8f2-a6c5-4c81-ba17-9acbb7e7b41f")
-	public BaseResultData openConnection(@RequestBody Map<String, Serializable> json) {
+	public BaseResultData openDatabase(@RequestBody Map<String, Serializable> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -411,7 +413,16 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
 		}
 
-		getConnectionConfigAssist().deleteById(connectionConfigId);
+		Optional<ConnectionConfig> optional = this.getConnectionConfigAssist()
+												  .getConnectionConfig(connectionConfigId);
+
+		if (optional.isPresent()) {
+			ConnectionConfig connectionConfig = optional.get();
+
+			List<DataTableInfo> listTableNames = DatabaseAssist.pageListTableNames(connectionConfig);
+
+			Integer s = listTableNames.size();
+		}
 
 		return this.success();
 	}

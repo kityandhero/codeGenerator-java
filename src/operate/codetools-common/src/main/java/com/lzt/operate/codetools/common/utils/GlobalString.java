@@ -55,7 +55,7 @@ public class GlobalString {
 	public static final String CONNECTION_CONFIG_SCHEMA = "schema";
 
 	@ApiSingleParam(value = "用户名", example = "test")
-	public static final String CONNECTION_CONFIG_USERNAME = "username";
+	public static final String CONNECTION_CONFIG_USERNAME = "userName";
 
 	@ApiSingleParam(value = "密码", example = "111111")
 	public static final String CONNECTION_CONFIG_PASSWORD = "password";

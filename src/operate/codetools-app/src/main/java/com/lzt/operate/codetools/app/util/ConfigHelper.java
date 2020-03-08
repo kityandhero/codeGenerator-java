@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.GeneratorConfig;
-import com.lzt.operate.utility.extensions.StringEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,17 +210,13 @@ public class ConfigHelper {
 
 	public static List<String> getAllJDBCDriverJarPaths() {
 		List<String> jarFilePathList = new ArrayList<>();
-		URL url = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
+
+		URL url = Thread.currentThread().getContextClassLoader().getResource("lib/");
 		try {
-			File file;
-			String extensionName = ".jar";
 
-			if (url != null && new StringEx(url.getPath()).contains(extensionName)) {
-				file = new File("lib/");
-			} else {
-				file = new File("src/main/resources/lib");
-			}
+			File file = new File(url.getPath());
 
+			ConfigHelper._LOG.info("jar lib path: {}", (new File("lib/")).getCanonicalPath());
 			ConfigHelper._LOG.info("jar lib path: {}", file.getCanonicalPath());
 			File[] jarFiles = file.listFiles();
 			if (jarFiles != null && jarFiles.length > 0) {
