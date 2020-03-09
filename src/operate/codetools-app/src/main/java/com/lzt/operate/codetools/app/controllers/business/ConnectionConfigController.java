@@ -12,7 +12,6 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -402,9 +401,9 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_OPEN_CONNECTION)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/openDatabase", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/tryConnection", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "打开数据库连接", description = "打开数据库连接", tag = "042ae8f2-a6c5-4c81-ba17-9acbb7e7b41f")
-	public BaseResultData openDatabase(@RequestBody Map<String, Serializable> json) throws Exception {
+	public BaseResultData tryConnection(@RequestBody Map<String, Serializable> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -419,12 +418,14 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			List<DataTableInfo> listTableNames = DatabaseAssist.pageListTableNames(connectionConfig);
+			boolean tryResult = DatabaseAssist.tryConnection(connectionConfig);
 
-			Integer s = listTableNames.size();
+			if (tryResult) {
+				return this.success();
+			}
 		}
 
-		return this.success();
+		return this.fail(ReturnDataCode.Exception.toMessage("测试连接数据库失败"));
 	}
 
 }

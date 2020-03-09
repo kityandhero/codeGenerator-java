@@ -222,9 +222,29 @@ public class DatabaseAssist {
 		}
 	}
 
+	public static boolean tryConnection(ConnectionConfig config) throws Exception {
+		Session sshSession = getSSHSession(config);
+		engagePortForwarding(sshSession, config);
+
+		if (Optional.ofNullable(sshSession).isPresent()) {
+			try (Connection connection = DatabaseAssist.getConnection(config)) {
+				DatabaseMetaData md = connection.getMetaData();
+				String catalog = connection.getCatalog();
+
+			} finally {
+				DatabaseAssist.shutdownPortForwarding(sshSession);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public static List<DataTableInfo> pageListTableNames(ConnectionConfig config) throws Exception {
 		Session sshSession = getSSHSession(config);
 		engagePortForwarding(sshSession, config);
+
 		try (Connection connection = DatabaseAssist.getConnection(config)) {
 			List<DataTableInfo> tables = new ArrayList<>();
 			DatabaseMetaData md = connection.getMetaData();
