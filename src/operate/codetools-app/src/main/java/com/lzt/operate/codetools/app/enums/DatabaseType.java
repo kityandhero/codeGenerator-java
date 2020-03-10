@@ -28,17 +28,17 @@ public enum DatabaseType {
 	/**
 	 * PostgreSQL
 	 */
-	PostgreSQL(103, "PostgreSQL", "PostgreSQL", "org.postgresql.Driver", "jdbc:postgresql://%s:%s/%s", "postgresql-9.4.1209.jar"),
+	PostgreSQL(103, "PostgreSQL", "PostgreSQL", "org.postgresql.Driver", "jdbc:postgresql://%s:%s/%s", "postgresql-42.2.10.jar"),
 
 	/**
 	 * SQL_Server
 	 */
-	SQL_Server(104, "SQL_Server", "SQL_Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc4-4.0.jar"),
+	SQL_Server(104, "SQL_Server", "SQL_Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc42.jar"),
 
 	/**
 	 * Sqlite
 	 */
-	Sqlite(105, "Sqlite", "Sqlite", "org.sqlite.JDBC", "jdbc:sqlite:%s", "sqlite-jdbc-3.19.3.jar");
+	Sqlite(105, "Sqlite", "Sqlite", "org.sqlite.JDBC", "jdbc:sqlite:%s", "sqlite-jdbc-3.30.1.jar");
 
 	/**
 	 * 元数据键值集合中的key
