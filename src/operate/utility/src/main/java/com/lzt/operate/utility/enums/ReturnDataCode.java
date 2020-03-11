@@ -116,6 +116,11 @@ public enum ReturnDataCode {
 	NoChange(1003, "无操作反馈", false),
 
 	/**
+	 * 无可用数据
+	 */
+	DataError(1004, "数据错误", false),
+
+	/**
 	 * 需要登录
 	 */
 	Authentication_FAIL(2001, "Token无效", false),

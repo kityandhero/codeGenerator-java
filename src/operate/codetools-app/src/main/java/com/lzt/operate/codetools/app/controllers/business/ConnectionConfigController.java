@@ -27,6 +27,7 @@ import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -418,10 +419,12 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			boolean tryResult = DatabaseAssist.tryConnection(connectionConfig);
+			ExecutiveSimpleResult result = DatabaseAssist.tryConnection(connectionConfig);
 
-			if (tryResult) {
+			if (result.getSuccess()) {
 				return this.success();
+			} else {
+				return this.fail(result.getCode());
 			}
 		}
 

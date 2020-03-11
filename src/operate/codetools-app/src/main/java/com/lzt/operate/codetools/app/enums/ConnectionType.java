@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.app.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * @author luzhitao
  */
@@ -30,6 +34,18 @@ public enum ConnectionType {
 		this.description = description;
 	}
 
+	public static Optional<ConnectionType> valueOfFlag(@NonNull Integer flag) {
+		ConnectionType[] values = ConnectionType.values();
+
+		for (ConnectionType d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
 	public Integer getFlag() {
 		return flag;
 	}
@@ -41,4 +57,5 @@ public enum ConnectionType {
 	public String getDescription() {
 		return description;
 	}
+
 }

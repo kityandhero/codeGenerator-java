@@ -3,6 +3,7 @@ package com.lzt.operate.codetools.app.assists;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseEncoding;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
@@ -12,6 +13,8 @@ import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mybatis.generator.internal.util.ClassloaderUtility;
@@ -212,7 +215,7 @@ public class DatabaseAssist {
 		ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
 
 		try {
-			Class clazz = Class.forName(dbType.getDriverClass(), true, classloader);
+			Class<?> clazz = Class.forName(dbType.getDriverClass(), true, classloader);
 			Driver driver = (Driver) clazz.newInstance();
 			DatabaseAssist._LOG.info("load driver class: {}", driver);
 			DatabaseAssist.drivers.put(dbType, driver);
@@ -222,60 +225,109 @@ public class DatabaseAssist {
 		}
 	}
 
-	public static boolean tryConnection(ConnectionConfig config) throws Exception {
-		Session sshSession = getSSHSession(config);
-		engagePortForwarding(sshSession, config);
+	public static ExecutiveSimpleResult tryConnection(ConnectionConfig config) throws Exception {
+		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
 
-		if (Optional.ofNullable(sshSession).isPresent()) {
+		if (!optionalConnectionConfig.isPresent()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("未知的链接类型"));
+		}
+
+		ConnectionType connectionType = optionalConnectionConfig.get();
+
+		if (connectionType.getFlag().equals(ConnectionType.TCP_IP.getFlag())) {
 			try (Connection connection = DatabaseAssist.getConnection(config)) {
 				DatabaseMetaData md = connection.getMetaData();
 				String catalog = connection.getCatalog();
 
+				connection.close();
+
+				return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage(ex.getMessage()));
+			}
+		}
+
+		if (connectionType.getFlag().equals(ConnectionType.SSH.getFlag())) {
+			Session sshSession = getSSHSession(config);
+			engagePortForwarding(sshSession, config);
+
+			try (Connection connection = DatabaseAssist.getConnection(config)) {
+				DatabaseMetaData md = connection.getMetaData();
+				String catalog = connection.getCatalog();
+
+				return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 			} finally {
 				DatabaseAssist.shutdownPortForwarding(sshSession);
 			}
-
-			return true;
 		}
 
-		return false;
+		return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("不支持的链接类型"));
 	}
 
 	public static List<DataTableInfo> pageListTableNames(ConnectionConfig config) throws Exception {
-		Session sshSession = getSSHSession(config);
-		engagePortForwarding(sshSession, config);
+		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
 
-		try (Connection connection = DatabaseAssist.getConnection(config)) {
-			List<DataTableInfo> tables = new ArrayList<>();
-			DatabaseMetaData md = connection.getMetaData();
-			ResultSet rs;
-			if (config.getDatabaseType() == DatabaseType.SQL_Server.getFlag()) {
-				String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
-				rs = connection.createStatement().executeQuery(sql);
-				while (rs.next()) {
-					tables.add(new DataTableInfo(rs.getString("name")));
-				}
-			} else if (config.getDatabaseType() == DatabaseType.Oracle.getFlag()) {
-				rs = md.getTables(null, config.getUserName()
-											  .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
-			} else if (config.getDatabaseType() == DatabaseType.Sqlite.getFlag()) {
-				String sql = "Select name from sqlite_master;";
-				rs = connection.createStatement().executeQuery(sql);
-				while (rs.next()) {
-					tables.add(new DataTableInfo(rs.getString("name")));
-				}
-			} else {
-				// rs = md.getTables(null, config.getUsername().toUpperCase(), null, null);
-
-				rs = md.getTables(config.getSchema(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
-			}
-			while (rs.next()) {
-				tables.add(new DataTableInfo(rs.getString(3)));
-			}
-			return tables;
-		} finally {
-			DatabaseAssist.shutdownPortForwarding(sshSession);
+		if (!optionalConnectionConfig.isPresent()) {
+			return new ArrayList<>();
 		}
+
+		ConnectionType connectionType = optionalConnectionConfig.get();
+
+		if (connectionType.getFlag().equals(ConnectionType.TCP_IP.getFlag())) {
+			try (Connection connection = DatabaseAssist.getConnection(config)) {
+				return pageListTableNamesCore(connection, config);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+
+				return new ArrayList<>();
+			}
+		}
+
+		if (connectionType.getFlag().equals(ConnectionType.SSH.getFlag())) {
+			Session sshSession = getSSHSession(config);
+			engagePortForwarding(sshSession, config);
+
+			try (Connection connection = DatabaseAssist.getConnection(config)) {
+				return pageListTableNamesCore(connection, config);
+			} finally {
+				DatabaseAssist.shutdownPortForwarding(sshSession);
+			}
+		}
+
+		return new ArrayList<>();
+	}
+
+	public static List<DataTableInfo> pageListTableNamesCore(Connection connection, ConnectionConfig config) throws SQLException {
+		List<DataTableInfo> tables = new ArrayList<>();
+		DatabaseMetaData md = connection.getMetaData();
+		ResultSet rs;
+
+		if (config.getDatabaseType() == DatabaseType.SQL_Server.getFlag()) {
+			String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
+			rs = connection.createStatement().executeQuery(sql);
+			while (rs.next()) {
+				tables.add(new DataTableInfo(rs.getString("name")));
+			}
+		} else if (config.getDatabaseType() == DatabaseType.Oracle.getFlag()) {
+			rs = md.getTables(null, config.getUserName()
+										  .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
+		} else if (config.getDatabaseType() == DatabaseType.Sqlite.getFlag()) {
+			String sql = "Select name from sqlite_master;";
+			rs = connection.createStatement().executeQuery(sql);
+			while (rs.next()) {
+				tables.add(new DataTableInfo(rs.getString("name")));
+			}
+		} else {
+			// rs = md.getTables(null, config.getUsername().toUpperCase(), null, null);
+
+			rs = md.getTables(config.getSchema(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
+		}
+		while (rs.next()) {
+			tables.add(new DataTableInfo(rs.getString(3)));
+		}
+		return tables;
 	}
 
 	// public static List<DataColumnInfo> listTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {

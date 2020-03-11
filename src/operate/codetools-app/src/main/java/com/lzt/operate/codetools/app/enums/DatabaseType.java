@@ -97,4 +97,5 @@ public enum DatabaseType {
 	public String getConnectorJarFile() {
 		return connectorJarFile;
 	}
+
 }

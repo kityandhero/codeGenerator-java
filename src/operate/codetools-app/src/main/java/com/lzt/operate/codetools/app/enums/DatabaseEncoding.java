@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.app.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * @author lzt
  */
@@ -33,6 +37,18 @@ public enum DatabaseEncoding {
 		this.flag = flag;
 		this.name = name;
 		this.description = description;
+	}
+
+	public static Optional<DatabaseEncoding> valueOfFlag(@NonNull Integer flag) {
+		DatabaseEncoding[] values = DatabaseEncoding.values();
+
+		for (DatabaseEncoding d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
 	}
 
 	public Integer getFlag() {
