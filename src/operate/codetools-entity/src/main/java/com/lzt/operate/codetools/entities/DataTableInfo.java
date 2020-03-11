@@ -1,13 +1,10 @@
 package com.lzt.operate.codetools.entities;
 
-import lombok.Data;
-
 import java.io.Serializable;
 
 /**
  * @author luzhitao
  */
-@Data
 public class DataTableInfo implements Serializable {
 
 	private static final long serialVersionUID = -6269891887246380955L;
@@ -21,4 +18,11 @@ public class DataTableInfo implements Serializable {
 		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

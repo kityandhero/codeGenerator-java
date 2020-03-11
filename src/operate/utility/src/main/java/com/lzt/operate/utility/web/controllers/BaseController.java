@@ -64,6 +64,10 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
+	protected <T extends Serializable> ResultListData listDataEmpty() {
+		return this.listData(new ArrayList<>(), new SerializableData());
+	}
+
 	protected <T extends Serializable> ResultListData listData(ListResult<T> listResult) {
 		return this.listData(listResult.getList(), new SerializableData());
 	}

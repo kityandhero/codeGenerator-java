@@ -57,7 +57,7 @@ public class DataTableController extends BaseOperateAuthController {
 		this.connectionConfigService = connectionConfigServiceImpl;
 	}
 
-	public ConnectionConfigService getAccessWayService() {
+	public ConnectionConfigService getConnectionConfigService() {
 		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
 
 		if (optional.isPresent()) {
@@ -68,14 +68,14 @@ public class DataTableController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "数据库表列表", notes = "数据库表列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_NAME),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
@@ -97,13 +97,13 @@ public class DataTableController extends BaseOperateAuthController {
 
 		String name = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
 
-		Optional<ConnectionConfig> optional = this.getAccessWayService()
+		Optional<ConnectionConfig> optional = this.getConnectionConfigService()
 												  .get(connectionConfigId);
 
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			List<DataTableInfo> list = DatabaseAssist.pageListTableNames(connectionConfig);
+			List<DataTableInfo> list = DatabaseAssist.pageListTableName(connectionConfig);
 
 			list = list.stream().filter(o -> o.getName().contains(name)).collect(Collectors.toList());
 

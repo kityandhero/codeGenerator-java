@@ -9,6 +9,7 @@ import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.codetools.app.util.ConfigHelper;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.codetools.entities.DataColumnInfo;
 import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
@@ -266,7 +267,7 @@ public class DatabaseAssist {
 		return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("不支持的链接类型"));
 	}
 
-	public static List<DataTableInfo> pageListTableNames(ConnectionConfig config) throws Exception {
+	public static List<DataTableInfo> pageListTableName(ConnectionConfig config) throws Exception {
 		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
 
 		if (!optionalConnectionConfig.isPresent()) {
@@ -277,7 +278,7 @@ public class DatabaseAssist {
 
 		if (connectionType.getFlag().equals(ConnectionType.TCP_IP.getFlag())) {
 			try (Connection connection = DatabaseAssist.getConnection(config)) {
-				return pageListTableNamesCore(connection, config);
+				return pageListTableNameCore(connection, config);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 
@@ -290,7 +291,7 @@ public class DatabaseAssist {
 			engagePortForwarding(sshSession, config);
 
 			try (Connection connection = DatabaseAssist.getConnection(config)) {
-				return pageListTableNamesCore(connection, config);
+				return pageListTableNameCore(connection, config);
 			} finally {
 				DatabaseAssist.shutdownPortForwarding(sshSession);
 			}
@@ -299,7 +300,7 @@ public class DatabaseAssist {
 		return new ArrayList<>();
 	}
 
-	public static List<DataTableInfo> pageListTableNamesCore(Connection connection, ConnectionConfig config) throws SQLException {
+	private static List<DataTableInfo> pageListTableNameCore(Connection connection, ConnectionConfig config) throws SQLException {
 		List<DataTableInfo> tables = new ArrayList<>();
 		DatabaseMetaData md = connection.getMetaData();
 		ResultSet rs;
@@ -330,30 +331,57 @@ public class DatabaseAssist {
 		return tables;
 	}
 
-	// public static List<DataColumnInfo> listTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
-	// 	String url = DatabaseAssist.getConnectionUrlWithSchema(dbConfig);
-	// 	DatabaseAssist._LOG.info("getTableColumns, connection url: {}", url);
-	// 	Session sshSession = DatabaseAssist.getSSHSession(dbConfig);
-	// 	DatabaseAssist.engagePortForwarding(sshSession, dbConfig);
-	// 	try (Connection conn = DatabaseAssist.getConnection(dbConfig)) {
-	// 		DatabaseMetaData md = conn.getMetaData();
-	// 		ResultSet rs = md.getColumns(dbConfig.getSchema(), null, tableName, null);
-	// 		List<DataColumnInfo> columns = new ArrayList<>();
-	// 		while (rs.next()) {
-	//
-	// 			String name = rs.getString("COLUMN_NAME");
-	// 			String type = rs.getString("TYPE_NAME");
-	//
-	// 			DataColumnInfo col = new DataColumnInfo();
-	// 			col.setName(name);
-	// 			col.setType(type);
-	//
-	// 			columns.add(col);
-	// 		}
-	// 		return columns;
-	// 	} finally {
-	// 		DatabaseAssist.shutdownPortForwarding(sshSession);
-	// 	}
-	// }
+	public static List<DataColumnInfo> listTableColumn(ConnectionConfig config, String tableName) throws Exception {
+		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
+
+		if (!optionalConnectionConfig.isPresent()) {
+			return new ArrayList<>();
+		}
+
+		ConnectionType connectionType = optionalConnectionConfig.get();
+
+		if (connectionType.getFlag().equals(ConnectionType.TCP_IP.getFlag())) {
+			try (Connection connection = DatabaseAssist.getConnection(config)) {
+				return listTableColumnCore(connection, config, tableName);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+
+				return new ArrayList<>();
+			}
+		}
+
+		if (connectionType.getFlag().equals(ConnectionType.SSH.getFlag())) {
+			Session sshSession = getSSHSession(config);
+			engagePortForwarding(sshSession, config);
+
+			try (Connection connection = DatabaseAssist.getConnection(config)) {
+				return listTableColumnCore(connection, config, tableName);
+			} finally {
+				DatabaseAssist.shutdownPortForwarding(sshSession);
+			}
+		}
+
+		return new ArrayList<>();
+	}
+
+	private static List<DataColumnInfo> listTableColumnCore(Connection connection, ConnectionConfig config, String tableName) throws SQLException {
+		DatabaseMetaData md = connection.getMetaData();
+		ResultSet rs = md.getColumns(config.getSchema(), null, tableName, null);
+		List<DataColumnInfo> columns = new ArrayList<>();
+
+		while (rs.next()) {
+
+			String name = rs.getString("COLUMN_NAME");
+			String type = rs.getString("TYPE_NAME");
+
+			DataColumnInfo col = new DataColumnInfo();
+
+			col.setName(name);
+			col.setType(type);
+
+			columns.add(col);
+		}
+		return columns;
+	}
 
 }
