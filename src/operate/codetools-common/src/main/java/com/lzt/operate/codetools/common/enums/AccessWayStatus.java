@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * @author luzhitao
  */
@@ -23,7 +27,7 @@ public enum AccessWayStatus {
 	/**
 	 * 值
 	 */
-	private int value;
+	private int flag;
 
 	/**
 	 * 描述
@@ -36,13 +40,25 @@ public enum AccessWayStatus {
 	private String description;
 
 	AccessWayStatus(int value, String name, String descriptor) {
-		this.value = value;
+		this.flag = value;
 		this.name = name;
 		this.description = descriptor;
 	}
 
-	public int getValue() {
-		return value;
+	public static Optional<AccessWayStatus> valueOfFlag(@NonNull Integer flag) {
+		AccessWayStatus[] values = AccessWayStatus.values();
+
+		for (AccessWayStatus d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	public int getFlag() {
+		return flag;
 	}
 
 	public String getName() {

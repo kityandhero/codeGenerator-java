@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 public enum HelpStatus {
 
 	/**
@@ -20,7 +24,7 @@ public enum HelpStatus {
 	/**
 	 * 值
 	 */
-	private int value;
+	private int flag;
 
 	/**
 	 * 描述
@@ -33,13 +37,25 @@ public enum HelpStatus {
 	private String description;
 
 	HelpStatus(int value, String name, String descriptor) {
-		this.value = value;
+		this.flag = value;
 		this.name = name;
 		this.description = descriptor;
 	}
 
-	public int getValue() {
-		return value;
+	public static Optional<HelpStatus> valueOfFlag(@NonNull Integer flag) {
+		HelpStatus[] values = HelpStatus.values();
+
+		for (HelpStatus d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	public int getFlag() {
+		return flag;
 	}
 
 	public String getName() {

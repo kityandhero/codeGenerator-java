@@ -100,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
 
 			Integer status = operator.getStatus();
 
-			return status.equals(AccountStatus.Enabled.getValue());
+			return status.equals(AccountStatus.Enabled.getFlag());
 		}
 
 		return false;

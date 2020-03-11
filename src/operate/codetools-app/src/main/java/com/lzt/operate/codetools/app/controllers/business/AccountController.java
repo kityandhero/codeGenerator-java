@@ -118,7 +118,7 @@ public class AccountController extends BaseOperateAuthController {
 		Integer status = paramJson.getStringExByKey(GlobalString.ACCOUNT_STATUS, ConstantCollection.SEARCH_UNLIMITED_STRING)
 								  .toInt();
 
-		if (!StringAssist.isNullOrEmpty(name) && !EnumAssist.existTargetValue(Arrays.asList(AccountStatus.values()), AccountStatus::getValue, status)) {
+		if (!StringAssist.isNullOrEmpty(name) && !EnumAssist.existTargetValue(Arrays.asList(AccountStatus.values()), AccountStatus::getFlag, status)) {
 			return this.pageDataEmpty(pageSize);
 		}
 
@@ -283,7 +283,7 @@ public class AccountController extends BaseOperateAuthController {
 		data.setSlat(StringAssist.randomAlphanumeric(6)
 								 .toLowerCase());
 		data.setPassword(Md5Assist.toMd5(password, data.getSlat()));
-		data.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
+		data.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
 
 		long operatorId = getOperatorId();
 
@@ -460,7 +460,7 @@ public class AccountController extends BaseOperateAuthController {
 		if (result.isPresent()) {
 			Account data = result.get();
 
-			data.setStatus(status, AccountStatus::getValue, AccountStatus::getName);
+			data.setStatus(status, AccountStatus::getFlag, AccountStatus::getName);
 
 			long operatorId = getOperatorId();
 

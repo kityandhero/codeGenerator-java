@@ -70,7 +70,7 @@ public class MetaDataController extends OperateBaseController {
 
 		result.append(AccountStatus.META_KEY, EnumAssist.buildFlagDataCollection(
 				Arrays.asList(AccountStatus.values()),
-				AccountStatus::getValue,
+				AccountStatus::getFlag,
 				AccountStatus::getName,
 				AccountStatus::getDescription).toArray());
 

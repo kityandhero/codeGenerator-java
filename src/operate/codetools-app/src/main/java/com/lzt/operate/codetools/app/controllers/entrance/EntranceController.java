@@ -54,15 +54,11 @@ import java.util.Optional;
 @Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
-	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
-
-	private AccountService accountService;
-
 	private final AccountRoleService accountRoleService;
-
 	private final RoleUniversalService roleUniversalService;
-
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
+	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
+	private AccountService accountService;
 
 	@Autowired
 	public EntranceController(
@@ -192,7 +188,7 @@ public class EntranceController extends OperateBaseController {
 		account.setSlat(StringAssist.randomAlphanumeric(6)
 									.toLowerCase());
 		account.setPassword(Md5Assist.toMd5(password, account.getSlat()));
-		account.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
+		account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
 
 		accountService.save(account);
 

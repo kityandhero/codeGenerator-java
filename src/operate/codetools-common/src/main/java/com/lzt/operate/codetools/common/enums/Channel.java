@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * 渠道枚举集合
  *
@@ -39,6 +43,18 @@ public enum Channel {
 		this.flag = flag;
 		this.name = name;
 		this.description = description;
+	}
+
+	public static Optional<Channel> valueOfFlag(@NonNull Integer flag) {
+		Channel[] values = Channel.values();
+
+		for (Channel d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
 	}
 
 	public int getFlag() {

@@ -5,11 +5,10 @@ import org.springframework.lang.NonNull;
 import java.util.Optional;
 
 /**
- * 公共角色状态
- *
- * @author lzt
+ * @author luzhitao
  */
-public enum RoleUniversalStatus {
+
+public enum ConnectionConfigStatus {
 
 	/**
 	 * 已启用
@@ -19,17 +18,12 @@ public enum RoleUniversalStatus {
 	/**
 	 * 已禁用
 	 */
-	Disabled(0, "已禁用", "已禁用"),
-
-	/**
-	 * 已删除
-	 */
-	Remove(-1, "已删除", "已删除");
+	Disabled(0, "已禁用", "已禁用");
 
 	/**
 	 * 元数据键值集合中的key
 	 */
-	public static final String META_KEY = "roleUniversalStatusList";
+	public static final String META_KEY = "accessWayStatusList";
 
 	/**
 	 * 值
@@ -46,16 +40,16 @@ public enum RoleUniversalStatus {
 	 */
 	private String description;
 
-	RoleUniversalStatus(int value, String name, String descriptor) {
+	ConnectionConfigStatus(int value, String name, String descriptor) {
 		this.flag = value;
 		this.name = name;
 		this.description = descriptor;
 	}
 
-	public static Optional<RoleUniversalStatus> valueOfFlag(@NonNull Integer flag) {
-		RoleUniversalStatus[] values = RoleUniversalStatus.values();
+	public static Optional<AccessWayStatus> valueOfFlag(@NonNull Integer flag) {
+		AccessWayStatus[] values = AccessWayStatus.values();
 
-		for (RoleUniversalStatus d : values) {
+		for (AccessWayStatus d : values) {
 			if (flag.equals(d.getFlag())) {
 				return Optional.of(d);
 			}

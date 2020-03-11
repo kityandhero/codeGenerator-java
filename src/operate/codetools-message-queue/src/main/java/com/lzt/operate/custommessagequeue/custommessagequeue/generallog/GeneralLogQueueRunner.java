@@ -36,7 +36,7 @@ public class GeneralLogQueueRunner implements Runnable {
 					GeneralLog generalLog = optional.get();
 
 					generalLog.setChannel(Channel.CodeTools);
-					generalLog.setStatus(GeneralLogStatus.Normal, GeneralLogStatus::getValue, GeneralLogStatus::getName);
+					generalLog.setStatus(GeneralLogStatus.Normal, GeneralLogStatus::getFlag, GeneralLogStatus::getName);
 					generalLog.setCreateOperatorId(OperatorCollection.System.getId());
 					generalLog.setCreateTime(LocalDateTime.now());
 					generalLog.setUpdateOperatorId(OperatorCollection.System.getId());

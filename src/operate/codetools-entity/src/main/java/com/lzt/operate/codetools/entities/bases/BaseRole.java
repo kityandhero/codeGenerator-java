@@ -62,7 +62,7 @@ public abstract class BaseRole extends BaseEntity {
 		this.content = "";
 		this.moduleCount = 0;
 		this.competence = "";
-		this.whetherSuper = WhetherSuper.No.getValue();
+		this.whetherSuper = WhetherSuper.No.getFlag();
 	}
 
 	public String getName() {

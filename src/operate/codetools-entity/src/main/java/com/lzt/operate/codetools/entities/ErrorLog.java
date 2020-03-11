@@ -174,9 +174,9 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.stackTrace = "";
 		this.source = "";
 		this.scene = "";
-		this.type = ErrorLogType.Exception.getValue();
+		this.type = ErrorLogType.Exception.getFlag();
 		this.typeNote = ErrorLogType.Exception.getName();
-		this.degree = ErrorLogDegree.Error.getValue();
+		this.degree = ErrorLogDegree.Error.getFlag();
 		this.degreeNote = ErrorLogDegree.Error.getName();
 		this.sendNotification = 0;
 		this.sendResult = 0;
@@ -189,7 +189,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.port = "";
 		this.otherLog = "";
 		this.data = "";
-		this.resolve = ErrorLogResolve.Unresolved.getValue();
+		this.resolve = ErrorLogResolve.Unresolved.getFlag();
 		this.resolveNote = ErrorLogResolve.Unresolved.getName();
 		this.exceptionTypeName = "";
 	}
@@ -239,7 +239,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	}
 
 	public void setType(ErrorLogType type) {
-		this.type = type.getValue();
+		this.type = type.getFlag();
 		this.typeNote = type.getName();
 	}
 
@@ -252,7 +252,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	}
 
 	public void setDegree(ErrorLogDegree degree) {
-		this.degree = degree.getValue();
+		this.degree = degree.getFlag();
 		this.degreeNote = degree.getName();
 	}
 
@@ -353,7 +353,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	}
 
 	public void setResolve(ErrorLogResolve resolve) {
-		this.resolve = resolve.getValue();
+		this.resolve = resolve.getFlag();
 		this.resolveNote = resolve.getName();
 	}
 

@@ -174,9 +174,9 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			RoleUniversal roleUniversal = new RoleUniversal();
 
 			roleUniversal.setName(ConstantCollection.SUPER_ROLE_NAME);
-			roleUniversal.setWhetherSuper(WhetherSuper.Yes.getValue());
+			roleUniversal.setWhetherSuper(WhetherSuper.Yes.getFlag());
 			roleUniversal.setChannel(Channel.CodeTools);
-			roleUniversal.setStatus(RoleUniversalStatus.Enabled, RoleUniversalStatus::getValue, RoleUniversalStatus::getName);
+			roleUniversal.setStatus(RoleUniversalStatus.Enabled, RoleUniversalStatus::getFlag, RoleUniversalStatus::getName);
 			roleUniversal.setCreateOperatorId(OperatorCollection.System.getId());
 			roleUniversal.setUpdateOperatorId(OperatorCollection.System.getId());
 
@@ -203,7 +203,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 											.toLowerCase());
 				account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
 				account.setChannel(Channel.CodeTools);
-				account.setStatus(AccountStatus.Enabled, AccountStatus::getValue, AccountStatus::getName);
+				account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
 				account.setCreateOperatorId(OperatorCollection.System.getId());
 				account.setUpdateOperatorId(OperatorCollection.System.getId());
 
@@ -343,7 +343,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			helpCategory.setName("未分类");
 			helpCategory.setDescription("");
 			helpCategory.setChannel(Channel.CodeTools);
-			helpCategory.setStatus(HelpCategoryStatus.Enabled, HelpCategoryStatus::getValue, HelpCategoryStatus::getName);
+			helpCategory.setStatus(HelpCategoryStatus.Enabled, HelpCategoryStatus::getFlag, HelpCategoryStatus::getName);
 
 			this.getHelpCategoryService().save(helpCategory);
 		}

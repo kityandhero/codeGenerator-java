@@ -7,6 +7,7 @@ import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.Channel;
+import com.lzt.operate.codetools.common.enums.ConnectionConfigStatus;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
@@ -250,6 +251,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (result.getSuccess()) {
 			ConnectionConfig data = result.getData();
 
+			data.setStatus(ConnectionConfigStatus.Enabled, ConnectionConfigStatus::getFlag, ConnectionConfigStatus::getName);
 			data.setChannel(Channel.CodeTools);
 
 			long operatorId = getOperatorId();

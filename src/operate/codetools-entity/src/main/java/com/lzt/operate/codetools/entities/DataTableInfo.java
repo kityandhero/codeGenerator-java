@@ -9,12 +9,16 @@ import java.io.Serializable;
  */
 @Data
 public class DataTableInfo implements Serializable {
-    public String name;
 
-    public DataTableInfo() {
-    }
+	private static final long serialVersionUID = -6269891887246380955L;
 
-    public DataTableInfo(String name) {
-        this.name = name;
-    }
+	public String name;
+
+	public DataTableInfo() {
+	}
+
+	public DataTableInfo(String name) {
+		this.name = name;
+	}
+
 }

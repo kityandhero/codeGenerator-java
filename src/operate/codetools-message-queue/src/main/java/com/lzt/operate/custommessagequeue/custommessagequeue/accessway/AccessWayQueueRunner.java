@@ -62,7 +62,7 @@ public class AccessWayQueueRunner implements Runnable {
 								accessWay.setRelativePath(relativePath);
 								accessWay.setExpand(expand);
 								accessWay.setChannel(Channel.CodeTools);
-								accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getValue, AccessWayStatus::getName);
+								accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getFlag, AccessWayStatus::getName);
 								accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
 								accessWay.setUpdateTime(LocalDateTime.now());
 
@@ -77,7 +77,7 @@ public class AccessWayQueueRunner implements Runnable {
 							accessWay.setRelativePath(relativePath);
 							accessWay.setExpand(expand);
 							accessWay.setChannel(Channel.CodeTools);
-							accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getValue, AccessWayStatus::getName);
+							accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getFlag, AccessWayStatus::getName);
 							accessWay.setCreateOperatorId(OperatorCollection.System.getId());
 							accessWay.setCreateTime(LocalDateTime.now());
 							accessWay.setUpdateOperatorId(OperatorCollection.System.getId());

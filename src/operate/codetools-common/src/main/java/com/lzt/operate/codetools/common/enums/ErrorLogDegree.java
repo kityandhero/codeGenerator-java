@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * @author luzhitao
  */
@@ -34,7 +38,7 @@ public enum ErrorLogDegree {
 	/**
 	 * 值
 	 */
-	private int value;
+	private int flag;
 
 	/**
 	 * 描述
@@ -47,13 +51,25 @@ public enum ErrorLogDegree {
 	private String description;
 
 	ErrorLogDegree(int value, String name, String descriptor) {
-		this.value = value;
+		this.flag = value;
 		this.name = name;
 		this.description = descriptor;
 	}
 
-	public int getValue() {
-		return value;
+	public static Optional<ErrorLogDegree> valueOfFlag(@NonNull Integer flag) {
+		ErrorLogDegree[] values = ErrorLogDegree.values();
+
+		for (ErrorLogDegree d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	public int getFlag() {
+		return flag;
 	}
 
 	public String getName() {

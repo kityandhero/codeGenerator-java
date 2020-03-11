@@ -8,6 +8,7 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -16,7 +17,7 @@ import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
-import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
+import com.lzt.operate.utility.pojo.results.PageListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,8 +32,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author luzhitao
@@ -86,19 +89,27 @@ public class DataTableController extends BaseOperateAuthController {
 			return this.pageDataEmpty();
 		}
 
+		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
+		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
+
+		pageNo = Math.max(pageNo, 1);
+		pageSize = Math.max(pageSize, 1);
+
+		String name = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
+
 		Optional<ConnectionConfig> optional = this.getAccessWayService()
 												  .get(connectionConfigId);
 
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			ExecutiveSimpleResult result = DatabaseAssist.tryConnection(connectionConfig);
+			List<DataTableInfo> list = DatabaseAssist.pageListTableNames(connectionConfig);
 
-			if (result.getSuccess()) {
-				return this.pageDataEmpty();
-			} else {
-				return this.pageDataEmpty();
-			}
+			list = list.stream().filter(o -> o.getName().contains(name)).collect(Collectors.toList());
+
+			PageListResult<DataTableInfo> pager = PageListResult.buildFromList(list, pageNo, pageSize);
+
+			return this.pageData(pager);
 		}
 
 		return this.pageDataEmpty();

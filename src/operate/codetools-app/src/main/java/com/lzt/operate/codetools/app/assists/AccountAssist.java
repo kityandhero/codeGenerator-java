@@ -180,7 +180,7 @@ public class AccountAssist {
 
 			data.append("key", role.getId());
 			data.append("name", role.getName());
-			data.append("createMode", AccountRoleCreateMode.FromUniversal.getValue());
+			data.append("createMode", AccountRoleCreateMode.FromUniversal.getFlag());
 
 			return data;
 		}).collect(Collectors.toList());
@@ -190,7 +190,7 @@ public class AccountAssist {
 
 			data.append("key", role.getId());
 			data.append("name", role.getName());
-			data.append("createMode", AccountRoleCreateMode.IndependentEstablishment.getValue());
+			data.append("createMode", AccountRoleCreateMode.IndependentEstablishment.getFlag());
 
 			return data;
 		}).collect(Collectors.toList()));
@@ -229,7 +229,7 @@ public class AccountAssist {
 		}
 
 		for (BaseRole role : baseRoleList) {
-			if (role.getWhetherSuper().equals(WhetherSuper.Yes.getValue())) {
+			if (role.getWhetherSuper().equals(WhetherSuper.Yes.getFlag())) {
 				Competence c = new Competence();
 
 				c.setName(ConstantCollection.SUPER_ROLE_NAME);

@@ -84,7 +84,7 @@ public class RoleUniversalServiceImpl implements RoleUniversalService {
 
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(RoleUniversal::getChannel)), channel));
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(RoleUniversal::getWhetherSuper)), WhetherSuper.Yes
-						.getValue()));
+						.getFlag()));
 
 				Predicate[] p = new Predicate[list.size()];
 

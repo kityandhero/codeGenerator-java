@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * @author luzhitao
  */
@@ -18,7 +22,7 @@ public enum GeneralLogStatus {
 	/**
 	 * 值
 	 */
-	private int value;
+	private int flag;
 
 	/**
 	 * 描述
@@ -31,13 +35,25 @@ public enum GeneralLogStatus {
 	private String description;
 
 	GeneralLogStatus(int value, String name, String descriptor) {
-		this.value = value;
+		this.flag = value;
 		this.name = name;
 		this.description = descriptor;
 	}
 
-	public int getValue() {
-		return this.value;
+	public static Optional<GeneralLogStatus> valueOfFlag(@NonNull Integer flag) {
+		GeneralLogStatus[] values = GeneralLogStatus.values();
+
+		for (GeneralLogStatus d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	public int getFlag() {
+		return this.flag;
 	}
 
 	public String getName() {

@@ -1,5 +1,9 @@
 package com.lzt.operate.codetools.common.enums;
 
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
+
 /**
  * 自定义配置分类
  *
@@ -34,6 +38,18 @@ public enum CustomConfigCategory {
 		this.description = description;
 	}
 
+	public static Optional<CustomConfigCategory> valueOfFlag(@NonNull Integer flag) {
+		CustomConfigCategory[] values = CustomConfigCategory.values();
+
+		for (CustomConfigCategory d : values) {
+			if (flag.equals(d.getFlag())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
 	public int getFlag() {
 		return flag;
 	}
@@ -45,4 +61,5 @@ public enum CustomConfigCategory {
 	public String getDescription() {
 		return description;
 	}
+
 }
