@@ -89,14 +89,14 @@ public class GeneralLogController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "一般日志分页列表", notes = "一般日志分页列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.GENERAL_LOG_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.GENERAL_LOG_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_MESSAGE),
 			@ApiJsonProperty(name = GlobalString.GENERAL_LOG_CHANNEL),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.GENERAL_LOG_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.GENERAL_LOG_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")

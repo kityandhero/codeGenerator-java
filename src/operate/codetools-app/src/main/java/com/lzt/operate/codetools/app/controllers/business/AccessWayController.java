@@ -84,7 +84,7 @@ public class AccessWayController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "模块分页列表", notes = "模块分页列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.ACCESS_WAY_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.ACCESS_WAY_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ACCESS_WAY_NAME),
 			@ApiJsonProperty(name = GlobalString.ACCESS_WAY_TAG),
 			@ApiJsonProperty(name = GlobalString.ACCESS_WAY_RELATIVE_PATH),
@@ -92,7 +92,7 @@ public class AccessWayController extends BaseOperateAuthController {
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCESS_WAY_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCESS_WAY_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")

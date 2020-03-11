@@ -22,7 +22,7 @@ public class ModelNameCollection {
 
 	//region CONNECTION_CONFIG 数据库连接
 
-	public static final String CONNECTION_CONFIG_LIST = "CONNECTION_CONFIG_LIST";
+	public static final String CONNECTION_CONFIG_PAGE_LIST = "CONNECTION_CONFIG_LIST";
 
 	public static final String CONNECTION_CONFIG_GET = "CONNECTION_CONFIG_GET";
 
@@ -38,7 +38,7 @@ public class ModelNameCollection {
 
 	//region ACCOUNT 账户
 
-	public static final String ACCOUNT_LIST = "ACCOUNT_LIST";
+	public static final String ACCOUNT_PAGE_LIST = "ACCOUNT_LIST";
 
 	public static final String ACCOUNT_GET = "ACCOUNT_GET";
 
@@ -56,7 +56,7 @@ public class ModelNameCollection {
 
 	//region ACCESS_WAY 公共角色
 
-	public static final String ACCESS_WAY_LIST = "ROLE_UNIVERSAL_LIST";
+	public static final String ACCESS_WAY_PAGE_LIST = "ROLE_UNIVERSAL_LIST";
 
 	public static final String ACCESS_WAY_GET = "ROLE_UNIVERSAL_GET";
 
@@ -64,7 +64,7 @@ public class ModelNameCollection {
 
 	//region ROLE_UNIVERSAL 公共角色
 
-	public static final String ROLE_UNIVERSAL_LIST = "ROLE_UNIVERSAL_LIST";
+	public static final String ROLE_UNIVERSAL_PAGE_LIST = "ROLE_UNIVERSAL_LIST";
 
 	public static final String ROLE_UNIVERSAL_GET = "ROLE_UNIVERSAL_GET";
 
@@ -76,7 +76,7 @@ public class ModelNameCollection {
 
 	//region ERROR_LOG 错误日志
 
-	public static final String ERROR_LOG_LIST = "ERROR_LOG_LIST";
+	public static final String ERROR_LOG_PAGE_LIST = "ERROR_LOG_LIST";
 
 	public static final String ERROR_LOG_GET = "ERROR_LOG_GET";
 
@@ -84,7 +84,7 @@ public class ModelNameCollection {
 
 	//region GENERAL_LOG 错误日志
 
-	public static final String GENERAL_LOG_LIST = "GENERAL_LOG_LIST";
+	public static final String GENERAL_LOG_PAGE_LIST = "GENERAL_LOG_LIST";
 
 	public static final String GENERAL_LOG_GET = "GENERAL_LOG_GET";
 
@@ -98,6 +98,14 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region DATA_TABLE_LIST 自定义设置
+
+	public static final String DATA_TABLE_LIST = "DATA_TABLE_LIST";
+
+	public static final String DATA_TABLE_GET = "DATA_TABLE_GET";
+
+	//endregion
+
 	//region HELP_CATEGORY 帮助信息类别
 
 	public static final String HELP_CATEGORY_LIST = "HELP_CATEGORY_LIST";
@@ -108,7 +116,7 @@ public class ModelNameCollection {
 
 	//region HELP 帮助信息类别
 
-	public static final String HELP_LIST = "HELP_LIST";
+	public static final String HELP_PAGE_LIST = "HELP_LIST";
 
 	public static final String HELP_GET = "HELP_GET";
 

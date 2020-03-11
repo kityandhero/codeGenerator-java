@@ -85,13 +85,13 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "公共角色分页列表", notes = "公共角色分页列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.ROLE_UNIVERSAL_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.ROLE_UNIVERSAL_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ROLE_UNIVERSAL_NAME),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ROLE_UNIVERSAL_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ROLE_UNIVERSAL_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")

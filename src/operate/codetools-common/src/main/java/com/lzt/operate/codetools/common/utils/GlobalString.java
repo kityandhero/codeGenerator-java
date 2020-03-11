@@ -197,6 +197,13 @@ public class GlobalString {
 
 	//endregion
 
+	//region DATA_TABLE
+
+	@ApiSingleParam(value = "数据表名", type = String.class, example = "table1")
+	public static final String DATA_TABLE_NAME = "name";
+
+	//endregion
+
 	//region HELP_CATEGORY
 
 	@ApiSingleParam(value = "帮助列别标识", type = Long.class, example = "101")

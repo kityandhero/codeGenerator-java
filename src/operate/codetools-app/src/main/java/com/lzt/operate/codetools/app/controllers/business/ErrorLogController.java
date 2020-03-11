@@ -89,14 +89,14 @@ public class ErrorLogController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "错误日志分页列表", notes = "错误日志分页列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.ERROR_LOG_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.ERROR_LOG_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ERROR_LOG_MESSAGE),
 			@ApiJsonProperty(name = GlobalString.ERROR_LOG_CHANNEL),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ERROR_LOG_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ERROR_LOG_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")

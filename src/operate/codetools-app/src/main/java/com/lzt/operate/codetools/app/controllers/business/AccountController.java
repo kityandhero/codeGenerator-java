@@ -90,7 +90,7 @@ public class AccountController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "账户分页列表", notes = "账户分页列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.ACCOUNT_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_USERNAME),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
 			@ApiJsonProperty(name = GlobalString.ACCOUNT_PHONE),
@@ -99,7 +99,7 @@ public class AccountController extends BaseOperateAuthController {
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")

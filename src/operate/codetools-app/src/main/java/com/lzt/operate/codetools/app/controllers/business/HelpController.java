@@ -99,14 +99,14 @@ public class HelpController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "帮助类别列表", notes = "帮助类别列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.HELP_LIST, value = {
+	@ApiJsonObject(name = ModelNameCollection.HELP_PAGE_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.HELP_TITLE),
 			@ApiJsonProperty(name = GlobalString.HELP_HELP_CATEGORY_ID),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_NO),
 			@ApiJsonProperty(name = GlobalString.LIST_PAGE_SIZE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.HELP_LIST)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.HELP_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
