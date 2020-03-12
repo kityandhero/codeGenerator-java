@@ -7,6 +7,7 @@ import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.CustomConfigCategory;
+import com.lzt.operate.codetools.common.enums.DataColumnStatus;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -73,6 +74,12 @@ public class MetaDataController extends OperateBaseController {
 				AccountStatus::getFlag,
 				AccountStatus::getName,
 				AccountStatus::getDescription).toArray());
+
+		result.append(DataColumnStatus.META_KEY, EnumAssist.buildFlagDataCollection(
+				Arrays.asList(DataColumnStatus.values()),
+				DataColumnStatus::getFlag,
+				DataColumnStatus::getName,
+				DataColumnStatus::getDescription).toArray());
 
 		return this.singleData(result);
 	}

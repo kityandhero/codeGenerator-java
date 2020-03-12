@@ -204,6 +204,28 @@ public class GlobalString {
 
 	//endregion
 
+	//region DATA_COLUMN
+
+	@ApiSingleParam(value = "数据库列定制数据标识", type = Long.class, example = "101")
+	public static final String DATA_COLUMN_ID = "dataColumnId";
+
+	@ApiSingleParam(value = "数据表名", type = String.class, example = "table1")
+	public static final String DATA_COLUMN_TABLE_NAME = "tableName";
+
+	@ApiSingleParam(value = "数据表列名", type = String.class, example = "table1")
+	public static final String DATA_COLUMN_NAME = "name";
+
+	@ApiSingleParam(value = "列别名", type = String.class, example = "aliasName")
+	public static final String DATA_COLUMN_ALIAS_NAME = "aliasName";
+
+	@ApiSingleParam(value = "Java类型", type = String.class, example = "String")
+	public static final String DATA_COLUMN_JAVA_TYPE = "javaType";
+
+	@ApiSingleParam(value = "Type Handler", type = String.class, example = "typeHandler")
+	public static final String DATA_COLUMN_TYPE_HANDLER = "typeHandler";
+
+	//endregion
+
 	//region HELP_CATEGORY
 
 	@ApiSingleParam(value = "帮助列别标识", type = Long.class, example = "101")

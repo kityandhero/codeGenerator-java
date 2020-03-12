@@ -108,6 +108,8 @@ public class ModelNameCollection {
 
 	public static final String DATA_COLUMN_LIST = "DATA_COLUMN_LIST";
 
+	public static final String DATA_COLUMN_SET = "DATA_COLUMN_SET";
+
 	//endregion
 
 	//region HELP_CATEGORY 帮助信息类别

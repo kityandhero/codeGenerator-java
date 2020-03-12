@@ -12,6 +12,7 @@ import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
@@ -103,9 +104,11 @@ public class DataTableController extends BaseOperateAuthController {
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			List<DataTableInfo> list = DatabaseAssist.pageListTableName(connectionConfig);
+			List<DataTableInfo> list = DatabaseAssist.listDataTable(connectionConfig);
 
-			list = list.stream().filter(o -> o.getName().contains(name)).collect(Collectors.toList());
+			if (!StringAssist.isNullOrEmpty(name)) {
+				list = list.stream().filter(o -> o.getName().contains(name)).collect(Collectors.toList());
+			}
 
 			PageListResult<DataTableInfo> pager = PageListResult.buildFromList(list, pageNo, pageSize);
 

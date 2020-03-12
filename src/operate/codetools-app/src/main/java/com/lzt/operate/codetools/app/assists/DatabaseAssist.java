@@ -9,7 +9,7 @@ import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.codetools.app.util.ConfigHelper;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.DataColumnInfo;
+import com.lzt.operate.codetools.entities.DataColumn;
 import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
@@ -267,7 +267,13 @@ public class DatabaseAssist {
 		return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("不支持的链接类型"));
 	}
 
-	public static List<DataTableInfo> pageListTableName(ConnectionConfig config) throws Exception {
+	public static boolean checkTableNameExist(ConnectionConfig config, String tableName) throws Exception {
+		List<DataTableInfo> listDataTable = listDataTable(config);
+
+		return listDataTable.stream().anyMatch(o -> o.getName().equals(tableName));
+	}
+
+	public static List<DataTableInfo> listDataTable(ConnectionConfig config) throws Exception {
 		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
 
 		if (!optionalConnectionConfig.isPresent()) {
@@ -278,7 +284,7 @@ public class DatabaseAssist {
 
 		if (connectionType.getFlag().equals(ConnectionType.TCP_IP.getFlag())) {
 			try (Connection connection = DatabaseAssist.getConnection(config)) {
-				return pageListTableNameCore(connection, config);
+				return listDataTableCore(connection, config);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 
@@ -291,7 +297,7 @@ public class DatabaseAssist {
 			engagePortForwarding(sshSession, config);
 
 			try (Connection connection = DatabaseAssist.getConnection(config)) {
-				return pageListTableNameCore(connection, config);
+				return listDataTableCore(connection, config);
 			} finally {
 				DatabaseAssist.shutdownPortForwarding(sshSession);
 			}
@@ -300,7 +306,7 @@ public class DatabaseAssist {
 		return new ArrayList<>();
 	}
 
-	private static List<DataTableInfo> pageListTableNameCore(Connection connection, ConnectionConfig config) throws SQLException {
+	private static List<DataTableInfo> listDataTableCore(Connection connection, ConnectionConfig config) throws SQLException {
 		List<DataTableInfo> tables = new ArrayList<>();
 		DatabaseMetaData md = connection.getMetaData();
 		ResultSet rs;
@@ -331,7 +337,7 @@ public class DatabaseAssist {
 		return tables;
 	}
 
-	public static List<DataColumnInfo> listTableColumn(ConnectionConfig config, String tableName) throws Exception {
+	public static List<DataColumn> listTableColumn(ConnectionConfig config, String tableName) throws Exception {
 		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
 
 		if (!optionalConnectionConfig.isPresent()) {
@@ -364,17 +370,17 @@ public class DatabaseAssist {
 		return new ArrayList<>();
 	}
 
-	private static List<DataColumnInfo> listTableColumnCore(Connection connection, ConnectionConfig config, String tableName) throws SQLException {
+	private static List<DataColumn> listTableColumnCore(Connection connection, ConnectionConfig config, String tableName) throws SQLException {
 		DatabaseMetaData md = connection.getMetaData();
 		ResultSet rs = md.getColumns(config.getSchema(), null, tableName, null);
-		List<DataColumnInfo> columns = new ArrayList<>();
+		List<DataColumn> columns = new ArrayList<>();
 
 		while (rs.next()) {
 
 			String name = rs.getString("COLUMN_NAME");
 			String type = rs.getString("TYPE_NAME");
 
-			DataColumnInfo col = new DataColumnInfo();
+			DataColumn col = new DataColumn();
 
 			col.setName(name);
 			col.setType(type);

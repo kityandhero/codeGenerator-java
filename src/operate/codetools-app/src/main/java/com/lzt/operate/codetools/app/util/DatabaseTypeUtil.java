@@ -6,7 +6,7 @@ import com.jcraft.jsch.Session;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.DataColumnInfo;
+import com.lzt.operate.codetools.entities.DataColumn;
 import com.lzt.operate.codetools.entities.DataTableInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -204,7 +204,7 @@ public class DatabaseTypeUtil {
 		}
 	}
 
-	public static List<DataColumnInfo> getTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
+	public static List<DataColumn> getTableColumns(ConnectionConfig dbConfig, String tableName) throws Exception {
 		String url = DatabaseTypeUtil.getConnectionUrlWithSchema(dbConfig);
 		DatabaseTypeUtil._LOG.info("getTableColumns, connection url: {}", url);
 		Session sshSession = DatabaseTypeUtil.getSSHSession(dbConfig);
@@ -212,13 +212,14 @@ public class DatabaseTypeUtil {
 		try (Connection conn = DatabaseTypeUtil.getConnection(dbConfig)) {
 			DatabaseMetaData md = conn.getMetaData();
 			ResultSet rs = md.getColumns(dbConfig.getSchema(), null, tableName, null);
-			List<DataColumnInfo> columns = new ArrayList<>();
+			List<DataColumn> columns = new ArrayList<>();
 			while (rs.next()) {
 
 				String name = rs.getString("COLUMN_NAME");
 				String type = rs.getString("TYPE_NAME");
 
-				DataColumnInfo col = new DataColumnInfo();
+				DataColumn col = new DataColumn();
+
 				col.setName(name);
 				col.setType(type);
 
@@ -257,7 +258,7 @@ public class DatabaseTypeUtil {
 		List<String> driverJars = ConfigHelper.getAllJDBCDriverJarPaths();
 		ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
 		try {
-			Class clazz = Class.forName(dbType.getDriverClass(), true, classloader);
+			Class<?> clazz = Class.forName(dbType.getDriverClass(), true, classloader);
 			Driver driver = (Driver) clazz.newInstance();
 			DatabaseTypeUtil._LOG.info("load driver class: {}", driver);
 			DatabaseTypeUtil.drivers.put(dbType, driver);

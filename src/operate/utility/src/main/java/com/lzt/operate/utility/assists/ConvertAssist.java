@@ -32,6 +32,16 @@ public class ConvertAssist {
 	}
 
 	/**
+	 * 转换为String类型（判空，避免NPE）
+	 *
+	 * @param v 字符类型值
+	 * @return 转换结果
+	 */
+	public static String longToString(long v) {
+		return Long.toString(v);
+	}
+
+	/**
 	 * 转换为Long类型（判空，避免NPE）
 	 *
 	 * @param s 源字符串
@@ -53,6 +63,16 @@ public class ConvertAssist {
 			return defaultLong;
 		}
 		return Long.parseLong(s);
+	}
+
+	/**
+	 * 转换为String类型（判空，避免NPE）
+	 *
+	 * @param v 字符类型值
+	 * @return 转换结果
+	 */
+	public static String intToString(int v) {
+		return Integer.toString(v);
 	}
 
 	/**
