@@ -27,6 +27,7 @@ import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -170,7 +171,57 @@ public class DataColumnController extends BaseOperateAuthController {
 		return this.listDataEmpty();
 	}
 
-	@ApiOperation(value = "定时列信息", notes = "定时列信息", httpMethod = "POST")
+	@ApiOperation(value = "获取定时列信息", notes = "获取定时列信息", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_NAME),
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_NAME)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_COLUMN_SET)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "获取定时列信息", description = "获取定时列信息", tag = "303175ed-6c19-42ab-8690-f52a9a23120b")
+	public BaseResultData get(@RequestBody Map<String, Serializable> json) throws Exception {
+		ParamData paramJson = getParamData(json);
+
+		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
+		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
+		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
+
+		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, name);
+
+		if (!result.getSuccess()) {
+			return this.fail(result.getCode());
+		}
+
+		DataColumn dataColumn = result.getData();
+
+		List<IGetter<DataColumn>> getterList = new ArrayList<>();
+
+		getterList.add(DataColumn::getConnectionConfigId);
+		getterList.add(DataColumn::getTableName);
+		getterList.add(DataColumn::getName);
+		getterList.add(DataColumn::getType);
+		getterList.add(DataColumn::getJavaType);
+		getterList.add(DataColumn::getAliasName);
+		getterList.add(DataColumn::getTypeHandler);
+		getterList.add(DataColumn::getChannel);
+		getterList.add(DataColumn::getChannelNote);
+		getterList.add(DataColumn::getStatus);
+		getterList.add(DataColumn::getStatusNote);
+		getterList.add(DataColumn::getCreateTime);
+		getterList.add(DataColumn::getUpdateTime);
+
+		SerializableData data = SerializableData.toSerializableData(dataColumn, getterList);
+
+		data.append(ReflectAssist.getFriendlyIdName(DataColumn.class), dataColumn.getId());
+
+		return this.singleData(data);
+	}
+
+	@ApiOperation(value = "设置定时列信息", notes = "设置定时列信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_NAME),
@@ -184,7 +235,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "定时列信息", description = "定时列信息", tag = "d455d085-d60a-4c4a-b3f7-5e6c7a9bf3fc")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置定时列信息", description = "设置定时列信息", tag = "d455d085-d60a-4c4a-b3f7-5e6c7a9bf3fc")
 	public BaseResultData set(@RequestBody Map<String, Serializable> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
@@ -195,37 +246,19 @@ public class DataColumnController extends BaseOperateAuthController {
 		String javaType = paramJson.getStringByKey(GlobalString.DATA_COLUMN_JAVA_TYPE);
 		String typeHandler = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TYPE_HANDLER);
 
-		if (StringAssist.isNullOrEmpty(tableName)) {
-			return this.paramError(GlobalString.DATA_TABLE_NAME, "请提交数据库表名");
-		}
+		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, name);
 
-		if (connectionConfigId.equals(ConstantCollection.ZERO_LONG)) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "请提交数据连接标识");
-		}
-
-		Optional<ConnectionConfig> optionalConnectionConfig = this.getConnectionConfigService().get(connectionConfigId);
-
-		if (!optionalConnectionConfig.isPresent()) {
-			return this.fail(ReturnDataCode.ParamError.toMessage("数据连接校验失败"));
-		}
-
-		ConnectionConfig connectionConfig = optionalConnectionConfig.get();
-
-		Optional<DataColumn> optional = this.getDataColumnService()
-											.findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);
-
-		boolean tableExist = DatabaseAssist.checkTableNameExist(connectionConfig, tableName);
-
-		if (!tableExist) {
-			return this.noDataError("数据库表不存在");
+		if (!result.getSuccess()) {
+			return this.fail(result.getCode());
 		}
 
 		long operatorId = getOperatorId();
 
-		DataColumn dataColumn;
+		DataColumn dataColumn = result.getData();
 
-		if (optional.isPresent()) {
-			dataColumn = optional.get();
+		Integer status = dataColumn.getStatus();
+
+		if (status.equals(DataColumnStatus.AlreadyCustom.getFlag())) {
 
 			dataColumn.setAliasName(aliasName);
 			dataColumn.setJavaType(javaType);
@@ -235,8 +268,6 @@ public class DataColumnController extends BaseOperateAuthController {
 
 			this.getDataColumnService().save(dataColumn);
 		} else {
-			dataColumn = new DataColumn();
-
 			dataColumn.setAliasName(aliasName);
 			dataColumn.setJavaType(javaType);
 			dataColumn.setTypeHandler(typeHandler);
@@ -253,6 +284,50 @@ public class DataColumnController extends BaseOperateAuthController {
 				.getId()));
 
 		return this.singleData(serializableData);
+	}
+
+	private ExecutiveResult<DataColumn> getDataColumn(Long connectionConfigId, String tableName, String name) throws Exception {
+		if (StringAssist.isNullOrEmpty(tableName)) {
+			return new ExecutiveResult<>(ReturnDataCode.ParamError.toMessage(StringAssist
+					.merge(GlobalString.CONNECTION_CONFIG_ID, "请提交数据库表名")));
+		}
+
+		if (connectionConfigId.equals(ConstantCollection.ZERO_LONG)) {
+			return new ExecutiveResult<>(ReturnDataCode.ParamError.toMessage(StringAssist
+					.merge(GlobalString.CONNECTION_CONFIG_ID, "请提交数据连接标识")));
+		}
+
+		Optional<ConnectionConfig> optionalConnectionConfig = this.getConnectionConfigService().get(connectionConfigId);
+
+		if (!optionalConnectionConfig.isPresent()) {
+			return new ExecutiveResult<>(ReturnDataCode.ParamError.toMessage(StringAssist
+					.merge(GlobalString.CONNECTION_CONFIG_ID, "数据连接校验失败")));
+		}
+
+		ConnectionConfig connectionConfig = optionalConnectionConfig.get();
+
+		boolean tableExist = DatabaseAssist.checkTableNameExist(connectionConfig, tableName);
+
+		if (!tableExist) {
+			return new ExecutiveResult<>(ReturnDataCode.DataError.toMessage("数据库表不存在"));
+		}
+
+		Optional<DataColumn> optional = this.getDataColumnService()
+											.findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);
+
+		DataColumn dataColumn;
+
+		if (optional.isPresent()) {
+			dataColumn = optional.get();
+
+			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
+		} else {
+			dataColumn = new DataColumn();
+
+			dataColumn.setStatus(DataColumnStatus.NoCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
+		}
+
+		return new ExecutiveResult<>(ReturnDataCode.Ok, dataColumn);
 	}
 
 }
