@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.GeneratorConfig;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
+import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.general.ConstantCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,14 +14,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * XML based config file help class
@@ -196,11 +201,19 @@ public class ConfigHelper {
 		DatabaseType type = DatabaseType.valueOf(dbType);
 		URL resource = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
 		ConfigHelper._LOG.info("jar resource: {}", resource);
+
 		if (resource != null) {
+			String path = "";
+
 			try {
-				File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getConnectorJarFile());
-				return URLDecoder.decode(file.getCanonicalPath(), Charset.forName("UTF-8").displayName());
+				path = resource.toURI().getRawPath() + "/../lib/" + type.getConnectorJarFile();
+
+				File file = new File(path);
+
+				return URLDecoder.decode(file.getCanonicalPath(), StandardCharsets.UTF_8.displayName());
 			} catch (Exception e) {
+				GeneralLogAssist.quickRecord(StringAssist.merge("lib路径(findConnectorLibPath)：", path));
+
 				throw new RuntimeException("找不到驱动文件，请联系开发者");
 			}
 		} else {
@@ -209,27 +222,64 @@ public class ConfigHelper {
 	}
 
 	public static List<String> getAllJDBCDriverJarPaths() {
+		URL resourcePath = Thread.currentThread().getContextClassLoader().getResource("lib/");
 		List<String> jarFilePathList = new ArrayList<>();
 
-		URL url = Thread.currentThread().getContextClassLoader().getResource("lib/");
+		String path = "";
+
 		try {
+			path = resourcePath.getPath();
 
-			File file = new File(url.getPath());
+			File file = new File(path);
 
-			ConfigHelper._LOG.info("jar lib path: {}", (new File("lib/")).getCanonicalPath());
-			ConfigHelper._LOG.info("jar lib path: {}", file.getCanonicalPath());
 			File[] jarFiles = file.listFiles();
-			if (jarFiles != null && jarFiles.length > 0) {
+
+			Integer fileSize = ConstantCollection.ZERO_INT;
+
+			if (Optional.ofNullable(jarFiles).isPresent()) {
+				fileSize = jarFiles.length;
+			}
+
+			if (fileSize.equals(ConstantCollection.ZERO_INT)) {
+				path = StringAssist.merge(file.getParentFile()
+											  .getParentFile()
+											  .getParentFile()
+											  .getParentFile()
+											  .getPath(), "/classes/lib/");
+
+				URL url = new URL(path);
+
+				URI uri = url.toURI();
+
+				String rootPath = uri.getRawPath();
+
+				DatabaseType[] databaseTypes = DatabaseType.values();
+
+				for (DatabaseType databaseType : databaseTypes) {
+					String jarPath = StringAssist.merge(rootPath, databaseType.getConnectorJarFile());
+
+					jarFilePathList.add(jarPath);
+				}
+			} else {
 				for (File jarFile : jarFiles) {
 					ConfigHelper._LOG.info("jar file: {}", jarFile.getAbsolutePath());
+
 					if (jarFile.isFile() && jarFile.getAbsolutePath().endsWith(".jar")) {
 						jarFilePathList.add(jarFile.getAbsolutePath());
 					}
 				}
 			}
+
+			if (fileSize.equals(ConstantCollection.ZERO_INT)) {
+				GeneralLogAssist.quickRecord(StringAssist.merge("path：", file.getPath()));
+			}
+
 		} catch (Exception e) {
+			GeneralLogAssist.quickRecord(StringAssist.merge("lib路径(getAllJDBCDriverJarPaths)：", path));
+
 			throw new RuntimeException("找不到驱动文件，请联系开发者");
 		}
+
 		return jarFilePathList;
 	}
 

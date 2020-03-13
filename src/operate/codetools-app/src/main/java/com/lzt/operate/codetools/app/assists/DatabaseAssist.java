@@ -11,6 +11,7 @@ import com.lzt.operate.codetools.app.util.ConfigHelper;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataColumn;
 import com.lzt.operate.codetools.entities.DataTableInfo;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -222,6 +223,13 @@ public class DatabaseAssist {
 			DatabaseAssist.drivers.put(dbType, driver);
 		} catch (Exception e) {
 			DatabaseAssist._LOG.error("load driver error", e);
+
+			GeneralLogAssist.quickRecord(StringAssist.merge("驱动总数量：", ConvertAssist.intToString(driverJars.size())));
+
+			for (String driver : driverJars) {
+				GeneralLogAssist.quickRecord(StringAssist.merge("驱动路径:", driver));
+			}
+
 			throw new DbDriverLoadingException("找不到" + dbType.getConnectorJarFile() + "驱动");
 		}
 	}

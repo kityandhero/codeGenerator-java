@@ -45,6 +45,8 @@ public class ConstantCollection {
 
 	public static final Long ZERO_LONG = 0L;
 
+	public static final int ZERO_INT = 0;
+
 	/**
 	 * 超级管理员名称
 	 */

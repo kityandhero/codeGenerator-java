@@ -22,7 +22,6 @@ import com.lzt.operate.codetools.dao.service.RoleUniversalService;
 import com.lzt.operate.codetools.dao.service.impl.HelpCategoryServiceImpl;
 import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.codetools.entities.CustomConfig;
-import com.lzt.operate.codetools.entities.GeneralLog;
 import com.lzt.operate.codetools.entities.HelpCategory;
 import com.lzt.operate.codetools.entities.RoleUniversal;
 import com.lzt.operate.custommessagequeue.custommessagequeue.accessway.AccessWayConsumer;
@@ -31,9 +30,8 @@ import com.lzt.operate.custommessagequeue.custommessagequeue.customconfig.Custom
 import com.lzt.operate.custommessagequeue.custommessagequeue.customconfig.CustomConfigQueueRunner;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogConsumer;
 import com.lzt.operate.custommessagequeue.custommessagequeue.errorlog.ErrorLogQueueRunner;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogConsumer;
-import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogProducer;
-import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogProducerFactory;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
@@ -321,13 +319,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		}
 
 		if (recordLog) {
-			GeneralLogProducer producer = GeneralLogProducerFactory.getInstance().getProducer();
+			GeneralLogAssist.quickRecord("codeTools App 启动");
 
-			GeneralLog generalLog = new GeneralLog();
-
-			generalLog.setMessage("codeTools App 启动");
-
-			producer.push(generalLog);
 		}
 	}
 

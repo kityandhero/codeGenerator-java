@@ -8,6 +8,8 @@ import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataColumn;
 import com.lzt.operate.codetools.entities.DataTableInfo;
+import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
+import com.lzt.operate.utility.assists.StringAssist;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mybatis.generator.internal.util.ClassloaderUtility;
@@ -264,6 +266,11 @@ public class DatabaseTypeUtil {
 			DatabaseTypeUtil.drivers.put(dbType, driver);
 		} catch (Exception e) {
 			DatabaseTypeUtil._LOG.error("load driver error", e);
+
+			for (String driver : driverJars) {
+				GeneralLogAssist.quickRecord(StringAssist.merge("驱动路径（loadDbDriver）:", driver));
+			}
+
 			throw new DbDriverLoadingException("找不到" + dbType.getConnectorJarFile() + "驱动");
 		}
 	}
