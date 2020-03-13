@@ -3,6 +3,7 @@ package com.lzt.operate.codetools.app.controllers.business;
 import com.lzt.operate.codetools.app.assists.DatabaseAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.DataColumnStatus;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
@@ -119,7 +120,7 @@ public class DataColumnController extends BaseOperateAuthController {
 			return this.listDataEmpty();
 		}
 
-		String name = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
+		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
 
 		Optional<ConnectionConfig> optional = this.getConnectionConfigService()
 												  .get(connectionConfigId);
@@ -154,7 +155,22 @@ public class DataColumnController extends BaseOperateAuthController {
 						getterList.add(DataColumn::getCreateTime);
 						getterList.add(DataColumn::getUpdateTime);
 
-						DataColumn dataColumn = this.getDataColumnService().fillFromDataColumnConfig(o);
+						DataColumn dataColumn = o;
+
+						try {
+							ExecutiveResult<DataColumn> result = this.getDataColumn(connectionConfigId, tableName, o
+									.getName());
+
+							if (result.getSuccess()) {
+								dataColumn = result.getData();
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						dataColumn.setConnectionConfigId(connectionConfigId);
+						dataColumn.setTableName(tableName);
+						dataColumn.setChannel(Channel.CodeTools);
 
 						SerializableData data = SerializableData.toSerializableData(dataColumn, getterList);
 
@@ -174,7 +190,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiOperation(value = "获取定时列信息", notes = "获取定时列信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_NAME),
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TABLE_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_NAME)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
@@ -187,7 +203,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
-		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
+		String tableName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TABLE_NAME);
 		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
 
 		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, name);
@@ -214,6 +230,8 @@ public class DataColumnController extends BaseOperateAuthController {
 		getterList.add(DataColumn::getCreateTime);
 		getterList.add(DataColumn::getUpdateTime);
 
+		dataColumn = this.getDataColumnService().fillFromDataColumnConfig(dataColumn);
+
 		SerializableData data = SerializableData.toSerializableData(dataColumn, getterList);
 
 		data.append(ReflectAssist.getFriendlyIdName(DataColumn.class), dataColumn.getId());
@@ -224,7 +242,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiOperation(value = "设置定时列信息", notes = "设置定时列信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_NAME),
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TABLE_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_ALIAS_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_JAVA_TYPE),
@@ -240,7 +258,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
-		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
+		String tableName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TABLE_NAME);
 		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
 		String aliasName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_ALIAS_NAME);
 		String javaType = paramJson.getStringByKey(GlobalString.DATA_COLUMN_JAVA_TYPE);
@@ -263,11 +281,14 @@ public class DataColumnController extends BaseOperateAuthController {
 			dataColumn.setAliasName(aliasName);
 			dataColumn.setJavaType(javaType);
 			dataColumn.setTypeHandler(typeHandler);
+			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 			dataColumn.setUpdateTime(LocalDateTime.now());
 			dataColumn.setUpdateOperatorId(operatorId);
 
 			this.getDataColumnService().save(dataColumn);
 		} else {
+			dataColumn.setConnectionConfigId(connectionConfigId);
+			dataColumn.setTableName(tableName);
 			dataColumn.setAliasName(aliasName);
 			dataColumn.setJavaType(javaType);
 			dataColumn.setTypeHandler(typeHandler);
@@ -327,7 +348,22 @@ public class DataColumnController extends BaseOperateAuthController {
 			dataColumn.setStatus(DataColumnStatus.NoCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 		}
 
-		return new ExecutiveResult<>(ReturnDataCode.Ok, dataColumn);
+		List<DataColumn> listDataColumn = DatabaseAssist.listTableColumn(connectionConfig, tableName);
+
+		Optional<DataColumn> optionalDataColumn = listDataColumn.stream()
+																.filter(o -> o.getName().equals(name))
+																.findFirst();
+
+		if (optionalDataColumn.isPresent()) {
+			DataColumn data = optionalDataColumn.get();
+
+			dataColumn.setName(data.getName());
+			dataColumn.setType(data.getType());
+
+			return new ExecutiveResult<>(ReturnDataCode.Ok, dataColumn);
+		} else {
+			return new ExecutiveResult<>(ReturnDataCode.DataError.toMessage("数据库表列不存在"));
+		}
 	}
 
 }
