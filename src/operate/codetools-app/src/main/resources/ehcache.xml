@@ -1,7 +1,7 @@
 <!-- 在cacheManager 的属性（Map<String, Ehcache> ）ehcaches 中生成两个key[DEFAULT_CACHE, MENU_CACHE] 的Ehcache对象 -->
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
-         maxBytesLocalDisk="20G" maxBytesLocalHeap="10M">
+         maxBytesLocalDisk="200M">
 
     <!-- 1.必须要有的属性： name: cache的名字，用来识别不同的cache，必须惟一。 -->
     <!-- maxElementsInMemory: 内存管理的缓存元素数量最大限值。 -->
@@ -16,6 +16,7 @@
     <!-- memoryStoreEvictionPolicy: 元素逐出缓存规则。共有三种，Recently Used (LRU)最近最少使用，为默认。 First In First Out (FIFO)，先进先出。Less Frequently Used(specified as LFU)最少使用 -->
     <defaultCache maxElementsInMemory="1000" timeToIdleSeconds="120" timeToLiveSeconds="120"
                   overflowToDisk="false"/>
-    <cache name="CACHE_EHCACHE" maxElementsInMemory="10000" eternal="true" timeToIdleSeconds="0" timeToLiveSeconds="0"
+    <cache name="DICT_CACHE" maxElementsInMemory="10000" eternal="true"
+           timeToIdleSeconds="0" timeToLiveSeconds="0"
            overflowToDisk="true"/>
 </ehcache>
