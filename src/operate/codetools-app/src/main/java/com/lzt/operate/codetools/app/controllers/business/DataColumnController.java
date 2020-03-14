@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -136,6 +137,11 @@ public class DataColumnController extends BaseOperateAuthController {
 											   .collect(Collectors.toList());
 			}
 
+			List<DataColumn> listData = this.listDataColumn(connectionConfigId, tableName, listDataColumn.stream()
+																										 .map(DataColumn::getName)
+																										 .collect(Collectors
+																												 .toList()));
+
 			List<SerializableData> list = listDataColumn
 					.stream()
 					.map(o -> {
@@ -157,15 +163,13 @@ public class DataColumnController extends BaseOperateAuthController {
 
 						DataColumn dataColumn = o;
 
-						try {
-							ExecutiveResult<DataColumn> result = this.getDataColumn(connectionConfigId, tableName, o
-									.getName());
+						Optional<DataColumn> optionalDataColumn = listData.stream()
+																		  .filter(item -> item.getName()
+																							  .equals(o.getName()))
+																		  .findFirst();
 
-							if (result.getSuccess()) {
-								dataColumn = result.getData();
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
+						if (optionalDataColumn.isPresent()) {
+							dataColumn = optionalDataColumn.get();
 						}
 
 						dataColumn.setConnectionConfigId(connectionConfigId);
@@ -307,7 +311,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		return this.singleData(serializableData);
 	}
 
-	private ExecutiveResult<DataColumn> getDataColumn(Long connectionConfigId, String tableName, String name) throws Exception {
+	private ExecutiveResult<ConnectionConfig> checkConnection(Long connectionConfigId, String tableName) throws Exception {
 		if (StringAssist.isNullOrEmpty(tableName)) {
 			return new ExecutiveResult<>(ReturnDataCode.ParamError.toMessage(StringAssist
 					.merge(GlobalString.CONNECTION_CONFIG_ID, "请提交数据库表名")));
@@ -332,6 +336,57 @@ public class DataColumnController extends BaseOperateAuthController {
 		if (!tableExist) {
 			return new ExecutiveResult<>(ReturnDataCode.DataError.toMessage("数据库表不存在"));
 		}
+
+		return new ExecutiveResult<>(ReturnDataCode.Ok, connectionConfig);
+	}
+
+	private List<DataColumn> listDataColumn(Long connectionConfigId, String tableName, Collection<String> nameCollection) throws Exception {
+		ExecutiveResult<ConnectionConfig> resultCheckConnection = this.checkConnection(connectionConfigId, tableName);
+
+		if (!resultCheckConnection.getSuccess()) {
+			return new ArrayList<>();
+		}
+
+		ConnectionConfig connectionConfig = resultCheckConnection.getData();
+
+		List<DataColumn> list = this.getDataColumnService()
+									.findByConnectionConfigIdAndTableNameAndNames(connectionConfigId, tableName, nameCollection);
+
+		List<DataColumn> listDataColumn = DatabaseAssist.listTableColumn(connectionConfig, tableName);
+
+		List<DataColumn> listResult = new ArrayList<>();
+
+		for (DataColumn d : listDataColumn) {
+			Optional<DataColumn> optionalDataColumn = list.stream()
+														  .filter(o -> o.getName().equals(d.getName()))
+														  .findFirst();
+
+			if (optionalDataColumn.isPresent()) {
+				DataColumn data = optionalDataColumn.get();
+
+				data.setName(data.getName());
+				data.setType(data.getType());
+				data.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
+
+				listResult.add(data);
+			} else {
+				d.setStatus(DataColumnStatus.NoCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
+
+				listResult.add(d);
+			}
+		}
+
+		return listResult;
+	}
+
+	private ExecutiveResult<DataColumn> getDataColumn(Long connectionConfigId, String tableName, String name) throws Exception {
+		ExecutiveResult<ConnectionConfig> resultCheckConnection = this.checkConnection(connectionConfigId, tableName);
+
+		if (!resultCheckConnection.getSuccess()) {
+			return new ExecutiveResult<>(resultCheckConnection.getCode());
+		}
+
+		ConnectionConfig connectionConfig = resultCheckConnection.getData();
 
 		Optional<DataColumn> optional = this.getDataColumnService()
 											.findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);

@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,6 +91,43 @@ public interface DataColumnService extends BaseService<DataColumnRepository, Dat
 		};
 
 		return getRepository().findOne(specification);
+	}
+
+	/**
+	 * @param connectionConfigId connectionConfigId
+	 * @param tableName          tableName
+	 * @param nameCollection     nameCollection
+	 * @return Optional<DataColumn>
+	 */
+	default List<DataColumn> findByConnectionConfigIdAndTableNameAndNames(long connectionConfigId, String tableName, Collection<String> nameCollection) {
+		Specification<DataColumn> specification = new Specification<DataColumn>() {
+
+			private static final long serialVersionUID = 6317428223679296973L;
+
+			@Override
+			public Predicate toPredicate(@NonNull Root<DataColumn> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+				List<Predicate> list = new ArrayList<>();
+
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getConnectionConfigId)), connectionConfigId));
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getTableName)), tableName));
+
+				CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(DataColumn::getName)));
+
+				for (String v : nameCollection) {
+					if (!StringAssist.isNullOrEmpty(v)) {
+						in.value(v);
+					}
+				}
+
+				list.add(in);
+
+				Predicate[] p = new Predicate[list.size()];
+
+				return criteriaBuilder.and(list.toArray(p));
+			}
+		};
+
+		return getRepository().findAll(specification);
 	}
 
 }
