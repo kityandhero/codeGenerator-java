@@ -14,7 +14,7 @@
     <!-- diskExpiryThreadIntervalSeconds: 访问磁盘线程活动时间。 -->
     <!-- diskSpoolBufferSizeMB: 存入磁盘时的缓冲区大小，默认30MB,每个缓存都有自己的缓冲区。 -->
     <!-- memoryStoreEvictionPolicy: 元素逐出缓存规则。共有三种，Recently Used (LRU)最近最少使用，为默认。 First In First Out (FIFO)，先进先出。Less Frequently Used(specified as LFU)最少使用 -->
-    <defaultCache maxElementsInMemory="1000" eternal="false" timeToIdleSeconds="120" timeToLiveSeconds="120"
+    <defaultCache maxElementsInMemory="1000" timeToIdleSeconds="120" timeToLiveSeconds="120"
                   overflowToDisk="false"/>
     <cache name="CACHE_EHCACHE" maxElementsInMemory="10000" eternal="true" timeToIdleSeconds="0" timeToLiveSeconds="0"
            overflowToDisk="true"/>
