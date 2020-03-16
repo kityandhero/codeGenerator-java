@@ -133,7 +133,7 @@ public class DataColumnController extends BaseOperateAuthController {
 
 			if (!StringAssist.isNullOrEmpty(name)) {
 				listDataColumn = listDataColumn.stream()
-											   .filter(o -> o.getName().contains(name))
+											   .filter(o -> StringAssist.contains(o.getName(), name, true))
 											   .collect(Collectors.toList());
 			}
 

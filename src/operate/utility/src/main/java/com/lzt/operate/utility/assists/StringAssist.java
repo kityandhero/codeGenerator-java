@@ -7,6 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -560,6 +561,41 @@ public class StringAssist {
 	 */
 	public static String trim(String s) {
 		return s.trim();
+	}
+
+	/**
+	 * trim
+	 *
+	 * @param source source
+	 * @param target target
+	 * @return 结果
+	 */
+	public static boolean contains(@NotNull String source, @NotNull String target) {
+		return StringAssist.contains(source, target, false);
+	}
+
+	/**
+	 * trim
+	 *
+	 * @param source     source
+	 * @param target     target
+	 * @param ignoreCase ignoreCase
+	 * @return 结果
+	 */
+	public static boolean contains(@NotNull String source, @NotNull String target, boolean ignoreCase) {
+		if (StringAssist.isNullOrEmpty(source)) {
+			return false;
+		}
+
+		if (StringAssist.isNullOrEmpty(target)) {
+			return false;
+		}
+
+		if (ignoreCase) {
+			return source.toLowerCase().contains(target.toLowerCase());
+		}
+
+		return source.contains(target);
 	}
 
 }
