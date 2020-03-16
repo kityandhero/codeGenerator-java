@@ -5,7 +5,8 @@ import com.lzt.operate.codetools.app.plugins.DbRemarksCommentGenerator;
 import com.lzt.operate.codetools.app.util.ConfigHelper;
 import com.lzt.operate.codetools.app.util.DatabaseTypeUtil;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.GeneratorConfig;
+import com.lzt.operate.codetools.entities.DataBaseGeneratorConfig;
+import com.lzt.operate.codetools.entities.DataTableGeneratorConfig;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +49,7 @@ public class MybatisGeneratorBridge {
 
 	private static final Logger _LOG = LoggerFactory.getLogger(MybatisGeneratorBridge.class);
 
-	private GeneratorConfig generatorConfig;
+	private DataBaseGeneratorConfig generatorConfig;
 
 	private ConnectionConfig selectedConnectionConfig;
 
@@ -61,7 +62,7 @@ public class MybatisGeneratorBridge {
 	// public MybatisGeneratorBridge() {
 	// }
 
-	public void setGeneratorConfig(GeneratorConfig generatorConfig) {
+	public void setGeneratorConfig(DataBaseGeneratorConfig generatorConfig) {
 		this.generatorConfig = generatorConfig;
 	}
 
@@ -69,7 +70,7 @@ public class MybatisGeneratorBridge {
 		this.selectedConnectionConfig = ConnectionConfig;
 	}
 
-	public ExecutiveSimpleResult generate() throws Exception {
+	public ExecutiveSimpleResult generate(DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
 		Configuration configuration = new Configuration();
 		Context context = new Context(ModelType.CONDITIONAL);
 		configuration.addContext(context);
@@ -89,8 +90,8 @@ public class MybatisGeneratorBridge {
 		configuration.addClasspathEntry(connectorLibPath);
 		// Table configuration
 		TableConfiguration tableConfig = new TableConfiguration(context);
-		tableConfig.setTableName(this.generatorConfig.getTableName());
-		tableConfig.setDomainObjectName(this.generatorConfig.getDomainObjectName());
+		tableConfig.setTableName(dataTableGeneratorConfig.getTableName());
+		tableConfig.setDomainObjectName(dataTableGeneratorConfig.getDomainObjectName());
 		if (!this.generatorConfig.isUseExample()) {
 			tableConfig.setUpdateByExampleStatementEnabled(false);
 			tableConfig.setCountByExampleStatementEnabled(false);
@@ -144,8 +145,8 @@ public class MybatisGeneratorBridge {
 
 		}
 
-		if (this.generatorConfig.getMapperName() != null) {
-			tableConfig.setMapperName(this.generatorConfig.getMapperName());
+		if (dataTableGeneratorConfig.getMapperName() != null) {
+			tableConfig.setMapperName(dataTableGeneratorConfig.getMapperName());
 		}
 		// add ignore columns
 		if (this.ignoredColumns != null) {
@@ -159,7 +160,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		if (this.generatorConfig.isUseTableNameAlias()) {
-			tableConfig.setAlias(this.generatorConfig.getTableName());
+			tableConfig.setAlias(dataTableGeneratorConfig.getTableName());
 		}
 
 		JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
@@ -197,7 +198,7 @@ public class MybatisGeneratorBridge {
 		// Comment
 		CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
 		commentConfig.setConfigurationType(DbRemarksCommentGenerator.class.getName());
-		if (this.generatorConfig.isComment()) {
+		if (dataTableGeneratorConfig.isComment()) {
 			commentConfig.addProperty("columnRemarks", "true");
 		}
 		if (this.generatorConfig.isAnnotation()) {
@@ -286,7 +287,7 @@ public class MybatisGeneratorBridge {
 
 		// if overrideXML selected, delete oldXML ang generate new one
 		if (this.generatorConfig.isOverrideXML()) {
-			String mappingXMLFilePath = this.getMappingXMLFilePath(this.generatorConfig);
+			String mappingXMLFilePath = this.getMappingXMLFilePath(this.generatorConfig, dataTableGeneratorConfig);
 			File mappingXMLFile = new File(mappingXMLFilePath);
 			if (mappingXMLFile.exists()) {
 				boolean delete = mappingXMLFile.delete();
@@ -301,7 +302,7 @@ public class MybatisGeneratorBridge {
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
-	private String getMappingXMLFilePath(GeneratorConfig generatorConfig) {
+	private String getMappingXMLFilePath(DataBaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(generatorConfig.getProjectFolder()).append("/");
 		sb.append(generatorConfig.getMappingXMLTargetFolder()).append("/");
@@ -309,10 +310,10 @@ public class MybatisGeneratorBridge {
 		if (StringUtils.isNotEmpty(mappingXMLPackage)) {
 			sb.append(mappingXMLPackage.replace(".", "/")).append("/");
 		}
-		if (StringUtils.isNotEmpty(generatorConfig.getMapperName())) {
-			sb.append(generatorConfig.getMapperName()).append(".xml");
+		if (StringUtils.isNotEmpty(dataTableGeneratorConfig.getMapperName())) {
+			sb.append(dataTableGeneratorConfig.getMapperName()).append(".xml");
 		} else {
-			sb.append(generatorConfig.getDomainObjectName()).append("Mapper.xml");
+			sb.append(dataTableGeneratorConfig.getDomainObjectName()).append("Mapper.xml");
 		}
 
 		return sb.toString();

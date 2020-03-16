@@ -3,7 +3,7 @@ package com.lzt.operate.codetools.app.util;
 import com.alibaba.fastjson.JSON;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.GeneratorConfig;
+import com.lzt.operate.codetools.entities.DataTableGeneratorConfig;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.general.ConstantCollection;
@@ -117,19 +117,7 @@ public class ConfigHelper {
 		}
 	}
 
-	public static void saveGeneratorConfig(GeneratorConfig generatorConfig) throws Exception {
-		// ResultSet rs = null;
-		try (Connection conn = ConnectionManager.getConnection(); Statement stat = conn.createStatement()) {
-			String jsonStr = JSON.toJSONString(generatorConfig);
-			String sql = String.format("INSERT INTO generator_config values('%s', '%s')", generatorConfig.getName(),
-					jsonStr);
-			stat.executeUpdate(sql);
-			// } finally {
-			//     rs.close();
-		}
-	}
-
-	public static GeneratorConfig loadGeneratorConfig(String name) throws Exception {
+	public static DataTableGeneratorConfig loadGeneratorConfig(String name) throws Exception {
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
@@ -139,10 +127,10 @@ public class ConfigHelper {
 			String sql = String.format("SELECT * FROM generator_config where name='%s'", name);
 			ConfigHelper._LOG.info("sql: {}", sql);
 			rs = stat.executeQuery(sql);
-			GeneratorConfig generatorConfig = null;
+			DataTableGeneratorConfig generatorConfig = null;
 			if (rs.next()) {
 				String value = rs.getString("value");
-				generatorConfig = JSON.parseObject(value, GeneratorConfig.class);
+				generatorConfig = JSON.parseObject(value, DataTableGeneratorConfig.class);
 			}
 			return generatorConfig;
 		} finally {
@@ -160,7 +148,7 @@ public class ConfigHelper {
 		}
 	}
 
-	public static List<GeneratorConfig> loadGeneratorConfigs() throws Exception {
+	public static List<DataTableGeneratorConfig> loadGeneratorConfigs() throws Exception {
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
@@ -170,10 +158,10 @@ public class ConfigHelper {
 			String sql = "SELECT * FROM generator_config";
 			ConfigHelper._LOG.info("sql: {}", sql);
 			rs = stat.executeQuery(sql);
-			List<GeneratorConfig> configs = new ArrayList<>();
+			List<DataTableGeneratorConfig> configs = new ArrayList<>();
 			while (rs.next()) {
 				String value = rs.getString("value");
-				configs.add(JSON.parseObject(value, GeneratorConfig.class));
+				configs.add(JSON.parseObject(value, DataTableGeneratorConfig.class));
 			}
 			return configs;
 		} finally {
