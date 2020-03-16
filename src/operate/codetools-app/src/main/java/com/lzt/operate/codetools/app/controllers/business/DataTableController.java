@@ -3,12 +3,12 @@ package com.lzt.operate.codetools.app.controllers.business;
 import com.lzt.operate.codetools.app.assists.DatabaseAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.common.pojos.DataTable;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
-import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -104,13 +104,13 @@ public class DataTableController extends BaseOperateAuthController {
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			List<DataTableInfo> list = DatabaseAssist.listDataTable(connectionConfig);
+			List<DataTable> list = DatabaseAssist.listDataTable(connectionConfig);
 
 			if (!StringAssist.isNullOrEmpty(name)) {
 				list = list.stream().filter(o -> o.getName().contains(name)).collect(Collectors.toList());
 			}
 
-			PageListResult<DataTableInfo> pager = PageListResult.buildFromList(list, pageNo, pageSize);
+			PageListResult<DataTable> pager = PageListResult.buildFromList(list, pageNo, pageSize);
 
 			return this.pageData(pager);
 		}

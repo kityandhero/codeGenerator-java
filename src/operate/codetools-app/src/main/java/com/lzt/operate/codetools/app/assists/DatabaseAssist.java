@@ -8,9 +8,9 @@ import com.lzt.operate.codetools.app.enums.DatabaseEncoding;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.codetools.app.util.ConfigHelper;
+import com.lzt.operate.codetools.common.pojos.DataTable;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataColumn;
-import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
@@ -276,12 +276,12 @@ public class DatabaseAssist {
 	}
 
 	public static boolean checkTableNameExist(ConnectionConfig config, String tableName) throws Exception {
-		List<DataTableInfo> listDataTable = listDataTable(config);
+		List<DataTable> listDataTable = listDataTable(config);
 
 		return listDataTable.stream().anyMatch(o -> o.getName().equals(tableName));
 	}
 
-	public static List<DataTableInfo> listDataTable(ConnectionConfig config) throws Exception {
+	public static List<DataTable> listDataTable(ConnectionConfig config) throws Exception {
 		Optional<ConnectionType> optionalConnectionConfig = ConnectionType.valueOfFlag(config.getConnectionType());
 
 		if (!optionalConnectionConfig.isPresent()) {
@@ -314,8 +314,8 @@ public class DatabaseAssist {
 		return new ArrayList<>();
 	}
 
-	private static List<DataTableInfo> listDataTableCore(Connection connection, ConnectionConfig config) throws SQLException {
-		List<DataTableInfo> tables = new ArrayList<>();
+	private static List<DataTable> listDataTableCore(Connection connection, ConnectionConfig config) throws SQLException {
+		List<DataTable> tables = new ArrayList<>();
 		DatabaseMetaData md = connection.getMetaData();
 		ResultSet rs;
 
@@ -323,7 +323,7 @@ public class DatabaseAssist {
 			String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
 			rs = connection.createStatement().executeQuery(sql);
 			while (rs.next()) {
-				tables.add(new DataTableInfo(rs.getString("name")));
+				tables.add(new DataTable(rs.getString("name")));
 			}
 		} else if (config.getDatabaseType() == DatabaseType.Oracle.getFlag()) {
 			rs = md.getTables(null, config.getUserName()
@@ -332,7 +332,7 @@ public class DatabaseAssist {
 			String sql = "Select name from sqlite_master;";
 			rs = connection.createStatement().executeQuery(sql);
 			while (rs.next()) {
-				tables.add(new DataTableInfo(rs.getString("name")));
+				tables.add(new DataTable(rs.getString("name")));
 			}
 		} else {
 			// rs = md.getTables(null, config.getUsername().toUpperCase(), null, null);
@@ -340,7 +340,7 @@ public class DatabaseAssist {
 			rs = md.getTables(config.getSchema(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
 		}
 		while (rs.next()) {
-			tables.add(new DataTableInfo(rs.getString(3)));
+			tables.add(new DataTable(rs.getString(3)));
 		}
 		return tables;
 	}

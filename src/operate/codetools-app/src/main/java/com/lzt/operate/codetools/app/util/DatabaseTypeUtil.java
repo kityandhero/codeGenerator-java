@@ -5,9 +5,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.exceptions.DbDriverLoadingException;
+import com.lzt.operate.codetools.common.pojos.DataTable;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataColumn;
-import com.lzt.operate.codetools.entities.DataTableInfo;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import org.apache.commons.lang3.StringUtils;
@@ -170,18 +170,18 @@ public class DatabaseTypeUtil {
 		return connection;
 	}
 
-	public static List<DataTableInfo> getTableNames(ConnectionConfig config) throws Exception {
+	public static List<DataTable> getTableNames(ConnectionConfig config) throws Exception {
 		Session sshSession = DatabaseTypeUtil.getSSHSession(config);
 		DatabaseTypeUtil.engagePortForwarding(sshSession, config);
 		try (Connection connection = DatabaseTypeUtil.getConnection(config)) {
-			List<DataTableInfo> tables = new ArrayList<>();
+			List<DataTable> tables = new ArrayList<>();
 			DatabaseMetaData md = connection.getMetaData();
 			ResultSet rs;
 			if (config.getDatabaseType() == DatabaseType.SQL_Server.getFlag()) {
 				String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
-					tables.add(new DataTableInfo(rs.getString("name")));
+					tables.add(new DataTable(rs.getString("name")));
 				}
 			} else if (config.getDatabaseType() == DatabaseType.Oracle.getFlag()) {
 				rs = md.getTables(null, config.getUserName()
@@ -190,7 +190,7 @@ public class DatabaseTypeUtil {
 				String sql = "Select name from sqlite_master;";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
-					tables.add(new DataTableInfo(rs.getString("name")));
+					tables.add(new DataTable(rs.getString("name")));
 				}
 			} else {
 				// rs = md.getTables(null, config.getUsername().toUpperCase(), null, null);
@@ -198,7 +198,7 @@ public class DatabaseTypeUtil {
 				rs = md.getTables(config.getSchema(), null, "%", new String[]{"TABLE", "VIEW"});            //针对 postgresql 的左侧数据表显示
 			}
 			while (rs.next()) {
-				tables.add(new DataTableInfo(rs.getString(3)));
+				tables.add(new DataTable(rs.getString(3)));
 			}
 			return tables;
 		} finally {
