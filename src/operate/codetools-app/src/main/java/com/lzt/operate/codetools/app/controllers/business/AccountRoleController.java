@@ -3,6 +3,7 @@ package com.lzt.operate.codetools.app.controllers.business;
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.ehcache.CustomEhcacheManager;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
@@ -46,24 +47,23 @@ import java.util.Map;
 @Api(tags = {"账户拥有角色管理"})
 public class AccountRoleController extends OperateBaseController {
 
-	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
-
-	private AccountService accountService;
-
 	private final AccountRoleService accountRoleService;
-
 	private final RoleUniversalService roleUniversalService;
-
 	private final RoleCodeToolsService roleCodeToolsService;
+	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
+	private CustomEhcacheManager customEhcacheManager;
+	private AccountService accountService;
 
 	@Autowired
 	public AccountRoleController(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl accountService,
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
+		this.customEhcacheManager = customEhcacheManager;
 		this.accountService = accountService;
 		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -73,6 +73,7 @@ public class AccountRoleController extends OperateBaseController {
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
 				this.customJsonWebTokenConfig,
+				this.customEhcacheManager,
 				this.accountService,
 				this.accountRoleService,
 				this.roleUniversalService,

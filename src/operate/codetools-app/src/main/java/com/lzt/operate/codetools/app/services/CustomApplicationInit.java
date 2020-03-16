@@ -3,6 +3,7 @@ package com.lzt.operate.codetools.app.services;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.ehcache.CustomEhcacheManager;
 import com.lzt.operate.codetools.app.util.CommandUtil;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.enums.Channel;
@@ -57,8 +58,7 @@ import java.util.concurrent.ThreadFactory;
 @Slf4j
 public class CustomApplicationInit extends BaseCustomApplicationInit {
 
-	final
-	Environment environment;
+	final Environment environment;
 
 	private AccountAssist accountAssist;
 	private CustomConfigService customConfigService;
@@ -71,6 +71,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	public CustomApplicationInit(
 			Environment environment,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			CustomEhcacheManager customEhcacheManager,
 			AccountService accountService,
 			AccountRoleService accountRoleService,
 			RoleUniversalService roleUniversalService,
@@ -85,6 +86,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
+				customEhcacheManager,
 				accountService,
 				accountRoleService,
 				roleUniversalService,

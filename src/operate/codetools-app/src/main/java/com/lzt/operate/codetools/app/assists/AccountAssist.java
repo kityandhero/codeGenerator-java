@@ -1,6 +1,8 @@
 package com.lzt.operate.codetools.app.assists;
 
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.ehcache.CustomEhcacheManager;
+import com.lzt.operate.codetools.app.ehcache.ListCompetenceCache;
 import com.lzt.operate.codetools.common.enums.AccountRoleCreateMode;
 import com.lzt.operate.codetools.common.enums.WhetherSuper;
 import com.lzt.operate.codetools.dao.service.AccountRoleService;
@@ -40,6 +42,8 @@ public class AccountAssist {
 
 	private CustomJsonWebTokenConfig jwtConfig;
 
+	private CustomEhcacheManager customEhcacheManager;
+
 	private AccountService accountService;
 
 	private AccountRoleService accountRoleService;
@@ -50,11 +54,13 @@ public class AccountAssist {
 
 	public AccountAssist(
 			CustomJsonWebTokenConfig jwtConfig,
+			CustomEhcacheManager customEhcacheManager,
 			AccountService accountService,
 			AccountRoleService accountRoleService,
 			RoleUniversalService roleUniversalService,
 			RoleCodeToolsService roleCodeToolsService) {
 		this.jwtConfig = jwtConfig;
+		this.customEhcacheManager = customEhcacheManager;
 		this.accountService = accountService;
 		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -79,6 +85,16 @@ public class AccountAssist {
 		}
 
 		throw new RuntimeException("CustomJsonWebTokenConfig获取失败");
+	}
+
+	public CustomEhcacheManager getCustomEhcacheManager() {
+		Optional<CustomEhcacheManager> optional = Optional.ofNullable(this.customEhcacheManager);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("CustomEhcacheManager获取失败");
 	}
 
 	private AccountRoleService getAccountRoleService() {
@@ -507,7 +523,19 @@ public class AccountAssist {
 	}
 
 	public boolean checkAccessPermission(long accountId, String tag) {
-		List<Competence> competenceList = getCompetenceCollection(accountId);
+		CustomEhcacheManager customEhcacheManager = this.getCustomEhcacheManager();
+
+		Optional<List<Competence>> optionalCompetenceList = ListCompetenceCache.getCache(accountId, customEhcacheManager);
+
+		List<Competence> competenceList;
+
+		if (!optionalCompetenceList.isPresent()) {
+			competenceList = getCompetenceCollection(accountId);
+
+			ListCompetenceCache.setCache(accountId, competenceList, customEhcacheManager);
+		} else {
+			competenceList = optionalCompetenceList.get();
+		}
 
 		for (Competence c : competenceList) {
 			if (c.getTag().equals(tag) || c.getTag().equals(ConstantCollection.SUPER_ROLE_TAG)) {

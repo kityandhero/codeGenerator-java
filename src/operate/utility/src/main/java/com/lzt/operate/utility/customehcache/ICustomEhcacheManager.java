@@ -1,6 +1,7 @@
 package com.lzt.operate.utility.customehcache;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author luzhitao
@@ -28,6 +29,22 @@ public interface ICustomEhcacheManager {
 	 * @param value value
 	 */
 	void put(Object key, Object value);
+
+	/**
+	 * getAsString
+	 *
+	 * @param key key
+	 * @return String
+	 */
+	default String getAsString(Object key) {
+		Object v = get(key);
+
+		if (Optional.ofNullable(v).isPresent()) {
+			return v.toString();
+		}
+
+		return "";
+	}
 
 	/**
 	 * 根据key获取缓存记录数据

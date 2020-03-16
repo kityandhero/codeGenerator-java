@@ -1,6 +1,7 @@
 package com.lzt.operate.utility.assists;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -259,6 +260,20 @@ public class ConvertAssist {
 		ObjectMapper mapper = new ObjectMapper();
 
 		return mapper.readValue(json, clazz);
+	}
+
+	/**
+	 * 序列化
+	 *
+	 * @param json json
+	 * @return String Json
+	 */
+	public static <T> List<T> deserializeToList(String json, Class<T> clazz) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+
+		return mapper.readValue(json, javaType);
 	}
 
 }

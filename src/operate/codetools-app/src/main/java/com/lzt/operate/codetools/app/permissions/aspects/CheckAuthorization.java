@@ -2,6 +2,7 @@ package com.lzt.operate.codetools.app.permissions.aspects;
 
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.ehcache.CustomEhcacheManager;
 import com.lzt.operate.codetools.dao.service.impl.AccountRoleServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.codetools.dao.service.impl.RoleCodeToolsServiceImpl;
@@ -34,23 +35,26 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
+	private CustomEhcacheManager customEhcacheManager;
+
 	private AccountAssist accountAssist;
 
 	@Autowired
 	public CheckAuthorization(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl accountService,
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.accountAssist = new AccountAssist(
 				customJsonWebTokenConfig,
+				customEhcacheManager,
 				accountService,
 				accountRoleService,
 				roleUniversalService,
 				roleCodeToolsService
 		);
-
 	}
 
 	private AccountAssist getAccountAssist() {

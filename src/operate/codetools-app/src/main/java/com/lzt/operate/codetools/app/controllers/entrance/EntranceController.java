@@ -3,6 +3,8 @@ package com.lzt.operate.codetools.app.controllers.entrance;
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.common.OperateBaseController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.ehcache.CustomEhcacheManager;
+import com.lzt.operate.codetools.app.ehcache.ListCompetenceCache;
 import com.lzt.operate.codetools.common.enums.AccountStatus;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
@@ -57,17 +59,20 @@ public class EntranceController extends OperateBaseController {
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
+	private CustomEhcacheManager customEhcacheManager;
 	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 	private AccountService accountService;
 
 	@Autowired
 	public EntranceController(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl accountService,
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
+		this.customEhcacheManager = customEhcacheManager;
 		this.accountService = accountService;
 		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -77,6 +82,7 @@ public class EntranceController extends OperateBaseController {
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
 				this.customJsonWebTokenConfig,
+				this.customEhcacheManager,
 				this.accountService,
 				this.accountRoleService,
 				this.roleUniversalService,
@@ -93,7 +99,7 @@ public class EntranceController extends OperateBaseController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-	public BaseResultData signIn(@RequestBody Map<String, String> json, Long ak) throws Exception {
+	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
 		// 直接将json信息打印出来
 		System.out.println(json);
 
@@ -130,6 +136,8 @@ public class EntranceController extends OperateBaseController {
 
 			data.append("currentAuthority", operatorAssist.getCompetenceTagCollection(searchResult.getId()).toArray());
 
+			ListCompetenceCache.removeCache(searchResult.getId(), this.getAccountAssist().getCustomEhcacheManager());
+
 			return singleData(data);
 		} else {
 			ReturnMessage error = ReturnDataCode.NoData.toMessage();
@@ -142,8 +150,8 @@ public class EntranceController extends OperateBaseController {
 	}
 
 	@ApiOperation(value = "用户登出", notes = "用户登出", httpMethod = "POST")
-	@PostMapping(path = "/signUp", produces = "application/json")
-	public ResultSingleData signUp() {
+	@PostMapping(path = "/signOut", produces = "application/json")
+	public ResultSingleData signOut() {
 		return success();
 	}
 

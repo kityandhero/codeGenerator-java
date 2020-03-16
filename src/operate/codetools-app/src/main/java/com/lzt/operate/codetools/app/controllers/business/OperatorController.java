@@ -3,6 +3,7 @@ package com.lzt.operate.codetools.app.controllers.business;
 import com.lzt.operate.codetools.app.assists.AccountAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.codetools.app.ehcache.CustomEhcacheManager;
 import com.lzt.operate.codetools.common.utils.CustomConstants;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
@@ -54,17 +55,20 @@ public class OperatorController extends BaseOperateAuthController {
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
+	private CustomEhcacheManager customEhcacheManager;
 	private AccountService operatorService;
 
 	@Autowired
 	public OperatorController(
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl operatorService,
 			AccountRoleServiceImpl operatorRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		super(customJsonWebTokenConfig);
 
+		this.customEhcacheManager = customEhcacheManager;
 		this.operatorService = operatorService;
 		this.accountRoleService = operatorRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -74,6 +78,7 @@ public class OperatorController extends BaseOperateAuthController {
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
 				this.getCustomJsonWebTokenConfig(),
+				this.customEhcacheManager,
 				this.operatorService,
 				this.accountRoleService,
 				this.roleUniversalService,
