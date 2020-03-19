@@ -68,6 +68,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/business/connectionConfig")
 @Api(tags = {"数据库连接"})
 public class ConnectionConfigController extends BaseOperateAuthController {
+
 	private static final String CONTROLLER_DESCRIPTION = "数据库连接/";
 
 	private ConnectionConfigService connectionConfigService;

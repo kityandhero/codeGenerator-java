@@ -35,7 +35,7 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	private String mapperName;
 
 	@Column(name = "comment")
-	private boolean comment;
+	private int comment;
 
 	public DataTableGeneratorConfig() {
 		super();
@@ -73,12 +73,11 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.mapperName = mapperName;
 	}
 
-	public boolean isComment() {
+	public int getComment() {
 		return comment;
 	}
 
-	public void setComment(boolean comment) {
+	public void setComment(int comment) {
 		this.comment = comment;
 	}
-
 }

@@ -44,25 +44,25 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 	private String mappingXMLTargetFolder;
 
 	@Column(name = "offset_limit")
-	private boolean offsetLimit;
+	private int offsetLimit;
 
 	@Column(name = "need_to_string_hashcode_equals")
-	private boolean needToStringHashcodeEquals;
+	private int needToStringHashcodeEquals;
 
 	@Column(name = "need_for_update")
-	private boolean needForUpdate;
+	private int needForUpdate;
 
 	@Column(name = "annotation_dao")
-	private boolean annotationDAO;
+	private int annotationDAO;
 
 	@Column(name = "annotation")
-	private boolean annotation;
+	private int annotation;
 
 	@Column(name = "use_actual_column_names")
-	private boolean useActualColumnNames;
+	private int useActualColumnNames;
 
 	@Column(name = "use_example")
-	private boolean useExample;
+	private int useExample;
 
 	@Column(name = "generate_keys")
 	private String generateKeys;
@@ -71,19 +71,19 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 	private String encoding;
 
 	@Column(name = "use_table_name_alias")
-	private boolean useTableNameAlias;
+	private int useTableNameAlias;
 
 	@Column(name = "use_dao_extend_style")
-	private boolean useDAOExtendStyle;
+	private int useDAOExtendStyle;
 
 	@Column(name = "use_schema_prefix")
-	private boolean useSchemaPrefix;
+	private int useSchemaPrefix;
 
 	@Column(name = "jsr_310_support")
-	private boolean jsr310Support;
+	private int jsr310Support;
 
 	@Column(name = "override_xml")
-	private boolean overrideXML;
+	private int overrideXML;
 
 	public DataBaseGeneratorConfig() {
 		super();
@@ -161,59 +161,59 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.mappingXMLTargetFolder = mappingXMLTargetFolder;
 	}
 
-	public boolean isOffsetLimit() {
+	public int getOffsetLimit() {
 		return offsetLimit;
 	}
 
-	public void setOffsetLimit(boolean offsetLimit) {
+	public void setOffsetLimit(int offsetLimit) {
 		this.offsetLimit = offsetLimit;
 	}
 
-	public boolean isNeedToStringHashcodeEquals() {
+	public int getNeedToStringHashcodeEquals() {
 		return needToStringHashcodeEquals;
 	}
 
-	public void setNeedToStringHashcodeEquals(boolean needToStringHashcodeEquals) {
+	public void setNeedToStringHashcodeEquals(int needToStringHashcodeEquals) {
 		this.needToStringHashcodeEquals = needToStringHashcodeEquals;
 	}
 
-	public boolean isNeedForUpdate() {
+	public int getNeedForUpdate() {
 		return needForUpdate;
 	}
 
-	public void setNeedForUpdate(boolean needForUpdate) {
+	public void setNeedForUpdate(int needForUpdate) {
 		this.needForUpdate = needForUpdate;
 	}
 
-	public boolean isAnnotationDAO() {
+	public int getAnnotationDAO() {
 		return annotationDAO;
 	}
 
-	public void setAnnotationDAO(boolean annotationDAO) {
+	public void setAnnotationDAO(int annotationDAO) {
 		this.annotationDAO = annotationDAO;
 	}
 
-	public boolean isAnnotation() {
+	public int getAnnotation() {
 		return annotation;
 	}
 
-	public void setAnnotation(boolean annotation) {
+	public void setAnnotation(int annotation) {
 		this.annotation = annotation;
 	}
 
-	public boolean isUseActualColumnNames() {
+	public int getUseActualColumnNames() {
 		return useActualColumnNames;
 	}
 
-	public void setUseActualColumnNames(boolean useActualColumnNames) {
+	public void setUseActualColumnNames(int useActualColumnNames) {
 		this.useActualColumnNames = useActualColumnNames;
 	}
 
-	public boolean isUseExample() {
+	public int getUseExample() {
 		return useExample;
 	}
 
-	public void setUseExample(boolean useExample) {
+	public void setUseExample(int useExample) {
 		this.useExample = useExample;
 	}
 
@@ -233,43 +233,43 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.encoding = encoding;
 	}
 
-	public boolean isUseTableNameAlias() {
+	public int getUseTableNameAlias() {
 		return useTableNameAlias;
 	}
 
-	public void setUseTableNameAlias(boolean useTableNameAlias) {
+	public void setUseTableNameAlias(int useTableNameAlias) {
 		this.useTableNameAlias = useTableNameAlias;
 	}
 
-	public boolean isUseDAOExtendStyle() {
+	public int getUseDAOExtendStyle() {
 		return useDAOExtendStyle;
 	}
 
-	public void setUseDAOExtendStyle(boolean useDAOExtendStyle) {
+	public void setUseDAOExtendStyle(int useDAOExtendStyle) {
 		this.useDAOExtendStyle = useDAOExtendStyle;
 	}
 
-	public boolean isUseSchemaPrefix() {
+	public int getUseSchemaPrefix() {
 		return useSchemaPrefix;
 	}
 
-	public void setUseSchemaPrefix(boolean useSchemaPrefix) {
+	public void setUseSchemaPrefix(int useSchemaPrefix) {
 		this.useSchemaPrefix = useSchemaPrefix;
 	}
 
-	public boolean isJsr310Support() {
+	public int getJsr310Support() {
 		return jsr310Support;
 	}
 
-	public void setJsr310Support(boolean jsr310Support) {
+	public void setJsr310Support(int jsr310Support) {
 		this.jsr310Support = jsr310Support;
 	}
 
-	public boolean isOverrideXML() {
+	public int getOverrideXML() {
 		return overrideXML;
 	}
 
-	public void setOverrideXML(boolean overrideXML) {
+	public void setOverrideXML(int overrideXML) {
 		this.overrideXML = overrideXML;
 	}
 }

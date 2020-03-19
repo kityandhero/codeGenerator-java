@@ -36,6 +36,16 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region CONNECTION_CONFIG 数据库连接
+
+	public static final String DATABASE_GENERATOR_CONFIG_PAGE_LIST = "DATABASE_GENERATOR_CONFIG_PAGE_LIST";
+
+	public static final String DATABASE_GENERATOR_CONFIG_GET = "DATABASE_GENERATOR_CONFIG_GET";
+
+	public static final String DATABASE_GENERATOR_CONFIG_SET = "DATABASE_GENERATOR_CONFIG_SET";
+
+	//endregion
+
 	//region ACCOUNT 账户
 
 	public static final String ACCOUNT_PAGE_LIST = "ACCOUNT_PAGE_LIST";

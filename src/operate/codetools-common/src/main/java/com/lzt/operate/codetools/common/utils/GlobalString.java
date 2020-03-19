@@ -83,6 +83,82 @@ public class GlobalString {
 
 	//endregion
 
+	//region CONNECTION_MODEL
+
+	@ApiSingleParam(value = "数据标识", type = Long.class, example = "201")
+	public static final String DATABASE_GENERATOR_CONFIG_ID = "dataBaseGeneratorConfigId";
+
+	@ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
+	public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
+
+	@ApiSingleParam(value = "connectorJarPath", type = String.class, example = "20211")
+	public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_PATH = "connectorJarPath";
+
+	@ApiSingleParam(value = "connectorJarPath", type = String.class, example = "projectFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER = "projectFolder";
+
+	@ApiSingleParam(value = "modelPackage", type = String.class, example = "modelPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE = "modelPackage";
+
+	@ApiSingleParam(value = "modelPackageTargetFolder", type = String.class, example = "modelPackageTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER = "modelPackageTargetFolder";
+
+	@ApiSingleParam(value = "daoPackage", type = String.class, example = "daoPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_PACKAGE = "daoPackage";
+
+	@ApiSingleParam(value = "daoTargetFolder", type = String.class, example = "daoTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER = "daoTargetFolder";
+
+	@ApiSingleParam(value = "mappingXMLPackage", type = String.class, example = "mappingXMLPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXMLPackage";
+
+	@ApiSingleParam(value = "mappingXMLTargetFolder", type = String.class, example = "mappingXMLTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXMLTargetFolder";
+
+	@ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
+	public static final String DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT = "offsetLimit";
+
+	@ApiSingleParam(value = "needToStringHashcodeEquals", type = Integer.class, example = "needToStringHashcodeEquals")
+	public static final String DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS = "needToStringHashcodeEquals";
+
+	@ApiSingleParam(value = "needForUpdate", type = Integer.class, example = "needForUpdate")
+	public static final String DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE = "needForUpdate";
+
+	@ApiSingleParam(value = "annotationDAO", type = Integer.class, example = "annotationDAO")
+	public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO = "annotationDAO";
+
+	@ApiSingleParam(value = "annotation", type = Integer.class, example = "annotation")
+	public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION = "annotation";
+
+	@ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "useActualColumnNames")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
+
+	@ApiSingleParam(value = "useExample", type = Integer.class, example = "useExample")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";
+
+	@ApiSingleParam(value = "generateKeys", type = Integer.class, example = "generateKeys")
+	public static final String DATABASE_GENERATOR_CONFIG_GENERATE_KEYS = "generateKeys";
+
+	@ApiSingleParam(value = "encoding", type = String.class, example = "encoding")
+	public static final String DATABASE_GENERATOR_CONFIG_ENCODING = "encoding";
+
+	@ApiSingleParam(value = "useTableNameAlias", type = Integer.class, example = "useTableNameAlias")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS = "useTableNameAlias";
+
+	@ApiSingleParam(value = "useDAOExtendStyle", type = Integer.class, example = "useDAOExtendStyle")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE = "useDAOExtendStyle";
+
+	@ApiSingleParam(value = "useSchemaPrefix", type = Integer.class, example = "useSchemaPrefix")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX = "useSchemaPrefix";
+
+	@ApiSingleParam(value = "jsr310Support", type = Integer.class, example = "jsr310Support")
+	public static final String DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT = "jsr310Support";
+
+	@ApiSingleParam(value = "overrideXML", type = Integer.class, example = "overrideXML")
+	public static final String DATABASE_GENERATOR_CONFIG_OVERRIDE_XML = "overrideXML";
+
+	//endregion
+
 	//region ACCOUNT
 
 	@ApiSingleParam(value = "用户标识", type = Long.class, example = "101")
