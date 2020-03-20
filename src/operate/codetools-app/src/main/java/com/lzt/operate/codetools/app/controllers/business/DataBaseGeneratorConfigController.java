@@ -1,11 +1,8 @@
 package com.lzt.operate.codetools.app.controllers.business;
 
 import com.lzt.operate.codetools.app.assists.ConnectionConfigAssist;
-import com.lzt.operate.codetools.app.assists.DataBaseGeneratorConfigAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.app.enums.ConnectionType;
-import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.DataBaseGeneratorConfigStatus;
 import com.lzt.operate.codetools.common.utils.GlobalString;
@@ -13,14 +10,13 @@ import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
 import com.lzt.operate.codetools.dao.service.DataBaseGeneratorConfigService;
 import com.lzt.operate.codetools.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
+import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataBaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
-import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
@@ -29,7 +25,6 @@ import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
-import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -57,7 +52,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -283,25 +277,45 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	public BaseResultData set(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
-		ExecutiveResult<DataBaseGeneratorConfig> result = getDataBaseGeneratorConfigService().createDataBaseGeneratorConfig(paramJson);
+		long dataBaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
+												  .toLong();
+		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
+										   .toLong();
 
-		if (result.getSuccess()) {
-			DataBaseGeneratorConfig data = result.getData();
+		Optional<ConnectionConfig> optionalConnectionConfig = this.getConnectionConfigAssist()
+																  .getConnectionConfig(connectionConfigId);
 
-			data.setStatus(DataBaseGeneratorConfigStatus.Enabled, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
-			data.setChannel(Channel.CodeTools);
-
-			long operatorId = getOperatorId();
-
-			data.setCreateOperatorId(operatorId);
-			data.setUpdateOperatorId(operatorId);
-
-			getDataBaseGeneratorConfigAssist().saveDataBaseGeneratorConfig(data);
-
-			return this.singleData(result.getData());
+		if (!optionalConnectionConfig.isPresent()) {
+			return this.noDataError("数据库连接不存在");
 		}
 
-		return this.fail(result);
+		DataBaseGeneratorConfig dataBaseGeneratorConfig = null;
+
+		if (dataBaseGeneratorConfigId > 0) {
+			Optional<DataBaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = getDataBaseGeneratorConfigService()
+					.get(dataBaseGeneratorConfigId);
+
+			if (optionalFindByDataBaseGeneratorConfigId.isPresent()) {
+				dataBaseGeneratorConfig = optionalFindByDataBaseGeneratorConfigId.get();
+			}
+		}
+
+		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
+			if (connectionConfigId > 0) {
+				Optional<DataBaseGeneratorConfig> optionalFindByConnectionConfigId = getDataBaseGeneratorConfigService()
+						.get(dataBaseGeneratorConfigId);
+
+				if (optionalFindByConnectionConfigId.isPresent()) {
+					dataBaseGeneratorConfig = optionalFindByConnectionConfigId.get();
+				}
+			}
+		}
+
+		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
+			dataBaseGeneratorConfig = new DataBaseGeneratorConfig();
+		}
+
+		return setCore(dataBaseGeneratorConfig, paramJson);
 	}
 
 	/**

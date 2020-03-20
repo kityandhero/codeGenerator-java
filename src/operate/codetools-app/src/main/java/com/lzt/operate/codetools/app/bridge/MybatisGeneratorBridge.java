@@ -8,6 +8,7 @@ import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataBaseGeneratorConfig;
 import com.lzt.operate.codetools.entities.DataTableGeneratorConfig;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
@@ -92,7 +93,7 @@ public class MybatisGeneratorBridge {
 		TableConfiguration tableConfig = new TableConfiguration(context);
 		tableConfig.setTableName(dataTableGeneratorConfig.getTableName());
 		tableConfig.setDomainObjectName(dataTableGeneratorConfig.getDomainObjectName());
-		if (!this.generatorConfig.isUseExample()) {
+		if (!ConstantCollection.ZERO_INT.equals(this.generatorConfig.getUseExample())) {
 			tableConfig.setUpdateByExampleStatementEnabled(false);
 			tableConfig.setCountByExampleStatementEnabled(false);
 			tableConfig.setDeleteByExampleStatementEnabled(false);
@@ -109,7 +110,7 @@ public class MybatisGeneratorBridge {
 		} else {
 			tableConfig.setCatalog(this.selectedConnectionConfig.getSchema());
 		}
-		if (this.generatorConfig.isUseSchemaPrefix()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getUseSchemaPrefix())) {
 			if (DatabaseType.MySQL.getFlag().equals(databaseType) || DatabaseType.MySQL_8.getFlag()
 																						 .equals(databaseType)) {
 				tableConfig.setSchema(this.selectedConnectionConfig.getSchema());
@@ -155,11 +156,11 @@ public class MybatisGeneratorBridge {
 		if (this.columnOverrides != null) {
 			this.columnOverrides.forEach(tableConfig::addColumnOverride);
 		}
-		if (this.generatorConfig.isUseActualColumnNames()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getUseActualColumnNames())) {
 			tableConfig.addProperty("useActualColumnNames", "true");
 		}
 
-		if (this.generatorConfig.isUseTableNameAlias()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getUseTableNameAlias())) {
 			tableConfig.setAlias(dataTableGeneratorConfig.getTableName());
 		}
 
@@ -198,10 +199,10 @@ public class MybatisGeneratorBridge {
 		// Comment
 		CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
 		commentConfig.setConfigurationType(DbRemarksCommentGenerator.class.getName());
-		if (dataTableGeneratorConfig.isComment()) {
+		if (ConstantCollection.ZERO_INT.equals(dataTableGeneratorConfig.getComment())) {
 			commentConfig.addProperty("columnRemarks", "true");
 		}
-		if (this.generatorConfig.isAnnotation()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getAnnotation())) {
 			commentConfig.addProperty("annotations", "true");
 		}
 		context.setCommentGeneratorConfiguration(commentConfig);
@@ -214,7 +215,7 @@ public class MybatisGeneratorBridge {
 		serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
 		context.addPluginConfiguration(serializablePluginConfiguration);
 		// toString, hashCode, equals插件
-		if (this.generatorConfig.isNeedToStringHashcodeEquals()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getNeedToStringHashcodeEquals())) {
 			PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
 			pluginConfiguration1.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
 			pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");
@@ -225,7 +226,7 @@ public class MybatisGeneratorBridge {
 			context.addPluginConfiguration(pluginConfiguration2);
 		}
 		// limit/offset插件
-		if (this.generatorConfig.isOffsetLimit()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getOffsetLimit())) {
 			if (DatabaseType.MySQL.name().equals(databaseType) || DatabaseType.MySQL_8.name()
 																					  .equals(databaseType)
 					|| DatabaseType.PostgreSQL.name().equals(databaseType)) {
@@ -236,13 +237,13 @@ public class MybatisGeneratorBridge {
 			}
 		}
 		//for JSR310
-		if (this.generatorConfig.isJsr310Support()) {
+		if (ConstantCollection.ZERO_INT.equals((this.generatorConfig.getJsr310Support()))) {
 			JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
 			javaTypeResolverConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.JavaTypeResolverJsr310Impl");
 			context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
 		}
 		//forUpdate 插件
-		if (this.generatorConfig.isNeedForUpdate()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getNeedForUpdate())) {
 			if (DatabaseType.MySQL.name().equals(databaseType)
 					|| DatabaseType.PostgreSQL.name().equals(databaseType)) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -252,7 +253,7 @@ public class MybatisGeneratorBridge {
 			}
 		}
 		//repository 插件
-		if (this.generatorConfig.isAnnotationDAO()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getAnnotationDAO())) {
 			if (DatabaseType.MySQL.name().equals(databaseType) || DatabaseType.MySQL_8.name()
 																					  .equals(databaseType)
 					|| DatabaseType.PostgreSQL.name().equals(databaseType)) {
@@ -262,12 +263,13 @@ public class MybatisGeneratorBridge {
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
-		if (this.generatorConfig.isUseDAOExtendStyle()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getUseDAOExtendStyle())) {
 			if (DatabaseType.MySQL.name().equals(databaseType) || DatabaseType.MySQL_8.name()
 																					  .equals(databaseType)
 					|| DatabaseType.PostgreSQL.name().equals(databaseType)) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
-				pluginConfiguration.addProperty("useExample", String.valueOf(this.generatorConfig.isUseExample()));
+				pluginConfiguration.addProperty("useExample", String.valueOf(ConstantCollection.ZERO_INT.equals(this.generatorConfig
+						.getUseExample())));
 				pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.CommonDAOInterfacePlugin");
 				pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.CommonDAOInterfacePlugin");
 				context.addPluginConfiguration(pluginConfiguration);
@@ -286,7 +288,7 @@ public class MybatisGeneratorBridge {
 		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
 
 		// if overrideXML selected, delete oldXML ang generate new one
-		if (this.generatorConfig.isOverrideXML()) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getOverrideXML())) {
 			String mappingXMLFilePath = this.getMappingXMLFilePath(this.generatorConfig, dataTableGeneratorConfig);
 			File mappingXMLFile = new File(mappingXMLFilePath);
 			if (mappingXMLFile.exists()) {

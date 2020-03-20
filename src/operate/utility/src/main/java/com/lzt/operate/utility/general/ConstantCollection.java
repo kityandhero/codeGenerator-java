@@ -39,13 +39,13 @@ public class ConstantCollection {
 
 	public static final String NO_STRING = "0";
 
-	public static final int YES_INT = 1;
+	public static final Integer YES_INT = 1;
 
-	public static final int NO_INT = 0;
+	public static final Integer NO_INT = 0;
 
 	public static final Long ZERO_LONG = 0L;
 
-	public static final int ZERO_INT = 0;
+	public static final Integer ZERO_INT = 0;
 
 	/**
 	 * 超级管理员名称
