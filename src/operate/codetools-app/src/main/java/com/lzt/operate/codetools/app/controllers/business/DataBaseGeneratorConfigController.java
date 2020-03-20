@@ -221,7 +221,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_GET)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/getByConnectionId", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置详情", description = "获取数据库生成配置", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
 	public BaseResultData getByConnectionId(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
