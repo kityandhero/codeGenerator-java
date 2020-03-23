@@ -234,7 +234,15 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		DataBaseGeneratorConfig dataBaseGeneratorConfig;
 
-		dataBaseGeneratorConfig = result.orElseGet(() -> this.fill(new DataBaseGeneratorConfig(), paramJson));
+		if (result.isPresent()) {
+			dataBaseGeneratorConfig = result.get();
+		} else {
+			DataBaseGeneratorConfig v = new DataBaseGeneratorConfig();
+
+			v.setConnectionConfigId(connectionConfigId);
+
+			dataBaseGeneratorConfig = this.fill(v, paramJson);
+		}
 
 		return decorate(dataBaseGeneratorConfig);
 	}
@@ -325,22 +333,29 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	private BaseResultData decorate(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig) {
 		List<IGetter<DataBaseGeneratorConfig>> getterList = new ArrayList<>();
 
-		// getterList.add(DataBaseGeneratorConfig::getName);
-		// getterList.add(DataBaseGeneratorConfig::getDescription);
-		// getterList.add(DataBaseGeneratorConfig::getConnectionType);
-		// getterList.add(DataBaseGeneratorConfig::getDatabaseType);
-		// getterList.add(DataBaseGeneratorConfig::getHost);
-		// getterList.add(DataBaseGeneratorConfig::getPort);
-		// getterList.add(DataBaseGeneratorConfig::getSchema);
-		// getterList.add(DataBaseGeneratorConfig::getUserName);
-		// getterList.add(DataBaseGeneratorConfig::getPassword);
+		getterList.add(DataBaseGeneratorConfig::getConnectionConfigId);
+		getterList.add(DataBaseGeneratorConfig::getConnectorJarPath);
+		getterList.add(DataBaseGeneratorConfig::getProjectFolder);
+		getterList.add(DataBaseGeneratorConfig::getModelPackage);
+		getterList.add(DataBaseGeneratorConfig::getModelPackageTargetFolder);
+		getterList.add(DataBaseGeneratorConfig::getDaoPackage);
+		getterList.add(DataBaseGeneratorConfig::getDaoTargetFolder);
+		getterList.add(DataBaseGeneratorConfig::getMappingXMLPackage);
+		getterList.add(DataBaseGeneratorConfig::getMappingXMLTargetFolder);
+		getterList.add(DataBaseGeneratorConfig::getOffsetLimit);
+		getterList.add(DataBaseGeneratorConfig::getNeedToStringHashcodeEquals);
+		getterList.add(DataBaseGeneratorConfig::getNeedForUpdate);
+		getterList.add(DataBaseGeneratorConfig::getAnnotationDAO);
+		getterList.add(DataBaseGeneratorConfig::getAnnotation);
+		getterList.add(DataBaseGeneratorConfig::getUseActualColumnNames);
+		getterList.add(DataBaseGeneratorConfig::getUseExample);
+		getterList.add(DataBaseGeneratorConfig::getGenerateKeys);
 		getterList.add(DataBaseGeneratorConfig::getEncoding);
-		// getterList.add(DataBaseGeneratorConfig::getLocalPort);
-		// getterList.add(DataBaseGeneratorConfig::getRemotePort);
-		// getterList.add(DataBaseGeneratorConfig::getSshHost);
-		// getterList.add(DataBaseGeneratorConfig::getSshPort);
-		// getterList.add(DataBaseGeneratorConfig::getSshUser);
-		// getterList.add(DataBaseGeneratorConfig::getSshPassword);
+		getterList.add(DataBaseGeneratorConfig::getUseTableNameAlias);
+		getterList.add(DataBaseGeneratorConfig::getUseDAOExtendStyle);
+		getterList.add(DataBaseGeneratorConfig::getUseSchemaPrefix);
+		getterList.add(DataBaseGeneratorConfig::getJsr310Support);
+		getterList.add(DataBaseGeneratorConfig::getOverrideXML);
 		getterList.add(DataBaseGeneratorConfig::getChannel);
 		getterList.add(DataBaseGeneratorConfig::getChannelNote);
 		getterList.add(DataBaseGeneratorConfig::getStatus);
