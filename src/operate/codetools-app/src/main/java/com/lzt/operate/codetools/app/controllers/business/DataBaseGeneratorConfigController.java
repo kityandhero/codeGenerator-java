@@ -232,13 +232,11 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		Optional<DataBaseGeneratorConfig> result = this.getDataBaseGeneratorConfigService()
 													   .findByConnectionConfigId(connectionConfigId);
 
-		if (result.isPresent()) {
-			DataBaseGeneratorConfig dataBaseGeneratorConfig = result.get();
+		DataBaseGeneratorConfig dataBaseGeneratorConfig;
 
-			return decorate(dataBaseGeneratorConfig);
-		}
+		dataBaseGeneratorConfig = result.orElseGet(() -> this.fill(new DataBaseGeneratorConfig(), paramJson));
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return decorate(dataBaseGeneratorConfig);
 	}
 
 	@ApiOperation(value = "创建数据库生成配置", notes = "创建数据库生成配置", httpMethod = "POST")
@@ -357,14 +355,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		return this.singleData(data);
 	}
 
-	/**
-	 * 修饰get返回数据
-	 *
-	 * @param dataBaseGeneratorConfig dataBaseGeneratorConfig
-	 * @return BaseResultData
-	 */
-	private BaseResultData setCore(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig, @NotNull ParamData paramJson) {
-
+	private DataBaseGeneratorConfig fill(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig, @NotNull ParamData paramJson) {
 		dataBaseGeneratorConfig.setAnnotation(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
 													   .toInt());
 		dataBaseGeneratorConfig.setAnnotationDAO(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
@@ -414,9 +405,21 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		dataBaseGeneratorConfig.setUpdateOperatorId(operatorId);
 		dataBaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
 
-		dataBaseGeneratorConfig = this.getDataBaseGeneratorConfigService().save(dataBaseGeneratorConfig);
+		return dataBaseGeneratorConfig;
+	}
 
-		return decorate(dataBaseGeneratorConfig);
+	/**
+	 * 修饰get返回数据
+	 *
+	 * @param dataBaseGeneratorConfig dataBaseGeneratorConfig
+	 * @return BaseResultData
+	 */
+	private BaseResultData setCore(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig, @NotNull ParamData paramJson) {
+		DataBaseGeneratorConfig v = this.fill(dataBaseGeneratorConfig, paramJson);
+
+		v = this.getDataBaseGeneratorConfigService().save(v);
+
+		return decorate(v);
 	}
 
 }
