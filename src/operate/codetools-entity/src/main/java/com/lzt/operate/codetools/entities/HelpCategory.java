@@ -22,19 +22,19 @@ public class HelpCategory extends BaseEntity {
 	/**
 	 * 名称
 	 */
-	@Column
+	@Column(nullable = false)
 	private String name;
 
 	/**
 	 * 名称
 	 */
-	@Column(name = "parent_id")
+	@Column(name = "parent_id", nullable = false)
 	private long parentId;
 
 	/**
 	 * 简介描述
 	 */
-	@Column
+	@Column(nullable = false)
 	private String description;
 
 	public HelpCategory() {

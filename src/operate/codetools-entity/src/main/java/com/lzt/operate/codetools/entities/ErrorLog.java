@@ -25,147 +25,147 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	/**
 	 * Uri入口
 	 */
-	@Column
+	@Column(nullable = false)
 	private String uri;
 
 	/**
 	 * 消息描述
 	 */
-	@Column
+	@Column(nullable = false)
 	private String message;
 
 	/**
 	 * 堆栈跟踪
 	 */
 	@Lob
-	@Column(name = "stack_trace")
+	@Column(name = "stack_trace", nullable = false)
 	private String stackTrace;
 
 	/**
 	 * 源代码信息
 	 */
 	@Lob
-	@Column
+	@Column(nullable = false)
 	private String source;
 
 	/**
 	 * 场景描述
 	 */
-	@Column
+	@Column(nullable = false)
 	private String scene;
 
 	/**
 	 * 类型值
 	 */
-	@Column
+	@Column(nullable = false)
 	private int type;
 
 	/**
 	 * 类型描述
 	 */
-	@Column(name = "type_note")
+	@Column(name = "type_note", nullable = false)
 	private String typeNote;
 
 	/**
 	 * 重要程度值
 	 */
-	@Column
+	@Column(nullable = false)
 	private int degree;
 
 	/**
 	 * 重要程度描述
 	 */
-	@Column(name = "degree_note")
+	@Column(name = "degree_note", nullable = false)
 	private String degreeNote;
 
 	/**
 	 * 错误产生时是否发送通知
 	 */
-	@Column(name = "send_notification")
+	@Column(name = "send_notification", nullable = false)
 	private int sendNotification;
 
 	/**
 	 * 通知发送结果（成功/失败）
 	 */
-	@Column(name = "send_result")
+	@Column(name = "send_result", nullable = false)
 	private int sendResult;
 
 	/**
 	 * 发送时间
 	 */
-	@Column(name = "send_unix_time")
+	@Column(name = "send_unix_time", nullable = false)
 	private long sendUnixTime;
 
 	/**
 	 * Uri头信息
 	 */
 	@Lob
-	@Column
+	@Column(nullable = false)
 	private String header;
 
 	/**
 	 * request queryString
 	 */
 	@Lob
-	@Column(name = "request_query_string")
+	@Column(name = "request_query_string", nullable = false)
 	private String requestQueryString;
 
 	/**
 	 * request body
 	 */
 	@Lob
-	@Column(name = "request_body")
+	@Column(name = "request_body", nullable = false)
 	private String requestBody;
 
 	/**
 	 * 域信息
 	 */
 	@Lob
-	@Column(name = "request_params")
+	@Column(name = "request_params", nullable = false)
 	private String requestParams;
 
 	/**
 	 * 域信息
 	 */
-	@Column
+	@Column(nullable = false)
 	private String host;
 
 	/**
 	 * 端口
 	 */
-	@Column
+	@Column(nullable = false)
 	private String port;
 
 	/**
 	 * 其他附属日志
 	 */
 	@Lob
-	@Column(name = "other_log")
+	@Column(name = "other_log", nullable = false)
 	private String otherLog;
 
 	/**
 	 * 自定义数据
 	 */
 	@Lob
-	@Column
+	@Column(nullable = false)
 	private String data;
 
 	/**
 	 * 解决状态值
 	 */
-	@Column
+	@Column(nullable = false)
 	private int resolve;
 
 	/**
 	 * 解决状态描述
 	 */
-	@Column(name = "resolve_note")
+	@Column(name = "resolve_note", nullable = false)
 	private String resolveNote;
 
 	/**
 	 * 异常类型的名称
 	 */
-	@Column(name = "exception_type_name")
+	@Column(name = "exception_type_name", nullable = false)
 	private String exceptionTypeName;
 
 	public ErrorLog() {

@@ -19,25 +19,25 @@ public class DataColumn extends BaseEntity {
 
 	private static final long serialVersionUID = 828097585595882930L;
 
-	@Column(name = "connection_config_id")
+	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
 
-	@Column(name = "table_name")
+	@Column(name = "table_name", nullable = false)
 	private String tableName;
 
-	@Column
+	@Column(nullable = false)
 	private String name;
 
-	@Column
+	@Column(nullable = false)
 	private String type;
 
-	@Column(name = "alias_name")
+	@Column(name = "alias_name", nullable = false)
 	private String aliasName;
 
-	@Column(name = "java_type")
+	@Column(name = "java_type", nullable = false)
 	private String javaType;
 
-	@Column(name = "type_handler")
+	@Column(name = "type_handler", nullable = false)
 	private String typeHandler;
 
 	public DataColumn() {

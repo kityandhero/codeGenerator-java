@@ -33,49 +33,49 @@ public abstract class BaseEntity implements Serializable {
 	/**
 	 * 日志产生的来源标识（例如哪个产品的标识）
 	 */
-	@Column
+	@Column(nullable = false)
 	private int channel;
 
 	/**
 	 * 日志产生的来源标识文本（例如哪个产品的名字）
 	 */
-	@Column(name = "channel_note")
+	@Column(name = "channel_note", nullable = false)
 	private String channelNote;
 
 	/**
 	 * 程序最后操作备注
 	 */
-	@Column(name = "auto_remark")
+	@Column(name = "auto_remark", nullable = false)
 	private String autoRemark;
 
 	/**
 	 * 状态
 	 */
-	@Column
+	@Column(nullable = false)
 	private int status;
 
 	/**
 	 * 状态文本
 	 */
-	@Column(name = "status_note")
+	@Column(name = "status_note", nullable = false)
 	private String statusNote;
 
 	/**
 	 * 最后操作IP
 	 */
-	@Column
+	@Column(nullable = false)
 	private String ip;
 
 	/**
 	 * 创建人标识
 	 */
-	@Column(name = "create_operator_id")
+	@Column(name = "create_operator_id", nullable = false)
 	private long createOperatorId;
 
 	/**
 	 * 创建时间
 	 */
-	@Column(name = "create_time")
+	@Column(name = "create_time", nullable = false)
 	@DateTimeFormat
 	@JsonFormat
 	private LocalDateTime createTime;
@@ -83,19 +83,19 @@ public abstract class BaseEntity implements Serializable {
 	/**
 	 * 创建时间 UnixTIme
 	 */
-	@Column(name = "create_unix_time")
+	@Column(name = "create_unix_time", nullable = false)
 	private long createUnixTime;
 
 	/**
 	 * 最后更信人
 	 */
-	@Column(name = "update_operator_id")
+	@Column(name = "update_operator_id", nullable = false)
 	private long updateOperatorId;
 
 	/**
 	 * 更新时间
 	 */
-	@Column(name = "update_time")
+	@Column(name = "update_time", nullable = false)
 	@DateTimeFormat
 	@JsonFormat
 	private LocalDateTime updateTime;
@@ -103,7 +103,7 @@ public abstract class BaseEntity implements Serializable {
 	/**
 	 * 更新时间 UnixTime
 	 */
-	@Column(name = "update_unix_time")
+	@Column(name = "update_unix_time", nullable = false)
 	private long updateUnixTime;
 
 	protected BaseEntity() {

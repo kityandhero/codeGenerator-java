@@ -21,37 +21,37 @@ public abstract class BaseRole extends BaseEntity {
 	/**
 	 * 名称
 	 */
-	@Column(length = 50, unique = true)
+	@Column(length = 50, unique = true, nullable = false)
 	private String name;
 
 	/**
 	 * 描述
 	 */
-	@Column(length = 500)
+	@Column(length = 500, nullable = false)
 	private String description;
 
 	/**
 	 * 详情
 	 */
-	@Column(length = 2000)
+	@Column(length = 2000, nullable = false)
 	private String content;
 
 	/**
 	 * 权限数量
 	 */
-	@Column(name = "module_count")
+	@Column(name = "module_count", nullable = false)
 	private int moduleCount;
 
 	/**
 	 * 权限集合体
 	 */
-	@Column
+	@Column(nullable = false)
 	private String competence;
 
 	/**
 	 * 是否超级管理员
 	 */
-	@Column(name = "whether_super")
+	@Column(name = "whether_super", nullable = false)
 	private Integer whetherSuper;
 
 	protected BaseRole() {

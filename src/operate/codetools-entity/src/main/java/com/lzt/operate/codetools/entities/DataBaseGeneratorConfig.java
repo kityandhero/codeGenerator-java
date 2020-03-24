@@ -17,73 +17,73 @@ import javax.persistence.Table;
 public class DataBaseGeneratorConfig extends BaseEntity {
 	private static final long serialVersionUID = 4482665423484753190L;
 
-	@Column(name = "connection_config_id")
+	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
 
-	@Column(name = "connector_jar_path")
+	@Column(name = "connector_jar_path", nullable = false)
 	private String connectorJarPath;
 
-	@Column(name = "project_folder")
+	@Column(name = "project_folder", nullable = false)
 	private String projectFolder;
 
-	@Column(name = "model_package")
+	@Column(name = "model_package", nullable = false)
 	private String modelPackage;
 
-	@Column(name = "model_package_target_folder")
-	private String modelPackageTargetFolder;
+	@Column(name = "model_package_target_folder", nullable = false)
+	private String modelTargetFolder;
 
-	@Column(name = "dao_package")
+	@Column(name = "dao_package", nullable = false)
 	private String daoPackage;
 
-	@Column(name = "dao_target_folder")
+	@Column(name = "dao_target_folder", nullable = false)
 	private String daoTargetFolder;
 
-	@Column(name = "mapping_xml_package")
+	@Column(name = "mapping_xml_package", nullable = false)
 	private String mappingXMLPackage;
 
-	@Column(name = "mapping_xml_target_folder")
+	@Column(name = "mapping_xml_target_folder", nullable = false)
 	private String mappingXMLTargetFolder;
 
-	@Column(name = "offset_limit")
+	@Column(name = "offset_limit", nullable = false)
 	private int offsetLimit;
 
-	@Column(name = "need_to_string_hashcode_equals")
-	private int needToStringHashcodeEquals;
+	@Column(name = "need_to_string_hashcode_equals", nullable = false)
+	private int needToStringHashCodeEquals;
 
-	@Column(name = "need_for_update")
+	@Column(name = "need_for_update", nullable = false)
 	private int needForUpdate;
 
-	@Column(name = "annotation_dao")
+	@Column(name = "annotation_dao", nullable = false)
 	private int annotationDAO;
 
-	@Column(name = "annotation")
+	@Column(name = "annotation", nullable = false)
 	private int annotation;
 
-	@Column(name = "use_actual_column_names")
+	@Column(name = "use_actual_column_names", nullable = false)
 	private int useActualColumnNames;
 
-	@Column(name = "use_example")
+	@Column(name = "use_example", nullable = false)
 	private int useExample;
 
-	@Column(name = "generate_keys")
+	@Column(name = "generate_keys", nullable = false)
 	private String generateKeys;
 
-	@Column(name = "encoding")
+	@Column(name = "encoding", nullable = false)
 	private String encoding;
 
-	@Column(name = "use_table_name_alias")
+	@Column(name = "use_table_name_alias", nullable = false)
 	private int useTableNameAlias;
 
-	@Column(name = "use_dao_extend_style")
+	@Column(name = "use_dao_extend_style", nullable = false)
 	private int useDAOExtendStyle;
 
-	@Column(name = "use_schema_prefix")
+	@Column(name = "use_schema_prefix", nullable = false)
 	private int useSchemaPrefix;
 
-	@Column(name = "jsr_310_support")
+	@Column(name = "jsr_310_support", nullable = false)
 	private int jsr310Support;
 
-	@Column(name = "override_xml")
+	@Column(name = "override_xml", nullable = false)
 	private int overrideXML;
 
 	public DataBaseGeneratorConfig() {
@@ -92,13 +92,13 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.connectorJarPath = "";
 		this.projectFolder = "";
 		this.modelPackage = "";
-		this.modelPackageTargetFolder = "";
+		this.modelTargetFolder = "";
 		this.daoPackage = "";
 		this.daoTargetFolder = "";
 		this.mappingXMLPackage = "";
 		this.mappingXMLTargetFolder = "";
 		this.offsetLimit = Whether.No.getFlag();
-		this.needToStringHashcodeEquals = Whether.No.getFlag();
+		this.needToStringHashCodeEquals = Whether.No.getFlag();
 		this.needForUpdate = Whether.No.getFlag();
 		this.annotationDAO = Whether.No.getFlag();
 		this.annotation = Whether.No.getFlag();
@@ -145,12 +145,12 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.modelPackage = modelPackage;
 	}
 
-	public String getModelPackageTargetFolder() {
-		return modelPackageTargetFolder;
+	public String getModelTargetFolder() {
+		return modelTargetFolder;
 	}
 
-	public void setModelPackageTargetFolder(String modelPackageTargetFolder) {
-		this.modelPackageTargetFolder = modelPackageTargetFolder;
+	public void setModelTargetFolder(String modelPackageTargetFolder) {
+		this.modelTargetFolder = modelPackageTargetFolder;
 	}
 
 	public String getDaoPackage() {
@@ -193,12 +193,12 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.offsetLimit = offsetLimit;
 	}
 
-	public int getNeedToStringHashcodeEquals() {
-		return needToStringHashcodeEquals;
+	public int getNeedToStringHashCodeEquals() {
+		return needToStringHashCodeEquals;
 	}
 
-	public void setNeedToStringHashcodeEquals(int needToStringHashcodeEquals) {
-		this.needToStringHashcodeEquals = needToStringHashcodeEquals;
+	public void setNeedToStringHashCodeEquals(int needToStringHashcodeEquals) {
+		this.needToStringHashCodeEquals = needToStringHashcodeEquals;
 	}
 
 	public int getNeedForUpdate() {

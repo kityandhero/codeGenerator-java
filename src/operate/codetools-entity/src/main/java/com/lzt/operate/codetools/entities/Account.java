@@ -22,61 +22,61 @@ public class Account extends BaseEntity {
 	/**
 	 * 登陆名
 	 */
-	@Column(length = 50, unique = true)
+	@Column(length = 50, nullable = false, unique = true)
 	String userName;
 
 	/**
 	 * 密码
 	 */
-	@Column
+	@Column(nullable = false)
 	String password;
 
 	/**
 	 * 名称
 	 */
-	@Column(length = 50)
+	@Column(length = 50, nullable = false)
 	String name;
 
 	/**
 	 * 名称
 	 */
-	@Column(name = "city_name")
+	@Column(name = "city_name", nullable = false)
 	String cityName;
 
 	/**
 	 * 名称
 	 */
-	@Column(name = "city_code")
+	@Column(name = "city_code", nullable = false)
 	long cityCode;
 
 	/**
 	 * 名称
 	 */
-	@Column
+	@Column(nullable = false)
 	String email;
 
 	/**
 	 * 名称
 	 */
-	@Column
+	@Column(nullable = false)
 	String phone;
 
 	/**
 	 * 名称
 	 */
-	@Column
+	@Column(nullable = false)
 	String avatar;
 
 	/**
 	 * 名称
 	 */
-	@Column(length = 300)
+	@Column(length = 300, nullable = false)
 	String description;
 
 	/**
 	 * 密码混淆值
 	 */
-	@Column(length = 50)
+	@Column(length = 50, nullable = false)
 	String slat;
 
 	public Account() {

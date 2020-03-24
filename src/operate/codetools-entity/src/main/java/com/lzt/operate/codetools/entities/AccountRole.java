@@ -22,19 +22,19 @@ public class AccountRole extends BaseEntity {
 	/**
 	 * 账户标识
 	 */
-	@Column(name = "account_id")
+	@Column(name = "account_id", nullable = false)
 	long accountId;
 
 	/**
 	 * 系统角色权限题集合
 	 */
-	@Column(name = "role_universal_collection")
+	@Column(name = "role_universal_collection", nullable = false)
 	String roleUniversalCollection;
 
 	/**
 	 * 自建角色权限题集合
 	 */
-	@Column(name = "role_code_tools_collection")
+	@Column(name = "role_code_tools_collection", nullable = false)
 	String roleCodeToolsCollection;
 
 	public AccountRole() {

@@ -23,37 +23,32 @@ public class AccessWay extends BaseEntity implements IAccessWay {
 	/**
 	 * 名称
 	 */
-	@Column
-	private
-	String name;
+	@Column(nullable = false)
+	private String name;
 
 	/**
 	 * 名称
 	 */
-	@Column
-	private
-	String description;
+	@Column(nullable = false)
+	private String description;
 
 	/**
 	 * 标记
 	 */
-	@Column
-	private
-	String tag;
+	@Column(nullable = false)
+	private String tag;
 
 	/**
 	 * 相对路径
 	 */
-	@Column(name = "relative_path")
-	private
-	String relativePath;
+	@Column(name = "relative_path", nullable = false)
+	private String relativePath;
 
 	/**
 	 * 扩展子权限设置
 	 */
-	@Column
-	private
-	String expand;
+	@Column(nullable = false)
+	private String expand;
 
 	public AccessWay() {
 		super();

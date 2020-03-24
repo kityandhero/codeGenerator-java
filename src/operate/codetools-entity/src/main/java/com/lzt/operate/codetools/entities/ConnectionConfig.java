@@ -19,52 +19,52 @@ public class ConnectionConfig extends BaseEntity {
 
 	private static final long serialVersionUID = -3628391768513027313L;
 
-	@Column(name = "database_type")
+	@Column(name = "database_type", nullable = false)
 	private int databaseType;
 
-	@Column(name = "connection_type")
+	@Column(name = "connection_type", nullable = false)
 	private int connectionType;
 
-	@Column
+	@Column(nullable = false)
 	private String name;
 
-	@Column(length = 300)
+	@Column(length = 300, nullable = false)
 	private String description;
 
-	@Column
+	@Column(nullable = false)
 	private String host;
 
-	@Column
+	@Column(nullable = false)
 	private String port;
 
-	@Column
+	@Column(nullable = false)
 	private String schema;
 
-	@Column(name = "user_name")
+	@Column(name = "user_name", nullable = false)
 	private String userName;
 
-	@Column
+	@Column(nullable = false)
 	private String password;
 
-	@Column
+	@Column(nullable = false)
 	private String encoding;
 
-	@Column(name = "local_port")
+	@Column(name = "local_port", nullable = false)
 	private String localPort;
 
-	@Column(name = "remote_port")
+	@Column(name = "remote_port", nullable = false)
 	private String remotePort;
 
-	@Column(name = "ssh_port")
+	@Column(name = "ssh_port", nullable = false)
 	private String sshPort;
 
-	@Column(name = "ssh_host")
+	@Column(name = "ssh_host", nullable = false)
 	private String sshHost;
 
-	@Column(name = "ssh_user")
+	@Column(name = "ssh_user", nullable = false)
 	private String sshUser;
 
-	@Column(name = "ssh_password")
+	@Column(name = "ssh_password", nullable = false)
 	private String sshPassword;
 
 	public ConnectionConfig() {

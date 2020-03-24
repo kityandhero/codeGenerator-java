@@ -179,7 +179,7 @@ public class MybatisGeneratorBridge {
 		// java model
 		JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
 		modelConfig.setTargetPackage(this.generatorConfig.getModelPackage());
-		modelConfig.setTargetProject(this.generatorConfig.getProjectFolder() + "/" + this.generatorConfig.getModelPackageTargetFolder());
+		modelConfig.setTargetProject(this.generatorConfig.getProjectFolder() + "/" + this.generatorConfig.getModelTargetFolder());
 		// Mapper configuration
 		SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
 		mapperConfig.setTargetPackage(this.generatorConfig.getMappingXMLPackage());
@@ -215,7 +215,7 @@ public class MybatisGeneratorBridge {
 		serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
 		context.addPluginConfiguration(serializablePluginConfiguration);
 		// toString, hashCode, equals插件
-		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getNeedToStringHashcodeEquals())) {
+		if (ConstantCollection.ZERO_INT.equals(this.generatorConfig.getNeedToStringHashCodeEquals())) {
 			PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
 			pluginConfiguration1.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
 			pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");

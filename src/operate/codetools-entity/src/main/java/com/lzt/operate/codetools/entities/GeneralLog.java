@@ -24,14 +24,14 @@ public class GeneralLog extends BaseEntity implements IGeneralLog {
 	/**
 	 * 简介描述
 	 */
-	@Column
+	@Column(nullable = false)
 	private String message;
 
 	/**
 	 * 详细内容
 	 */
 	@Lob
-	@Column
+	@Column(nullable = false)
 	private String content;
 
 	public GeneralLog() {

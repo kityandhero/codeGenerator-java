@@ -309,7 +309,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
 			if (connectionConfigId > 0) {
 				Optional<DataBaseGeneratorConfig> optionalFindByConnectionConfigId = getDataBaseGeneratorConfigService()
-						.get(dataBaseGeneratorConfigId);
+						.get(connectionConfigId);
 
 				if (optionalFindByConnectionConfigId.isPresent()) {
 					dataBaseGeneratorConfig = optionalFindByConnectionConfigId.get();
@@ -319,6 +319,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
 			dataBaseGeneratorConfig = new DataBaseGeneratorConfig();
+
+			dataBaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
 		}
 
 		return setCore(dataBaseGeneratorConfig, paramJson);
@@ -337,13 +339,13 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DataBaseGeneratorConfig::getConnectorJarPath);
 		getterList.add(DataBaseGeneratorConfig::getProjectFolder);
 		getterList.add(DataBaseGeneratorConfig::getModelPackage);
-		getterList.add(DataBaseGeneratorConfig::getModelPackageTargetFolder);
+		getterList.add(DataBaseGeneratorConfig::getModelTargetFolder);
 		getterList.add(DataBaseGeneratorConfig::getDaoPackage);
 		getterList.add(DataBaseGeneratorConfig::getDaoTargetFolder);
 		getterList.add(DataBaseGeneratorConfig::getMappingXMLPackage);
 		getterList.add(DataBaseGeneratorConfig::getMappingXMLTargetFolder);
 		getterList.add(DataBaseGeneratorConfig::getOffsetLimit);
-		getterList.add(DataBaseGeneratorConfig::getNeedToStringHashcodeEquals);
+		getterList.add(DataBaseGeneratorConfig::getNeedToStringHashCodeEquals);
 		getterList.add(DataBaseGeneratorConfig::getNeedForUpdate);
 		getterList.add(DataBaseGeneratorConfig::getAnnotationDAO);
 		getterList.add(DataBaseGeneratorConfig::getAnnotation);
@@ -385,10 +387,10 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		dataBaseGeneratorConfig.setMappingXMLPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
 		dataBaseGeneratorConfig.setMappingXMLTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
 		dataBaseGeneratorConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
-		dataBaseGeneratorConfig.setModelPackageTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
+		dataBaseGeneratorConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
 		dataBaseGeneratorConfig.setNeedForUpdate(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
 														  .toInt());
-		dataBaseGeneratorConfig.setNeedToStringHashcodeEquals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
+		dataBaseGeneratorConfig.setNeedToStringHashCodeEquals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
 																	   .toInt());
 		dataBaseGeneratorConfig.setOffsetLimit(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT)
 														.toInt());

@@ -22,19 +22,19 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	private static final long serialVersionUID = -6940964534931128004L;
 
-	@Column(name = "connection_config_id")
+	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
 
-	@Column(name = "table_name")
+	@Column(name = "table_name", nullable = false)
 	private String tableName;
 
-	@Column(name = "domain_object_name")
+	@Column(name = "domain_object_name", nullable = false)
 	private String domainObjectName;
 
-	@Column(name = "mapper_name")
+	@Column(name = "mapper_name", nullable = false)
 	private String mapperName;
 
-	@Column(name = "comment")
+	@Column(name = "comment", nullable = false)
 	private int comment;
 
 	public DataTableGeneratorConfig() {

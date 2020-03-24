@@ -23,26 +23,26 @@ public class Help extends BaseEntity {
 	/**
 	 * 名称
 	 */
-	@Column
+	@Column(nullable = false)
 	private String title;
 
 	/**
 	 * 名称
 	 */
-	@Column(name = "help_category_id")
+	@Column(name = "help_category_id", nullable = false)
 	private int helpCategoryId;
 
 	/**
 	 * 简介描述
 	 */
-	@Column
+	@Column(nullable = false)
 	private String description;
 
 	/**
 	 * 简介描述
 	 */
 	@Lob
-	@Column
+	@Column(nullable = false)
 	private String content;
 
 	public Help() {

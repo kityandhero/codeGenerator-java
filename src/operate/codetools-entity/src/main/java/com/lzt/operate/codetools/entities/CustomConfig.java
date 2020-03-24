@@ -17,16 +17,16 @@ public class CustomConfig extends BaseEntity {
 
 	private static final long serialVersionUID = -8937636579334404642L;
 
-	@Column(length = 36)
+	@Column(length = 36, nullable = false)
 	String uuid;
 
-	@Column(length = 50)
+	@Column(length = 50, nullable = false)
 	String name;
 
-	@Column
+	@Column(nullable = false)
 	String value;
 
-	@Column
+	@Column(nullable = false)
 	String description;
 
 	public CustomConfig() {
