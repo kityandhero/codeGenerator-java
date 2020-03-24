@@ -8,11 +8,15 @@ import com.lzt.operate.codetools.app.enums.ConnectionType;
 import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.ConnectionConfigStatus;
+import com.lzt.operate.codetools.common.enums.DataBaseGeneratorConfigStatus;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
+import com.lzt.operate.codetools.dao.service.DataBaseGeneratorConfigService;
 import com.lzt.operate.codetools.dao.service.impl.ConnectionConfigServiceImpl;
+import com.lzt.operate.codetools.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
+import com.lzt.operate.codetools.entities.DataBaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -53,6 +57,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,15 +78,38 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 	private ConnectionConfigService connectionConfigService;
 
+	private DataBaseGeneratorConfigService dataBaseGeneratorConfigService;
+
 	@Autowired
-	public ConnectionConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl) {
+	public ConnectionConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl dataBaseGeneratorConfigService) {
 		super(customJsonWebTokenConfig);
 
 		this.connectionConfigService = connectionConfigServiceImpl;
+		this.dataBaseGeneratorConfigService = dataBaseGeneratorConfigService;
+	}
+
+	public ConnectionConfigService getConnectionConfigService() {
+		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("ConnectionConfigService获取失败");
+	}
+
+	public DataBaseGeneratorConfigService getDataBaseGeneratorConfigService() {
+		Optional<DataBaseGeneratorConfigService> optional = Optional.ofNullable(this.dataBaseGeneratorConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("DataBaseGeneratorConfigService获取失败");
 	}
 
 	private ConnectionConfigAssist getConnectionConfigAssist() {
-		return new ConnectionConfigAssist(this.connectionConfigService);
+		return new ConnectionConfigAssist(this.getConnectionConfigService());
 	}
 
 	@ApiOperation(value = "连接分页列表", notes = "数据库连接分页列表", httpMethod = "POST")
@@ -260,7 +288,19 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			data.setCreateOperatorId(operatorId);
 			data.setUpdateOperatorId(operatorId);
 
-			getConnectionConfigAssist().saveConnectionConfig(data);
+			data = getConnectionConfigAssist().saveConnectionConfig(data);
+
+			DataBaseGeneratorConfig dataBaseGeneratorConfig = new DataBaseGeneratorConfig();
+
+			dataBaseGeneratorConfig.setConnectionConfigId(data.getId());
+			dataBaseGeneratorConfig.setChannel(Channel.CodeTools);
+			dataBaseGeneratorConfig.setCreateOperatorId(operatorId);
+			dataBaseGeneratorConfig.setCreateTime(LocalDateTime.now());
+			dataBaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
+			dataBaseGeneratorConfig.setUpdateOperatorId(operatorId);
+			dataBaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
+
+			this.getDataBaseGeneratorConfigService().save(dataBaseGeneratorConfig);
 
 			return this.singleData(result.getData());
 		}
