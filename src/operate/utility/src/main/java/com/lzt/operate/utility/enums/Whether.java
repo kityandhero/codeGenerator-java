@@ -1,15 +1,14 @@
-package com.lzt.operate.codetools.common.enums;
+package com.lzt.operate.utility.enums;
 
 import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 
 /**
- * 是否超级管理员
- *
  * @author luzhitao
  */
-public enum WhetherSuper {
+
+public enum Whether {
 
 	/**
 	 * 是
@@ -35,16 +34,16 @@ public enum WhetherSuper {
 
 	private String description;
 
-	WhetherSuper(int value, String name, String description) {
+	Whether(int value, String name, String description) {
 		this.flag = value;
 		this.name = name;
 		this.description = description;
 	}
 
-	public static Optional<WhetherSuper> valueOfFlag(@NonNull Integer flag) {
-		WhetherSuper[] values = WhetherSuper.values();
+	public static Optional<Whether> valueOfFlag(@NonNull Integer flag) {
+		Whether[] values = Whether.values();
 
-		for (WhetherSuper d : values) {
+		for (Whether d : values) {
 			if (flag.equals(d.getFlag())) {
 				return Optional.of(d);
 			}

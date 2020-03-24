@@ -1,6 +1,7 @@
 package com.lzt.operate.codetools.entities;
 
 import com.lzt.operate.codetools.entities.bases.BaseEntity;
+import com.lzt.operate.utility.enums.Whether;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
@@ -87,6 +88,29 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 
 	public DataBaseGeneratorConfig() {
 		super();
+
+		this.connectorJarPath = "";
+		this.projectFolder = "";
+		this.modelPackage = "";
+		this.modelPackageTargetFolder = "";
+		this.daoPackage = "";
+		this.daoTargetFolder = "";
+		this.mappingXMLPackage = "";
+		this.mappingXMLTargetFolder = "";
+		this.offsetLimit = Whether.No.getFlag();
+		this.needToStringHashcodeEquals = Whether.No.getFlag();
+		this.needForUpdate = Whether.No.getFlag();
+		this.annotationDAO = Whether.No.getFlag();
+		this.annotation = Whether.No.getFlag();
+		this.useActualColumnNames = Whether.No.getFlag();
+		this.useExample = Whether.No.getFlag();
+		this.generateKeys = "";
+		this.encoding = "";
+		this.useTableNameAlias = Whether.No.getFlag();
+		this.useDAOExtendStyle = Whether.No.getFlag();
+		this.useSchemaPrefix = Whether.No.getFlag();
+		this.jsr310Support = Whether.No.getFlag();
+		this.overrideXML = Whether.No.getFlag();
 	}
 
 	public long getConnectionConfigId() {
