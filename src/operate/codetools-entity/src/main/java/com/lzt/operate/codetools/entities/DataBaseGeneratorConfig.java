@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class DataBaseGeneratorConfig extends BaseEntity {
 	private static final long serialVersionUID = 4482665423484753190L;
 
-	@Column(name = "connection_config_id", nullable = false)
+	@Column(name = "connection_config_id", nullable = false, unique = true)
 	private long connectionConfigId;
 
 	@Column(name = "connector_jar_path", nullable = false)
