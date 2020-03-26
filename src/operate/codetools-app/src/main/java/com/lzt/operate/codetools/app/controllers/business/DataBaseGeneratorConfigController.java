@@ -207,7 +207,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		if (result.isPresent()) {
 			DataBaseGeneratorConfig dataBaseGeneratorConfig = result.get();
 
-			return decorate(dataBaseGeneratorConfig);
+			return decorateSingleData(dataBaseGeneratorConfig);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());
@@ -244,7 +244,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			dataBaseGeneratorConfig = this.fill(v, paramJson);
 		}
 
-		return decorate(dataBaseGeneratorConfig);
+		return decorateSingleData(dataBaseGeneratorConfig);
 	}
 
 	@ApiOperation(value = "创建数据库生成配置", notes = "创建数据库生成配置", httpMethod = "POST")
@@ -332,7 +332,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	 * @param dataBaseGeneratorConfig dataBaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private BaseResultData decorate(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig) {
+	private BaseResultData decorateSingleData(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig) {
 		List<IGetter<DataBaseGeneratorConfig>> getterList = new ArrayList<>();
 
 		getterList.add(DataBaseGeneratorConfig::getConnectionConfigId);
@@ -436,7 +436,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		v = this.getDataBaseGeneratorConfigService().save(v);
 
-		return decorate(v);
+		return decorateSingleData(v);
 	}
 
 }

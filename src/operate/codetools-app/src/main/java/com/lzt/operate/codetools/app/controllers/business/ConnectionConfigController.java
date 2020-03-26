@@ -56,6 +56,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -212,36 +213,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (result.isPresent()) {
 			ConnectionConfig connectionConfig = result.get();
 
-			List<IGetter<ConnectionConfig>> getterList = new ArrayList<>();
-
-			getterList.add(ConnectionConfig::getName);
-			getterList.add(ConnectionConfig::getDescription);
-			getterList.add(ConnectionConfig::getConnectionType);
-			getterList.add(ConnectionConfig::getDatabaseType);
-			getterList.add(ConnectionConfig::getHost);
-			getterList.add(ConnectionConfig::getPort);
-			getterList.add(ConnectionConfig::getSchema);
-			getterList.add(ConnectionConfig::getUserName);
-			getterList.add(ConnectionConfig::getPassword);
-			getterList.add(ConnectionConfig::getEncoding);
-			getterList.add(ConnectionConfig::getLocalPort);
-			getterList.add(ConnectionConfig::getRemotePort);
-			getterList.add(ConnectionConfig::getSshHost);
-			getterList.add(ConnectionConfig::getSshPort);
-			getterList.add(ConnectionConfig::getSshUser);
-			getterList.add(ConnectionConfig::getSshPassword);
-			getterList.add(ConnectionConfig::getChannel);
-			getterList.add(ConnectionConfig::getChannelNote);
-			getterList.add(ConnectionConfig::getStatus);
-			getterList.add(ConnectionConfig::getStatusNote);
-			getterList.add(ConnectionConfig::getCreateTime);
-			getterList.add(ConnectionConfig::getUpdateTime);
-
-			SerializableData data = SerializableData.toSerializableData(connectionConfig, getterList);
-
-			data.append(ReflectAssist.getFriendlyIdName(ConnectionConfig.class), connectionConfig.getId());
-
-			return this.singleData(data);
+			return decorateSingleData(connectionConfig);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());
@@ -302,7 +274,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 			this.getDataBaseGeneratorConfigService().save(dataBaseGeneratorConfig);
 
-			return this.singleData(result.getData());
+			return decorateSingleData(data);
 		}
 
 		return this.fail(result);
@@ -472,6 +444,45 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		}
 
 		return this.fail(ReturnDataCode.Exception.toMessage("测试连接数据库失败"));
+	}
+
+	/**
+	 * 修饰get返回数据
+	 *
+	 * @param connectionConfig connectionConfig
+	 * @return BaseResultData
+	 */
+	private BaseResultData decorateSingleData(@NotNull ConnectionConfig connectionConfig) {
+		List<IGetter<ConnectionConfig>> getterList = new ArrayList<>();
+
+		getterList.add(ConnectionConfig::getName);
+		getterList.add(ConnectionConfig::getDescription);
+		getterList.add(ConnectionConfig::getConnectionType);
+		getterList.add(ConnectionConfig::getDatabaseType);
+		getterList.add(ConnectionConfig::getHost);
+		getterList.add(ConnectionConfig::getPort);
+		getterList.add(ConnectionConfig::getSchema);
+		getterList.add(ConnectionConfig::getUserName);
+		getterList.add(ConnectionConfig::getPassword);
+		getterList.add(ConnectionConfig::getEncoding);
+		getterList.add(ConnectionConfig::getLocalPort);
+		getterList.add(ConnectionConfig::getRemotePort);
+		getterList.add(ConnectionConfig::getSshHost);
+		getterList.add(ConnectionConfig::getSshPort);
+		getterList.add(ConnectionConfig::getSshUser);
+		getterList.add(ConnectionConfig::getSshPassword);
+		getterList.add(ConnectionConfig::getChannel);
+		getterList.add(ConnectionConfig::getChannelNote);
+		getterList.add(ConnectionConfig::getStatus);
+		getterList.add(ConnectionConfig::getStatusNote);
+		getterList.add(ConnectionConfig::getCreateTime);
+		getterList.add(ConnectionConfig::getUpdateTime);
+
+		SerializableData data = SerializableData.toSerializableData(connectionConfig, getterList);
+
+		data.append(ReflectAssist.getFriendlyIdName(ConnectionConfig.class), connectionConfig.getId());
+
+		return this.singleData(data);
 	}
 
 }
