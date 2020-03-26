@@ -25,12 +25,14 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	/**
 	 * Uri入口
 	 */
+	@Lob
 	@Column(nullable = false)
 	private String uri;
 
 	/**
 	 * 消息描述
 	 */
+	@Lob
 	@Column(nullable = false)
 	private String message;
 
@@ -51,6 +53,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	/**
 	 * 场景描述
 	 */
+	@Lob
 	@Column(nullable = false)
 	private String scene;
 

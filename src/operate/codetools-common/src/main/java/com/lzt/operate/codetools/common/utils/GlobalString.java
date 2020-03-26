@@ -91,28 +91,28 @@ public class GlobalString {
 	@ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
 	public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
 
-	@ApiSingleParam(value = "connectorJarPath", type = String.class, example = "20211")
+	@ApiSingleParam(value = "connectorJarPath", example = "20211")
 	public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_PATH = "connectorJarPath";
 
-	@ApiSingleParam(value = "connectorJarPath", type = String.class, example = "projectFolder")
+	@ApiSingleParam(value = "connectorJarPath", example = "projectFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER = "projectFolder";
 
-	@ApiSingleParam(value = "modelPackage", type = String.class, example = "modelPackage")
+	@ApiSingleParam(value = "modelPackage", example = "modelPackage")
 	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE = "modelPackage";
 
-	@ApiSingleParam(value = "modelPackageTargetFolder", type = String.class, example = "modelPackageTargetFolder")
-	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER = "modelPackageTargetFolder";
+	@ApiSingleParam(value = "modelPackageTargetFolder", example = "modelPackageTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER = "modelTargetFolder";
 
-	@ApiSingleParam(value = "daoPackage", type = String.class, example = "daoPackage")
+	@ApiSingleParam(value = "daoPackage", example = "daoPackage")
 	public static final String DATABASE_GENERATOR_CONFIG_DAO_PACKAGE = "daoPackage";
 
-	@ApiSingleParam(value = "daoTargetFolder", type = String.class, example = "daoTargetFolder")
+	@ApiSingleParam(value = "daoTargetFolder", example = "daoTargetFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER = "daoTargetFolder";
 
-	@ApiSingleParam(value = "mappingXMLPackage", type = String.class, example = "mappingXMLPackage")
+	@ApiSingleParam(value = "mappingXMLPackage", example = "mappingXMLPackage")
 	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXMLPackage";
 
-	@ApiSingleParam(value = "mappingXMLTargetFolder", type = String.class, example = "mappingXMLTargetFolder")
+	@ApiSingleParam(value = "mappingXMLTargetFolder", example = "mappingXMLTargetFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXMLTargetFolder";
 
 	@ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
@@ -139,7 +139,7 @@ public class GlobalString {
 	@ApiSingleParam(value = "generateKeys", type = Integer.class, example = "generateKeys")
 	public static final String DATABASE_GENERATOR_CONFIG_GENERATE_KEYS = "generateKeys";
 
-	@ApiSingleParam(value = "encoding", type = String.class, example = "encoding")
+	@ApiSingleParam(value = "encoding", example = "encoding")
 	public static final String DATABASE_GENERATOR_CONFIG_ENCODING = "encoding";
 
 	@ApiSingleParam(value = "useTableNameAlias", type = Integer.class, example = "useTableNameAlias")
@@ -275,7 +275,7 @@ public class GlobalString {
 
 	//region DATA_TABLE
 
-	@ApiSingleParam(value = "数据表名", type = String.class, example = "table1")
+	@ApiSingleParam(value = "数据表名", example = "table1")
 	public static final String DATA_TABLE_NAME = "name";
 
 	//endregion
@@ -285,19 +285,19 @@ public class GlobalString {
 	@ApiSingleParam(value = "数据库列定制数据标识", type = Long.class, example = "101")
 	public static final String DATA_COLUMN_ID = "dataColumnId";
 
-	@ApiSingleParam(value = "数据表名", type = String.class, example = "table1")
+	@ApiSingleParam(value = "数据表名", example = "table1")
 	public static final String DATA_COLUMN_TABLE_NAME = "tableName";
 
-	@ApiSingleParam(value = "数据表列名", type = String.class, example = "table1")
+	@ApiSingleParam(value = "数据表列名", example = "table1")
 	public static final String DATA_COLUMN_NAME = "name";
 
-	@ApiSingleParam(value = "列别名", type = String.class, example = "aliasName")
+	@ApiSingleParam(value = "列别名", example = "aliasName")
 	public static final String DATA_COLUMN_ALIAS_NAME = "aliasName";
 
-	@ApiSingleParam(value = "Java类型", type = String.class, example = "String")
+	@ApiSingleParam(value = "Java类型", example = "String")
 	public static final String DATA_COLUMN_JAVA_TYPE = "javaType";
 
-	@ApiSingleParam(value = "Type Handler", type = String.class, example = "typeHandler")
+	@ApiSingleParam(value = "Type Handler", example = "typeHandler")
 	public static final String DATA_COLUMN_TYPE_HANDLER = "typeHandler";
 
 	//endregion

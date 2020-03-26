@@ -309,7 +309,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
 			if (connectionConfigId > 0) {
 				Optional<DataBaseGeneratorConfig> optionalFindByConnectionConfigId = getDataBaseGeneratorConfigService()
-						.get(connectionConfigId);
+						.findByConnectionConfigId(connectionConfigId);
 
 				if (optionalFindByConnectionConfigId.isPresent()) {
 					dataBaseGeneratorConfig = optionalFindByConnectionConfigId.get();
