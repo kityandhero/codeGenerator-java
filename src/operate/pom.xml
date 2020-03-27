@@ -15,11 +15,11 @@
         <module>utility</module>
         <module>swagger-spring-boot-starter</module>
         <module>id-spring-boot-starter</module>
-        <module>codetools-app</module>
-        <module>codetools-entity</module>
-        <module>codetools-dao</module>
-        <module>codetools-common</module>
-        <module>codetools-message-queue</module>
+        <module>code-tools-app</module>
+        <module>code-tools-entity</module>
+        <module>code-tools-dao</module>
+        <module>code-tools-common</module>
+        <module>code-tools-message-queue</module>
     </modules>
 
     <properties>
