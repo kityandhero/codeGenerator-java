@@ -72,6 +72,10 @@ public enum CustomConfigCollection {
 		this.description = description;
 	}
 
+	public static List<CustomConfigCollection> valuesToList() {
+		return Arrays.asList(CustomConfigCollection.values());
+	}
+
 	public String getUuid() {
 		return uuid;
 	}

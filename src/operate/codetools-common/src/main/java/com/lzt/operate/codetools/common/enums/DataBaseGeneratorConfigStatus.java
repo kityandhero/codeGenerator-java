@@ -2,6 +2,8 @@ package com.lzt.operate.codetools.common.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -51,6 +53,10 @@ public enum DataBaseGeneratorConfigStatus {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<DataBaseGeneratorConfigStatus> valuesToList() {
+		return Arrays.asList(DataBaseGeneratorConfigStatus.values());
 	}
 
 	public int getFlag() {

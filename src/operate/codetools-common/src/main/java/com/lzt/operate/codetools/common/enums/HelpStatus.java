@@ -2,6 +2,8 @@ package com.lzt.operate.codetools.common.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public enum HelpStatus {
@@ -52,6 +54,10 @@ public enum HelpStatus {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<HelpStatus> valuesToList() {
+		return Arrays.asList(HelpStatus.values());
 	}
 
 	public int getFlag() {

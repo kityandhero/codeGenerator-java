@@ -2,6 +2,8 @@ package com.lzt.operate.codetools.common.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -56,6 +58,10 @@ public enum ErrorLogType {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<ErrorLogType> valuesToList() {
+		return Arrays.asList(ErrorLogType.values());
 	}
 
 	public int getFlag() {

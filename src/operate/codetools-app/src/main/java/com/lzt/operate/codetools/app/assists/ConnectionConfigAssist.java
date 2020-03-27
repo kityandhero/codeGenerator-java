@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.app.assists;
 
-import com.lzt.operate.codetools.app.enums.ConnectionType;
-import com.lzt.operate.codetools.app.enums.DatabaseType;
+import com.lzt.operate.codetools.common.enums.ConnectionType;
+import com.lzt.operate.codetools.common.enums.DatabaseType;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.dao.assists.BaseConnectionConfigAssist;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;

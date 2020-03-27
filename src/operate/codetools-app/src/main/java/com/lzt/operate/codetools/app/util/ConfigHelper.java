@@ -1,7 +1,7 @@
 package com.lzt.operate.codetools.app.util;
 
 import com.alibaba.fastjson.JSON;
-import com.lzt.operate.codetools.app.enums.DatabaseType;
+import com.lzt.operate.codetools.common.enums.DatabaseType;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataTableGeneratorConfig;
 import com.lzt.operate.custommessagequeue.custommessagequeue.generallog.GeneralLogAssist;

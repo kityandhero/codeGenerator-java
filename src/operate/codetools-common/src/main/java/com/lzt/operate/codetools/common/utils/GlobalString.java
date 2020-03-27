@@ -91,8 +91,8 @@ public class GlobalString {
 	@ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
 	public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
 
-	@ApiSingleParam(value = "connectorJarPath", example = "20211")
-	public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_PATH = "connectorJarPath";
+	@ApiSingleParam(value = "connectorJarFile", example = "20211")
+	public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE = "connectorJarFile";
 
 	@ApiSingleParam(value = "connectorJarPath", example = "projectFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER = "projectFolder";
@@ -109,11 +109,11 @@ public class GlobalString {
 	@ApiSingleParam(value = "daoTargetFolder", example = "daoTargetFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER = "daoTargetFolder";
 
-	@ApiSingleParam(value = "mappingXMLPackage", example = "mappingXMLPackage")
-	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXMLPackage";
+	@ApiSingleParam(value = "mappingXmlPackage", example = "mappingXmlPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXmlPackage";
 
-	@ApiSingleParam(value = "mappingXMLTargetFolder", example = "mappingXMLTargetFolder")
-	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXMLTargetFolder";
+	@ApiSingleParam(value = "mappingXmlTargetFolder", example = "mappingXmlTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXmlTargetFolder";
 
 	@ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
 	public static final String DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT = "offsetLimit";

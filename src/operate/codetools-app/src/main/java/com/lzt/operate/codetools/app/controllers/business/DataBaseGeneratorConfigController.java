@@ -251,7 +251,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET, value = {
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_PATH),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER),
@@ -336,7 +336,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		List<IGetter<DataBaseGeneratorConfig>> getterList = new ArrayList<>();
 
 		getterList.add(DataBaseGeneratorConfig::getConnectionConfigId);
-		getterList.add(DataBaseGeneratorConfig::getConnectorJarPath);
+		getterList.add(DataBaseGeneratorConfig::getConnectorJarFile);
 		getterList.add(DataBaseGeneratorConfig::getProjectFolder);
 		getterList.add(DataBaseGeneratorConfig::getModelPackage);
 		getterList.add(DataBaseGeneratorConfig::getModelTargetFolder);
@@ -377,7 +377,6 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 													   .toInt());
 		dataBaseGeneratorConfig.setAnnotationDAO(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
 														  .toInt());
-		dataBaseGeneratorConfig.setConnectorJarPath(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_PATH));
 		dataBaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
 		dataBaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
 		dataBaseGeneratorConfig.setEncoding(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING));

@@ -2,6 +2,8 @@ package com.lzt.operate.codetools.common.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -56,6 +58,10 @@ public enum DataColumnStatus {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<DataColumnStatus> valuesToList() {
+		return Arrays.asList(DataColumnStatus.values());
 	}
 
 	public int getFlag() {

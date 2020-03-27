@@ -4,11 +4,11 @@ import com.lzt.operate.codetools.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.codetools.app.assists.DatabaseAssist;
 import com.lzt.operate.codetools.app.common.BaseOperateAuthController;
 import com.lzt.operate.codetools.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.codetools.app.enums.ConnectionType;
-import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.common.enums.Channel;
 import com.lzt.operate.codetools.common.enums.ConnectionConfigStatus;
+import com.lzt.operate.codetools.common.enums.ConnectionType;
 import com.lzt.operate.codetools.common.enums.DataBaseGeneratorConfigStatus;
+import com.lzt.operate.codetools.common.enums.DatabaseType;
 import com.lzt.operate.codetools.common.utils.GlobalString;
 import com.lzt.operate.codetools.common.utils.ModelNameCollection;
 import com.lzt.operate.codetools.dao.service.ConnectionConfigService;
@@ -274,6 +274,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 			this.getDataBaseGeneratorConfigService().save(dataBaseGeneratorConfig);
 
+			this.getDataBaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
+
 			return decorateSingleData(data);
 		}
 
@@ -341,6 +343,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		if (result.isPresent()) {
 			ConnectionConfig data = result.get();
 
+			Integer databaseTypePre = data.getDatabaseType();
+
 			String description = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_DESCRIPTION);
 			String host = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_HOST);
 			String port = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_PORT);
@@ -378,11 +382,14 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(data);
 
+			if (!databaseTypePre.equals(databaseType)) {
+				this.getDataBaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
+			}
+
 			return this.singleData(saveResult);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());
-
 	}
 
 	@ApiOperation(value = "移除连接", notes = "移除数据库连接", httpMethod = "POST")

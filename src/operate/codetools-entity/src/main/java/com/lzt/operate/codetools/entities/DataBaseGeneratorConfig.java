@@ -21,8 +21,8 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 	@Column(name = "connection_config_id", nullable = false, unique = true)
 	private long connectionConfigId;
 
-	@Column(name = "connector_jar_path", nullable = false)
-	private String connectorJarPath;
+	@Column(name = "connector_jar_file", nullable = false)
+	private String connectorJarFile;
 
 	@Column(name = "project_folder", nullable = false)
 	private String projectFolder;
@@ -90,7 +90,7 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 	public DataBaseGeneratorConfig() {
 		super();
 
-		this.connectorJarPath = "";
+		this.connectorJarFile = "";
 		this.projectFolder = "";
 		this.modelPackage = "";
 		this.modelTargetFolder = "";
@@ -122,12 +122,12 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.connectionConfigId = connectionConfigId;
 	}
 
-	public String getConnectorJarPath() {
-		return connectorJarPath;
+	public String getConnectorJarFile() {
+		return connectorJarFile;
 	}
 
-	public void setConnectorJarPath(String connectorJarPath) {
-		this.connectorJarPath = connectorJarPath;
+	public void setConnectorJarFile(String connectorJarPath) {
+		this.connectorJarFile = connectorJarPath;
 	}
 
 	public String getProjectFolder() {

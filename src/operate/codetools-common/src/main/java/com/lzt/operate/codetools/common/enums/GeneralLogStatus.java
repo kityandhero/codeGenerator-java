@@ -2,6 +2,8 @@ package com.lzt.operate.codetools.common.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -50,6 +52,10 @@ public enum GeneralLogStatus {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<GeneralLogStatus> valuesToList() {
+		return Arrays.asList(GeneralLogStatus.values());
 	}
 
 	public int getFlag() {

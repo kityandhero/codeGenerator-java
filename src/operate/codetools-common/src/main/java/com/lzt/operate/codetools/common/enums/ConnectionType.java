@@ -1,7 +1,9 @@
-package com.lzt.operate.codetools.app.enums;
+package com.lzt.operate.codetools.common.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -44,6 +46,10 @@ public enum ConnectionType {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<ConnectionType> valuesToList() {
+		return Arrays.asList(ConnectionType.values());
 	}
 
 	public Integer getFlag() {

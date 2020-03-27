@@ -1,9 +1,9 @@
 package com.lzt.operate.codetools.app.bridge;
 
-import com.lzt.operate.codetools.app.enums.DatabaseType;
 import com.lzt.operate.codetools.app.plugins.DbRemarksCommentGenerator;
 import com.lzt.operate.codetools.app.util.ConfigHelper;
 import com.lzt.operate.codetools.app.util.DatabaseTypeUtil;
+import com.lzt.operate.codetools.common.enums.DatabaseType;
 import com.lzt.operate.codetools.entities.ConnectionConfig;
 import com.lzt.operate.codetools.entities.DataBaseGeneratorConfig;
 import com.lzt.operate.codetools.entities.DataTableGeneratorConfig;
