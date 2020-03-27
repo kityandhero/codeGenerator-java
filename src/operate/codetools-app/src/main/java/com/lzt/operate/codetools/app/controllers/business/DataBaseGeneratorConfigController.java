@@ -342,8 +342,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DataBaseGeneratorConfig::getModelTargetFolder);
 		getterList.add(DataBaseGeneratorConfig::getDaoPackage);
 		getterList.add(DataBaseGeneratorConfig::getDaoTargetFolder);
-		getterList.add(DataBaseGeneratorConfig::getMappingXMLPackage);
-		getterList.add(DataBaseGeneratorConfig::getMappingXMLTargetFolder);
+		getterList.add(DataBaseGeneratorConfig::getMappingXmlPackage);
+		getterList.add(DataBaseGeneratorConfig::getMappingXmlTargetFolder);
 		getterList.add(DataBaseGeneratorConfig::getOffsetLimit);
 		getterList.add(DataBaseGeneratorConfig::getNeedToStringHashCodeEquals);
 		getterList.add(DataBaseGeneratorConfig::getNeedForUpdate);
@@ -384,8 +384,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		dataBaseGeneratorConfig.setGenerateKeys(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATE_KEYS));
 		dataBaseGeneratorConfig.setJsr310Support(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
 														  .toInt());
-		dataBaseGeneratorConfig.setMappingXMLPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
-		dataBaseGeneratorConfig.setMappingXMLTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
+		dataBaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
+		dataBaseGeneratorConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
 		dataBaseGeneratorConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
 		dataBaseGeneratorConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
 		dataBaseGeneratorConfig.setNeedForUpdate(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)

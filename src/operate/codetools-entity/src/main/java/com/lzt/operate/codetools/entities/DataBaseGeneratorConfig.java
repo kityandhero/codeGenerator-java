@@ -40,10 +40,10 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 	private String daoTargetFolder;
 
 	@Column(name = "mapping_xml_package", nullable = false)
-	private String mappingXMLPackage;
+	private String mappingXmlPackage;
 
 	@Column(name = "mapping_xml_target_folder", nullable = false)
-	private String mappingXMLTargetFolder;
+	private String mappingXmlTargetFolder;
 
 	@Column(name = "offset_limit", nullable = false)
 	private int offsetLimit;
@@ -96,8 +96,8 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.modelTargetFolder = "";
 		this.daoPackage = "";
 		this.daoTargetFolder = "";
-		this.mappingXMLPackage = "";
-		this.mappingXMLTargetFolder = "";
+		this.mappingXmlPackage = "";
+		this.mappingXmlTargetFolder = "";
 		this.offsetLimit = Whether.No.getFlag();
 		this.needToStringHashCodeEquals = Whether.No.getFlag();
 		this.needForUpdate = Whether.No.getFlag();
@@ -170,20 +170,20 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 		this.daoTargetFolder = daoTargetFolder;
 	}
 
-	public String getMappingXMLPackage() {
-		return mappingXMLPackage;
+	public String getMappingXmlPackage() {
+		return mappingXmlPackage;
 	}
 
-	public void setMappingXMLPackage(String mappingXMLPackage) {
-		this.mappingXMLPackage = mappingXMLPackage;
+	public void setMappingXmlPackage(String mappingXMLPackage) {
+		this.mappingXmlPackage = mappingXMLPackage;
 	}
 
-	public String getMappingXMLTargetFolder() {
-		return mappingXMLTargetFolder;
+	public String getMappingXmlTargetFolder() {
+		return mappingXmlTargetFolder;
 	}
 
-	public void setMappingXMLTargetFolder(String mappingXMLTargetFolder) {
-		this.mappingXMLTargetFolder = mappingXMLTargetFolder;
+	public void setMappingXmlTargetFolder(String mappingXMLTargetFolder) {
+		this.mappingXmlTargetFolder = mappingXMLTargetFolder;
 	}
 
 	public int getOffsetLimit() {

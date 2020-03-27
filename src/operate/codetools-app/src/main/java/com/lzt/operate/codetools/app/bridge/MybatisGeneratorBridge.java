@@ -182,8 +182,8 @@ public class MybatisGeneratorBridge {
 		modelConfig.setTargetProject(this.generatorConfig.getProjectFolder() + "/" + this.generatorConfig.getModelTargetFolder());
 		// Mapper configuration
 		SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
-		mapperConfig.setTargetPackage(this.generatorConfig.getMappingXMLPackage());
-		mapperConfig.setTargetProject(this.generatorConfig.getProjectFolder() + "/" + this.generatorConfig.getMappingXMLTargetFolder());
+		mapperConfig.setTargetPackage(this.generatorConfig.getMappingXmlPackage());
+		mapperConfig.setTargetProject(this.generatorConfig.getProjectFolder() + "/" + this.generatorConfig.getMappingXmlTargetFolder());
 		// DAO
 		JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
 		daoConfig.setConfigurationType("XMLMAPPER");
@@ -307,8 +307,8 @@ public class MybatisGeneratorBridge {
 	private String getMappingXMLFilePath(DataBaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(generatorConfig.getProjectFolder()).append("/");
-		sb.append(generatorConfig.getMappingXMLTargetFolder()).append("/");
-		String mappingXMLPackage = generatorConfig.getMappingXMLPackage();
+		sb.append(generatorConfig.getMappingXmlTargetFolder()).append("/");
+		String mappingXMLPackage = generatorConfig.getMappingXmlPackage();
 		if (StringUtils.isNotEmpty(mappingXMLPackage)) {
 			sb.append(mappingXMLPackage.replace(".", "/")).append("/");
 		}
