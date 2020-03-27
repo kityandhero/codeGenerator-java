@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * 数据表列设置
@@ -13,7 +14,7 @@ import javax.persistence.Table;
  * @author luzhitao
  */
 @Entity
-@Table(name = "data_column")
+@Table(name = "data_column", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "table_name", "column_name"}))
 @EqualsAndHashCode(callSuper = true)
 public class DataColumn extends BaseEntity {
 
@@ -25,11 +26,11 @@ public class DataColumn extends BaseEntity {
 	@Column(name = "table_name", nullable = false)
 	private String tableName;
 
-	@Column(nullable = false)
-	private String name;
+	@Column(name = "column_name", nullable = false)
+	private String columnName;
 
-	@Column(nullable = false)
-	private String type;
+	@Column(name = "column_type", nullable = false)
+	private String columnType;
 
 	@Column(name = "alias_name", nullable = false)
 	private String aliasName;
@@ -45,8 +46,8 @@ public class DataColumn extends BaseEntity {
 
 		this.connectionConfigId = 0;
 		this.tableName = "";
-		this.name = "";
-		this.type = "";
+		this.columnName = "";
+		this.columnType = "";
 		this.aliasName = "";
 		this.javaType = "";
 		this.typeHandler = "";
@@ -68,20 +69,20 @@ public class DataColumn extends BaseEntity {
 		this.tableName = tableName;
 	}
 
-	public String getName() {
-		return name;
+	public String getColumnName() {
+		return columnName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setColumnName(String name) {
+		this.columnName = name;
 	}
 
-	public String getType() {
-		return type;
+	public String getColumnType() {
+		return columnType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setColumnType(String type) {
+		this.columnType = type;
 	}
 
 	public String getAliasName() {

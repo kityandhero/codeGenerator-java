@@ -98,7 +98,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_LIST, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TABLE_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_NAME)},
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_COLUMN_NAME)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_COLUMN_LIST)
@@ -121,7 +121,7 @@ public class DataColumnController extends BaseOperateAuthController {
 			return this.listDataEmpty();
 		}
 
-		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
+		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
 
 		Optional<ConnectionConfig> optional = this.getConnectionConfigService()
 												  .get(connectionConfigId);
@@ -133,12 +133,12 @@ public class DataColumnController extends BaseOperateAuthController {
 
 			if (!StringAssist.isNullOrEmpty(name)) {
 				listDataColumn = listDataColumn.stream()
-											   .filter(o -> StringAssist.contains(o.getName(), name, true))
+											   .filter(o -> StringAssist.contains(o.getColumnName(), name, true))
 											   .collect(Collectors.toList());
 			}
 
 			List<DataColumn> listData = this.listDataColumn(connectionConfigId, tableName, listDataColumn.stream()
-																										 .map(DataColumn::getName)
+																										 .map(DataColumn::getColumnName)
 																										 .collect(Collectors
 																												 .toList()));
 
@@ -149,8 +149,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 						getterList.add(DataColumn::getConnectionConfigId);
 						getterList.add(DataColumn::getTableName);
-						getterList.add(DataColumn::getName);
-						getterList.add(DataColumn::getType);
+						getterList.add(DataColumn::getColumnName);
+						getterList.add(DataColumn::getColumnType);
 						getterList.add(DataColumn::getJavaType);
 						getterList.add(DataColumn::getAliasName);
 						getterList.add(DataColumn::getTypeHandler);
@@ -164,8 +164,8 @@ public class DataColumnController extends BaseOperateAuthController {
 						DataColumn dataColumn = o;
 
 						Optional<DataColumn> optionalDataColumn = listData.stream()
-																		  .filter(item -> item.getName()
-																							  .equals(o.getName()))
+																		  .filter(item -> item.getColumnName()
+																							  .equals(o.getColumnName()))
 																		  .findFirst();
 
 						if (optionalDataColumn.isPresent()) {
@@ -195,7 +195,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TABLE_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_NAME)},
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_COLUMN_NAME)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_COLUMN_SET)
@@ -208,7 +208,7 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
 		String tableName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TABLE_NAME);
-		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
+		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
 
 		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, name);
 
@@ -222,8 +222,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		getterList.add(DataColumn::getConnectionConfigId);
 		getterList.add(DataColumn::getTableName);
-		getterList.add(DataColumn::getName);
-		getterList.add(DataColumn::getType);
+		getterList.add(DataColumn::getColumnName);
+		getterList.add(DataColumn::getColumnType);
 		getterList.add(DataColumn::getJavaType);
 		getterList.add(DataColumn::getAliasName);
 		getterList.add(DataColumn::getTypeHandler);
@@ -247,7 +247,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TABLE_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_NAME),
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_COLUMN_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_ALIAS_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_JAVA_TYPE),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TYPE_HANDLER)},
@@ -263,7 +263,7 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
 		String tableName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TABLE_NAME);
-		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_NAME);
+		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
 		String aliasName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_ALIAS_NAME);
 		String javaType = paramJson.getStringByKey(GlobalString.DATA_COLUMN_JAVA_TYPE);
 		String typeHandler = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TYPE_HANDLER);
@@ -358,14 +358,14 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		for (DataColumn d : listDataColumn) {
 			Optional<DataColumn> optionalDataColumn = list.stream()
-														  .filter(o -> o.getName().equals(d.getName()))
+														  .filter(o -> o.getColumnName().equals(d.getColumnName()))
 														  .findFirst();
 
 			if (optionalDataColumn.isPresent()) {
 				DataColumn data = optionalDataColumn.get();
 
-				data.setName(data.getName());
-				data.setType(data.getType());
+				data.setColumnName(data.getColumnName());
+				data.setColumnType(data.getColumnType());
 				data.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 
 				listResult.add(data);
@@ -406,14 +406,14 @@ public class DataColumnController extends BaseOperateAuthController {
 		List<DataColumn> listDataColumn = DatabaseAssist.listTableColumn(connectionConfig, tableName);
 
 		Optional<DataColumn> optionalDataColumn = listDataColumn.stream()
-																.filter(o -> o.getName().equals(name))
+																.filter(o -> o.getColumnName().equals(name))
 																.findFirst();
 
 		if (optionalDataColumn.isPresent()) {
 			DataColumn data = optionalDataColumn.get();
 
-			dataColumn.setName(data.getName());
-			dataColumn.setType(data.getType());
+			dataColumn.setColumnName(data.getColumnName());
+			dataColumn.setColumnType(data.getColumnType());
 
 			return new ExecutiveResult<>(ReturnDataCode.Ok, dataColumn);
 		} else {

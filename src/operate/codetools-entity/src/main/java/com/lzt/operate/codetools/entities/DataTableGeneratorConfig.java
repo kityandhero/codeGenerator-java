@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * GeneratorConfig is the Config of mybatis generator config exclude database
@@ -16,7 +17,7 @@ import javax.persistence.Table;
  * @date 2020/03/17
  */
 @Entity
-@Table(name = "data_table_generator_config")
+@Table(name = "data_table_generator_config", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "table_name"}))
 @EqualsAndHashCode(callSuper = true)
 public class DataTableGeneratorConfig extends BaseEntity {
 

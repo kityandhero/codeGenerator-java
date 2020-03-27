@@ -288,8 +288,11 @@ public class GlobalString {
 	@ApiSingleParam(value = "数据表名", example = "table1")
 	public static final String DATA_COLUMN_TABLE_NAME = "tableName";
 
-	@ApiSingleParam(value = "数据表列名", example = "table1")
-	public static final String DATA_COLUMN_NAME = "name";
+	@ApiSingleParam(value = "数据表列名", example = "columnName")
+	public static final String DATA_COLUMN_COLUMN_NAME = "columnName";
+
+	@ApiSingleParam(value = "数据表类型", example = "columnType")
+	public static final String DATA_COLUMN_COLIMN_TYPE = "columnType";
 
 	@ApiSingleParam(value = "列别名", example = "aliasName")
 	public static final String DATA_COLUMN_ALIAS_NAME = "aliasName";

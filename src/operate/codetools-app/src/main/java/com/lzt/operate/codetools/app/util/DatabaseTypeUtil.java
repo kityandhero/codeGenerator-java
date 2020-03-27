@@ -222,8 +222,8 @@ public class DatabaseTypeUtil {
 
 				DataColumn col = new DataColumn();
 
-				col.setName(name);
-				col.setType(type);
+				col.setColumnName(name);
+				col.setColumnType(type);
 
 				columns.add(col);
 			}

@@ -49,11 +49,11 @@ public interface DataColumnService extends BaseService<DataColumnRepository, Dat
 
 			String aliasName = dataColumnConfig.getAliasName();
 
-			dataColumnConfig.setName(dataColumn.getName());
-			dataColumnConfig.setType(dataColumn.getType());
+			dataColumnConfig.setColumnName(dataColumn.getColumnName());
+			dataColumnConfig.setColumnType(dataColumn.getColumnType());
 
 			if (StringAssist.isNullOrEmpty(aliasName)) {
-				dataColumnConfig.setAliasName(dataColumn.getName());
+				dataColumnConfig.setAliasName(dataColumn.getColumnName());
 			}
 
 			return dataColumnConfig;
@@ -82,7 +82,7 @@ public interface DataColumnService extends BaseService<DataColumnRepository, Dat
 
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getConnectionConfigId)), connectionConfigId));
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getTableName)), tableName));
-				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getName)), name));
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getColumnName)), name));
 
 				Predicate[] p = new Predicate[list.size()];
 
@@ -111,7 +111,7 @@ public interface DataColumnService extends BaseService<DataColumnRepository, Dat
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getConnectionConfigId)), connectionConfigId));
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataColumn::getTableName)), tableName));
 
-				CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(DataColumn::getName)));
+				CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(DataColumn::getColumnName)));
 
 				for (String v : nameCollection) {
 					if (!StringAssist.isNullOrEmpty(v)) {
