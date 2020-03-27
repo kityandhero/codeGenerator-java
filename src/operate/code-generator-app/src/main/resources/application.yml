@@ -1,0 +1,76 @@
+server:
+  port: 9090
+spring:
+  profiles:
+    active: dev
+  #thymeleaf start
+  thymeleaf:
+    #开发时关闭缓存,不然没法看到实时页面
+    cache: false
+    mode: Html
+    encoding: utf-8
+  #thymeleaf end
+  #datasource start
+  datasource:
+    name: codeGenerator
+    platform: h2
+    url: jdbc:h2:file:~/.h2/codeGenerator;AUTO_SERVER=TRUE
+    username: sa
+    password: sa
+    #程序运行时，使用schema.sql来创建数据库中的表
+    #schema: classpath:schema.sql
+    #程序运行时，使用data.sql来创建初始数据
+    #data: classpath:data.sql
+    #使用阿里druid连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      min-idle: 2
+      initial-size: 5
+      max-active: 10
+      max-wait: 5000
+      validation-query: select 1
+  #datasource end
+  #jpa start
+  jpa:
+    database: h2
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+  #jpa end
+  cache:
+    type: ehcache
+    ehcache:
+      config: ehcache.xml
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 0
+    # Redis服务器地址
+    host: 127.0.0.1
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password: 123456
+    jedis:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: -1
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1s
+        # 连接池中的最大空闲连接
+        max-idle: 500
+        # 连接池中的最小空闲连接
+        min-idle: 50
+    # 连接超时时间（毫秒）
+    timeout: 0s
+#jwt start
+# 自定义凭证
+frame:
+  #jwt start
+  jwt:
+    # token有效时长，8小时，单位秒
+    expire: 57600
+    secret: 54e2e52w34348f86b67cde581c0r9eb5
+    header: token
+  #jwt end
