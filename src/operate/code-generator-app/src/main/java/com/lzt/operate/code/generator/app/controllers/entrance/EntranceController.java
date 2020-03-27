@@ -1,10 +1,10 @@
 package com.lzt.operate.code.generator.app.controllers.entrance;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.AccountAssist;
+import com.lzt.operate.code.generator.app.caches.ListCompetenceCache;
 import com.lzt.operate.code.generator.app.common.OperateBaseController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.ehcache.CustomEhcacheManager;
-import com.lzt.operate.code.generator.app.ehcache.ListCompetenceCache;
 import com.lzt.operate.code.generator.common.enums.AccountStatus;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
@@ -56,23 +56,23 @@ import java.util.Optional;
 @Api(tags = {"用户登录登出"})
 public class EntranceController extends OperateBaseController {
 
+	private final LoadingCache<String, Object> loadingCache;
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
-	private CustomEhcacheManager customEhcacheManager;
 	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 	private AccountService accountService;
 
 	@Autowired
 	public EntranceController(
+			LoadingCache<String, Object> loadingCache,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl accountService,
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
+		this.loadingCache = loadingCache;
 		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
-		this.customEhcacheManager = customEhcacheManager;
 		this.accountService = accountService;
 		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -81,8 +81,8 @@ public class EntranceController extends OperateBaseController {
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
+				this.loadingCache,
 				this.customJsonWebTokenConfig,
-				this.customEhcacheManager,
 				this.accountService,
 				this.accountRoleService,
 				this.roleUniversalService,
@@ -136,7 +136,7 @@ public class EntranceController extends OperateBaseController {
 
 			data.append("currentAuthority", operatorAssist.getCompetenceTagCollection(searchResult.getId()).toArray());
 
-			ListCompetenceCache.removeCache(searchResult.getId(), this.getAccountAssist().getCustomEhcacheManager());
+			ListCompetenceCache.removeCache(searchResult.getId(), this.getAccountAssist().getLoadingCache());
 
 			return singleData(data);
 		} else {

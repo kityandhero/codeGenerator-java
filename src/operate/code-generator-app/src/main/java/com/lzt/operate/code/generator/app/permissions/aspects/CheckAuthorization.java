@@ -1,15 +1,15 @@
 package com.lzt.operate.code.generator.app.permissions.aspects;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.AccountAssist;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.ehcache.CustomEhcacheManager;
+import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayProducer;
+import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayProducerFactory;
 import com.lzt.operate.code.generator.dao.service.impl.AccountRoleServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.AccountServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.code.generator.entities.AccessWay;
-import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayProducer;
-import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayProducerFactory;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.components.bases.JsonWebToken.BaseCustomJsonWebTokenConfig;
@@ -35,21 +35,22 @@ import java.util.Optional;
 @Component
 public class CheckAuthorization extends BaseCheckAuthorization {
 
-	private CustomEhcacheManager customEhcacheManager;
+	private final LoadingCache<String, Object> loadingCache;
 
 	private AccountAssist accountAssist;
 
 	@Autowired
 	public CheckAuthorization(
+			LoadingCache<String, Object> loadingCache,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl accountService,
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
+		this.loadingCache = loadingCache;
 		this.accountAssist = new AccountAssist(
+				loadingCache,
 				customJsonWebTokenConfig,
-				customEhcacheManager,
 				accountService,
 				accountRoleService,
 				roleUniversalService,

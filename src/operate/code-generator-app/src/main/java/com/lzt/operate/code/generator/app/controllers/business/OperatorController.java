@@ -1,9 +1,9 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.AccountAssist;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.ehcache.CustomEhcacheManager;
 import com.lzt.operate.code.generator.common.utils.CustomConstants;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
@@ -52,23 +52,23 @@ import java.util.Optional;
 @Api(tags = {"操作者信息"})
 public class OperatorController extends BaseOperateAuthController {
 
+	private final LoadingCache<String, Object> loadingCache;
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
-	private CustomEhcacheManager customEhcacheManager;
 	private AccountService operatorService;
 
 	@Autowired
 	public OperatorController(
+			LoadingCache<String, Object> loadingCache,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			CustomEhcacheManager customEhcacheManager,
 			AccountServiceImpl operatorService,
 			AccountRoleServiceImpl operatorRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		super(customJsonWebTokenConfig);
 
-		this.customEhcacheManager = customEhcacheManager;
+		this.loadingCache = loadingCache;
 		this.operatorService = operatorService;
 		this.accountRoleService = operatorRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -77,8 +77,8 @@ public class OperatorController extends BaseOperateAuthController {
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
+				this.loadingCache,
 				this.getCustomJsonWebTokenConfig(),
-				this.customEhcacheManager,
 				this.operatorService,
 				this.accountRoleService,
 				this.roleUniversalService,

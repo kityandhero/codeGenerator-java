@@ -1,8 +1,8 @@
 package com.lzt.operate.code.generator.app.assists;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.lzt.operate.code.generator.app.caches.ListCompetenceCache;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.ehcache.CustomEhcacheManager;
-import com.lzt.operate.code.generator.app.ehcache.ListCompetenceCache;
 import com.lzt.operate.code.generator.common.enums.AccountRoleCreateMode;
 import com.lzt.operate.code.generator.common.enums.WhetherSuper;
 import com.lzt.operate.code.generator.dao.service.AccountRoleService;
@@ -40,27 +40,27 @@ import java.util.stream.Stream;
  */
 public class AccountAssist {
 
-	private CustomJsonWebTokenConfig jwtConfig;
+	private final LoadingCache<String, Object> loadingCache;
 
-	private CustomEhcacheManager customEhcacheManager;
+	private final CustomJsonWebTokenConfig jwtConfig;
 
-	private AccountService accountService;
+	private final AccountService accountService;
 
-	private AccountRoleService accountRoleService;
+	private final AccountRoleService accountRoleService;
 
-	private RoleUniversalService roleUniversalService;
+	private final RoleUniversalService roleUniversalService;
 
-	private RoleCodeToolsService roleCodeToolsService;
+	private final RoleCodeToolsService roleCodeToolsService;
 
 	public AccountAssist(
+			LoadingCache<String, Object> customEhcacheManager,
 			CustomJsonWebTokenConfig jwtConfig,
-			CustomEhcacheManager customEhcacheManager,
 			AccountService accountService,
 			AccountRoleService accountRoleService,
 			RoleUniversalService roleUniversalService,
 			RoleCodeToolsService roleCodeToolsService) {
 		this.jwtConfig = jwtConfig;
-		this.customEhcacheManager = customEhcacheManager;
+		this.loadingCache = customEhcacheManager;
 		this.accountService = accountService;
 		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -87,14 +87,14 @@ public class AccountAssist {
 		throw new RuntimeException("CustomJsonWebTokenConfig获取失败");
 	}
 
-	public CustomEhcacheManager getCustomEhcacheManager() {
-		Optional<CustomEhcacheManager> optional = Optional.ofNullable(this.customEhcacheManager);
+	public LoadingCache<String, Object> getLoadingCache() {
+		Optional<LoadingCache<String, Object>> optional = Optional.ofNullable(this.loadingCache);
 
 		if (optional.isPresent()) {
 			return optional.get();
 		}
 
-		throw new RuntimeException("CustomEhcacheManager获取失败");
+		throw new RuntimeException("LoadingCache<String, Object>获取失败");
 	}
 
 	private AccountRoleService getAccountRoleService() {
@@ -523,16 +523,14 @@ public class AccountAssist {
 	}
 
 	public boolean checkAccessPermission(long accountId, String tag) {
-		CustomEhcacheManager customEhcacheManager = this.getCustomEhcacheManager();
-
-		Optional<List<Competence>> optionalCompetenceList = ListCompetenceCache.getCache(accountId, customEhcacheManager);
+		Optional<List<Competence>> optionalCompetenceList = ListCompetenceCache.getCache(accountId, this.getLoadingCache());
 
 		List<Competence> competenceList;
 
 		if (!optionalCompetenceList.isPresent()) {
 			competenceList = getCompetenceCollection(accountId);
 
-			ListCompetenceCache.setCache(accountId, competenceList, customEhcacheManager);
+			ListCompetenceCache.setCache(accountId, competenceList, this.getLoadingCache());
 		} else {
 			competenceList = optionalCompetenceList.get();
 		}

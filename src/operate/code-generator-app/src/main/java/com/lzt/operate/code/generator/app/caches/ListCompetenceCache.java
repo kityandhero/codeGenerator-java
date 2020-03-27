@@ -1,11 +1,13 @@
-package com.lzt.operate.code.generator.app.ehcache;
+package com.lzt.operate.code.generator.app.caches;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.Competence;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -17,20 +19,20 @@ public class ListCompetenceCache {
 		return StringAssist.merge("competences_", ConvertAssist.longToString(accountId));
 	}
 
-	public static void setCache(long accountId, List<Competence> competenceList, @NotNull CustomEhcacheManager customEhcacheManager) {
+	public static void setCache(long accountId, List<Competence> competenceList, @NotNull LoadingCache<String, Object> loadingCache) {
 		String key = ListCompetenceCache.getCacheKey(accountId);
 
 		try {
-			customEhcacheManager.put(key, ConvertAssist.serialize(competenceList));
+			loadingCache.put(key, ConvertAssist.serialize(competenceList));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	public static Optional<List<Competence>> getCache(long accountId, @NotNull CustomEhcacheManager customEhcacheManager) {
+	public static Optional<List<Competence>> getCache(long accountId, @NotNull LoadingCache<String, Object> loadingCache) {
 		String key = ListCompetenceCache.getCacheKey(accountId);
 
-		String json = customEhcacheManager.getAsString(key);
+		String json = Objects.requireNonNull(loadingCache.get(key)).toString();
 
 		List<Competence> competenceList;
 
@@ -45,10 +47,10 @@ public class ListCompetenceCache {
 		return Optional.ofNullable(competenceList);
 	}
 
-	public static void removeCache(long accountId, @NotNull CustomEhcacheManager customEhcacheManager) {
+	public static void removeCache(long accountId, @NotNull LoadingCache<String, Object> loadingCache) {
 		String key = ListCompetenceCache.getCacheKey(accountId);
 
-		customEhcacheManager.evict(key);
+		loadingCache.invalidate(key);
 	}
 
 }

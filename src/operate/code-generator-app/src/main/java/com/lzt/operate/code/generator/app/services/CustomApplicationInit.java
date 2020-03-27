@@ -1,9 +1,9 @@
 package com.lzt.operate.code.generator.app.services;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.app.assists.AccountAssist;
-import com.lzt.operate.code.generator.app.ehcache.CustomEhcacheManager;
+import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.app.util.CommandUtil;
 import com.lzt.operate.code.generator.common.enums.AccountStatus;
 import com.lzt.operate.code.generator.common.enums.Channel;
@@ -11,6 +11,15 @@ import com.lzt.operate.code.generator.common.enums.CustomConfigCollection;
 import com.lzt.operate.code.generator.common.enums.HelpCategoryStatus;
 import com.lzt.operate.code.generator.common.enums.RoleUniversalStatus;
 import com.lzt.operate.code.generator.common.enums.WhetherSuper;
+import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayConsumer;
+import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayQueueRunner;
+import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigConsumer;
+import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigQueueRunner;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogConsumer;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogQueueRunner;
+import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
+import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogConsumer;
+import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.code.generator.dao.service.AccessWayService;
 import com.lzt.operate.code.generator.dao.service.AccountRoleService;
 import com.lzt.operate.code.generator.dao.service.AccountService;
@@ -25,15 +34,6 @@ import com.lzt.operate.code.generator.entities.Account;
 import com.lzt.operate.code.generator.entities.CustomConfig;
 import com.lzt.operate.code.generator.entities.HelpCategory;
 import com.lzt.operate.code.generator.entities.RoleUniversal;
-import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayConsumer;
-import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayQueueRunner;
-import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigConsumer;
-import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigQueueRunner;
-import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogConsumer;
-import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogQueueRunner;
-import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
-import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogConsumer;
-import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
 import com.lzt.operate.utility.general.ConstantCollection;
@@ -58,20 +58,21 @@ import java.util.concurrent.ThreadFactory;
 @Slf4j
 public class CustomApplicationInit extends BaseCustomApplicationInit {
 
-	final Environment environment;
+	private final LoadingCache<String, Object> loadingCache;
+	private final Environment environment;
 
-	private AccountAssist accountAssist;
-	private CustomConfigService customConfigService;
-	private AccessWayService accessWayService;
-	private ErrorLogService errorLogService;
-	private GeneralLogService generalLogService;
-	private HelpCategoryService helpCategoryService;
+	private final AccountAssist accountAssist;
+	private final CustomConfigService customConfigService;
+	private final AccessWayService accessWayService;
+	private final ErrorLogService errorLogService;
+	private final GeneralLogService generalLogService;
+	private final HelpCategoryService helpCategoryService;
 
 	@Autowired
 	public CustomApplicationInit(
+			LoadingCache<String, Object> loadingCache,
 			Environment environment,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			CustomEhcacheManager customEhcacheManager,
 			AccountService accountService,
 			AccountRoleService accountRoleService,
 			RoleUniversalService roleUniversalService,
@@ -81,12 +82,13 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			ErrorLogService errorLogService,
 			GeneralLogService generalLogService,
 			HelpCategoryServiceImpl helpCategoryService) {
+		this.loadingCache = loadingCache;
 
 		this.environment = environment;
 
 		this.accountAssist = new AccountAssist(
+				loadingCache,
 				customJsonWebTokenConfig,
-				customEhcacheManager,
 				accountService,
 				accountRoleService,
 				roleUniversalService,
