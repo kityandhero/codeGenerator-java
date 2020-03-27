@@ -50,6 +50,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -173,7 +174,7 @@ public class AccountController extends BaseOperateAuthController {
 
 												data.append(ReflectAssist.getFriendlyIdName(Account.class), o.getId());
 
-												return data;
+												return this.appendAccountData(o, data);
 											})
 											.collect(Collectors.toList());
 
@@ -219,7 +220,11 @@ public class AccountController extends BaseOperateAuthController {
 
 			data.append(ReflectAssist.getFriendlyIdName(Account.class), account.getId());
 
-			return this.singleData(data);
+			data.append("canSetStatus", ConstantCollection.DEFAULT_OPERATOR_SUPER_USER_NAME.equals(account.getUserName()));
+
+			SerializableData returnData = this.appendAccountData(account, data);
+
+			return this.singleData(returnData);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());
@@ -422,9 +427,9 @@ public class AccountController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_SET_ENABLED)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/setEnabled", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/setEnable", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "启用账户", description = "设置账户状态为启用状态", tag = "72c3771b-6c5e-411c-9e49-d8555ab99743")
-	public BaseResultData setEnabled(@RequestBody Map<String, Serializable> json) {
+	public BaseResultData setEnable(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -440,9 +445,9 @@ public class AccountController extends BaseOperateAuthController {
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ACCOUNT_SET_DISABLED)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/setDisabled", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/setDisable", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "禁用账户", description = "设置账户状态为禁用状态", tag = "2ab71d44-ecda-462c-822c-8f37d3000847")
-	public BaseResultData setDisabled(@RequestBody Map<String, Serializable> json) {
+	public BaseResultData setDisable(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -460,6 +465,10 @@ public class AccountController extends BaseOperateAuthController {
 		if (result.isPresent()) {
 			Account data = result.get();
 
+			if (ConstantCollection.DEFAULT_OPERATOR_SUPER_USER_NAME.equals(data.getUserName())) {
+				return this.noChange("该账户不允许更改状态");
+			}
+
 			data.setStatus(status, AccountStatus::getFlag, AccountStatus::getName);
 
 			long operatorId = getOperatorId();
@@ -472,6 +481,12 @@ public class AccountController extends BaseOperateAuthController {
 		}
 
 		return this.noDataError();
+	}
+
+	private SerializableData appendAccountData(@NotNull Account account, @NotNull SerializableData data) {
+		data.append("canSetStatus", ConstantCollection.DEFAULT_OPERATOR_SUPER_USER_NAME.equals(account.getUserName()) ? 0 : 1);
+
+		return data;
 	}
 
 }

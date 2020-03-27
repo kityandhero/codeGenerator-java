@@ -193,31 +193,66 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		boolean exist = accountService.existAny(Channel.CodeTools.getFlag());
 
 		if (!exist) {
+			createAdminAccount();
+			createSupermanAccount();
+		}
+	}
 
-			try {
-				Account account = new Account();
+	private void createAdminAccount() {
+		AccountService accountService = this.accountAssist.getAccountService();
 
-				account.setUserName(ConstantCollection.DEFAULT_OPERATOR_USER_NAME);
-				account.setName(ConstantCollection.DEFAULT_OPERATOR_NAME);
-				account.setSlat(StringAssist.randomAlphanumeric(6)
-											.toLowerCase());
-				account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
-				account.setChannel(Channel.CodeTools);
-				account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
-				account.setCreateOperatorId(OperatorCollection.System.getId());
-				account.setUpdateOperatorId(OperatorCollection.System.getId());
+		try {
+			Account account = new Account();
 
-				accountService.save(account);
+			account.setUserName(ConstantCollection.DEFAULT_OPERATOR_USER_NAME);
+			account.setName(ConstantCollection.DEFAULT_OPERATOR_NAME);
+			account.setSlat(StringAssist.randomAlphanumeric(6)
+										.toLowerCase());
+			account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
+			account.setChannel(Channel.CodeTools);
+			account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
+			account.setCreateOperatorId(OperatorCollection.System.getId());
+			account.setUpdateOperatorId(OperatorCollection.System.getId());
 
-				Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
-																				  .findSuper(Channel.CodeTools.getFlag());
+			accountService.save(account);
 
-				optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
-			} catch (NoSuchAlgorithmException e) {
-				CustomApplicationInit.log.error("创建默认账户失败", e);
+			Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
+																			  .findSuper(Channel.CodeTools.getFlag());
 
-				e.printStackTrace();
-			}
+			optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
+		} catch (NoSuchAlgorithmException e) {
+			CustomApplicationInit.log.error("创建默认账户失败", e);
+
+			e.printStackTrace();
+		}
+	}
+
+	private void createSupermanAccount() {
+		AccountService accountService = this.accountAssist.getAccountService();
+
+		try {
+			Account account = new Account();
+
+			account.setUserName(ConstantCollection.DEFAULT_OPERATOR_SUPER_USER_NAME);
+			account.setName(ConstantCollection.DEFAULT_OPERATOR_SUPER_NAME);
+			account.setSlat(StringAssist.randomAlphanumeric(6)
+										.toLowerCase());
+			account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_SUPER_PASSWORD, account.getSlat()));
+			account.setChannel(Channel.CodeTools);
+			account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
+			account.setCreateOperatorId(OperatorCollection.System.getId());
+			account.setUpdateOperatorId(OperatorCollection.System.getId());
+
+			accountService.save(account);
+
+			Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
+																			  .findSuper(Channel.CodeTools.getFlag());
+
+			optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
+		} catch (NoSuchAlgorithmException e) {
+			CustomApplicationInit.log.error("创建默认账户失败", e);
+
+			e.printStackTrace();
 		}
 	}
 

@@ -131,6 +131,14 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
+	protected ResultSingleData noChange(String description) {
+		SerializableData data = new SerializableData();
+
+		data.append("description", description);
+
+		return ResultDataFactory.failData(ReturnDataCode.NoChange.toMessage(description), data);
+	}
+
 	protected ResultSingleData paramError(String paramName, String description) {
 		SerializableData data = new SerializableData();
 

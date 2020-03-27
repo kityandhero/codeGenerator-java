@@ -6,6 +6,7 @@ import com.lzt.operate.codetools.dao.repositories.AccountRepository;
 import com.lzt.operate.codetools.dao.service.AccountService;
 import com.lzt.operate.codetools.entities.Account;
 import com.lzt.operate.utility.assists.ReflectAssist;
+import com.lzt.operate.utility.general.ConstantCollection;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -86,9 +87,9 @@ public class AccountServiceImpl implements AccountService {
 			}
 		};
 
-		Optional<Account> optional = repository.findOne(spec);
+		long totalCount = repository.count(spec);
 
-		return optional.isPresent();
+		return totalCount > ConstantCollection.ZERO_LONG;
 	}
 
 	@Override

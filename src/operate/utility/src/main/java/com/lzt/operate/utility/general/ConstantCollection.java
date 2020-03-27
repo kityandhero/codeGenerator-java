@@ -63,6 +63,12 @@ public class ConstantCollection {
 
 	public static final String DEFAULT_OPERATOR_PASSWORD = "123456";
 
+	public static final String DEFAULT_OPERATOR_SUPER_USER_NAME = "superman";
+
+	public static final String DEFAULT_OPERATOR_SUPER_NAME = "超级管理员";
+
+	public static final String DEFAULT_OPERATOR_SUPER_PASSWORD = "123456";
+
 	public static final String ENTITY_ID = "id";
 
 	public static final String ENTITY_ID_FIRST_UPPER = "Id";
