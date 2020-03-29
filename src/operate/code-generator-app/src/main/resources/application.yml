@@ -1,15 +1,20 @@
 server:
   port: 9990
+  servlet:
+    context-path: /
 spring:
+  mvc:
+    view:
+      prefix: classpath:/templates/
   profiles:
     active: dev
-  #thymeleaf start
-  thymeleaf:
-    #开发时关闭缓存,不然没法看到实时页面
-    cache: false
-    mode: Html
-    encoding: utf-8
-  #thymeleaf end
+    #thymeleaf start
+    thymeleaf:
+      #开发时关闭缓存,不然没法看到实时页面
+      cache: false
+      mode: Html
+      encoding: utf-8
+    #thymeleaf end
   #datasource start
   datasource:
     name: codeGenerator

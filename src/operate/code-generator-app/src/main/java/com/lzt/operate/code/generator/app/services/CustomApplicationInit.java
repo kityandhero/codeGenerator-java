@@ -333,7 +333,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			try {
 				String port = environment.getProperty("local.server.port");
 
-				CommandUtil.browse(new URI(StringAssist.merge("http://localhost:", port, "/index.html")));
+				CommandUtil.browse(new URI(StringAssist.merge("http://localhost:", port, "/")));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

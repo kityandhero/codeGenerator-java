@@ -23,8 +23,11 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.Ordered;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,7 +50,7 @@ import java.time.format.DateTimeFormatter;
 @ComponentScan(basePackages = {"com.lzt.operate.code.generator.app.**", "com.lzt.operate.code.generator.dao.**", "com.baidu.fsg.uid.worker.**"})
 @EnableJpaRepositories({"com.lzt.operate.code.generator.dao.repositories", "com.baidu.fsg.uid.worker.repository"})
 @EntityScan(basePackages = {"com.lzt.operate.code.generator.entities", "com.baidu.fsg.uid.worker.entity"})
-public class CodeToolsApplication {
+public class CodeToolsApplication implements WebMvcConfigurer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CodeToolsApplication.class);
 
@@ -57,6 +60,12 @@ public class CodeToolsApplication {
 	// public CodeToolsApplication(CorsConfig corsConfig) {
 	//     this.corsConfig = corsConfig;
 	// }
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/").setViewName("index");
+		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(CodeToolsApplication.class, args);
