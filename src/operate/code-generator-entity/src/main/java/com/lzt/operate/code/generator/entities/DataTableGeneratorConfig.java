@@ -45,6 +45,12 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	public DataTableGeneratorConfig() {
 		super();
+
+		connectionConfigId = 0;
+		databaseGeneratorConfigId = 0;
+		tableName = "";
+		domainObjectName = "";
+		mapperName = "";
 	}
 
 	public long getConnectionConfigId() {

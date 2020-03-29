@@ -7,17 +7,26 @@ import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
+import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.DataTableGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
+import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
+import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.IGetter;
+import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.PageListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,12 +36,19 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,11 +67,17 @@ public class DataTableController extends BaseOperateAuthController {
 
 	private ConnectionConfigService connectionConfigService;
 
+	private DatabaseGeneratorConfigService databaseGeneratorConfigService;
+
+	private DataTableGeneratorConfigService dataTableGeneratorConfigService;
+
 	@Autowired
-	public DataTableController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl) {
+	public DataTableController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigService, DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService, DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService) {
 		super(customJsonWebTokenConfig);
 
-		this.connectionConfigService = connectionConfigServiceImpl;
+		this.connectionConfigService = connectionConfigService;
+		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
+		this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
 	}
 
 	public ConnectionConfigService getConnectionConfigService() {
@@ -66,6 +88,26 @@ public class DataTableController extends BaseOperateAuthController {
 		}
 
 		throw new RuntimeException("ConnectionConfigService获取失败");
+	}
+
+	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
+		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("DatabaseGeneratorConfigService获取失败");
+	}
+
+	public DataTableGeneratorConfigService getDataTableGeneratorConfigService() {
+		Optional<DataTableGeneratorConfigService> optional = Optional.ofNullable(this.dataTableGeneratorConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("DataTableGeneratorConfigService获取失败");
 	}
 
 	@ApiOperation(value = "数据库表列表", notes = "数据库表列表", httpMethod = "POST")
@@ -104,15 +146,111 @@ public class DataTableController extends BaseOperateAuthController {
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
 
-			List<DataTable> list = DatabaseAssist.listDataTable(connectionConfig);
+			List<DataTable> listDataTable = DatabaseAssist.listDataTable(connectionConfig);
 
 			if (!StringAssist.isNullOrEmpty(name)) {
-				list = list.stream().filter(o -> o.getName().contains(name)).collect(Collectors.toList());
+				listDataTable = listDataTable.stream()
+											 .filter(o -> o.getName().contains(name))
+											 .collect(Collectors.toList());
 			}
 
-			PageListResult<DataTable> pager = PageListResult.buildFromList(list, pageNo, pageSize);
+			Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.getDatabaseGeneratorConfigService()
+																					.findByConnectionConfigId(connectionConfigId);
 
-			return this.pageData(pager);
+			List<DataTableGeneratorConfig> dataTableGeneratorConfigList = new ArrayList<>();
+
+			if (optionalDatabaseGeneratorConfig.isPresent()) {
+				DatabaseGeneratorConfig databaseGeneratorConfig = optionalDatabaseGeneratorConfig.get();
+
+				List<String> tableNameList = new ArrayList<>();
+
+				listDataTable.forEach(o -> tableNameList.add(o.getName()));
+
+				Specification<DataTableGeneratorConfig> specification = new Specification<DataTableGeneratorConfig>() {
+
+					private static final long serialVersionUID = 5662977671980526652L;
+
+					@Override
+					public Predicate toPredicate(@NonNull Root<DataTableGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+						List<Predicate> list = new ArrayList<>();
+
+						list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfigId));
+
+						list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getDatabaseGeneratorConfigId)), databaseGeneratorConfig
+								.getConnectionConfigId()));
+
+						CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getTableName)));
+
+						tableNameList.forEach(in::value);
+
+						list.add(in);
+
+						Predicate[] p = new Predicate[list.size()];
+
+						return criteriaBuilder.and(list.toArray(p));
+					}
+				};
+
+				dataTableGeneratorConfigList = this.getDataTableGeneratorConfigService().list(specification);
+			}
+
+			PageListResult<DataTable> pager = PageListResult.buildFromList(listDataTable, pageNo, pageSize);
+
+			List<IGetter<DataTableGeneratorConfig>> dataTableGeneratorConfigGetterList = new ArrayList<>();
+
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getConnectionConfigId);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getTableName);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getDomainObjectName);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getMapperName);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getComment);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getChannel);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getChannelNote);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getStatus);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getStatusNote);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getCreateTime);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getUpdateTime);
+
+			List<DataTableGeneratorConfig> finalDataTableGeneratorConfigList = dataTableGeneratorConfigList;
+			List<SerializableData> list = pager.getList()
+											   .stream()
+											   .map(o -> {
+												   List<IGetter<DataTable>> getterList = new ArrayList<>();
+
+												   getterList.add(DataTable::getName);
+
+												   SerializableData data = SerializableData.toSerializableData(o, getterList);
+
+												   Optional<DataTableGeneratorConfig> optionalDataTableGeneratorConfig = finalDataTableGeneratorConfigList
+														   .stream()
+														   .filter(one -> one.getTableName()
+																			 .equals(o.getName()))
+														   .findFirst();
+
+												   DataTableGeneratorConfig dataTableGeneratorConfigTemp;
+												   boolean initialized = false;
+
+												   if (optionalDataTableGeneratorConfig.isPresent()) {
+													   dataTableGeneratorConfigTemp = optionalDataTableGeneratorConfig.get();
+													   initialized = true;
+												   } else {
+													   dataTableGeneratorConfigTemp = new DataTableGeneratorConfig();
+												   }
+
+												   SerializableData dataTableGeneratorConfigData = SerializableData.toSerializableData(dataTableGeneratorConfigTemp, dataTableGeneratorConfigGetterList);
+
+												   data.append(StringAssist.toFirstLower(DataTableGeneratorConfig.class.getSimpleName()), dataTableGeneratorConfigData);
+
+												   data.append("initialized", initialized ? 1 : 0);
+
+												   return data;
+											   })
+											   .collect(Collectors.toList());
+
+			int pageIndex = pager.getPageIndex();
+			long totalPages = pager.getTotalSize();
+
+			return this.pageData(list, pageIndex, pageSize, totalPages);
 		}
 
 		return this.pageDataEmpty();
