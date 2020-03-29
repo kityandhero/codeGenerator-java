@@ -13,9 +13,9 @@ import javax.persistence.UniqueConstraint;
  * @author luzhitao
  */
 @Entity
-@Table(name = "data_base_generator_config", uniqueConstraints = @UniqueConstraint(columnNames = "connection_config_id"))
+@Table(name = "database_generator_config", uniqueConstraints = @UniqueConstraint(columnNames = "connection_config_id"))
 @EqualsAndHashCode(callSuper = true)
-public class DataBaseGeneratorConfig extends BaseEntity {
+public class DatabaseGeneratorConfig extends BaseEntity {
 	private static final long serialVersionUID = 4482665423484753190L;
 
 	@Column(name = "connection_config_id", nullable = false, unique = true)
@@ -87,7 +87,7 @@ public class DataBaseGeneratorConfig extends BaseEntity {
 	@Column(name = "override_xml", nullable = false)
 	private int overrideXML;
 
-	public DataBaseGeneratorConfig() {
+	public DatabaseGeneratorConfig() {
 		super();
 
 		this.connectorJarFile = "";

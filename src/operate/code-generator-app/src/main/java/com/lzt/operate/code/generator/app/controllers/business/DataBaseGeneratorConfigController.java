@@ -8,10 +8,10 @@ import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
-import com.lzt.operate.code.generator.dao.service.DataBaseGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
-import com.lzt.operate.code.generator.entities.DataBaseGeneratorConfig;
+import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/business/dataBaseGeneratorConfig")
+@RequestMapping("/business/databaseGeneratorConfig")
 @Api(tags = {"数据库生成配置"})
 public class DataBaseGeneratorConfigController extends BaseOperateAuthController {
 
@@ -70,14 +70,14 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 	private ConnectionConfigService connectionConfigService;
 
-	private DataBaseGeneratorConfigService dataBaseGeneratorConfigService;
+	private DatabaseGeneratorConfigService databaseGeneratorConfigService;
 
 	@Autowired
-	public DataBaseGeneratorConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigService connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl dataBaseGeneratorConfigService) {
+	public DataBaseGeneratorConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigService connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService) {
 		super(customJsonWebTokenConfig);
 
 		this.connectionConfigService = connectionConfigServiceImpl;
-		this.dataBaseGeneratorConfigService = dataBaseGeneratorConfigService;
+		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
 	}
 
 	public ConnectionConfigService getConnectionConfigService() {
@@ -90,8 +90,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		throw new RuntimeException("ConnectionConfigService获取失败");
 	}
 
-	public DataBaseGeneratorConfigService getDataBaseGeneratorConfigService() {
-		Optional<DataBaseGeneratorConfigService> optional = Optional.ofNullable(this.dataBaseGeneratorConfigService);
+	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
+		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -128,16 +128,16 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
 										   .toLong();
 
-		Specification<DataBaseGeneratorConfig> specification = new Specification<DataBaseGeneratorConfig>() {
+		Specification<DatabaseGeneratorConfig> specification = new Specification<DatabaseGeneratorConfig>() {
 
 			private static final long serialVersionUID = 9114015918184208846L;
 
 			@Override
-			public Predicate toPredicate(@NonNull Root<DataBaseGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(@NonNull Root<DatabaseGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
 				if (!ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
-					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataBaseGeneratorConfig::getConnectionConfigId)), connectionConfigId));
+					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DatabaseGeneratorConfig::getConnectionConfigId)), connectionConfigId));
 				}
 
 				Predicate[] p = new Predicate[list.size()];
@@ -146,33 +146,33 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			}
 		};
 
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DataBaseGeneratorConfig::getCreateTime));
+		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DatabaseGeneratorConfig::getCreateTime));
 
-		Page<DataBaseGeneratorConfig> result = this.getDataBaseGeneratorConfigService().page(specification, pageable);
+		Page<DatabaseGeneratorConfig> result = this.getDatabaseGeneratorConfigService().page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
 											.stream()
 											.map(o -> {
-												List<IGetter<DataBaseGeneratorConfig>> getterList = new ArrayList<>();
+												List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
-												getterList.add(DataBaseGeneratorConfig::getConnectionConfigId);
+												getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
 												// getterList.add(DataBaseGeneratorConfig::getDescription);
 												// getterList.add(DataBaseGeneratorConfig::getConnectionType);
 												// getterList.add(DataBaseGeneratorConfig::getDatabaseType);
 												// getterList.add(DataBaseGeneratorConfig::getHost);
 												// getterList.add(DataBaseGeneratorConfig::getPort);
 												// getterList.add(DataBaseGeneratorConfig::getSchema);
-												getterList.add(DataBaseGeneratorConfig::getEncoding);
-												getterList.add(DataBaseGeneratorConfig::getChannel);
-												getterList.add(DataBaseGeneratorConfig::getChannelNote);
-												getterList.add(DataBaseGeneratorConfig::getStatus);
-												getterList.add(DataBaseGeneratorConfig::getStatusNote);
-												getterList.add(DataBaseGeneratorConfig::getCreateTime);
-												getterList.add(DataBaseGeneratorConfig::getUpdateTime);
+												getterList.add(DatabaseGeneratorConfig::getEncoding);
+												getterList.add(DatabaseGeneratorConfig::getChannel);
+												getterList.add(DatabaseGeneratorConfig::getChannelNote);
+												getterList.add(DatabaseGeneratorConfig::getStatus);
+												getterList.add(DatabaseGeneratorConfig::getStatusNote);
+												getterList.add(DatabaseGeneratorConfig::getCreateTime);
+												getterList.add(DatabaseGeneratorConfig::getUpdateTime);
 
 												SerializableData data = SerializableData.toSerializableData(o, getterList);
 
-												data.append(ReflectAssist.getFriendlyIdName(DataBaseGeneratorConfig.class), o
+												data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), o
 														.getId());
 
 												return data;
@@ -198,16 +198,16 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
-		long dataBaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
+		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
 												  .toLong();
 
-		Optional<DataBaseGeneratorConfig> result = this.getDataBaseGeneratorConfigService()
-													   .get(dataBaseGeneratorConfigId);
+		Optional<DatabaseGeneratorConfig> result = this.getDatabaseGeneratorConfigService()
+													   .get(databaseGeneratorConfigId);
 
 		if (result.isPresent()) {
-			DataBaseGeneratorConfig dataBaseGeneratorConfig = result.get();
+			DatabaseGeneratorConfig databaseGeneratorConfig = result.get();
 
-			return decorateSingleData(dataBaseGeneratorConfig);
+			return decorateSingleData(databaseGeneratorConfig);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage());
@@ -229,22 +229,22 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 										   .toLong();
 
-		Optional<DataBaseGeneratorConfig> result = this.getDataBaseGeneratorConfigService()
+		Optional<DatabaseGeneratorConfig> result = this.getDatabaseGeneratorConfigService()
 													   .findByConnectionConfigId(connectionConfigId);
 
-		DataBaseGeneratorConfig dataBaseGeneratorConfig;
+		DatabaseGeneratorConfig databaseGeneratorConfig;
 
 		if (result.isPresent()) {
-			dataBaseGeneratorConfig = result.get();
+			databaseGeneratorConfig = result.get();
 		} else {
-			DataBaseGeneratorConfig v = new DataBaseGeneratorConfig();
+			DatabaseGeneratorConfig v = new DatabaseGeneratorConfig();
 
 			v.setConnectionConfigId(connectionConfigId);
 
-			dataBaseGeneratorConfig = this.fill(v, paramJson);
+			databaseGeneratorConfig = this.fill(v, paramJson);
 		}
 
-		return decorateSingleData(dataBaseGeneratorConfig);
+		return decorateSingleData(databaseGeneratorConfig);
 	}
 
 	@ApiOperation(value = "创建数据库生成配置", notes = "创建数据库生成配置", httpMethod = "POST")
@@ -283,7 +283,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	public BaseResultData set(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
-		long dataBaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
+		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
 												  .toLong();
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 										   .toLong();
@@ -295,145 +295,145 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			return this.noDataError("数据库连接不存在");
 		}
 
-		DataBaseGeneratorConfig dataBaseGeneratorConfig = null;
+		DatabaseGeneratorConfig databaseGeneratorConfig = null;
 
-		if (dataBaseGeneratorConfigId > 0) {
-			Optional<DataBaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = getDataBaseGeneratorConfigService()
-					.get(dataBaseGeneratorConfigId);
+		if (databaseGeneratorConfigId > 0) {
+			Optional<DatabaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = getDatabaseGeneratorConfigService()
+					.get(databaseGeneratorConfigId);
 
 			if (optionalFindByDataBaseGeneratorConfigId.isPresent()) {
-				dataBaseGeneratorConfig = optionalFindByDataBaseGeneratorConfigId.get();
+				databaseGeneratorConfig = optionalFindByDataBaseGeneratorConfigId.get();
 			}
 		}
 
-		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
+		if (!Optional.ofNullable(databaseGeneratorConfig).isPresent()) {
 			if (connectionConfigId > 0) {
-				Optional<DataBaseGeneratorConfig> optionalFindByConnectionConfigId = getDataBaseGeneratorConfigService()
+				Optional<DatabaseGeneratorConfig> optionalFindByConnectionConfigId = getDatabaseGeneratorConfigService()
 						.findByConnectionConfigId(connectionConfigId);
 
 				if (optionalFindByConnectionConfigId.isPresent()) {
-					dataBaseGeneratorConfig = optionalFindByConnectionConfigId.get();
+					databaseGeneratorConfig = optionalFindByConnectionConfigId.get();
 				}
 			}
 		}
 
-		if (!Optional.ofNullable(dataBaseGeneratorConfig).isPresent()) {
-			dataBaseGeneratorConfig = new DataBaseGeneratorConfig();
+		if (!Optional.ofNullable(databaseGeneratorConfig).isPresent()) {
+			databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
-			dataBaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
+			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
 		}
 
-		return setCore(dataBaseGeneratorConfig, paramJson);
+		return setCore(databaseGeneratorConfig, paramJson);
 	}
 
 	/**
 	 * 修饰get返回数据
 	 *
-	 * @param dataBaseGeneratorConfig dataBaseGeneratorConfig
+	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private BaseResultData decorateSingleData(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig) {
-		List<IGetter<DataBaseGeneratorConfig>> getterList = new ArrayList<>();
+	private BaseResultData decorateSingleData(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
+		List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
-		getterList.add(DataBaseGeneratorConfig::getConnectionConfigId);
-		getterList.add(DataBaseGeneratorConfig::getConnectorJarFile);
-		getterList.add(DataBaseGeneratorConfig::getProjectFolder);
-		getterList.add(DataBaseGeneratorConfig::getModelPackage);
-		getterList.add(DataBaseGeneratorConfig::getModelTargetFolder);
-		getterList.add(DataBaseGeneratorConfig::getDaoPackage);
-		getterList.add(DataBaseGeneratorConfig::getDaoTargetFolder);
-		getterList.add(DataBaseGeneratorConfig::getMappingXmlPackage);
-		getterList.add(DataBaseGeneratorConfig::getMappingXmlTargetFolder);
-		getterList.add(DataBaseGeneratorConfig::getOffsetLimit);
-		getterList.add(DataBaseGeneratorConfig::getNeedToStringHashCodeEquals);
-		getterList.add(DataBaseGeneratorConfig::getNeedForUpdate);
-		getterList.add(DataBaseGeneratorConfig::getAnnotationDAO);
-		getterList.add(DataBaseGeneratorConfig::getAnnotation);
-		getterList.add(DataBaseGeneratorConfig::getUseActualColumnNames);
-		getterList.add(DataBaseGeneratorConfig::getUseExample);
-		getterList.add(DataBaseGeneratorConfig::getGenerateKeys);
-		getterList.add(DataBaseGeneratorConfig::getEncoding);
-		getterList.add(DataBaseGeneratorConfig::getUseTableNameAlias);
-		getterList.add(DataBaseGeneratorConfig::getUseDAOExtendStyle);
-		getterList.add(DataBaseGeneratorConfig::getUseSchemaPrefix);
-		getterList.add(DataBaseGeneratorConfig::getJsr310Support);
-		getterList.add(DataBaseGeneratorConfig::getOverrideXML);
-		getterList.add(DataBaseGeneratorConfig::getChannel);
-		getterList.add(DataBaseGeneratorConfig::getChannelNote);
-		getterList.add(DataBaseGeneratorConfig::getStatus);
-		getterList.add(DataBaseGeneratorConfig::getStatusNote);
-		getterList.add(DataBaseGeneratorConfig::getCreateTime);
-		getterList.add(DataBaseGeneratorConfig::getUpdateTime);
+		getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
+		getterList.add(DatabaseGeneratorConfig::getConnectorJarFile);
+		getterList.add(DatabaseGeneratorConfig::getProjectFolder);
+		getterList.add(DatabaseGeneratorConfig::getModelPackage);
+		getterList.add(DatabaseGeneratorConfig::getModelTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getDaoPackage);
+		getterList.add(DatabaseGeneratorConfig::getDaoTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getMappingXmlPackage);
+		getterList.add(DatabaseGeneratorConfig::getMappingXmlTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getOffsetLimit);
+		getterList.add(DatabaseGeneratorConfig::getNeedToStringHashCodeEquals);
+		getterList.add(DatabaseGeneratorConfig::getNeedForUpdate);
+		getterList.add(DatabaseGeneratorConfig::getAnnotationDAO);
+		getterList.add(DatabaseGeneratorConfig::getAnnotation);
+		getterList.add(DatabaseGeneratorConfig::getUseActualColumnNames);
+		getterList.add(DatabaseGeneratorConfig::getUseExample);
+		getterList.add(DatabaseGeneratorConfig::getGenerateKeys);
+		getterList.add(DatabaseGeneratorConfig::getEncoding);
+		getterList.add(DatabaseGeneratorConfig::getUseTableNameAlias);
+		getterList.add(DatabaseGeneratorConfig::getUseDAOExtendStyle);
+		getterList.add(DatabaseGeneratorConfig::getUseSchemaPrefix);
+		getterList.add(DatabaseGeneratorConfig::getJsr310Support);
+		getterList.add(DatabaseGeneratorConfig::getOverrideXML);
+		getterList.add(DatabaseGeneratorConfig::getChannel);
+		getterList.add(DatabaseGeneratorConfig::getChannelNote);
+		getterList.add(DatabaseGeneratorConfig::getStatus);
+		getterList.add(DatabaseGeneratorConfig::getStatusNote);
+		getterList.add(DatabaseGeneratorConfig::getCreateTime);
+		getterList.add(DatabaseGeneratorConfig::getUpdateTime);
 
-		SerializableData data = SerializableData.toSerializableData(dataBaseGeneratorConfig, getterList);
+		SerializableData data = SerializableData.toSerializableData(databaseGeneratorConfig, getterList);
 
-		data.append(ReflectAssist.getFriendlyIdName(DataBaseGeneratorConfig.class), dataBaseGeneratorConfig.getId());
+		data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), databaseGeneratorConfig.getId());
 
 		return this.singleData(data);
 	}
 
-	private DataBaseGeneratorConfig fill(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig, @NotNull ParamData paramJson) {
-		dataBaseGeneratorConfig.setAnnotation(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
+	private DatabaseGeneratorConfig fill(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull ParamData paramJson) {
+		databaseGeneratorConfig.setAnnotation(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
 													   .toInt());
-		dataBaseGeneratorConfig.setAnnotationDAO(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
+		databaseGeneratorConfig.setAnnotationDAO(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
 														  .toInt());
-		dataBaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
-		dataBaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
-		dataBaseGeneratorConfig.setEncoding(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING));
-		dataBaseGeneratorConfig.setGenerateKeys(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATE_KEYS));
-		dataBaseGeneratorConfig.setJsr310Support(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
+		databaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
+		databaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
+		databaseGeneratorConfig.setEncoding(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING));
+		databaseGeneratorConfig.setGenerateKeys(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATE_KEYS));
+		databaseGeneratorConfig.setJsr310Support(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
 														  .toInt());
-		dataBaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
-		dataBaseGeneratorConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
-		dataBaseGeneratorConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
-		dataBaseGeneratorConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
-		dataBaseGeneratorConfig.setNeedForUpdate(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
+		databaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
+		databaseGeneratorConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
+		databaseGeneratorConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
+		databaseGeneratorConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
+		databaseGeneratorConfig.setNeedForUpdate(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
 														  .toInt());
-		dataBaseGeneratorConfig.setNeedToStringHashCodeEquals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
+		databaseGeneratorConfig.setNeedToStringHashCodeEquals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
 																	   .toInt());
-		dataBaseGeneratorConfig.setOffsetLimit(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT)
+		databaseGeneratorConfig.setOffsetLimit(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT)
 														.toInt());
-		dataBaseGeneratorConfig.setOverrideXML(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)
+		databaseGeneratorConfig.setOverrideXML(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)
 														.toInt());
-		dataBaseGeneratorConfig.setProjectFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER));
-		dataBaseGeneratorConfig.setUseActualColumnNames(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
+		databaseGeneratorConfig.setProjectFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER));
+		databaseGeneratorConfig.setUseActualColumnNames(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
 																 .toInt());
-		dataBaseGeneratorConfig.setUseDAOExtendStyle(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE)
+		databaseGeneratorConfig.setUseDAOExtendStyle(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE)
 															  .toInt());
-		dataBaseGeneratorConfig.setUseExample(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_EXAMPLE)
+		databaseGeneratorConfig.setUseExample(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_EXAMPLE)
 													   .toInt());
-		dataBaseGeneratorConfig.setUseSchemaPrefix(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX)
+		databaseGeneratorConfig.setUseSchemaPrefix(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX)
 															.toInt());
-		dataBaseGeneratorConfig.setUseTableNameAlias(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
+		databaseGeneratorConfig.setUseTableNameAlias(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
 
 															  .toInt());
 
 		long operatorId = getOperatorId();
 
-		if (ConstantCollection.ZERO_LONG.equals(dataBaseGeneratorConfig.getId())) {
-			dataBaseGeneratorConfig.setChannel(Channel.CodeGenerator);
+		if (ConstantCollection.ZERO_LONG.equals(databaseGeneratorConfig.getId())) {
+			databaseGeneratorConfig.setChannel(Channel.CodeGenerator);
 
-			dataBaseGeneratorConfig.setCreateOperatorId(operatorId);
-			dataBaseGeneratorConfig.setCreateTime(LocalDateTime.now());
-			dataBaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
+			databaseGeneratorConfig.setCreateOperatorId(operatorId);
+			databaseGeneratorConfig.setCreateTime(LocalDateTime.now());
+			databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
 		}
 
-		dataBaseGeneratorConfig.setUpdateOperatorId(operatorId);
-		dataBaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
+		databaseGeneratorConfig.setUpdateOperatorId(operatorId);
+		databaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
 
-		return dataBaseGeneratorConfig;
+		return databaseGeneratorConfig;
 	}
 
 	/**
 	 * 修饰get返回数据
 	 *
-	 * @param dataBaseGeneratorConfig dataBaseGeneratorConfig
+	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private BaseResultData setCore(@NotNull DataBaseGeneratorConfig dataBaseGeneratorConfig, @NotNull ParamData paramJson) {
-		DataBaseGeneratorConfig v = this.fill(dataBaseGeneratorConfig, paramJson);
+	private BaseResultData setCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull ParamData paramJson) {
+		DatabaseGeneratorConfig v = this.fill(databaseGeneratorConfig, paramJson);
 
-		v = this.getDataBaseGeneratorConfigService().save(v);
+		v = this.getDatabaseGeneratorConfigService().save(v);
 
 		return decorateSingleData(v);
 	}

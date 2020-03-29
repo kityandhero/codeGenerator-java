@@ -20,7 +20,7 @@ public enum DataBaseGeneratorConfigStatus {
 	/**
 	 * 元数据键值集合中的key
 	 */
-	public static final String META_KEY = "dataBaseGeneratorConfigStatusList";
+	public static final String META_KEY = "databaseGeneratorConfigStatusList";
 
 	/**
 	 * 值

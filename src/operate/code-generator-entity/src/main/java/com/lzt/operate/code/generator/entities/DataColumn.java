@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
  * @author luzhitao
  */
 @Entity
-@Table(name = "data_column", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "table_name", "column_name"}))
+@Table(name = "data_column", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "database_generator_config_id", "data_table_generator_config_id", "table_name", "column_name"}))
 @EqualsAndHashCode(callSuper = true)
 public class DataColumn extends BaseEntity {
 
@@ -22,6 +22,12 @@ public class DataColumn extends BaseEntity {
 
 	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
+
+	@Column(name = "database_generator_config_id", nullable = false, unique = true)
+	private long databaseGeneratorConfigId;
+
+	@Column(name = "data_table_generator_config_id", nullable = false, unique = true)
+	private long dataTableGeneratorConfigId;
 
 	@Column(name = "table_name", nullable = false)
 	private String tableName;
@@ -59,6 +65,22 @@ public class DataColumn extends BaseEntity {
 
 	public void setConnectionConfigId(long connectionConfigId) {
 		this.connectionConfigId = connectionConfigId;
+	}
+
+	public long getDatabaseGeneratorConfigId() {
+		return databaseGeneratorConfigId;
+	}
+
+	public void setDatabaseGeneratorConfigId(long databaseGeneratorConfigId) {
+		this.databaseGeneratorConfigId = databaseGeneratorConfigId;
+	}
+
+	public long getDataTableGeneratorConfigId() {
+		return dataTableGeneratorConfigId;
+	}
+
+	public void setDataTableGeneratorConfigId(long dataTableGeneratorConfigId) {
+		this.dataTableGeneratorConfigId = dataTableGeneratorConfigId;
 	}
 
 	public String getTableName() {

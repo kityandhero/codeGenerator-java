@@ -6,6 +6,7 @@ import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.net.InternetAddressAssist;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import org.springframework.data.domain.Example;
@@ -111,6 +112,34 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 */
 	default Page<S> page(Specification<S> filter, Pageable pageable) {
 		return getRepository().findAll(filter, pageable);
+	}
+
+	/**
+	 * 获取第一个匹配项
+	 *
+	 * @param filter filter
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default Optional<S> findFirst(Specification<S> filter) {
+		List<S> list = getRepository().findAll(filter);
+
+		if (list.size() > ConstantCollection.ZERO_INT) {
+			return Optional.of(list.get(0));
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * 是否存在
+	 *
+	 * @param filter filter
+	 * @return ExecutiveResult<Page < S>>
+	 */
+	default boolean exist(Specification<S> filter) {
+		Optional<S> optional = findFirst(filter);
+
+		return optional.isPresent();
 	}
 
 	/**

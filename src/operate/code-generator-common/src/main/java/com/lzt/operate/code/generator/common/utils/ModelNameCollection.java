@@ -36,13 +36,23 @@ public class ModelNameCollection {
 
 	//endregion
 
-	//region CONNECTION_CONFIG 数据库连接
+	//region DATABASE_GENERATOR_CONFIG 数据库生成配置
 
 	public static final String DATABASE_GENERATOR_CONFIG_PAGE_LIST = "DATABASE_GENERATOR_CONFIG_PAGE_LIST";
 
 	public static final String DATABASE_GENERATOR_CONFIG_GET = "DATABASE_GENERATOR_CONFIG_GET";
 
 	public static final String DATABASE_GENERATOR_CONFIG_SET = "DATABASE_GENERATOR_CONFIG_SET";
+
+	//endregion
+
+	//region DATA_TABLE_GENERATOR_CONFIG 数据表生成配置
+
+	public static final String DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST = "DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST";
+
+	public static final String DATA_TABLE_GENERATOR_CONFIG_GET = "DATA_TABLE_GENERATOR_CONFIG_GET";
+
+	public static final String DATA_TABLE_GENERATOR_CONFIG_SET = "DATA_TABLE_GENERATOR_CONFIG_SET";
 
 	//endregion
 
@@ -117,6 +127,8 @@ public class ModelNameCollection {
 	//region DATA_COLUMN_LIST
 
 	public static final String DATA_COLUMN_LIST = "DATA_COLUMN_LIST";
+
+	public static final String DATA_COLUMN_GET = "DATA_COLUMN_GET";
 
 	public static final String DATA_COLUMN_SET = "DATA_COLUMN_SET";
 

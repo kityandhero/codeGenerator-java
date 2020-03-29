@@ -192,13 +192,13 @@ public class DataColumnController extends BaseOperateAuthController {
 	}
 
 	@ApiOperation(value = "获取定时列信息", notes = "获取定时列信息", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_SET, value = {
+	@ApiJsonObject(name = ModelNameCollection.DATA_COLUMN_GET, value = {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TABLE_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_COLUMN_NAME)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_COLUMN_SET)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_COLUMN_GET)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")

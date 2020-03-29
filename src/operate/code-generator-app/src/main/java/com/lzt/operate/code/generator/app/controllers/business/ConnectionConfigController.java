@@ -12,11 +12,11 @@ import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
-import com.lzt.operate.code.generator.dao.service.DataBaseGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
-import com.lzt.operate.code.generator.entities.DataBaseGeneratorConfig;
+import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -79,14 +79,14 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 	private ConnectionConfigService connectionConfigService;
 
-	private DataBaseGeneratorConfigService dataBaseGeneratorConfigService;
+	private DatabaseGeneratorConfigService databaseGeneratorConfigService;
 
 	@Autowired
-	public ConnectionConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl dataBaseGeneratorConfigService) {
+	public ConnectionConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService) {
 		super(customJsonWebTokenConfig);
 
 		this.connectionConfigService = connectionConfigServiceImpl;
-		this.dataBaseGeneratorConfigService = dataBaseGeneratorConfigService;
+		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
 	}
 
 	public ConnectionConfigService getConnectionConfigService() {
@@ -99,8 +99,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		throw new RuntimeException("ConnectionConfigService获取失败");
 	}
 
-	public DataBaseGeneratorConfigService getDataBaseGeneratorConfigService() {
-		Optional<DataBaseGeneratorConfigService> optional = Optional.ofNullable(this.dataBaseGeneratorConfigService);
+	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
+		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -262,19 +262,19 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 			data = getConnectionConfigAssist().saveConnectionConfig(data);
 
-			DataBaseGeneratorConfig dataBaseGeneratorConfig = new DataBaseGeneratorConfig();
+			DatabaseGeneratorConfig databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
-			dataBaseGeneratorConfig.setConnectionConfigId(data.getId());
-			dataBaseGeneratorConfig.setChannel(Channel.CodeGenerator);
-			dataBaseGeneratorConfig.setCreateOperatorId(operatorId);
-			dataBaseGeneratorConfig.setCreateTime(LocalDateTime.now());
-			dataBaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
-			dataBaseGeneratorConfig.setUpdateOperatorId(operatorId);
-			dataBaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
+			databaseGeneratorConfig.setConnectionConfigId(data.getId());
+			databaseGeneratorConfig.setChannel(Channel.CodeGenerator);
+			databaseGeneratorConfig.setCreateOperatorId(operatorId);
+			databaseGeneratorConfig.setCreateTime(LocalDateTime.now());
+			databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
+			databaseGeneratorConfig.setUpdateOperatorId(operatorId);
+			databaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
 
-			this.getDataBaseGeneratorConfigService().save(dataBaseGeneratorConfig);
+			this.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
 
-			this.getDataBaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
+			this.getDatabaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
 
 			return decorateSingleData(data);
 		}
@@ -383,7 +383,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(data);
 
 			if (!databaseTypePre.equals(databaseType)) {
-				this.getDataBaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
+				this.getDatabaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
 			}
 
 			return this.singleData(saveResult);

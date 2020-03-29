@@ -86,7 +86,7 @@ public class GlobalString {
 	//region CONNECTION_MODEL
 
 	@ApiSingleParam(value = "数据标识", type = Long.class, example = "201")
-	public static final String DATABASE_GENERATOR_CONFIG_ID = "dataBaseGeneratorConfigId";
+	public static final String DATABASE_GENERATOR_CONFIG_ID = "databaseGeneratorConfigId";
 
 	@ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
 	public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
@@ -156,6 +156,31 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "overrideXML", type = Integer.class, example = "overrideXML")
 	public static final String DATABASE_GENERATOR_CONFIG_OVERRIDE_XML = "overrideXML";
+
+	//endregion
+
+	//region
+
+	@ApiSingleParam(value = "数据表生成配置数据标识", type = Long.class, example = "101")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_ID = "dataTableGeneratorConfigId";
+
+	@ApiSingleParam(value = "databaseGeneratorConfigId", type = Long.class, example = "1001")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
+
+	@ApiSingleParam(value = "databaseGeneratorConfigId", type = Long.class, example = "1001")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID = "databaseGeneratorConfigId";
+
+	@ApiSingleParam(value = "tableName", example = "table1")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME = "tableName";
+
+	@ApiSingleParam(value = "domainObjectName", example = "table1")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME = "domainObjectName";
+
+	@ApiSingleParam(value = "mapperName", example = "table1")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME = "mapperName";
+
+	@ApiSingleParam(value = "comment", example = "table1")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_COMMENT = "comment";
 
 	//endregion
 

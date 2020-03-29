@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -17,7 +18,7 @@ import javax.persistence.UniqueConstraint;
  * @date 2020/03/17
  */
 @Entity
-@Table(name = "data_table_generator_config", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "table_name"}))
+@Table(name = "data_table_generator_config", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "database_generator_config_id", "table_name"}))
 @EqualsAndHashCode(callSuper = true)
 public class DataTableGeneratorConfig extends BaseEntity {
 
@@ -25,6 +26,9 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
+
+	@Column(name = "database_generator_config_id", nullable = false, unique = true)
+	private long databaseGeneratorConfigId;
 
 	@Column(name = "table_name", nullable = false)
 	private String tableName;
@@ -35,8 +39,9 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "mapper_name", nullable = false)
 	private String mapperName;
 
+	@Lob
 	@Column(name = "comment", nullable = false)
-	private int comment;
+	private String comment;
 
 	public DataTableGeneratorConfig() {
 		super();
@@ -48,6 +53,14 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	public void setConnectionConfigId(long connectionConfigId) {
 		this.connectionConfigId = connectionConfigId;
+	}
+
+	public long getDatabaseGeneratorConfigId() {
+		return databaseGeneratorConfigId;
+	}
+
+	public void setDatabaseGeneratorConfigId(long databaseGeneratorConfigId) {
+		this.databaseGeneratorConfigId = databaseGeneratorConfigId;
 	}
 
 	public String getTableName() {
@@ -74,11 +87,11 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.mapperName = mapperName;
 	}
 
-	public int getComment() {
+	public String getComment() {
 		return comment;
 	}
 
-	public void setComment(int comment) {
+	public void setComment(String comment) {
 		this.comment = comment;
 	}
 }

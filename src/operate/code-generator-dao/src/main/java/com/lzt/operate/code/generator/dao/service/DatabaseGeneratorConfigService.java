@@ -1,10 +1,10 @@
 package com.lzt.operate.code.generator.dao.service;
 
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
-import com.lzt.operate.code.generator.dao.repositories.DataBaseGeneratorConfigRepository;
+import com.lzt.operate.code.generator.dao.repositories.DatabaseGeneratorConfigRepository;
 import com.lzt.operate.code.generator.dao.service.bases.BaseService;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
-import com.lzt.operate.code.generator.entities.DataBaseGeneratorConfig;
+import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.general.ConstantCollection;
@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * @author luzhitao
  */
-public interface DataBaseGeneratorConfigService extends BaseService<DataBaseGeneratorConfigRepository, DataBaseGeneratorConfig> {
+public interface DatabaseGeneratorConfigService extends BaseService<DatabaseGeneratorConfigRepository, DatabaseGeneratorConfig> {
 
 	/**
 	 * findByConnectionConfigId
@@ -31,16 +31,16 @@ public interface DataBaseGeneratorConfigService extends BaseService<DataBaseGene
 	 * @param connectionConfigId connectionConfigId
 	 * @return Optional<DataColumn>
 	 */
-	default Optional<DataBaseGeneratorConfig> findByConnectionConfigId(long connectionConfigId) {
-		Specification<DataBaseGeneratorConfig> specification = new Specification<DataBaseGeneratorConfig>() {
+	default Optional<DatabaseGeneratorConfig> findByConnectionConfigId(long connectionConfigId) {
+		Specification<DatabaseGeneratorConfig> specification = new Specification<DatabaseGeneratorConfig>() {
 
 			private static final long serialVersionUID = -3508744018398462569L;
 
 			@Override
-			public Predicate toPredicate(@NonNull Root<DataBaseGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(@NonNull Root<DatabaseGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
-				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataBaseGeneratorConfig::getConnectionConfigId)), connectionConfigId));
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DatabaseGeneratorConfig::getConnectionConfigId)), connectionConfigId));
 
 				Predicate[] p = new Predicate[list.size()];
 
@@ -67,14 +67,14 @@ public interface DataBaseGeneratorConfigService extends BaseService<DataBaseGene
 		if (optionalDatabaseType.isPresent()) {
 			DatabaseType databaseType = optionalDatabaseType.get();
 
-			Optional<DataBaseGeneratorConfig> optional = findByConnectionConfigId(connectionConfig.getId());
+			Optional<DatabaseGeneratorConfig> optional = findByConnectionConfigId(connectionConfig.getId());
 
 			if (optional.isPresent()) {
-				DataBaseGeneratorConfig dataBaseGeneratorConfig = optional.get();
+				DatabaseGeneratorConfig databaseGeneratorConfig = optional.get();
 
-				dataBaseGeneratorConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
+				databaseGeneratorConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
 
-				save(dataBaseGeneratorConfig);
+				save(databaseGeneratorConfig);
 			}
 		}
 	}
