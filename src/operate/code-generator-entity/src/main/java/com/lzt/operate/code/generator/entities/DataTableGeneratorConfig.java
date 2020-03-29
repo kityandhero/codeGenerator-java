@@ -51,6 +51,7 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		tableName = "";
 		domainObjectName = "";
 		mapperName = "";
+		comment = "";
 	}
 
 	public long getConnectionConfigId() {
