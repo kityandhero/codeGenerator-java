@@ -296,7 +296,7 @@ public class DatabaseAssist {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 
-				return new ArrayList<>();
+				throw ex;
 			}
 		}
 
