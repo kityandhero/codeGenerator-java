@@ -7,8 +7,9 @@ import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
-import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
-import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.DataColumnService;
+import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
@@ -68,40 +69,21 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 	private static final String CONTROLLER_DESCRIPTION = "数据库生成配置/";
 
-	private ConnectionConfigService connectionConfigService;
-
-	private DatabaseGeneratorConfigService databaseGeneratorConfigService;
+	private final ConnectionConfigAssist connectionConfigAssist;
 
 	@Autowired
-	public DataBaseGeneratorConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigService connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService) {
+	public DataBaseGeneratorConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig,
+											 ConnectionConfigServiceImpl connectionConfigService,
+											 DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+											 DataTableGeneratorConfigService dataTableGeneratorConfigService,
+											 DataColumnService dataColumnService) {
 		super(customJsonWebTokenConfig);
 
-		this.connectionConfigService = connectionConfigServiceImpl;
-		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
-	}
-
-	public ConnectionConfigService getConnectionConfigService() {
-		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("ConnectionConfigService获取失败");
-	}
-
-	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
-		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("DataBaseGeneratorConfigService获取失败");
-	}
-
-	private ConnectionConfigAssist getConnectionConfigAssist() {
-		return new ConnectionConfigAssist(this.getConnectionConfigService());
+		this.connectionConfigAssist = new ConnectionConfigAssist(
+				connectionConfigService,
+				databaseGeneratorConfigService,
+				dataTableGeneratorConfigService,
+				dataColumnService);
 	}
 
 	@ApiOperation(value = "数据库生成配置分页列表", notes = "数据库生成配置分页列表", httpMethod = "POST")
@@ -148,7 +130,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DatabaseGeneratorConfig::getCreateTime));
 
-		Page<DatabaseGeneratorConfig> result = this.getDatabaseGeneratorConfigService().page(specification, pageable);
+		Page<DatabaseGeneratorConfig> result = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																		  .page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
 											.stream()
@@ -201,8 +184,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
 												  .toLong();
 
-		Optional<DatabaseGeneratorConfig> result = this.getDatabaseGeneratorConfigService()
-													   .get(databaseGeneratorConfigId);
+		Optional<DatabaseGeneratorConfig> result = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																			  .get(databaseGeneratorConfigId);
 
 		if (result.isPresent()) {
 			DatabaseGeneratorConfig databaseGeneratorConfig = result.get();
@@ -229,8 +212,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 										   .toLong();
 
-		Optional<DatabaseGeneratorConfig> result = this.getDatabaseGeneratorConfigService()
-													   .findByConnectionConfigId(connectionConfigId);
+		Optional<DatabaseGeneratorConfig> result = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																			  .findByConnectionConfigId(connectionConfigId);
 
 		DatabaseGeneratorConfig databaseGeneratorConfig;
 
@@ -288,8 +271,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 										   .toLong();
 
-		Optional<ConnectionConfig> optionalConnectionConfig = this.getConnectionConfigAssist()
-																  .getConnectionConfig(connectionConfigId);
+		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (!optionalConnectionConfig.isPresent()) {
 			return this.noDataError("数据库连接不存在");
@@ -298,8 +280,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		DatabaseGeneratorConfig databaseGeneratorConfig = null;
 
 		if (databaseGeneratorConfigId > 0) {
-			Optional<DatabaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = getDatabaseGeneratorConfigService()
-					.get(databaseGeneratorConfigId);
+			Optional<DatabaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																												   .get(databaseGeneratorConfigId);
 
 			if (optionalFindByDataBaseGeneratorConfigId.isPresent()) {
 				databaseGeneratorConfig = optionalFindByDataBaseGeneratorConfigId.get();
@@ -308,8 +290,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		if (!Optional.ofNullable(databaseGeneratorConfig).isPresent()) {
 			if (connectionConfigId > 0) {
-				Optional<DatabaseGeneratorConfig> optionalFindByConnectionConfigId = getDatabaseGeneratorConfigService()
-						.findByConnectionConfigId(connectionConfigId);
+				Optional<DatabaseGeneratorConfig> optionalFindByConnectionConfigId = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																												.findByConnectionConfigId(connectionConfigId);
 
 				if (optionalFindByConnectionConfigId.isPresent()) {
 					databaseGeneratorConfig = optionalFindByConnectionConfigId.get();
@@ -433,7 +415,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	private BaseResultData setCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull ParamData paramJson) {
 		DatabaseGeneratorConfig v = this.fill(databaseGeneratorConfig, paramJson);
 
-		v = this.getDatabaseGeneratorConfigService().save(v);
+		v = this.connectionConfigAssist.getDatabaseGeneratorConfigService().save(v);
 
 		return decorateSingleData(v);
 	}

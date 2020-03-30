@@ -1,6 +1,9 @@
 package com.lzt.operate.code.generator.dao.assists;
 
 import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
+import com.lzt.operate.code.generator.dao.service.DataColumnService;
+import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
@@ -13,13 +16,23 @@ import java.util.Optional;
  */
 public abstract class BaseConnectionConfigAssist {
 
-	private ConnectionConfigService connectionConfigService;
+	private final ConnectionConfigService connectionConfigService;
+	private final DatabaseGeneratorConfigService databaseGeneratorConfigService;
+	private final DataTableGeneratorConfigService dataTableGeneratorConfigService;
+	private final DataColumnService dataColumnService;
 
-	public BaseConnectionConfigAssist(ConnectionConfigService connectionConfigServiceImpl) {
-		this.connectionConfigService = connectionConfigServiceImpl;
+	public BaseConnectionConfigAssist(
+			ConnectionConfigService connectionConfigService,
+			DatabaseGeneratorConfigService databaseGeneratorConfigService,
+			DataTableGeneratorConfigService dataTableGeneratorConfigService,
+			DataColumnService dataColumnService) {
+		this.connectionConfigService = connectionConfigService;
+		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
+		this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
+		this.dataColumnService = dataColumnService;
 	}
 
-	private ConnectionConfigService getConnectionConfigService() {
+	public ConnectionConfigService getConnectionConfigService() {
 		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
 
 		if (optional.isPresent()) {
@@ -27,6 +40,36 @@ public abstract class BaseConnectionConfigAssist {
 		}
 
 		throw new RuntimeException("ConnectionConfigService获取失败");
+	}
+
+	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
+		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("DatabaseGeneratorConfigService获取失败");
+	}
+
+	public DataTableGeneratorConfigService getDataTableGeneratorConfigService() {
+		Optional<DataTableGeneratorConfigService> optional = Optional.ofNullable(this.dataTableGeneratorConfigService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("DataTableGeneratorConfigService获取失败");
+	}
+
+	public DataColumnService getDataColumnService() {
+		Optional<DataColumnService> optional = Optional.ofNullable(this.dataColumnService);
+
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+
+		throw new RuntimeException("DataColumnService获取失败");
 	}
 
 	/**

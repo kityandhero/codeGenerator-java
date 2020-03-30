@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
@@ -7,10 +8,10 @@ import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.DataColumnStatus;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
-import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
+import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
-import com.lzt.operate.code.generator.dao.service.impl.DataColumnServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataColumn;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
@@ -62,36 +63,22 @@ public class DataColumnController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "数据表列配置管理/";
 
-	private ConnectionConfigService connectionConfigService;
-
-	private DataColumnService dataColumnService;
+	private final ConnectionConfigAssist connectionConfigAssist;
 
 	@Autowired
-	public DataColumnController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl, DataColumnServiceImpl dataColumnService) {
+	public DataColumnController(
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			ConnectionConfigServiceImpl connectionConfigService,
+			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+			DataTableGeneratorConfigService dataTableGeneratorConfigService,
+			DataColumnService dataColumnService) {
 		super(customJsonWebTokenConfig);
 
-		this.connectionConfigService = connectionConfigServiceImpl;
-		this.dataColumnService = dataColumnService;
-	}
-
-	public ConnectionConfigService getConnectionConfigService() {
-		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("ConnectionConfigService获取失败");
-	}
-
-	public DataColumnService getDataColumnService() {
-		Optional<DataColumnService> optional = Optional.ofNullable(this.dataColumnService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("DataColumnService获取失败");
+		this.connectionConfigAssist = new ConnectionConfigAssist(
+				connectionConfigService,
+				databaseGeneratorConfigService,
+				dataTableGeneratorConfigService,
+				dataColumnService);
 	}
 
 	@ApiOperation(value = "数据库表列列表", notes = "数据库表列列表", httpMethod = "POST")
@@ -123,8 +110,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
 
-		Optional<ConnectionConfig> optional = this.getConnectionConfigService()
-												  .get(connectionConfigId);
+		Optional<ConnectionConfig> optional = this.connectionConfigAssist.getConnectionConfigService()
+																		 .get(connectionConfigId);
 
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
@@ -234,7 +221,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		getterList.add(DataColumn::getCreateTime);
 		getterList.add(DataColumn::getUpdateTime);
 
-		dataColumn = this.getDataColumnService().fillFromDataColumnConfig(dataColumn);
+		dataColumn = this.connectionConfigAssist.getDataColumnService().fillFromDataColumnConfig(dataColumn);
 
 		SerializableData data = SerializableData.toSerializableData(dataColumn, getterList);
 
@@ -298,7 +285,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		}
 
 		dataColumn.setUpdateOperatorId(operatorId);
-		this.getDataColumnService().save(dataColumn);
+		this.connectionConfigAssist.getDataColumnService().save(dataColumn);
 
 		SerializableData serializableData = new SerializableData();
 
@@ -319,7 +306,8 @@ public class DataColumnController extends BaseOperateAuthController {
 					.merge(GlobalString.CONNECTION_CONFIG_ID, "请提交数据连接标识")));
 		}
 
-		Optional<ConnectionConfig> optionalConnectionConfig = this.getConnectionConfigService().get(connectionConfigId);
+		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfigService()
+																						 .get(connectionConfigId);
 
 		if (!optionalConnectionConfig.isPresent()) {
 			return new ExecutiveResult<>(ReturnDataCode.ParamError.toMessage(StringAssist
@@ -346,8 +334,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		ConnectionConfig connectionConfig = resultCheckConnection.getData();
 
-		List<DataColumn> list = this.getDataColumnService()
-									.findByConnectionConfigIdAndTableNameAndNames(connectionConfigId, tableName, nameCollection);
+		List<DataColumn> list = this.connectionConfigAssist.getDataColumnService()
+														   .findByConnectionConfigIdAndTableNameAndNames(connectionConfigId, tableName, nameCollection);
 
 		List<DataColumn> listDataColumn = DatabaseAssist.listTableColumn(connectionConfig, tableName);
 
@@ -385,8 +373,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		ConnectionConfig connectionConfig = resultCheckConnection.getData();
 
-		Optional<DataColumn> optional = this.getDataColumnService()
-											.findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);
+		Optional<DataColumn> optional = this.connectionConfigAssist.getDataColumnService()
+																   .findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);
 
 		DataColumn dataColumn;
 

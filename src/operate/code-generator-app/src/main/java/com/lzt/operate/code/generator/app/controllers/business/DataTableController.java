@@ -1,17 +1,16 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
-import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
+import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
-import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
-import com.lzt.operate.code.generator.dao.service.impl.DataTableGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
@@ -27,6 +26,7 @@ import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.PageListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -65,49 +65,21 @@ public class DataTableController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "数据库表管理/";
 
-	private ConnectionConfigService connectionConfigService;
-
-	private DatabaseGeneratorConfigService databaseGeneratorConfigService;
-
-	private DataTableGeneratorConfigService dataTableGeneratorConfigService;
+	private final ConnectionConfigAssist connectionConfigAssist;
 
 	@Autowired
-	public DataTableController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigService, DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService, DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService) {
+	public DataTableController(CustomJsonWebTokenConfig customJsonWebTokenConfig,
+							   ConnectionConfigServiceImpl connectionConfigService,
+							   DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+							   DataTableGeneratorConfigService dataTableGeneratorConfigService,
+							   DataColumnService dataColumnService) {
 		super(customJsonWebTokenConfig);
 
-		this.connectionConfigService = connectionConfigService;
-		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
-		this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
-	}
-
-	public ConnectionConfigService getConnectionConfigService() {
-		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("ConnectionConfigService获取失败");
-	}
-
-	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
-		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("DatabaseGeneratorConfigService获取失败");
-	}
-
-	public DataTableGeneratorConfigService getDataTableGeneratorConfigService() {
-		Optional<DataTableGeneratorConfigService> optional = Optional.ofNullable(this.dataTableGeneratorConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("DataTableGeneratorConfigService获取失败");
+		this.connectionConfigAssist = new ConnectionConfigAssist(
+				connectionConfigService,
+				databaseGeneratorConfigService,
+				dataTableGeneratorConfigService,
+				dataColumnService);
 	}
 
 	@ApiOperation(value = "数据库表列表", notes = "数据库表列表", httpMethod = "POST")
@@ -140,8 +112,8 @@ public class DataTableController extends BaseOperateAuthController {
 
 		String name = paramJson.getStringByKey(GlobalString.DATA_TABLE_NAME);
 
-		Optional<ConnectionConfig> optional = this.getConnectionConfigService()
-												  .get(connectionConfigId);
+		Optional<ConnectionConfig> optional = this.connectionConfigAssist.getConnectionConfigService()
+																		 .get(connectionConfigId);
 
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
@@ -154,8 +126,8 @@ public class DataTableController extends BaseOperateAuthController {
 											 .collect(Collectors.toList());
 			}
 
-			Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.getDatabaseGeneratorConfigService()
-																					.findByConnectionConfigId(connectionConfigId);
+			Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																										   .findByConnectionConfigId(connectionConfigId);
 
 			List<DataTableGeneratorConfig> dataTableGeneratorConfigList = new ArrayList<>();
 
@@ -191,7 +163,8 @@ public class DataTableController extends BaseOperateAuthController {
 					}
 				};
 
-				dataTableGeneratorConfigList = this.getDataTableGeneratorConfigService().list(specification);
+				dataTableGeneratorConfigList = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+																		  .list(specification);
 			}
 
 			PageListResult<DataTable> pager = PageListResult.buildFromList(listDataTable, pageNo, pageSize);
@@ -240,6 +213,20 @@ public class DataTableController extends BaseOperateAuthController {
 												   SerializableData dataTableGeneratorConfigData = SerializableData.toSerializableData(dataTableGeneratorConfigTemp, dataTableGeneratorConfigGetterList);
 
 												   data.append(StringAssist.toFirstLower(DataTableGeneratorConfig.class.getSimpleName()), dataTableGeneratorConfigData);
+
+												   if (!initialized) {
+													   try {
+														   ExecutiveResult<DataTableGeneratorConfig> result = this.connectionConfigAssist
+																   .initializeDataTableGeneratorConfig(connectionConfigId, o
+																		   .getName());
+
+														   if (result.getSuccess()) {
+															   initialized = true;
+														   }
+													   } catch (Exception e) {
+														   e.printStackTrace();
+													   }
+												   }
 
 												   data.append("initialized", initialized ? 1 : 0);
 

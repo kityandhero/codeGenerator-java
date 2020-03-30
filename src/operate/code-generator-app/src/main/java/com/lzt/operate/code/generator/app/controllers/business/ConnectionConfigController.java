@@ -11,8 +11,8 @@ import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
-import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
-import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
+import com.lzt.operate.code.generator.dao.service.DataColumnService;
+import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
@@ -77,40 +77,22 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "数据库连接/";
 
-	private ConnectionConfigService connectionConfigService;
-
-	private DatabaseGeneratorConfigService databaseGeneratorConfigService;
+	private final ConnectionConfigAssist connectionConfigAssist;
 
 	@Autowired
-	public ConnectionConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ConnectionConfigServiceImpl connectionConfigServiceImpl, DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService) {
+	public ConnectionConfigController(
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			ConnectionConfigServiceImpl connectionConfigService,
+			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+			DataTableGeneratorConfigService dataTableGeneratorConfigService,
+			DataColumnService dataColumnService) {
 		super(customJsonWebTokenConfig);
 
-		this.connectionConfigService = connectionConfigServiceImpl;
-		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
-	}
-
-	public ConnectionConfigService getConnectionConfigService() {
-		Optional<ConnectionConfigService> optional = Optional.ofNullable(this.connectionConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("ConnectionConfigService获取失败");
-	}
-
-	public DatabaseGeneratorConfigService getDatabaseGeneratorConfigService() {
-		Optional<DatabaseGeneratorConfigService> optional = Optional.ofNullable(this.databaseGeneratorConfigService);
-
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-
-		throw new RuntimeException("DataBaseGeneratorConfigService获取失败");
-	}
-
-	private ConnectionConfigAssist getConnectionConfigAssist() {
-		return new ConnectionConfigAssist(this.getConnectionConfigService());
+		this.connectionConfigAssist = new ConnectionConfigAssist(
+				connectionConfigService,
+				databaseGeneratorConfigService,
+				dataTableGeneratorConfigService,
+				dataColumnService);
 	}
 
 	@ApiOperation(value = "连接分页列表", notes = "数据库连接分页列表", httpMethod = "POST")
@@ -157,7 +139,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ConnectionConfig::getCreateTime));
 
-		Page<ConnectionConfig> result = this.connectionConfigService.page(specification, pageable);
+		Page<ConnectionConfig> result = this.connectionConfigAssist.getConnectionConfigService()
+																   .page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
 											.stream()
@@ -208,7 +191,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
-		Optional<ConnectionConfig> result = getConnectionConfigAssist().getConnectionConfig(connectionConfigId);
+		Optional<ConnectionConfig> result = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
 			ConnectionConfig connectionConfig = result.get();
@@ -247,7 +230,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
 		ParamData paramJson = getParamData(json);
 
-		ExecutiveResult<ConnectionConfig> result = getConnectionConfigAssist().createConnectionConfig(paramJson);
+		ExecutiveResult<ConnectionConfig> result = this.connectionConfigAssist.createConnectionConfig(paramJson);
 
 		if (result.getSuccess()) {
 			ConnectionConfig data = result.getData();
@@ -260,7 +243,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			data.setCreateOperatorId(operatorId);
 			data.setUpdateOperatorId(operatorId);
 
-			data = getConnectionConfigAssist().saveConnectionConfig(data);
+			data = this.connectionConfigAssist.saveConnectionConfig(data);
 
 			DatabaseGeneratorConfig databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
@@ -272,9 +255,10 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			databaseGeneratorConfig.setUpdateOperatorId(operatorId);
 			databaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
 
-			this.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
+			this.connectionConfigAssist.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
 
-			this.getDatabaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
+			this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+									   .changeConnectorJarPathByConnectionConfig(data);
 
 			return decorateSingleData(data);
 		}
@@ -336,9 +320,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
 		}
 
-		ConnectionConfigAssist connectionConfigAssist = getConnectionConfigAssist();
-
-		Optional<ConnectionConfig> result = connectionConfigAssist.getConnectionConfig(connectionConfigId);
+		Optional<ConnectionConfig> result = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
 			ConnectionConfig data = result.get();
@@ -383,7 +365,8 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(data);
 
 			if (!databaseTypePre.equals(databaseType)) {
-				this.getDatabaseGeneratorConfigService().changeConnectorJarPathByConnectionConfig(data);
+				this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+										   .changeConnectorJarPathByConnectionConfig(data);
 			}
 
 			return this.singleData(saveResult);
@@ -411,7 +394,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
 		}
 
-		getConnectionConfigAssist().deleteById(connectionConfigId);
+		this.connectionConfigAssist.deleteById(connectionConfigId);
 
 		return this.success();
 	}
@@ -435,8 +418,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ID, "数据无效");
 		}
 
-		Optional<ConnectionConfig> optional = this.getConnectionConfigAssist()
-												  .getConnectionConfig(connectionConfigId);
+		Optional<ConnectionConfig> optional = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
