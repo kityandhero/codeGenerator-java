@@ -330,14 +330,14 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			connectionConfig = optionalConnectionConfig.get();
 		}
 
-		Long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID)
-												  .toLong();
+		Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.databaseGeneratorConfigService.findByConnectionConfigId(connectionConfigId);
 
-		Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.getDatabaseGeneratorConfigService()
-																				.get(databaseGeneratorConfigId);
+		DatabaseGeneratorConfig databaseGeneratorConfig;
 
 		if (!optionalDatabaseGeneratorConfig.isPresent()) {
 			return this.noDataError("指定的数据库生成配置不存在");
+		} else {
+			databaseGeneratorConfig = optionalDatabaseGeneratorConfig.get();
 		}
 
 		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME);
@@ -362,7 +362,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfigId));
 
-				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getDatabaseGeneratorConfigId)), databaseGeneratorConfigId));
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getDatabaseGeneratorConfigId)), databaseGeneratorConfig
+						.getId()));
 
 				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getTableName)), tableName));
 
@@ -384,7 +385,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			DataTableGeneratorConfig dataTableGeneratorConfig = new DataTableGeneratorConfig();
 
 			dataTableGeneratorConfig.setConnectionConfigId(connectionConfigId);
-			dataTableGeneratorConfig.setConnectionConfigId(databaseGeneratorConfigId);
+			dataTableGeneratorConfig.setDatabaseGeneratorConfigId(databaseGeneratorConfig.getId());
 			dataTableGeneratorConfig.setTableName(tableName);
 
 			dataTableGeneratorConfig = this.getDataTableGeneratorConfigService().save(dataTableGeneratorConfig);

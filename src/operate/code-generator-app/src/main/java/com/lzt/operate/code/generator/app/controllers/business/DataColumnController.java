@@ -287,9 +287,6 @@ public class DataColumnController extends BaseOperateAuthController {
 			dataColumn.setTypeHandler(typeHandler);
 			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 			dataColumn.setUpdateTime(LocalDateTime.now());
-			dataColumn.setUpdateOperatorId(operatorId);
-
-			this.getDataColumnService().save(dataColumn);
 		} else {
 			dataColumn.setConnectionConfigId(connectionConfigId);
 			dataColumn.setTableName(tableName);
@@ -298,10 +295,10 @@ public class DataColumnController extends BaseOperateAuthController {
 			dataColumn.setTypeHandler(typeHandler);
 			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 			dataColumn.setCreateOperatorId(operatorId);
-			dataColumn.setUpdateOperatorId(operatorId);
-
-			this.getDataColumnService().save(dataColumn);
 		}
+
+		dataColumn.setUpdateOperatorId(operatorId);
+		this.getDataColumnService().save(dataColumn);
 
 		SerializableData serializableData = new SerializableData();
 
