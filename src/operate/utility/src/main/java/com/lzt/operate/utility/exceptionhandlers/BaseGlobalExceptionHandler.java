@@ -184,6 +184,6 @@ public abstract class BaseGlobalExceptionHandler {
 		serializableData.append("localizedMessage", e.getLocalizedMessage());
 		serializableData.append("stackTrace", e.getStackTrace());
 
-		return new ResultSingleData(ReturnDataCode.SYSTEM_ERR.toMessage(), serializableData);
+		return new ResultSingleData(ReturnDataCode.SYSTEM_ERR.appendMessage(e.getMessage()), serializableData);
 	}
 }

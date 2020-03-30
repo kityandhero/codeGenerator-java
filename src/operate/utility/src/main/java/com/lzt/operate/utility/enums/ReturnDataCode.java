@@ -238,8 +238,6 @@ public enum ReturnDataCode {
 		list.add(this.message);
 		list.addAll(Arrays.asList(otherMessageList));
 
-		this.message = StringAssist.join(list);
-
 		return toMessage(StringAssist.join(list));
 	}
 
