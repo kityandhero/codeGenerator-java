@@ -177,7 +177,7 @@ public class DataTableController extends BaseOperateAuthController {
 						list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfigId));
 
 						list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getDatabaseGeneratorConfigId)), databaseGeneratorConfig
-								.getConnectionConfigId()));
+								.getId()));
 
 						CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getTableName)));
 
