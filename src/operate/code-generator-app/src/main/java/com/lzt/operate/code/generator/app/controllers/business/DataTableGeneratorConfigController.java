@@ -138,17 +138,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 										   .toLong();
 
-		if (connectionConfigId <= 0) {
-			return this.pageDataEmpty();
-		}
-
-		Long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID, "0")
-												  .toLong();
-
-		if (databaseGeneratorConfigId <= 0) {
-			return this.pageDataEmpty();
-		}
-
 		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME);
 
 		Specification<DataTableGeneratorConfig> specification = new Specification<DataTableGeneratorConfig>() {
@@ -159,12 +148,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			public Predicate toPredicate(@NonNull Root<DataTableGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<>();
 
-				if (!ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
+				if (!ConstantCollection.SEARCH_UNLIMITED_LONG.equals(connectionConfigId)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfigId));
-				}
-
-				if (!ConstantCollection.ZERO_LONG.equals(databaseGeneratorConfigId)) {
-					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getDatabaseGeneratorConfigId)), databaseGeneratorConfigId));
 				}
 
 				if (!StringAssist.isNullOrEmpty(tableName)) {
@@ -330,7 +315,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			connectionConfig = optionalConnectionConfig.get();
 		}
 
-		Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.databaseGeneratorConfigService.findByConnectionConfigId(connectionConfigId);
+		Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.getDatabaseGeneratorConfigService()
+																				.findByConnectionConfigId(connectionConfigId);
 
 		DatabaseGeneratorConfig databaseGeneratorConfig;
 

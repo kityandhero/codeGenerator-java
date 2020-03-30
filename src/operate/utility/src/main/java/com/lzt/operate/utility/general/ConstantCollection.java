@@ -13,12 +13,12 @@ public class ConstantCollection {
 	/**
 	 * 搜索条件不限
 	 */
-	public static final int SEARCH_UNLIMITED_INT = -10000;
+	public static final Integer SEARCH_UNLIMITED_INT = -10000;
 
 	/**
 	 * 搜索条件不限
 	 */
-	public static final long SEARCH_UNLIMITED_LONG = -10000L;
+	public static final Long SEARCH_UNLIMITED_LONG = -10000L;
 
 	/**
 	 * 默认日期时间格式
