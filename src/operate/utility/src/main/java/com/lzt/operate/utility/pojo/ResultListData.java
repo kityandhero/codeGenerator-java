@@ -3,7 +3,6 @@ package com.lzt.operate.utility.pojo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class ResultListData extends BaseResultData {
 	private static final long serialVersionUID = -2793790712990675266L;
 
 	@ApiModelProperty(notes = "列表数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-	public List<? extends Serializable> list;
+	public List<Object> list;
 
 	public ResultListData() {
 		super();
@@ -28,21 +27,21 @@ public class ResultListData extends BaseResultData {
 		this(returnMessage, new ArrayList<>());
 	}
 
-	private ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list) {
+	private ResultListData(ReturnMessage returnMessage, List<Object> list) {
 		this(returnMessage, list, new SerializableData());
 	}
 
-	ResultListData(ReturnMessage returnMessage, List<? extends Serializable> list, Serializable extra) {
+	ResultListData(ReturnMessage returnMessage, List<Object> list, Object extra) {
 		super(returnMessage, extra);
 
 		this.list = list;
 	}
 
-	public List<? extends Serializable> getList() {
+	public List<Object> getList() {
 		return list;
 	}
 
-	public void setList(List<? extends Serializable> list) {
+	public void setList(List<Object> list) {
 		this.list = list;
 	}
 }

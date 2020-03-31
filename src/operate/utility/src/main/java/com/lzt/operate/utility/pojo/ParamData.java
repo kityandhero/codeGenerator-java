@@ -4,15 +4,15 @@ import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.extensions.StringEx;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author luzhitao
  */
 public class ParamData extends SerializableMap<String, Serializable> {
-
-	private static final long serialVersionUID = -4972871655628192893L;
 
 	public ParamData() {
 		super();
@@ -27,7 +27,11 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	}
 
 	public StringEx getStringExByKey(String key, String defaultValue) {
-		Serializable v = Optional.ofNullable(get(key)).orElse(defaultValue);
+		HashSet<Serializable> defaultData = new HashSet<>();
+
+		defaultData.add(defaultValue);
+
+		Object v = Optional.ofNullable(this.getMultimap().get(key)).orElse(defaultData);
 
 		return new StringEx(StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString());
 	}
@@ -37,13 +41,24 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	}
 
 	public String getStringByKey(String key, String defaultValue) {
-		Serializable v = Optional.ofNullable(get(key)).orElse(defaultValue);
+
+		HashSet<Serializable> defaultData = new HashSet<>();
+
+		defaultData.add(defaultValue);
+
+		Object v = Optional.ofNullable(this.getMultimap().get(key)).orElse(defaultData);
 
 		return StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString();
 	}
 
 	public boolean isNullOrEmpty(String key) {
-		Serializable v = get(key);
+		Set<Serializable> set = this.getMultimap().get(key);
+
+		if (set.isEmpty()) {
+			return true;
+		}
+
+		Object v = set.toArray()[0];
 
 		return StringAssist.isNullOrEmpty((String) v);
 	}

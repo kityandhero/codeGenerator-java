@@ -27,7 +27,7 @@ public abstract class BaseResultData implements Serializable {
 	public String message;
 
 	@ApiModelProperty(notes = "其他数据", position = 5)
-	public Serializable extra;
+	public Object extra;
 
 	BaseResultData() {
 		this.code = ReturnDataCode.Ok.getCode();
@@ -43,7 +43,7 @@ public abstract class BaseResultData implements Serializable {
 		this.extra = new SerializableData();
 	}
 
-	BaseResultData(@NonNull ReturnMessage returnMessage, Serializable extra) {
+	BaseResultData(@NonNull ReturnMessage returnMessage, Object extra) {
 		this.code = returnMessage.getCode();
 		this.success = returnMessage.getSuccess();
 		this.message = returnMessage.getMessage();
@@ -78,7 +78,7 @@ public abstract class BaseResultData implements Serializable {
 		this.message = message;
 	}
 
-	public Serializable getExtra() {
+	public Object getExtra() {
 		return extra;
 	}
 

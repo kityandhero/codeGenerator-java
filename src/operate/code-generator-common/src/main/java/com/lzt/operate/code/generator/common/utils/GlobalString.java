@@ -267,6 +267,16 @@ public class GlobalString {
 	@ApiSingleParam(value = "渠道标识", example = "12")
 	public static final String ERROR_LOG_CHANNEL = "channel";
 
+	/**
+	 * 用于返回转换后的 header json 结构
+	 */
+	public static final String ERROR_LOG_HEADER_JSON = "headerJson";
+
+	/**
+	 * 用于返回转换后的 stackTrace json 结构
+	 */
+	public static final String ERROR_LOG_STACK_TRACE_JSON = "stackTraceJson";
+
 	//endregion
 
 	//region

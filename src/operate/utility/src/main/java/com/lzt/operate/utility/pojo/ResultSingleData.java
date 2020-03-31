@@ -16,7 +16,7 @@ public class ResultSingleData extends BaseResultData {
 	private static final long serialVersionUID = 5710902373699158999L;
 
 	@ApiModelProperty(notes = "数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-	public Serializable data;
+	public Object data;
 
 	public ResultSingleData() {
 		super();
@@ -35,21 +35,21 @@ public class ResultSingleData extends BaseResultData {
 		this(returnMessage, new SerializableData());
 	}
 
-	public ResultSingleData(ReturnDataCode returnDataCode, Serializable data) {
+	public ResultSingleData(ReturnDataCode returnDataCode, Object data) {
 		this(returnDataCode.toMessage(), data, new SerializableData());
 	}
 
-	public ResultSingleData(ReturnMessage returnMessage, Serializable data) {
+	public ResultSingleData(ReturnMessage returnMessage, Object data) {
 		this(returnMessage, data, new SerializableData());
 	}
 
-	ResultSingleData(ReturnMessage returnMessage, Serializable data, Serializable extra) {
+	ResultSingleData(ReturnMessage returnMessage, Object data, Object extra) {
 		super(returnMessage, extra);
 
 		this.data = data;
 	}
 
-	public Serializable getData() {
+	public Object getData() {
 		return data;
 	}
 

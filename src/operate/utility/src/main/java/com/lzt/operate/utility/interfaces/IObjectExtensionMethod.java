@@ -45,7 +45,7 @@ public interface IObjectExtensionMethod extends Serializable {
 
 		SerializableData result = new SerializableData(map);
 
-		result.appends(additionalData);
+		result.appendMultimap(additionalData.getMultimap());
 
 		return new SerializableData(map);
 	}

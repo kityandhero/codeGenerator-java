@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
@@ -12,6 +13,7 @@ import com.lzt.operate.code.generator.entities.ErrorLog;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
@@ -184,7 +186,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志详情", description = "获取错误日志信息", tag = "a0664bb2-75ff-406b-9463-9e5aae7af56e")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public BaseResultData get(@RequestBody Map<String, Serializable> json) throws JsonProcessingException {
 		ParamData paramJson = getParamData(json);
 
 		long errorLogId = paramJson.getStringExByKey(GlobalString.ERROR_LOG_ID, "0").toLong();
@@ -233,6 +235,26 @@ public class ErrorLogController extends BaseOperateAuthController {
 			SerializableData data = SerializableData.toSerializableData(errorLog, getterList);
 
 			data.append(ReflectAssist.getFriendlyIdName(ErrorLog.class), errorLog.getId());
+
+			//region headerJson
+
+			String header = errorLog.getHeader();
+
+			SerializableData headerJson = ConvertAssist.deserialize(header, SerializableData.class);
+
+			data.append(GlobalString.ERROR_LOG_HEADER_JSON, headerJson);
+
+			//endregion
+
+			//region stackTraceJson
+
+			String stackTrace = errorLog.getStackTrace();
+
+			List<SerializableData> serializableDataList = ConvertAssist.deserializeToList(stackTrace, SerializableData.class);
+
+			data.append(GlobalString.ERROR_LOG_HEADER_JSON, serializableDataList);
+
+			//endregion
 
 			return this.singleData(data);
 		}

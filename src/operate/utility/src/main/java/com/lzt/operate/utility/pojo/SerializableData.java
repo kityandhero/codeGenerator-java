@@ -14,8 +14,8 @@ import java.util.Optional;
  * @author luzhitao
  */
 public class SerializableData extends SerializableMap<String, Serializable> {
+
 	static final String EMPTY_SERIALIZE_VALUE = "{}";
-	private static final long serialVersionUID = -3351016248304397119L;
 
 	public SerializableData() {
 		super();

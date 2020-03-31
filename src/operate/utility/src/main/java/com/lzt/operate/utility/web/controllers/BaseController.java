@@ -46,7 +46,7 @@ public class BaseController implements ErrorController {
 		return new ParamData(query);
 	}
 
-	protected ResultSingleData singleData(Serializable data) {
+	protected ResultSingleData singleData(Object data) {
 		ResultSingleData result = ResultDataFactory.successSingleData();
 
 		result.data = data;
@@ -64,15 +64,15 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	protected <T extends Serializable> ResultListData listDataEmpty() {
+	protected ResultListData listDataEmpty() {
 		return this.listData(new ArrayList<>(), new SerializableData());
 	}
 
-	protected <T extends Serializable> ResultListData listData(ListResult<T> listResult) {
+	protected ResultListData listData(ListResult<Object> listResult) {
 		return this.listData(listResult.getList(), new SerializableData());
 	}
 
-	protected <T extends Serializable, E extends Serializable> ResultListData listData(ListResult<T> listResult, E extra) {
+	protected ResultListData listData(ListResult<Object> listResult, Object extra) {
 		if (listResult.getSuccess()) {
 			return this.listData(listResult.getList(), extra);
 		}
@@ -80,7 +80,7 @@ public class BaseController implements ErrorController {
 		return ResultDataFactory.failListData(listResult.getCode(), extra);
 	}
 
-	protected <T extends Serializable> ResultListData listData(List<T> list) {
+	protected ResultListData listData(List<Object> list) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -89,7 +89,7 @@ public class BaseController implements ErrorController {
 		return result;
 	}
 
-	protected <T extends Serializable, E extends Serializable> ResultListData listData(List<T> list, E extra) {
+	protected ResultListData listData(List<Object> list, Object extra) {
 		ResultListData result = ResultDataFactory.successListData();
 
 		result.list = list;
@@ -184,20 +184,20 @@ public class BaseController implements ErrorController {
 		return this.pageData(new ArrayList<>(), 1, pageSize, 0, extra);
 	}
 
-	protected ResultListData pageData(Page<? extends Serializable> pageListResult) {
+	protected ResultListData pageData(Page<Object> pageListResult) {
 		return this.pageData(pageListResult, new SerializableData());
 	}
 
-	protected ResultListData pageData(Page<? extends Serializable> pageListResult, SerializableData extra) {
+	protected ResultListData pageData(Page<Object> pageListResult, SerializableData extra) {
 		return this.pageData(pageListResult.getContent(), pageListResult.getNumber(), pageListResult.getSize(), pageListResult
 				.getTotalPages(), extra);
 	}
 
-	protected ResultListData pageData(PageListResult<? extends Serializable> pageListResult) {
+	protected ResultListData pageData(PageListResult<Object> pageListResult) {
 		return this.pageData(pageListResult, new SerializableData());
 	}
 
-	protected ResultListData pageData(PageListResult<? extends Serializable> pageListResult, SerializableData extra) {
+	protected ResultListData pageData(PageListResult<Object> pageListResult, SerializableData extra) {
 		if (pageListResult.getSuccess()) {
 			return this.pageData(pageListResult.getList(), pageListResult.getPageIndex(), pageListResult.getPageSize(), pageListResult
 					.getTotalSize(), extra);
@@ -206,20 +206,24 @@ public class BaseController implements ErrorController {
 		return ResultDataFactory.failListData(pageListResult.getCode(), extra);
 	}
 
-	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, long totalPage) {
+	protected ResultListData pageData(List<SerializableData> list, int pageNo, int pageSize, long totalPage) {
 		return pageData(list, pageNo, pageSize, totalPage, new SerializableData());
 	}
 
-	protected ResultListData pageData(List<? extends Serializable> list, int pageNo, int pageSize, long totalPage, Serializable other) {
+	protected ResultListData pageData(List<Object> list, int pageNo, int pageSize, long totalPage) {
+		return pageData(list, pageNo, pageSize, totalPage, new SerializableData());
+	}
+
+	protected ResultListData pageData(List<Object> list, int pageNo, int pageSize, long totalPage, SerializableData other) {
 		ResultListData result = this.listData(list);
 
 		SerializableData extra = new SerializableData();
 
-		extra.put("pageNo", pageNo);
-		extra.put("pageSize", pageSize);
+		extra.getMultimap().put("pageNo", pageNo);
+		extra.getMultimap().put("pageSize", pageSize);
 
-		extra.put("total", totalPage);
-		extra.put("other", other);
+		extra.getMultimap().put("total", totalPage);
+		extra.getMultimap().put("other", other.getMultimap());
 
 		result.extra = extra;
 
