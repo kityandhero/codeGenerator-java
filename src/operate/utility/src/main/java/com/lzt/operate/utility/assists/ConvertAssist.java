@@ -142,6 +142,7 @@ public class ConvertAssist {
 		if (ValidatorAssist.notEmpty(s)) {
 			return ValidatorAssist.isTrue(s);
 		}
+
 		return defaultBoolean;
 	}
 
