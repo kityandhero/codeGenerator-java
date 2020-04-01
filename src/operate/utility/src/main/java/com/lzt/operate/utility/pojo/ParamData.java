@@ -3,7 +3,6 @@ package com.lzt.operate.utility.pojo;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.extensions.StringEx;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -12,13 +11,13 @@ import java.util.Set;
 /**
  * @author luzhitao
  */
-public class ParamData extends SerializableMap<String, Serializable> {
+public class ParamData extends SerializableMap {
 
 	public ParamData() {
 		super();
 	}
 
-	public ParamData(Map<String, ? extends Serializable> data) {
+	public ParamData(Map<String, Object> data) {
 		super(data);
 	}
 
@@ -27,13 +26,9 @@ public class ParamData extends SerializableMap<String, Serializable> {
 	}
 
 	public StringEx getStringExByKey(String key, String defaultValue) {
-		HashSet<Serializable> defaultData = new HashSet<>();
+		String v = getStringByKey(key, defaultValue);
 
-		defaultData.add(defaultValue);
-
-		Object v = Optional.ofNullable(this.getMultimap().get(key)).orElse(defaultData);
-
-		return new StringEx(StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString());
+		return new StringEx(StringAssist.isNullOrEmpty(v) ? defaultValue : v);
 	}
 
 	public String getStringByKey(String key) {
@@ -42,17 +37,23 @@ public class ParamData extends SerializableMap<String, Serializable> {
 
 	public String getStringByKey(String key, String defaultValue) {
 
-		HashSet<Serializable> defaultData = new HashSet<>();
+		HashSet<Object> defaultData = new HashSet<>();
 
 		defaultData.add(defaultValue);
 
-		Object v = Optional.ofNullable(this.getMultimap().get(key)).orElse(defaultData);
+		Set<Object> set = Optional.ofNullable(this.getMultimap().get(key)).orElse(defaultData);
+
+		if (set.isEmpty()) {
+			return defaultValue;
+		}
+
+		Object v = set.toArray()[0];
 
 		return StringAssist.isNullOrEmpty(v.toString()) ? defaultValue : v.toString();
 	}
 
 	public boolean isNullOrEmpty(String key) {
-		Set<Serializable> set = this.getMultimap().get(key);
+		Set<Object> set = this.getMultimap().get(key);
 
 		if (set.isEmpty()) {
 			return true;

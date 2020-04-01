@@ -89,7 +89,7 @@ public class AccountRoleController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.OPERATOR_ROLE_CHANGE_COLLECTION)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/changeCollection", consumes = "application/json", produces = "application/json")
-	public BaseResultData changeCollection(@RequestBody Map<String, String> json) {
+	public ResultSingleData changeCollection(@RequestBody Map<String, Object> json) {
 		// 直接将json信息打印出来
 		System.out.println(json);
 

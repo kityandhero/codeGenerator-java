@@ -50,7 +50,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +97,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置分页列表", description = "数据库生成配置分页列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -178,7 +177,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置详情", description = "获取数据库生成配置", tag = "6552cd29-5cdb-48b3-9a74-7541e6879839")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
@@ -206,7 +205,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/getByConnectionId", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置详情", description = "获取数据库生成配置", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
-	public BaseResultData getByConnectionId(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData getByConnectionId(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
@@ -263,7 +262,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据库生成配置", description = "创建数据库生成配置", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
-	public BaseResultData set(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData set(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
@@ -314,7 +313,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private BaseResultData decorateSingleData(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
+	private ResultSingleData decorateSingleData(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
 		List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
 		getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
@@ -412,7 +411,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private BaseResultData setCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull ParamData paramJson) {
+	private ResultSingleData setCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull ParamData paramJson) {
 		DatabaseGeneratorConfig v = this.fill(databaseGeneratorConfig, paramJson);
 
 		v = this.connectionConfigAssist.getDatabaseGeneratorConfigService().save(v);

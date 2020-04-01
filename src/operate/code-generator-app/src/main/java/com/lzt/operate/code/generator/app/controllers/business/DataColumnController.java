@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,7 +92,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库表列列表", description = "数据库表列列表", tag = "75bcfe2e-849b-4d26-83ab-fba103e3b0a9")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) throws Exception {
+	public ResultListData list(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -190,7 +189,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "获取定时列信息", description = "获取定时列信息", tag = "303175ed-6c19-42ab-8690-f52a9a23120b")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) throws Exception {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
@@ -245,7 +244,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置定时列信息", description = "设置定时列信息", tag = "d455d085-d60a-4c4a-b3f7-5e6c7a9bf3fc")
-	public BaseResultData set(@RequestBody Map<String, Serializable> json) throws Exception {
+	public ResultSingleData set(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();

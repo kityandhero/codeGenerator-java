@@ -17,8 +17,8 @@ public interface IObjectExtensionMethod extends Serializable {
 	 * @return HashMap<String, Serializable>
 	 * @throws IllegalAccessException IllegalAccessException
 	 */
-	default HashMap<String, Serializable> toHashMap() throws IllegalAccessException {
-		HashMap<String, Serializable> collection = new HashMap<>(5);
+	default HashMap<String, Object> toHashMap() throws IllegalAccessException {
+		HashMap<String, Object> collection = new HashMap<>(5);
 
 		//得到class
 		Class<?> cls = this.getClass();
@@ -27,7 +27,7 @@ public interface IObjectExtensionMethod extends Serializable {
 		Field[] fields = cls.getDeclaredFields();
 
 		for (Field field : fields) {
-			collection.put(field.getName(), (Serializable) field.get(this));
+			collection.put(field.getName(), field.get(this));
 		}
 
 		return collection;
@@ -41,7 +41,7 @@ public interface IObjectExtensionMethod extends Serializable {
 	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	default SerializableData toSerializableData(@NotNull SerializableData additionalData) throws IllegalAccessException {
-		HashMap<String, Serializable> map = this.toHashMap();
+		HashMap<String, Object> map = this.toHashMap();
 
 		SerializableData result = new SerializableData(map);
 
@@ -57,7 +57,7 @@ public interface IObjectExtensionMethod extends Serializable {
 	 * @throws IllegalAccessException IllegalAccessException
 	 */
 	default SerializableData toSerializableData() throws IllegalAccessException {
-		HashMap<String, Serializable> map = this.toHashMap();
+		HashMap<String, Object> map = this.toHashMap();
 
 		return new SerializableData(map);
 	}

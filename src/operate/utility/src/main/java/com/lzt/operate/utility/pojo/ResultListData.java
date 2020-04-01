@@ -1,22 +1,25 @@
 package com.lzt.operate.utility.pojo;
 
+import com.lzt.operate.utility.assists.ConvertAssist;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luzhitao
  * @date 2019-05-07 19:44
  */
 @EqualsAndHashCode(callSuper = true)
-public class ResultListData extends BaseResultData {
+public class ResultListData extends BaseResultData<ResultListData> {
 
 	private static final long serialVersionUID = -2793790712990675266L;
 
 	@ApiModelProperty(notes = "列表数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-	public List<Object> list;
+	private List<Object> list;
 
 	public ResultListData() {
 		super();
@@ -35,6 +38,50 @@ public class ResultListData extends BaseResultData {
 		super(returnMessage, extra);
 
 		this.list = list;
+	}
+
+	@Override
+	protected ResultListData getBaseClone(@NotNull ResultListData resultData) {
+		ResultListData result = new ResultListData();
+
+		result.setSuccess(resultData.isSuccess());
+		result.setCode(resultData.getCode());
+		result.setMessage(resultData.getMessage());
+		result.setExtra(resultData.getExtra());
+
+		result.setList(new ArrayList<>());
+
+		return result;
+	}
+
+	@Override
+	protected ResultListData toJsonResultWithOther(ResultListData resultData) {
+		ResultListData result = getBaseClone(resultData);
+
+		List<Object> list = this.getList();
+
+		if (Optional.ofNullable(list).isPresent()) {
+
+			List<Object> listHandled = new ArrayList<>();
+
+			for (Object o : list) {
+				Object one;
+
+				if (o instanceof SerializableMap) {
+					one = ConvertAssist.toObjectMixMap(((SerializableMap) o).getMultimap().asMap());
+				} else {
+					one = o;
+				}
+
+				listHandled.add(one);
+			}
+
+			result.list = listHandled;
+		} else {
+			result.list = new ArrayList<>();
+		}
+
+		return result;
 	}
 
 	public List<Object> getList() {

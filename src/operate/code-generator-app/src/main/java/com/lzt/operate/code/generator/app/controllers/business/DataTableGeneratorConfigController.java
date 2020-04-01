@@ -47,7 +47,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +94,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据表生成配置列表", description = "数据表生成配置列表", tag = "3884225e-99b2-4c63-a29d-d901a426fddf")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	public ResultListData list(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -178,7 +177,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "获取数据表生成配置信息", description = "获取数据表生成配置信息", tag = "d5e1f2ab-67bb-49f9-a02e-9429d763d915")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
@@ -228,7 +227,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据表生成配置信息", description = "设置数据表生成配置信息", tag = "f4994bd3-bba7-4b97-8224-4b6fbfc5a8d0")
-	public BaseResultData set(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData set(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
@@ -269,7 +268,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/initialize", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据表生成配置信息", description = "设置数据表生成配置信息", tag = "f4994bd3-bba7-4b97-8224-4b6fbfc5a8d0")
-	public BaseResultData initialize(@RequestBody Map<String, Serializable> json) throws Exception {
+	public ResultSingleData initialize(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)

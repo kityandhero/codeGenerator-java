@@ -1,26 +1,28 @@
 package com.lzt.operate.utility.pojo;
 
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 /**
  * @author luzhitao
  * @date 2019-05-07 19:44
  */
 @EqualsAndHashCode(callSuper = true)
-public class ResultSingleData extends BaseResultData {
+public class ResultSingleData extends BaseResultData<ResultSingleData> {
 
 	private static final long serialVersionUID = 5710902373699158999L;
 
 	@ApiModelProperty(notes = "数据体", example = SerializableData.EMPTY_SERIALIZE_VALUE, position = 4)
-	public Object data;
+	private Object data;
 
 	public ResultSingleData() {
 		super();
-		this.data = new SerializableData();
+		this.data = new SerializableData().getMultimap().asMap();
 	}
 
 	ResultSingleData(int code, boolean success, String message) {
@@ -49,11 +51,44 @@ public class ResultSingleData extends BaseResultData {
 		this.data = data;
 	}
 
+	@Override
+	protected ResultSingleData getBaseClone(@NotNull ResultSingleData resultData) {
+		ResultSingleData result = new ResultSingleData();
+
+		result.setSuccess(resultData.isSuccess());
+		result.setCode(resultData.getCode());
+		result.setMessage(resultData.getMessage());
+		result.setExtra(resultData.getExtra());
+
+		result.setData(new SerializableData());
+
+		return result;
+	}
+
+	@Override
+	protected ResultSingleData toJsonResultWithOther(ResultSingleData resultData) {
+		ResultSingleData result = getBaseClone(resultData);
+
+		Object data = this.getData();
+
+		if (Optional.ofNullable(data).isPresent()) {
+			if (data instanceof SerializableMap) {
+				result.data = ConvertAssist.toObjectMixMap(((SerializableMap) data).getMultimap().asMap());
+			} else {
+				result.data = data;
+			}
+		} else {
+			result.data = new SerializableData().getMultimap().asMap();
+		}
+
+		return result;
+	}
+
 	public Object getData() {
 		return data;
 	}
 
-	public void setData(Serializable data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 }

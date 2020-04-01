@@ -47,7 +47,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +94,7 @@ public class DataTableController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库表列表", description = "数据库表列表", tag = "c501156d-5ff4-4ebd-89f2-2a1692cef567", config = {"显示路径", "显示子权限"})
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) throws Exception {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();

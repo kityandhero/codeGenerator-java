@@ -39,7 +39,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +85,7 @@ public class HelpCategoryController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	public ResultListData list(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		String name = paramJson.getStringByKey(GlobalString.HELP_CATEGORY_NAME);
@@ -133,7 +132,7 @@ public class HelpCategoryController extends BaseOperateAuthController {
 	@ApiOperation(value = "帮助类别树列表", notes = "帮助类别树列表", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/treeList", consumes = "application/json", produces = "application/json")
-	public ResultListData treeList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData treeList(@RequestBody Map<String, Object> json) {
 		List<HelpCategoryTreeItem> list = this.getHelpCategoryService().treeList();
 
 		return this.listData(list);
@@ -148,7 +147,7 @@ public class HelpCategoryController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long helpCategoryId = paramJson.getStringExByKey(GlobalString.HELP_CATEGORY_ID, "0").toLong();

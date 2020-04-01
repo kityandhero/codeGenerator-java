@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.web.controllers;
 
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.ParamData;
@@ -8,6 +9,7 @@ import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import com.lzt.operate.utility.pojo.results.ListResult;
 import com.lzt.operate.utility.pojo.results.PageListResult;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,70 +39,90 @@ import java.util.Map;
 @Api(tags = "错误接口")
 public class BaseController implements ErrorController {
 
+	private ResultSingleData transferResultSingleData(@NotNull ResultSingleData singleData) {
+		ExecutiveResult<ResultSingleData> result = singleData.toJsonResult(ResultSingleData.class);
+
+		if (result.getSuccess()) {
+			return result.getData();
+		}
+
+		return new ResultSingleData(result.getCode());
+	}
+
+	private ResultListData transferResultListData(@NotNull ResultListData listData) {
+		ExecutiveResult<ResultListData> result = listData.toJsonResult(ResultListData.class);
+
+		if (result.getSuccess()) {
+			return result.getData();
+		}
+
+		return new ResultListData(result.getCode());
+	}
+
 	/**
 	 * 返回结构化的参数
 	 *
 	 * @param query json参数
 	 * @return ParamData
 	 */
-	protected ParamData getParamData(Map<String, ? extends Serializable> query) {
+	protected ParamData getParamData(Map<String, Object> query) {
 		return new ParamData(query);
 	}
 
 	protected ResultSingleData singleData(Object data) {
 		ResultSingleData result = ResultDataFactory.successSingleData();
 
-		result.data = data;
-		result.extra = new SerializableData();
+		result.setData(data);
+		result.setExtra(new SerializableData());
 
-		return result;
+		return transferResultSingleData(result);
 	}
 
-	protected ResultSingleData singleData(Serializable data, Serializable extra) {
+	protected ResultSingleData singleData(Object data, Object extra) {
 		ResultSingleData result = ResultDataFactory.successSingleData();
 
-		result.data = data;
-		result.extra = extra;
+		result.setData(data);
+		result.setExtra(extra);
 
-		return result;
+		return transferResultSingleData(result);
 	}
 
 	protected ResultListData listDataEmpty() {
 		return this.listData(new ArrayList<>(), new SerializableData());
 	}
 
-	protected ResultListData listData(ListResult<Object> listResult) {
+	protected <T> ResultListData listData(ListResult<T> listResult) {
 		return this.listData(listResult.getList(), new SerializableData());
 	}
 
-	protected ResultListData listData(ListResult<Object> listResult, Object extra) {
+	protected <T> ResultListData listData(ListResult<T> listResult, Object extra) {
 		if (listResult.getSuccess()) {
 			return this.listData(listResult.getList(), extra);
 		}
 
-		return ResultDataFactory.failListData(listResult.getCode(), extra);
+		return transferResultListData(ResultDataFactory.failListData(listResult.getCode(), extra));
 	}
 
-	protected ResultListData listData(List<Object> list) {
+	protected <T> ResultListData listData(List<T> list) {
 		ResultListData result = ResultDataFactory.successListData();
 
-		result.list = list;
-		result.extra = new SerializableData();
+		result.setList(ConvertAssist.toObjectList(list));
+		result.setExtra(new SerializableData());
 
-		return result;
+		return transferResultListData(result);
 	}
 
-	protected ResultListData listData(List<Object> list, Object extra) {
+	protected <T> ResultListData listData(List<T> list, Object extra) {
 		ResultListData result = ResultDataFactory.successListData();
 
-		result.list = list;
-		result.extra = extra;
+		result.setList(ConvertAssist.toObjectList(list));
+		result.setExtra(extra);
 
-		return result;
+		return transferResultListData(result);
 	}
 
 	protected ResultSingleData success() {
-		return ResultDataFactory.successSingleData();
+		return transferResultSingleData(ResultDataFactory.successSingleData());
 	}
 
 	protected ResultSingleData fail(@NonNull ExecutiveSimpleResult result) {
@@ -111,24 +134,24 @@ public class BaseController implements ErrorController {
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage) {
-		return ResultDataFactory.failData(returnMessage);
+		return transferResultSingleData(ResultDataFactory.failData(returnMessage));
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage, SerializableData data) {
 		ResultSingleData result = ResultDataFactory.failData(returnMessage);
 
-		result.data = data;
+		result.setData(data);
 
-		return result;
+		return transferResultSingleData(result);
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage, Serializable data, Serializable extra) {
 		ResultSingleData result = ResultDataFactory.failData(returnMessage);
 
-		result.data = data;
-		result.extra = extra;
+		result.setData(data);
+		result.setExtra(extra);
 
-		return result;
+		return transferResultSingleData(result);
 	}
 
 	protected ResultSingleData noChange(String description) {
@@ -136,7 +159,7 @@ public class BaseController implements ErrorController {
 
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.NoChange.toMessage(description), data);
+		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.NoChange.toMessage(description), data));
 	}
 
 	protected ResultSingleData paramError(String paramName, String description) {
@@ -145,7 +168,7 @@ public class BaseController implements ErrorController {
 		data.append("paramName", paramName);
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage(StringAssist.merge("参数：", paramName, "【", description, "】")), data);
+		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage(StringAssist.merge("参数：", paramName, "【", description, "】")), data));
 	}
 
 	protected ResultSingleData noDataError() {
@@ -157,15 +180,15 @@ public class BaseController implements ErrorController {
 
 		data.append("description", description);
 
-		return ResultDataFactory.failData(ReturnDataCode.NoData.toMessage(description));
+		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.NoData.toMessage(description)));
 	}
 
 	protected ResultSingleData exceptionError(Exception e) {
-		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage());
+		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage()));
 	}
 
 	protected ResultSingleData customError(int code, boolean success, String message) {
-		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage());
+		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage()));
 	}
 
 	protected ResultListData pageDataEmpty() {
@@ -203,18 +226,14 @@ public class BaseController implements ErrorController {
 					.getTotalSize(), extra);
 		}
 
-		return ResultDataFactory.failListData(pageListResult.getCode(), extra);
+		return transferResultListData(ResultDataFactory.failListData(pageListResult.getCode(), extra));
 	}
 
-	protected ResultListData pageData(List<SerializableData> list, int pageNo, int pageSize, long totalPage) {
+	protected <T> ResultListData pageData(List<T> list, int pageNo, int pageSize, long totalPage) {
 		return pageData(list, pageNo, pageSize, totalPage, new SerializableData());
 	}
 
-	protected ResultListData pageData(List<Object> list, int pageNo, int pageSize, long totalPage) {
-		return pageData(list, pageNo, pageSize, totalPage, new SerializableData());
-	}
-
-	protected ResultListData pageData(List<Object> list, int pageNo, int pageSize, long totalPage, SerializableData other) {
+	protected <T> ResultListData pageData(List<T> list, int pageNo, int pageSize, long totalPage, SerializableData other) {
 		ResultListData result = this.listData(list);
 
 		SerializableData extra = new SerializableData();
@@ -225,9 +244,9 @@ public class BaseController implements ErrorController {
 		extra.getMultimap().put("total", totalPage);
 		extra.getMultimap().put("other", other.getMultimap());
 
-		result.extra = extra;
+		result.setExtra(extra);
 
-		return result;
+		return transferResultListData(result);
 	}
 
 	@Override
@@ -246,7 +265,6 @@ public class BaseController implements ErrorController {
 		// 错误处理逻辑
 		int status = response.getStatus();
 		if (status == requestNotFound) {
-
 			return new ResultSingleData(ReturnDataCode.REQUEST_NOT_FOUND);
 		} else if (status == 500) {
 			return new ResultSingleData(ReturnDataCode.SYSTEM_ERR);

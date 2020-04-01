@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * @author luzhitao
  */
-public class SerializableData extends SerializableMap<String, Serializable> {
+public class SerializableData extends SerializableMap {
 
 	static final String EMPTY_SERIALIZE_VALUE = "{}";
 
@@ -26,7 +26,7 @@ public class SerializableData extends SerializableMap<String, Serializable> {
 		this.append(key, v);
 	}
 
-	public SerializableData(Map<String, ? extends Serializable> data) {
+	public SerializableData(Map<String, Object> data) {
 		super(data);
 	}
 

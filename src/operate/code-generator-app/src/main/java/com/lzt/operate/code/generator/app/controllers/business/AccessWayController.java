@@ -43,7 +43,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +96,7 @@ public class AccessWayController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块分页列表", description = "模块分页列表", tag = "c44e3865-1fa0-48df-ad0a-bd3f79807a38")
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -184,7 +183,7 @@ public class AccessWayController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "模块详情", description = "获取模块信息", tag = "a0664bb2-75ff-406b-9463-9e5aae7af56e")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accessWayId = paramJson.getStringExByKey(GlobalString.ACCESS_WAY_ID, "0").toLong();

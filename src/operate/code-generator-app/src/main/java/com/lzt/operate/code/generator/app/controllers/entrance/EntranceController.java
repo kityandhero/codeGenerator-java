@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Optional;
@@ -99,7 +98,7 @@ public class EntranceController extends OperateBaseController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/signIn", consumes = "application/json", produces = "application/json")
-	public BaseResultData signIn(@RequestBody Map<String, String> json) throws Exception {
+	public ResultSingleData signIn(@RequestBody Map<String, Object> json) throws Exception {
 		// 直接将json信息打印出来
 		System.out.println(json);
 
@@ -164,7 +163,7 @@ public class EntranceController extends OperateBaseController {
 	@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.ENTRANCE_REGISTER)
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/register", consumes = "application/json", produces = "application/json")
-	public BaseResultData register(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
+	public ResultSingleData register(@RequestBody Map<String, Object> json) throws NoSuchAlgorithmException {
 
 		ParamData paramJson = getParamData(json);
 

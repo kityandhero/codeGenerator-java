@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Optional;
@@ -88,7 +87,7 @@ public class OperatorController extends BaseOperateAuthController {
 	@ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/getCurrent", produces = "application/json")
-	public BaseResultData getCurrent() {
+	public ResultSingleData getCurrent() {
 		AccountAssist assist = getAccountAssist();
 
 		Optional<Account> result = assist.getCurrent();
@@ -103,7 +102,7 @@ public class OperatorController extends BaseOperateAuthController {
 	@ApiOperation(value = "当前操作者基本信息", notes = "当前操作者基本信息", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/getCurrentBasicInfo", produces = "application/json")
-	public BaseResultData getCurrentBasicInfo() {
+	public ResultSingleData getCurrentBasicInfo() {
 		AccountAssist assist = getAccountAssist();
 
 		Optional<Account> result = assist.getCurrent();
@@ -130,7 +129,7 @@ public class OperatorController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateCurrentBasicInfo", produces = "application/json")
-	public BaseResultData updateCurrentBasicInfo(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData updateCurrentBasicInfo(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
@@ -177,7 +176,7 @@ public class OperatorController extends BaseOperateAuthController {
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/changeCurrentPassword", consumes = "application/json", produces = "application/json")
-	public BaseResultData changeCurrentPassword(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
+	public ResultSingleData changeCurrentPassword(@RequestBody Map<String, Object> json) throws NoSuchAlgorithmException {
 		ParamData paramJson = getParamData(json);
 
 		String password = paramJson.getStringByKey(GlobalString.ACCOUNT_PASSWORD);

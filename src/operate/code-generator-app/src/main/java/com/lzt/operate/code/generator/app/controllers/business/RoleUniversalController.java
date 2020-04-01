@@ -44,7 +44,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +95,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "公共角色分页列表", description = "公共角色分页列表", tag = "7ab17e1a-4fff-4ed8-8cb0-24e5bcca089b")
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -168,7 +167,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "公共角色详情", tag = "15991393-196b-4b7b-b74f-9b773989368f")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_ID, "0").toLong();
@@ -211,7 +210,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增公共角色", tag = "f1fbd4fd-2360-4c6b-bdee-fdd0d030966d")
-	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData addBasicInfo(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		String name = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_NAME).trim();
@@ -251,7 +250,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", tag = "67e38843-c168-486a-9472-484078ad75b4")
-	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData updateBasicInfo(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_ID, "0").toLong();

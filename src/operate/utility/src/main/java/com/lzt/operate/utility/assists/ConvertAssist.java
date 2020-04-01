@@ -3,6 +3,7 @@ package com.lzt.operate.utility.assists;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lzt.operate.utility.pojo.SerializableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author luzhitao
@@ -238,6 +244,32 @@ public class ConvertAssist {
 		return stringToDate(StringAssist.join(parts, " "), ConstantAssist.FORMAT_DATETIME_Y4MDHMS);
 	}
 
+	public static <K, V> Map<K, Object> toObjectMixMap(Map<K, Collection<V>> map) {
+		HashMap<K, Object> result = new HashMap<>(2);
+
+		if (Optional.ofNullable(map).isPresent()) {
+			map.forEach((key, vCollection) -> {
+
+				if (vCollection.size() > 1) {
+					result.put(key, vCollection);
+				} else {
+					if (!vCollection.isEmpty()) {
+						Object v = vCollection.toArray()[0];
+
+						if (v instanceof SerializableMap) {
+							result.put(key, toObjectMixMap(((SerializableMap) v).getMultimap().asMap()));
+						} else {
+							result.put(key, v);
+						}
+
+					}
+				}
+			});
+		}
+
+		return result;
+	}
+
 	/**
 	 * 序列化
 	 *
@@ -256,10 +288,10 @@ public class ConvertAssist {
 	 * @param json json
 	 * @return String Json
 	 */
-	public static <T> T deserialize(String json, Class<T> clazz) throws JsonProcessingException {
+	public static HashMap<?, ?> deserialize(String json) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 
-		return mapper.readValue(json, clazz);
+		return mapper.readValue(json, HashMap.class);
 	}
 
 	/**
@@ -274,6 +306,35 @@ public class ConvertAssist {
 		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
 
 		return mapper.readValue(json, javaType);
+	}
+
+	/**
+	 * 序列化
+	 *
+	 * @param json json
+	 * @return String Json
+	 */
+	public static List<HashMap<?, ?>> deserializeToList(String json) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, HashMap.class);
+
+		return mapper.readValue(json, javaType);
+	}
+
+	/**
+	 * toObjectList
+	 *
+	 * @param list list
+	 * @param <T>  T
+	 * @return List<Object>
+	 */
+	public static <T> List<Object> toObjectList(List<T> list) {
+		return Optional.ofNullable(list)
+					   .orElse(new ArrayList<>())
+					   .stream()
+					   .map(o -> (Object) o)
+					   .collect(Collectors.toList());
 	}
 
 }

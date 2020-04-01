@@ -49,9 +49,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -103,7 +103,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志分页列表", description = "错误日志分页列表", tag = "bb6b8151-c999-4ad4-9f0a-7f6ae46cea8b")
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -186,7 +186,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志详情", description = "获取错误日志信息", tag = "a0664bb2-75ff-406b-9463-9e5aae7af56e")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) throws JsonProcessingException {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) throws JsonProcessingException {
 		ParamData paramJson = getParamData(json);
 
 		long errorLogId = paramJson.getStringExByKey(GlobalString.ERROR_LOG_ID, "0").toLong();
@@ -240,7 +240,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 			String header = errorLog.getHeader();
 
-			SerializableData headerJson = ConvertAssist.deserialize(header, SerializableData.class);
+			HashMap<?, ?> headerJson = ConvertAssist.deserialize(header);
 
 			data.append(GlobalString.ERROR_LOG_HEADER_JSON, headerJson);
 
@@ -250,9 +250,9 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 			String stackTrace = errorLog.getStackTrace();
 
-			List<SerializableData> serializableDataList = ConvertAssist.deserializeToList(stackTrace, SerializableData.class);
+			List<HashMap<?, ?>> serializableJsonList = ConvertAssist.deserializeToList(stackTrace);
 
-			data.append(GlobalString.ERROR_LOG_HEADER_JSON, serializableDataList);
+			data.append(GlobalString.ERROR_LOG_STACK_TRACE_JSON, serializableJsonList);
 
 			//endregion
 

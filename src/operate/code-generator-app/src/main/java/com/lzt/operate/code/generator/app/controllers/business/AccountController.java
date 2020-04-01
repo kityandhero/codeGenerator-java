@@ -51,7 +51,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +104,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户分页列表", description = "账户分页列表", tag = "116c5994-2993-4904-8a1b-14ad8318d6b5")
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -194,7 +193,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "账户详情", description = "获取账户信息", tag = "c1dfe241-5b5c-4b44-acac-4b3e0845d005")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -245,7 +244,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增账户", description = "创建账户信息", tag = "eb0105b1-f2db-4c44-ae8a-356c6f57e726")
-	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
+	public ResultSingleData addBasicInfo(@RequestBody Map<String, Object> json) throws NoSuchAlgorithmException {
 		ParamData paramJson = getParamData(json);
 
 		String password = paramJson.getStringByKey(GlobalString.ACCOUNT_PASSWORD);
@@ -317,7 +316,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", description = "更新账户信息", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
-	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData updateBasicInfo(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -371,7 +370,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/resetPassword", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", description = "重置密码", tag = "fd1b4b9d-4b92-4986-a695-986b16cad8a8")
-	public BaseResultData resetPassword(@RequestBody Map<String, Serializable> json) throws NoSuchAlgorithmException {
+	public ResultSingleData resetPassword(@RequestBody Map<String, Object> json) throws NoSuchAlgorithmException {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -429,7 +428,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/setEnable", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "启用账户", description = "设置账户状态为启用状态", tag = "72c3771b-6c5e-411c-9e49-d8555ab99743")
-	public BaseResultData setEnable(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData setEnable(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -447,7 +446,7 @@ public class AccountController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/setDisable", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "禁用账户", description = "设置账户状态为禁用状态", tag = "2ab71d44-ecda-462c-822c-8f37d3000847")
-	public BaseResultData setDisable(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData setDisable(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
@@ -455,7 +454,7 @@ public class AccountController extends BaseOperateAuthController {
 		return this.setStatusCore(accountId, AccountStatus.Disabled);
 	}
 
-	private BaseResultData setStatusCore(long accountId, AccountStatus status) {
+	private ResultSingleData setStatusCore(long accountId, AccountStatus status) {
 		if (accountId <= 0) {
 			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");
 		}

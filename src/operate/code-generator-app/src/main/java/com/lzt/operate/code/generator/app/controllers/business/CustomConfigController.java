@@ -6,11 +6,11 @@ import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.CustomConfigCollection;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
+import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigProducer;
+import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigProducerFactory;
 import com.lzt.operate.code.generator.dao.service.CustomConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.CustomConfigServiceImpl;
 import com.lzt.operate.code.generator.entities.CustomConfig;
-import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigProducer;
-import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigProducerFactory;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.criteria.Predicate;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,7 +83,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置项列表", description = "设置项列表", tag = "c44e3865-1fa0-48df-ad0a-bd3f79807a38")
-	public ResultListData list(@RequestBody Map<String, Serializable> json) {
+	public ResultListData list(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		Integer category = paramJson.getStringExByKey(GlobalString.CUSTOM_CONFIG_CATEGORY).toInt();
@@ -154,7 +153,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "错误日志详情", description = "获取错误日志信息", tag = "a0664bb2-75ff-406b-9463-9e5aae7af56e")
-	public BaseResultData set(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData set(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		String uuid = paramJson.getStringByKey(GlobalString.CUSTOM_CONFIG_UUID);

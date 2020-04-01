@@ -57,7 +57,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,7 +106,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接分页列表", description = "数据库连接分页列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
-	public ResultListData pageList(@RequestBody Map<String, Serializable> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -186,7 +185,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "连接详情", description = "获取数据库连接", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
-	public BaseResultData get(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData get(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -227,7 +226,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/addBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "新增连接", description = "创建数据库连接", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
-	public BaseResultData addBasicInfo(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData addBasicInfo(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		ExecutiveResult<ConnectionConfig> result = this.connectionConfigAssist.createConnectionConfig(paramJson);
@@ -292,7 +291,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/updateBasicInfo", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "更新基本信息", description = "更新数据库连接", tag = "3fab7782-4641-4e8b-832c-3996ddc61b3f")
-	public BaseResultData updateBasicInfo(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData updateBasicInfo(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -385,7 +384,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/remove", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "移除连接", description = "移除数据库连接", tag = "17e57607-d519-4289-9b8a-949bbcff603e")
-	public BaseResultData remove(@RequestBody Map<String, Serializable> json) {
+	public ResultSingleData remove(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -409,7 +408,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/tryConnection", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "打开数据库连接", description = "打开数据库连接", tag = "042ae8f2-a6c5-4c81-ba17-9acbb7e7b41f")
-	public BaseResultData tryConnection(@RequestBody Map<String, Serializable> json) throws Exception {
+	public ResultSingleData tryConnection(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
@@ -441,7 +440,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 	 * @param connectionConfig connectionConfig
 	 * @return BaseResultData
 	 */
-	private BaseResultData decorateSingleData(@NotNull ConnectionConfig connectionConfig) {
+	private ResultSingleData decorateSingleData(@NotNull ConnectionConfig connectionConfig) {
 		List<IGetter<ConnectionConfig>> getterList = new ArrayList<>();
 
 		getterList.add(ConnectionConfig::getName);
