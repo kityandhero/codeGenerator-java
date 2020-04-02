@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.pojo;
 
+import com.google.common.collect.Multimap;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
@@ -7,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -68,7 +70,13 @@ public class ResultListData extends BaseResultData<ResultListData> {
 				Object one;
 
 				if (o instanceof SerializableMap) {
-					one = ConvertAssist.toObjectMixMap(((SerializableMap) o).getMultimap().asMap());
+					one = ConvertAssist.serializableMapToObjectMixMap((SerializableMap) o);
+				} else if (o instanceof Multimap) {
+					one = ConvertAssist.multiMapToObjectMixMap((Multimap<?, ?>) o);
+				} else if (o instanceof Map) {
+					one = ConvertAssist.mapToObjectMixMap((Map<?, ?>) o);
+				} else if (o instanceof List) {
+					one = ConvertAssist.toObjectMixIterable((List<?>) o);
 				} else {
 					one = o;
 				}

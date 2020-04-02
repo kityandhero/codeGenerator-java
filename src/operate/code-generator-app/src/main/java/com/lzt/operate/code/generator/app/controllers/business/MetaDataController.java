@@ -11,6 +11,7 @@ import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
+import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +34,7 @@ public class MetaDataController extends OperateBaseController {
 	@ApiOperation(value = "公共数据", notes = "公共数据资源", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultListData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	public BaseResultData get() {
+	public ResultSingleData get() {
 
 		SerializableData result = new SerializableData();
 

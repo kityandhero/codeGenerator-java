@@ -3,6 +3,7 @@ package com.lzt.operate.utility.assists;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Multimap;
 import com.lzt.operate.utility.pojo.SerializableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -245,27 +246,85 @@ public class ConvertAssist {
 		return stringToDate(StringAssist.join(parts, " "), ConstantAssist.FORMAT_DATETIME_Y4MDHMS);
 	}
 
-	public static <K, V> Map<K, Object> toObjectMixMap(Map<K, Collection<V>> map) {
+	public static Iterable<?> toObjectMixIterable(Iterable<?> list) {
+		List<Object> objectCollection = new ArrayList<>();
+
+		if (Optional.ofNullable(list).isPresent()) {
+			list.forEach(o -> objectCollection.add(toObjectMix(o)));
+		}
+
+		return objectCollection;
+	}
+
+	public static Iterable<?> toObjectMixArray(Object[] items) {
+		List<Object> objectCollection = new ArrayList<>();
+
+		if (Optional.ofNullable(items).isPresent()) {
+			for (Object o : items) {
+				objectCollection.add(toObjectMix(o));
+			}
+		}
+
+		return objectCollection;
+	}
+
+	public static Object toObjectMix(Object value) {
+
+		if (Optional.ofNullable(value).isPresent()) {
+			if (value instanceof SerializableMap) {
+				return ConvertAssist.serializableMapToObjectMixMap((SerializableMap) value);
+			} else if (value instanceof Multimap) {
+				return ConvertAssist.multiMapToObjectMixMap((Multimap<?, ?>) value);
+			} else if (value instanceof Map) {
+				return ConvertAssist.mapToObjectMixMap((Map<?, ?>) value);
+			} else if (value instanceof Iterable) {
+				return toObjectMixIterable((Iterable<?>) value);
+			} else if (value.getClass().isArray()) {
+				return toObjectMixArray((Object[]) value);
+			} else {
+				return value;
+			}
+		}
+
+		return null;
+	}
+
+	public static Map<String, Object> serializableMapToObjectMixMap(SerializableMap serializableMap) {
+		if (Optional.ofNullable(serializableMap).isPresent()) {
+			return multiMapToObjectMixMap(serializableMap.getMultimap());
+		}
+
+		return new HashMap<>(2);
+	}
+
+	public static <K, V> Map<K, Object> multiMapToObjectMixMap(Multimap<K, V> multiMap) {
 		HashMap<K, Object> result = new HashMap<>(2);
 
-		if (Optional.ofNullable(map).isPresent()) {
+		if (Optional.ofNullable(multiMap).isPresent()) {
+			Map<K, Collection<V>> map = multiMap.asMap();
+
 			map.forEach((key, vCollection) -> {
 
 				if (vCollection.size() > 1) {
-					result.put(key, vCollection);
+					result.put(key, toObjectMixIterable(vCollection));
 				} else {
 					if (!vCollection.isEmpty()) {
 						Object v = vCollection.toArray()[0];
 
-						if (v instanceof SerializableMap) {
-							result.put(key, toObjectMixMap(((SerializableMap) v).getMultimap().asMap()));
-						} else {
-							result.put(key, v);
-						}
-
+						result.put(key, toObjectMix(v));
 					}
 				}
 			});
+		}
+
+		return result;
+	}
+
+	public static <K, V> Map<K, Object> mapToObjectMixMap(Map<K, V> map) {
+		HashMap<K, Object> result = new HashMap<>(2);
+
+		if (Optional.ofNullable(map).isPresent()) {
+			map.forEach((key, value) -> result.put(key, toObjectMix(value)));
 		}
 
 		return result;

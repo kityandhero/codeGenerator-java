@@ -1,5 +1,6 @@
 package com.lzt.operate.utility.pojo;
 
+import com.google.common.collect.Multimap;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
@@ -8,6 +9,8 @@ import lombok.NonNull;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -130,7 +133,13 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 
 			if (Optional.ofNullable(extraData).isPresent()) {
 				if (extraData instanceof SerializableMap) {
-					result.setExtra(ConvertAssist.toObjectMixMap(((SerializableMap) extraData).getMultimap().asMap()));
+					result.setExtra(ConvertAssist.serializableMapToObjectMixMap((SerializableMap) extraData));
+				} else if (extraData instanceof Multimap) {
+					result.setExtra(ConvertAssist.multiMapToObjectMixMap((Multimap<?, ?>) extraData));
+				} else if (extraData instanceof Map) {
+					result.setExtra(ConvertAssist.mapToObjectMixMap((Map<?, ?>) extraData));
+				} else if (extraData instanceof List) {
+					result.setExtra(ConvertAssist.toObjectMixIterable((List<?>) extraData));
 				} else {
 					result.setExtra(extraData);
 				}

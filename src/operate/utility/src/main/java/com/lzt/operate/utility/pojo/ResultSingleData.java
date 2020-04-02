@@ -72,11 +72,7 @@ public class ResultSingleData extends BaseResultData<ResultSingleData> {
 		Object data = this.getData();
 
 		if (Optional.ofNullable(data).isPresent()) {
-			if (data instanceof SerializableMap) {
-				result.data = ConvertAssist.toObjectMixMap(((SerializableMap) data).getMultimap().asMap());
-			} else {
-				result.data = data;
-			}
+			result.setData((ConvertAssist.toObjectMix(data)));
 		} else {
 			result.data = new SerializableData().getMultimap().asMap();
 		}
