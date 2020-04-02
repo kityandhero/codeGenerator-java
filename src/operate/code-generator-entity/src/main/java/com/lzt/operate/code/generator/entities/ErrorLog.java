@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.entities;
 
+import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
 import com.lzt.operate.code.generator.common.enums.ErrorLogDegree;
 import com.lzt.operate.code.generator.common.enums.ErrorLogResolve;
 import com.lzt.operate.code.generator.common.enums.ErrorLogType;
@@ -154,6 +155,18 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	private String data;
 
 	/**
+	 * 自定义数据类型
+	 */
+	@Column(nullable = false)
+	private int dataType;
+
+	/**
+	 * 自定义数据类型描述
+	 */
+	@Column(name = "data_type_note", nullable = false)
+	private String dataTypeNote;
+
+	/**
 	 * 解决状态值
 	 */
 	@Column(nullable = false)
@@ -192,6 +205,8 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.port = "";
 		this.otherLog = "";
 		this.data = "";
+		this.dataType = ErrorLogDataType.CommonValue.getFlag();
+		this.dataTypeNote = ErrorLogDataType.CommonValue.getName();
 		this.resolve = ErrorLogResolve.Unresolved.getFlag();
 		this.resolveNote = ErrorLogResolve.Unresolved.getName();
 		this.exceptionTypeName = "";
@@ -349,6 +364,19 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public int getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(ErrorLogDataType dataType) {
+		this.dataType = dataType.getFlag();
+		this.dataTypeNote = dataType.getName();
+	}
+
+	public String getDataTypeNote() {
+		return dataTypeNote;
 	}
 
 	public int getResolve() {

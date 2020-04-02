@@ -2,8 +2,11 @@ package com.lzt.operate.code.generator.app.assists;
 
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
+import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.code.generator.dao.assists.BaseConnectionConfigAssist;
 import com.lzt.operate.code.generator.dao.service.ConnectionConfigService;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
@@ -12,6 +15,7 @@ import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -234,7 +238,14 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 			dataTableGeneratorConfig.setDatabaseGeneratorConfigId(databaseGeneratorConfig.getId());
 			dataTableGeneratorConfig.setTableName(tableName);
 
-			dataTableGeneratorConfig = this.getDataTableGeneratorConfigService().save(dataTableGeneratorConfig);
+			try {
+				dataTableGeneratorConfig = this.getDataTableGeneratorConfigService().save(dataTableGeneratorConfig);
+			} catch (Exception e) {
+				ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance()
+																		   .getProducer();
+
+				errorLogProducer.pushException(e, ConvertAssist.serialize(dataTableGeneratorConfig), ErrorLogDataType.JsonObject);
+			}
 		}
 
 		return new ExecutiveResult<>(ReturnDataCode.Ok, dataTableGeneratorConfig);

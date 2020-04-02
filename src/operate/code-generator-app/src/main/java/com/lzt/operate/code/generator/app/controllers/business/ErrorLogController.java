@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
+import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.ErrorLogService;
@@ -211,6 +212,8 @@ public class ErrorLogController extends BaseOperateAuthController {
 			getterList.add(ErrorLog::getStackTrace);
 			getterList.add(ErrorLog::getExceptionTypeName);
 			getterList.add(ErrorLog::getData);
+			getterList.add(ErrorLog::getDataType);
+			getterList.add(ErrorLog::getDataTypeNote);
 			getterList.add(ErrorLog::getHeader);
 			getterList.add(ErrorLog::getHost);
 			getterList.add(ErrorLog::getPort);
@@ -253,6 +256,25 @@ public class ErrorLogController extends BaseOperateAuthController {
 			List<HashMap<?, ?>> serializableJsonList = ConvertAssist.deserializeToList(stackTrace);
 
 			data.append(GlobalString.ERROR_LOG_STACK_TRACE_JSON, serializableJsonList);
+
+			//endregion
+
+			//region data
+
+			String otherData = errorLog.getData();
+			Integer otherDataType = errorLog.getDataType();
+
+			if (otherDataType.equals(ErrorLogDataType.JsonObject.getFlag())) {
+				HashMap<?, ?> otherDataJson = ConvertAssist.deserialize(otherData);
+
+				data.append(GlobalString.ERROR_LOG_DATA_JSON, otherDataJson);
+			} else if (otherDataType.equals(ErrorLogDataType.JsonObjectList.getFlag())) {
+				List<HashMap<?, ?>> otherDataJsonList = ConvertAssist.deserializeToList(otherData);
+
+				data.append(GlobalString.ERROR_LOG_DATA_JSON, otherDataJsonList);
+			} else {
+				data.append(GlobalString.ERROR_LOG_DATA_JSON, "");
+			}
 
 			//endregion
 

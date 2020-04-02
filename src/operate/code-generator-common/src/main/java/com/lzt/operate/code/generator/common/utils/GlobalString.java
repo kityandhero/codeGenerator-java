@@ -277,6 +277,11 @@ public class GlobalString {
 	 */
 	public static final String ERROR_LOG_STACK_TRACE_JSON = "stackTraceJson";
 
+	/**
+	 * 用于返回转换后的 data json 结构
+	 */
+	public static final String ERROR_LOG_DATA_JSON = "dataJson";
+
 	//endregion
 
 	//region

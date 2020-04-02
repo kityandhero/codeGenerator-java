@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.custommessagequeue.errorlog;
 
+import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
 import com.lzt.operate.code.generator.entities.ErrorLog;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.RequestAssist;
@@ -17,6 +18,10 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 	}
 
 	public void pushException(Exception ex) {
+		pushException(ex, "", ErrorLogDataType.CommonValue);
+	}
+
+	public void pushException(Exception ex, String data, ErrorLogDataType dataType) {
 		ErrorLog errorLog = new ErrorLog();
 
 		errorLog.setMessage(ex.getMessage());
@@ -35,6 +40,9 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 		}
 
 		errorLog.setHeader(RequestAssist.getCurrentRequestHeaderJson());
+
+		errorLog.setData(data);
+		errorLog.setDataType(dataType);
 
 		this.push(errorLog);
 	}

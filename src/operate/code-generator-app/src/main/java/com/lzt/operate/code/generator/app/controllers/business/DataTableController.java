@@ -7,6 +7,8 @@ import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
@@ -224,6 +226,11 @@ public class DataTableController extends BaseOperateAuthController {
 														   }
 													   } catch (Exception e) {
 														   e.printStackTrace();
+
+														   ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance()
+																													  .getProducer();
+
+														   errorLogProducer.pushException(e);
 													   }
 												   }
 
