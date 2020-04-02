@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
  * @author luzhitao
  */
 @Entity
-@Table(name = "data_column", uniqueConstraints = @UniqueConstraint(columnNames = {"connection_config_id", "database_generator_config_id", "data_table_generator_config_id", "table_name", "column_name"}))
+@Table(name = "data_column", uniqueConstraints = @UniqueConstraint(columnNames = {"column_name"}))
 @EqualsAndHashCode(callSuper = true)
 public class DataColumn extends BaseEntity {
 
