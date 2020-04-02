@@ -76,7 +76,7 @@ public class ResultListData extends BaseResultData<ResultListData> {
 				} else if (o instanceof Map) {
 					one = ConvertAssist.mapToObjectMixMap((Map<?, ?>) o);
 				} else if (o instanceof List) {
-					one = ConvertAssist.toObjectMixIterable((List<?>) o);
+					one = ConvertAssist.toObjectMixCollection((List<?>) o);
 				} else {
 					one = o;
 				}

@@ -246,7 +246,7 @@ public class ConvertAssist {
 		return stringToDate(StringAssist.join(parts, " "), ConstantAssist.FORMAT_DATETIME_Y4MDHMS);
 	}
 
-	public static Iterable<?> toObjectMixIterable(Iterable<?> list) {
+	public static Collection<?> toObjectMixCollection(Collection<?> list) {
 		List<Object> objectCollection = new ArrayList<>();
 
 		if (Optional.ofNullable(list).isPresent()) {
@@ -256,7 +256,7 @@ public class ConvertAssist {
 		return objectCollection;
 	}
 
-	public static Iterable<?> toObjectMixArray(Object[] items) {
+	public static Collection<?> toObjectMixArray(Object[] items) {
 		List<Object> objectCollection = new ArrayList<>();
 
 		if (Optional.ofNullable(items).isPresent()) {
@@ -277,10 +277,26 @@ public class ConvertAssist {
 				return ConvertAssist.multiMapToObjectMixMap((Multimap<?, ?>) value);
 			} else if (value instanceof Map) {
 				return ConvertAssist.mapToObjectMixMap((Map<?, ?>) value);
-			} else if (value instanceof Iterable) {
-				return toObjectMixIterable((Iterable<?>) value);
+			} else if (value instanceof Collection) {
+				Collection<?> collection = (Collection<?>) value;
+
+				Integer size = collection.size();
+
+				if (size.equals(1)) {
+					return toObjectMix(collection.toArray()[0]);
+				}
+
+				return toObjectMixCollection((Collection<?>) value);
 			} else if (value.getClass().isArray()) {
-				return toObjectMixArray((Object[]) value);
+				Object[] array = (Object[]) value;
+
+				Integer arrayLength = array.length;
+
+				if (arrayLength.equals(1)) {
+					return toObjectMix(array[0]);
+				}
+
+				return toObjectMixArray(array);
 			} else {
 				return value;
 			}
@@ -306,7 +322,7 @@ public class ConvertAssist {
 			map.forEach((key, vCollection) -> {
 
 				if (vCollection.size() > 1) {
-					result.put(key, toObjectMixIterable(vCollection));
+					result.put(key, toObjectMixCollection(vCollection));
 				} else {
 					if (!vCollection.isEmpty()) {
 						Object v = vCollection.toArray()[0];

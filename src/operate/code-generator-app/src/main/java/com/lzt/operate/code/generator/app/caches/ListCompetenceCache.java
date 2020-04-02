@@ -1,6 +1,8 @@
 package com.lzt.operate.code.generator.app.caches;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.Competence;
@@ -40,6 +42,10 @@ public class ListCompetenceCache {
 			competenceList = ConvertAssist.deserializeToList(json, Competence.class);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+
+			ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance().getProducer();
+
+			errorLogProducer.pushException(ex);
 
 			competenceList = null;
 		}

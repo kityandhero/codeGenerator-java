@@ -156,4 +156,40 @@ public class RequestAssist {
 		return "";
 	}
 
+	public static String getCurrentRequestHeaderJson() {
+		Optional<HttpServletRequest> optional = getCurrentHttpServletRequest();
+
+		if (optional.isPresent()) {
+			HttpServletRequest request = optional.get();
+
+			Enumeration<String> headerNames = request.getHeaderNames();
+
+			SerializableData headers = new SerializableData();
+
+			while (headerNames.hasMoreElements()) {
+				String headerName = headerNames.nextElement();
+
+				headers.append(headerName, request.getHeader(headerName));
+			}
+
+			return headers.serialize();
+		}
+
+		return "";
+	}
+
+	public String getRequestHeaderJson(@NotNull HttpServletRequest request) {
+		Enumeration<String> headerNames = request.getHeaderNames();
+
+		SerializableData headers = new SerializableData();
+
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+
+			headers.append(headerName, request.getHeader(headerName));
+		}
+
+		return headers.serialize();
+	}
+
 }

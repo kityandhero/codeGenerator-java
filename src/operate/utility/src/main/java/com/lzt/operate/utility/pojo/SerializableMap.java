@@ -71,7 +71,7 @@ public class SerializableMap {
 	public java.lang.String serialize() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			return mapper.writeValueAsString(this);
+			return mapper.writeValueAsString(this.getMultimap().asMap());
 		} catch (Exception e) {
 			return "{}";
 		}

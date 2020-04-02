@@ -139,7 +139,7 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 				} else if (extraData instanceof Map) {
 					result.setExtra(ConvertAssist.mapToObjectMixMap((Map<?, ?>) extraData));
 				} else if (extraData instanceof List) {
-					result.setExtra(ConvertAssist.toObjectMixIterable((List<?>) extraData));
+					result.setExtra(ConvertAssist.toObjectMixCollection((List<?>) extraData));
 				} else {
 					result.setExtra(extraData);
 				}
