@@ -3,6 +3,7 @@ package com.lzt.operate.code.generator.app.assists;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
+import com.lzt.operate.code.generator.common.jackson.ObjectMapperAssist;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
@@ -244,7 +245,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 				ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance()
 																		   .getProducer();
 
-				errorLogProducer.pushException(e, ConvertAssist.serialize(dataTableGeneratorConfig), ErrorLogDataType.JsonObject);
+				errorLogProducer.pushException(e, ConvertAssist.serialize(ObjectMapperAssist.createObjectMapper(), dataTableGeneratorConfig), ErrorLogDataType.JsonObject);
 			}
 		}
 

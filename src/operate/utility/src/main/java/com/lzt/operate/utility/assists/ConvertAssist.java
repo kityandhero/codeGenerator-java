@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -353,9 +354,17 @@ public class ConvertAssist {
 	 * @return String Json
 	 */
 	public static String serialize(Object o) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
+		return serialize(new ObjectMapper(), o);
+	}
 
-		return mapper.writeValueAsString(o);
+	/**
+	 * 序列化
+	 *
+	 * @param o Object
+	 * @return String Json
+	 */
+	public static String serialize(@NotNull ObjectMapper objectMapper, Object o) throws JsonProcessingException {
+		return objectMapper.writeValueAsString(o);
 	}
 
 	/**
