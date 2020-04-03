@@ -249,6 +249,17 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 			//endregion
 
+			//region requestParamsJson
+
+			String requestParams = errorLog.getRequestParams();
+
+			HashMap<?, ?> requestParamsJson = StringAssist.isNullOrEmpty(requestParams) ? new HashMap<>() : ConvertAssist
+					.deserialize(requestParams);
+
+			data.append(GlobalString.ERROR_LOG_REQUEST_PARAMS_JSON, requestParamsJson);
+
+			//endregion
+
 			//region stackTraceJson
 
 			String stackTrace = errorLog.getStackTrace();

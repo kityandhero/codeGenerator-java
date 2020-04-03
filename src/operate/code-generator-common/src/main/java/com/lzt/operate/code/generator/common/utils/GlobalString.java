@@ -282,6 +282,11 @@ public class GlobalString {
 	 */
 	public static final String ERROR_LOG_DATA_JSON = "dataJson";
 
+	/**
+	 * 用于返回转换后的 data json 结构
+	 */
+	public static final String ERROR_LOG_REQUEST_PARAMS_JSON = "requestParamsJson";
+
 	//endregion
 
 	//region
