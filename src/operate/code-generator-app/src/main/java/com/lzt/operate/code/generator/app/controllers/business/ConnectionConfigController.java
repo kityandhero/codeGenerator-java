@@ -11,6 +11,8 @@ import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
@@ -171,6 +173,11 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
+
+		ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance()
+																   .getProducer();
+
+		errorLogProducer.pushException(new RuntimeException("sd"));
 
 		return this.pageData(list, pageIndex, pageSize, totalPages);
 	}
