@@ -12,7 +12,7 @@ spring:
   thymeleaf:
     cache: false
     mode: Html
-    encoding: utf-8
+    encoding: UTF-8
   #thymeleaf end
   #datasource start
   datasource:
