@@ -21,15 +21,21 @@ import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAs
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogConsumer;
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogQueueRunner;
 import com.lzt.operate.code.generator.dao.service.AccessWayService;
-import com.lzt.operate.code.generator.dao.service.AccountRoleService;
 import com.lzt.operate.code.generator.dao.service.AccountService;
 import com.lzt.operate.code.generator.dao.service.CustomConfigService;
 import com.lzt.operate.code.generator.dao.service.ErrorLogService;
 import com.lzt.operate.code.generator.dao.service.GeneralLogService;
 import com.lzt.operate.code.generator.dao.service.HelpCategoryService;
-import com.lzt.operate.code.generator.dao.service.RoleCodeToolsService;
 import com.lzt.operate.code.generator.dao.service.RoleUniversalService;
+import com.lzt.operate.code.generator.dao.service.impl.AccessWayServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.AccountRoleServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.AccountServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.CustomConfigServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.ErrorLogServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.GeneralLogServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.HelpCategoryServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.RoleCodeToolsServiceImpl;
+import com.lzt.operate.code.generator.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.code.generator.entities.Account;
 import com.lzt.operate.code.generator.entities.CustomConfig;
 import com.lzt.operate.code.generator.entities.HelpCategory;
@@ -73,14 +79,14 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			LoadingCache<String, Object> loadingCache,
 			Environment environment,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			AccountService accountService,
-			AccountRoleService accountRoleService,
-			RoleUniversalService roleUniversalService,
-			RoleCodeToolsService roleCodeToolsService,
-			CustomConfigService customConfigService,
-			AccessWayService accessWayService,
-			ErrorLogService errorLogService,
-			GeneralLogService generalLogService,
+			AccountServiceImpl accountService,
+			AccountRoleServiceImpl accountRoleService,
+			RoleUniversalServiceImpl roleUniversalService,
+			RoleCodeToolsServiceImpl roleCodeToolsService,
+			CustomConfigServiceImpl customConfigService,
+			AccessWayServiceImpl accessWayService,
+			ErrorLogServiceImpl errorLogService,
+			GeneralLogServiceImpl generalLogService,
 			HelpCategoryServiceImpl helpCategoryService) {
 		this.loadingCache = loadingCache;
 

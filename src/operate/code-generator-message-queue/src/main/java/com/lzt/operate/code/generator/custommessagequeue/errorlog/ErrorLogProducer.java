@@ -66,8 +66,13 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 					errorLog.setOtherLog("字符串转换为URI出错");
 
 					errorLog.setRequestQueryString(url.getQuery());
-					errorLog.setRequestBody(RequestAssist.getRequestBody(request));
-					errorLog.setRequestParams(RequestAssist.getRequestFormData(request).serialize());
+
+					try {
+						errorLog.setRequestBody(RequestAssist.getRequestBody(request));
+						errorLog.setRequestParams(RequestAssist.getRequestFormData(request).serialize());
+					} catch (Exception eRequest) {
+						eRequest.printStackTrace();
+					}
 				} catch (Exception e) {
 					ErrorLog errorLogUri = new ErrorLog();
 

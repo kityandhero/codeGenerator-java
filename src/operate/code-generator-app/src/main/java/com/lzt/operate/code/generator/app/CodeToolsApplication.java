@@ -3,11 +3,13 @@ package com.lzt.operate.code.generator.app;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lzt.operate.code.generator.common.jackson.ObjectMapperAssist;
 import com.lzt.operate.swagger2.EnableSwagger2Doc;
+import com.lzt.operate.utility.net.CustomServletRequestFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,15 +56,14 @@ public class CodeToolsApplication implements WebMvcConfigurer {
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	}
 
-	// @Bean
-	// @Description("全局跨域配置")
-	// public FilterRegistrationBean<CorsCustomFilter> corsAllUrlFilterRegistration() {
-	//     FilterRegistrationBean<CorsCustomFilter> registration = new FilterRegistrationBean<>(new CorsCustomFilter(this.corsConfig));
-	//     registration.addUrlPatterns("/*");
-	//     registration.setName("corsAllUrlFilter");
-	//     registration.setOrder(1);
-	//     return registration;
-	// }
+	@Bean
+	public FilterRegistrationBean<CustomServletRequestFilter> corsAllUrlFilterRegistration() {
+		FilterRegistrationBean<CustomServletRequestFilter> registration = new FilterRegistrationBean<>(new CustomServletRequestFilter());
+		registration.addUrlPatterns("/*");
+		registration.setName("customServletRequestFilter");
+		registration.setOrder(1);
+		return registration;
+	}
 
 	/**
 	 * 配置spring boot内嵌的Jackson序列化与反序列化类型映射
