@@ -8,13 +8,12 @@ spring:
       prefix: classpath:/templates/
   profiles:
     active: dev
-    #thymeleaf start
-    thymeleaf:
-      #开发时关闭缓存,不然没法看到实时页面
-      cache: false
-      mode: Html
-      encoding: utf-8
-    #thymeleaf end
+  #thymeleaf start
+  thymeleaf:
+    cache: false
+    mode: Html
+    encoding: utf-8
+  #thymeleaf end
   #datasource start
   datasource:
     name: codeGenerator
@@ -79,3 +78,8 @@ frame:
     secret: 54e2e52w34348f86b67cde581c0r9eb5
     header: token
   #jwt end
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
