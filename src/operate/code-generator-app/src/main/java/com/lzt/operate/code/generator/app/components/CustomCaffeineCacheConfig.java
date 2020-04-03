@@ -51,7 +51,7 @@ public class CustomCaffeineCacheConfig {
 					   //过期时间
 					   .expireAfterAccess(1, TimeUnit.MINUTES)
 					   //刷新时候调用
-					   .build((String key) -> "刷新的数据");
+					   .build((String key) -> null);
 	}
 
 	@Primary

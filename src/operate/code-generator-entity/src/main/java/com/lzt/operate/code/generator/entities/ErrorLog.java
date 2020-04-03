@@ -138,7 +138,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	 * 端口
 	 */
 	@Column(nullable = false)
-	private String port;
+	private int port;
 
 	/**
 	 * 其他附属日志
@@ -202,7 +202,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.requestBody = "";
 		this.requestParams = "";
 		this.host = "";
-		this.port = "";
+		this.port = 0;
 		this.otherLog = "";
 		this.data = "";
 		this.dataType = ErrorLogDataType.CommonValue.getFlag();
@@ -342,11 +342,11 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.host = host;
 	}
 
-	public String getPort() {
+	public int getPort() {
 		return port;
 	}
 
-	public void setPort(String port) {
+	public void setPort(int port) {
 		this.port = port;
 	}
 

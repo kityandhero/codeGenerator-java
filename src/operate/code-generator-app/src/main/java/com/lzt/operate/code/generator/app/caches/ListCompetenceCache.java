@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.app.caches;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.utility.assists.ConvertAssist;
@@ -9,7 +10,6 @@ import com.lzt.operate.utility.pojo.Competence;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -34,7 +34,11 @@ public class ListCompetenceCache {
 	public static Optional<List<Competence>> getCache(long accountId, @NotNull LoadingCache<String, Object> loadingCache) {
 		String key = ListCompetenceCache.getCacheKey(accountId);
 
-		String json = Objects.requireNonNull(loadingCache.get(key)).toString();
+		String json = Optional.ofNullable(loadingCache.get(key)).orElse("").toString();
+
+		if (StringAssist.isNullOrEmpty(json)) {
+			return Optional.empty();
+		}
 
 		List<Competence> competenceList;
 
@@ -45,7 +49,7 @@ public class ListCompetenceCache {
 
 			ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance().getProducer();
 
-			errorLogProducer.pushException(ex);
+			errorLogProducer.pushException(ex, json, ErrorLogDataType.CommonValue);
 
 			competenceList = null;
 		}
