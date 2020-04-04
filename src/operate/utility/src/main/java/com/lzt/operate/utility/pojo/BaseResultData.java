@@ -117,6 +117,13 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 	protected abstract T toJsonResultWithOther(T resultData);
 
 	/**
+	 * 转换为最终的待序列化为Json的数据
+	 *
+	 * @return BaseResultData
+	 */
+	public abstract T transferToJsonResultData();
+
+	/**
 	 * 转换为即将序列化的数据
 	 *
 	 * @return BaseResultData

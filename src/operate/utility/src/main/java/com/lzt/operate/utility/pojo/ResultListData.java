@@ -2,6 +2,7 @@ package com.lzt.operate.utility.pojo;
 
 import com.google.common.collect.Multimap;
 import com.lzt.operate.utility.assists.ConvertAssist;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 
@@ -90,6 +91,17 @@ public class ResultListData extends BaseResultData<ResultListData> {
 		}
 
 		return result;
+	}
+
+	@Override
+	public ResultListData transferToJsonResultData() {
+		ExecutiveResult<ResultListData> result = this.toJsonResult(ResultListData.class);
+
+		if (result.getSuccess()) {
+			return result.getData();
+		}
+
+		return new ResultListData(result.getCode());
 	}
 
 	public List<Object> getList() {

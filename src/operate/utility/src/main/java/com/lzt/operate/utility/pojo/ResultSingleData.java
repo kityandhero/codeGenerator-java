@@ -2,6 +2,7 @@ package com.lzt.operate.utility.pojo;
 
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 
@@ -78,6 +79,17 @@ public class ResultSingleData extends BaseResultData<ResultSingleData> {
 		}
 
 		return result;
+	}
+
+	@Override
+	public ResultSingleData transferToJsonResultData() {
+		ExecutiveResult<ResultSingleData> result = this.toJsonResult(ResultSingleData.class);
+
+		if (result.getSuccess()) {
+			return result.getData();
+		}
+
+		return new ResultSingleData(result.getCode());
 	}
 
 	public Object getData() {

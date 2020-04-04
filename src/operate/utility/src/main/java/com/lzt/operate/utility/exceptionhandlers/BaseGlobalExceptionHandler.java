@@ -99,13 +99,13 @@ public abstract class BaseGlobalExceptionHandler {
 
 			error.setMessage(error.getMessage() + "," + e.getMessage());
 
-			return error;
+			return error.transferToJsonResultData();
 		} else {
 			ResultSingleData error = new ResultSingleData(ReturnDataCode.BAD_REQUEST.toMessage());
 
 			error.setMessage(error.getMessage() + "," + e.getMessage());
 
-			return error;
+			return error.transferToJsonResultData();
 		}
 
 	}
@@ -127,7 +127,7 @@ public abstract class BaseGlobalExceptionHandler {
 			this.recordErrorLog(e);
 		}
 
-		return new ResultSingleData(ReturnDataCode.METHOD_NOT_ALLOWED.toMessage());
+		return new ResultSingleData(ReturnDataCode.METHOD_NOT_ALLOWED.toMessage()).transferToJsonResultData();
 	}
 
 	/**
@@ -159,7 +159,7 @@ public abstract class BaseGlobalExceptionHandler {
 				ex.toMessage(message);
 			}
 
-			return new ResultSingleData(ex);
+			return new ResultSingleData(ex).transferToJsonResultData();
 		} else if (e instanceof AuthorizationException) {
 			ReturnDataCode ex = ReturnDataCode.UNAUTHORIZED_ERROR;
 
@@ -169,13 +169,13 @@ public abstract class BaseGlobalExceptionHandler {
 				ex.toMessage(message);
 			}
 
-			return new ResultSingleData(ex.toMessage());
+			return new ResultSingleData(ex.toMessage()).transferToJsonResultData();
 		} else if (e instanceof JedisConnectionException) {
 			//redis连接异常
-			return new ResultSingleData(ReturnDataCode.REDIS_CONNECT_ERROR.toMessage());
+			return new ResultSingleData(ReturnDataCode.REDIS_CONNECT_ERROR.toMessage()).transferToJsonResultData();
 		} else if (e instanceof JedisException) {
 			//redis异常
-			return new ResultSingleData(ReturnDataCode.REDIS_ERROR.toMessage());
+			return new ResultSingleData(ReturnDataCode.REDIS_ERROR.toMessage()).transferToJsonResultData();
 		}
 
 		SerializableData serializableData = new SerializableData();
@@ -184,6 +184,6 @@ public abstract class BaseGlobalExceptionHandler {
 		serializableData.append("localizedMessage", e.getLocalizedMessage());
 		serializableData.append("stackTrace", e.getStackTrace());
 
-		return new ResultSingleData(ReturnDataCode.SYSTEM_ERR.appendMessage(e.getMessage()), serializableData);
+		return new ResultSingleData(ReturnDataCode.SYSTEM_ERR.appendMessage(e.getMessage()), serializableData).transferToJsonResultData();
 	}
 }

@@ -9,7 +9,6 @@ import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.ReturnMessage;
 import com.lzt.operate.utility.pojo.SerializableData;
-import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import com.lzt.operate.utility.pojo.results.ListResult;
 import com.lzt.operate.utility.pojo.results.PageListResult;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,26 +36,6 @@ import java.util.Map;
 @Slf4j
 @Api(tags = "错误接口")
 public class BaseController implements ErrorController {
-
-	private ResultSingleData transferResultSingleData(@NotNull ResultSingleData singleData) {
-		ExecutiveResult<ResultSingleData> result = singleData.toJsonResult(ResultSingleData.class);
-
-		if (result.getSuccess()) {
-			return result.getData();
-		}
-
-		return new ResultSingleData(result.getCode());
-	}
-
-	private ResultListData transferResultListData(@NotNull ResultListData listData) {
-		ExecutiveResult<ResultListData> result = listData.toJsonResult(ResultListData.class);
-
-		if (result.getSuccess()) {
-			return result.getData();
-		}
-
-		return new ResultListData(result.getCode());
-	}
 
 	/**
 	 * 返回结构化的参数
@@ -75,7 +53,7 @@ public class BaseController implements ErrorController {
 		result.setData(data);
 		result.setExtra(new SerializableData());
 
-		return transferResultSingleData(result);
+		return result.transferToJsonResultData();
 	}
 
 	protected ResultSingleData singleData(Object data, Object extra) {
@@ -84,7 +62,7 @@ public class BaseController implements ErrorController {
 		result.setData(data);
 		result.setExtra(extra);
 
-		return transferResultSingleData(result);
+		return result.transferToJsonResultData();
 	}
 
 	protected ResultListData listDataEmpty() {
@@ -100,7 +78,7 @@ public class BaseController implements ErrorController {
 			return this.listData(listResult.getList(), extra);
 		}
 
-		return transferResultListData(ResultDataFactory.failListData(listResult.getCode(), extra));
+		return ResultDataFactory.failListData(listResult.getCode(), extra).transferToJsonResultData();
 	}
 
 	protected <T> ResultListData listData(List<T> list) {
@@ -109,7 +87,7 @@ public class BaseController implements ErrorController {
 		result.setList(ConvertAssist.toObjectList(list));
 		result.setExtra(new SerializableData());
 
-		return transferResultListData(result);
+		return result.transferToJsonResultData();
 	}
 
 	protected <T> ResultListData listData(List<T> list, Object extra) {
@@ -118,15 +96,15 @@ public class BaseController implements ErrorController {
 		result.setList(ConvertAssist.toObjectList(list));
 		result.setExtra(extra);
 
-		return transferResultListData(result);
+		return result.transferToJsonResultData();
 	}
 
 	protected ResultSingleData success() {
-		return transferResultSingleData(ResultDataFactory.successSingleData());
+		return ResultDataFactory.successSingleData().transferToJsonResultData();
 	}
 
 	protected ResultSingleData successWithTimestamp() {
-		return transferResultSingleData(ResultDataFactory.successWithTimestampSingleData());
+		return ResultDataFactory.successWithTimestampSingleData().transferToJsonResultData();
 	}
 
 	protected ResultSingleData fail(@NonNull ExecutiveSimpleResult result) {
@@ -138,7 +116,7 @@ public class BaseController implements ErrorController {
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage) {
-		return transferResultSingleData(ResultDataFactory.failData(returnMessage));
+		return ResultDataFactory.failData(returnMessage).transferToJsonResultData();
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage, SerializableData data) {
@@ -146,7 +124,7 @@ public class BaseController implements ErrorController {
 
 		result.setData(data);
 
-		return transferResultSingleData(result);
+		return result.transferToJsonResultData();
 	}
 
 	protected ResultSingleData fail(@NonNull ReturnMessage returnMessage, Serializable data, Serializable extra) {
@@ -155,7 +133,7 @@ public class BaseController implements ErrorController {
 		result.setData(data);
 		result.setExtra(extra);
 
-		return transferResultSingleData(result);
+		return result.transferToJsonResultData();
 	}
 
 	protected ResultSingleData noChange(String description) {
@@ -163,7 +141,8 @@ public class BaseController implements ErrorController {
 
 		data.append("description", description);
 
-		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.NoChange.toMessage(description), data));
+		return ResultDataFactory.failData(ReturnDataCode.NoChange.toMessage(description), data)
+								.transferToJsonResultData();
 	}
 
 	protected ResultSingleData paramError(String paramName, String description) {
@@ -172,7 +151,8 @@ public class BaseController implements ErrorController {
 		data.append("paramName", paramName);
 		data.append("description", description);
 
-		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage(StringAssist.merge("参数：", paramName, "【", description, "】")), data));
+		return ResultDataFactory.failData(ReturnDataCode.ParamError.toMessage(StringAssist.merge("参数：", paramName, "【", description, "】")), data)
+								.transferToJsonResultData();
 	}
 
 	protected ResultSingleData noDataError() {
@@ -184,15 +164,15 @@ public class BaseController implements ErrorController {
 
 		data.append("description", description);
 
-		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.NoData.toMessage(description)));
+		return ResultDataFactory.failData(ReturnDataCode.NoData.toMessage(description)).transferToJsonResultData();
 	}
 
 	protected ResultSingleData exceptionError(Exception e) {
-		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage()));
+		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage()).transferToJsonResultData();
 	}
 
 	protected ResultSingleData customError(int code, boolean success, String message) {
-		return transferResultSingleData(ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage()));
+		return ResultDataFactory.failData(ReturnDataCode.EXCEPTION_ERROR.toMessage()).transferToJsonResultData();
 	}
 
 	protected ResultListData pageDataEmpty() {
@@ -230,7 +210,7 @@ public class BaseController implements ErrorController {
 					.getTotalSize(), extra);
 		}
 
-		return transferResultListData(ResultDataFactory.failListData(pageListResult.getCode(), extra));
+		return ResultDataFactory.failListData(pageListResult.getCode(), extra).transferToJsonResultData();
 	}
 
 	protected <T> ResultListData pageData(List<T> list, int pageNo, int pageSize, long totalPage) {
@@ -250,7 +230,7 @@ public class BaseController implements ErrorController {
 
 		result.setExtra(extra);
 
-		return transferResultListData(result);
+		return result.transferToJsonResultData();
 	}
 
 	@Override
