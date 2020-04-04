@@ -156,6 +156,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 												getterList.add(ErrorLog::getMessage);
 												getterList.add(ErrorLog::getUri);
+												getterList.add(ErrorLog::getScene);
 												getterList.add(ErrorLog::getChannel);
 												getterList.add(ErrorLog::getChannelNote);
 												getterList.add(ErrorLog::getStatus);
