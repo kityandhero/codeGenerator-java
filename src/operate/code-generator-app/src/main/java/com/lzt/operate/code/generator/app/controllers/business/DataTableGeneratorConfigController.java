@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
+import com.lzt.operate.code.generator.app.bridge.MybatisGeneratorBridge;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
@@ -9,6 +10,7 @@ import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.DataBaseGeneratorConfigServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.DataTableGeneratorConfigServiceImpl;
+import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
@@ -16,6 +18,7 @@ import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
@@ -24,6 +27,7 @@ import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -258,7 +262,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		return this.noDataError("获取数据表生成配置信息不存在");
 	}
 
-	@ApiOperation(value = "设置数据表生成配置信息", notes = "设置数据表生成配置信息", httpMethod = "POST")
+	@ApiOperation(value = "初始化数据表生成配置信息", notes = "初始化数据表生成配置信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET, value = {
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID),
@@ -269,7 +273,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/initialize", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据表生成配置信息", description = "设置数据表生成配置信息", tag = "f4994bd3-bba7-4b97-8224-4b6fbfc5a8d0")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "初始化数据表生成配置信息", description = "初始化数据表生成配置信息", tag = "85a8c025-dc17-4ed8-9138-9cfb212fe458")
 	public ResultSingleData initialize(@RequestBody Map<String, Object> json) throws Exception {
 		ParamData paramJson = getParamData(json);
 
@@ -283,6 +287,66 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		if (result.getSuccess()) {
 			return this.singleData(new SerializableData().append(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, result.getData()
 																													.getId()));
+		}
+
+		return this.fail(result.getCode());
+	}
+
+	@ApiOperation(value = "构建表对应代码", notes = "构建表对应代码", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE, value = {
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "构建表对应代码", description = "构建表对应代码", tag = "83ddf6ea-1f01-4cb9-b67d-0d2689184412")
+	public ResultSingleData generate(@RequestBody Map<String, Object> json) throws Exception {
+		ParamData paramJson = getParamData(json);
+
+		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+										   .toLong();
+
+		if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
+			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
+		}
+
+		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
+												   .toLong();
+
+		if (ConstantCollection.ZERO_LONG.equals(dataTableGeneratorConfigId)) {
+			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, "不能为空值"));
+		}
+
+		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
+
+		if (!optionalConnectionConfig.isPresent()) {
+			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
+		}
+
+		// Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+		// 																							   .findByConnectionConfigId(connectionConfigId);
+		//
+		// if (!optionalDatabaseGeneratorConfig.isPresent()) {
+		// 	return this.fail(ReturnDataCode.NoData.toMessage("指定的数据库生成配置不存在"));
+		// }
+
+		Optional<DataTableGeneratorConfig> optionalDataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+																										 .get(dataTableGeneratorConfigId);
+
+		if (!optionalDataTableGeneratorConfig.isPresent()) {
+			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据表生成配置不存在"));
+		}
+
+		MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(optionalConnectionConfig.get(), this.connectionConfigAssist
+				.getDatabaseGeneratorConfigService());
+
+		ExecutiveSimpleResult result = mybatisGeneratorBridge.generate(optionalDataTableGeneratorConfig.get());
+
+		if (result.getSuccess()) {
+			return this.successWithTimestamp();
 		}
 
 		return this.fail(result.getCode());

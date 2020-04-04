@@ -54,6 +54,8 @@ public class ModelNameCollection {
 
 	public static final String DATA_TABLE_GENERATOR_CONFIG_SET = "DATA_TABLE_GENERATOR_CONFIG_SET";
 
+	public static final String DATA_TABLE_GENERATOR_CONFIG_GENERATE = "DATA_TABLE_GENERATOR_CONFIG_GENERATE";
+
 	//endregion
 
 	//region ACCOUNT 账户

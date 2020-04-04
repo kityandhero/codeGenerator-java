@@ -1,8 +1,10 @@
 package com.lzt.operate.utility.pojo;
 
+import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 /**
@@ -28,6 +30,14 @@ public class ResultDataFactory {
 
 	public static ResultSingleData successSingleData() {
 		return new ResultSingleData(ReturnDataCode.Ok.toMessage(), new SerializableData(), new SerializableData());
+	}
+
+	public static ResultSingleData successWithTimestampSingleData() {
+		SerializableData data = new SerializableData();
+
+		data.append("timestamp", LocalDateTimeAssist.toUnixTime(LocalDateTime.now()));
+
+		return new ResultSingleData(ReturnDataCode.Ok.toMessage(), data, new SerializableData());
 	}
 
 	public static ResultListData successListData() {

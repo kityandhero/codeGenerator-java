@@ -125,6 +125,10 @@ public class BaseController implements ErrorController {
 		return transferResultSingleData(ResultDataFactory.successSingleData());
 	}
 
+	protected ResultSingleData successWithTimestamp() {
+		return transferResultSingleData(ResultDataFactory.successWithTimestampSingleData());
+	}
+
 	protected ResultSingleData fail(@NonNull ExecutiveSimpleResult result) {
 		ReturnMessage returnMessage = result.getCode();
 
