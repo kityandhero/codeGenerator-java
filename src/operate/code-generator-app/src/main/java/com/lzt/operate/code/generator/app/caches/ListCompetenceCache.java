@@ -49,7 +49,7 @@ public class ListCompetenceCache {
 
 			ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance().getProducer();
 
-			errorLogProducer.pushException(ex, json, ErrorLogDataType.CommonValue);
+			errorLogProducer.pushException(ex, "获取权限集合缓存时", json, ErrorLogDataType.CommonValue);
 
 			competenceList = null;
 		}

@@ -21,16 +21,17 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 		super(SingletonErrorLogQueue.getInstance().getQueue());
 	}
 
-	public void pushException(Exception ex) {
-		pushException(ex, "", ErrorLogDataType.CommonValue);
+	public void pushException(Throwable ex, String scene) {
+		pushException(ex, scene, "", ErrorLogDataType.CommonValue);
 	}
 
-	public void pushException(Exception ex, String data, ErrorLogDataType dataType) {
+	public void pushException(Throwable ex, String scene, String data, ErrorLogDataType dataType) {
 		Optional<HttpServletRequest> optionalHttpServletRequest = RequestAssist.getCurrentHttpServletRequest();
 
 		ErrorLog errorLog = new ErrorLog();
 
 		errorLog.setMessage(ex.getMessage());
+		errorLog.setScene(Optional.ofNullable(scene).orElse(""));
 
 		try {
 			errorLog.setStackTrace(ConvertAssist.serialize(ex.getStackTrace()));
@@ -42,6 +43,7 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 			errorLogCatch.setMessage(e.getMessage());
 			errorLogCatch.setHeader(RequestAssist.getCurrentRequestHeaderJson());
 			errorLogCatch.setExceptionTypeName(e.getClass().getName());
+			errorLog.setScene("获取堆栈信息时");
 
 			this.push(errorLogCatch);
 		}
@@ -82,6 +84,7 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 					errorLogUri.setData(uriString);
 					errorLogUri.setData(uriString);
 					errorLogUri.setDataType(ErrorLogDataType.CommonValue);
+					errorLog.setScene("获取URL相关信息与参数时");
 
 					this.push(errorLogUri);
 				}

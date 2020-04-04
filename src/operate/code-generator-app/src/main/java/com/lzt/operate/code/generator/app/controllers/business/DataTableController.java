@@ -233,7 +233,7 @@ public class DataTableController extends BaseOperateAuthController {
 														   ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance()
 																													  .getProducer();
 
-														   errorLogProducer.pushException(e);
+														   errorLogProducer.pushException(e, "初始化数据表生成配置时");
 													   }
 												   }
 
