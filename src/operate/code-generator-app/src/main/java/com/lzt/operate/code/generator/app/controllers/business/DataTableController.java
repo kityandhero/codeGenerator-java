@@ -213,6 +213,9 @@ public class DataTableController extends BaseOperateAuthController {
 
 												   SerializableData dataTableGeneratorConfigData = SerializableData.toSerializableData(dataTableGeneratorConfigTemp, dataTableGeneratorConfigGetterList);
 
+												   dataTableGeneratorConfigData.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfigTemp
+														   .getId());
+
 												   data.append(StringAssist.toFirstLower(DataTableGeneratorConfig.class.getSimpleName()), dataTableGeneratorConfigData);
 
 												   if (!initialized) {

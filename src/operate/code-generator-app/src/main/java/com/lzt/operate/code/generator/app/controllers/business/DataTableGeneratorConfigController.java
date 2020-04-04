@@ -92,9 +92,9 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/list", consumes = "application/json", produces = "application/json")
+	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据表生成配置列表", description = "数据表生成配置列表", tag = "3884225e-99b2-4c63-a29d-d901a426fddf")
-	public ResultListData list(@RequestBody Map<String, Object> json) {
+	public ResultListData pageList(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
@@ -163,8 +163,10 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 											})
 											.collect(Collectors.toList());
 
-		return this.listData(list);
+		int pageIndex = result.getNumber();
+		long totalPages = result.getTotalPages();
 
+		return this.pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取数据表生成配置信息", notes = "获取数据表生成配置信息", httpMethod = "POST")
