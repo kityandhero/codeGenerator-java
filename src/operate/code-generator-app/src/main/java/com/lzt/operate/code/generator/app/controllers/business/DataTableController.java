@@ -211,13 +211,6 @@ public class DataTableController extends BaseOperateAuthController {
 													   dataTableGeneratorConfigTemp = new DataTableGeneratorConfig();
 												   }
 
-												   SerializableData dataTableGeneratorConfigData = SerializableData.toSerializableData(dataTableGeneratorConfigTemp, dataTableGeneratorConfigGetterList);
-
-												   dataTableGeneratorConfigData.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfigTemp
-														   .getId());
-
-												   data.append(StringAssist.toFirstLower(DataTableGeneratorConfig.class.getSimpleName()), dataTableGeneratorConfigData);
-
 												   if (!initialized) {
 													   try {
 														   ExecutiveResult<DataTableGeneratorConfig> result = this.connectionConfigAssist
@@ -226,6 +219,8 @@ public class DataTableController extends BaseOperateAuthController {
 
 														   if (result.getSuccess()) {
 															   initialized = true;
+
+															   dataTableGeneratorConfigTemp = result.getData();
 														   }
 													   } catch (Exception e) {
 														   e.printStackTrace();
@@ -236,6 +231,13 @@ public class DataTableController extends BaseOperateAuthController {
 														   errorLogProducer.pushException(e, "初始化数据表生成配置时");
 													   }
 												   }
+
+												   SerializableData dataTableGeneratorConfigData = SerializableData.toSerializableData(dataTableGeneratorConfigTemp, dataTableGeneratorConfigGetterList);
+
+												   dataTableGeneratorConfigData.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfigTemp
+														   .getId());
+
+												   data.append(StringAssist.toFirstLower(DataTableGeneratorConfig.class.getSimpleName()), dataTableGeneratorConfigData);
 
 												   data.append("initialized", initialized ? 1 : 0);
 

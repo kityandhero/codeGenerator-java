@@ -31,7 +31,15 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 		ErrorLog errorLog = new ErrorLog();
 
 		errorLog.setMessage(ex.getMessage());
-		errorLog.setMessage(ex.getCause().getMessage());
+
+		Throwable throwable = ex.getCause();
+
+		if (Optional.ofNullable(throwable).isPresent()) {
+			errorLog.setCauseMessage(throwable.getMessage());
+		} else {
+			errorLog.setCauseMessage("");
+		}
+
 		errorLog.setScene(Optional.ofNullable(scene).orElse(""));
 
 		try {

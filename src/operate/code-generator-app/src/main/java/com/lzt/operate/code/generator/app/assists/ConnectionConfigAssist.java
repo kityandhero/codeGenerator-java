@@ -257,6 +257,8 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 																		   .getProducer();
 
 				errorLogProducer.pushException(e, "保存数据表生成配置时", ConvertAssist.serialize(ObjectMapperAssist.createObjectMapper(), dataTableGeneratorConfig), ErrorLogDataType.JsonObject);
+
+				return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage(e.getMessage()));
 			}
 		}
 

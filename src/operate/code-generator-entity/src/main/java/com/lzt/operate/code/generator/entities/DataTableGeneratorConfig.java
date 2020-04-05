@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * GeneratorConfig is the Config of mybatis generator config exclude database
@@ -19,7 +18,7 @@ import javax.persistence.UniqueConstraint;
  * @date 2020/03/17
  */
 @Entity
-@Table(name = "data_table_generator_config", uniqueConstraints = @UniqueConstraint(columnNames = {"table_name"}))
+@Table(name = "data_table_generator_config")
 @EqualsAndHashCode(callSuper = true)
 public class DataTableGeneratorConfig extends BaseEntity {
 
