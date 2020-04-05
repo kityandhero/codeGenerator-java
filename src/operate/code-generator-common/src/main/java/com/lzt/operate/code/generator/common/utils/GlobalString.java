@@ -136,9 +136,6 @@ public class GlobalString {
 	@ApiSingleParam(value = "useExample", type = Integer.class, example = "useExample")
 	public static final String DATABASE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";
 
-	@ApiSingleParam(value = "generateKeys", type = Integer.class, example = "generateKeys")
-	public static final String DATABASE_GENERATOR_CONFIG_GENERATE_KEYS = "generateKeys";
-
 	@ApiSingleParam(value = "encoding", example = "encoding")
 	public static final String DATABASE_GENERATOR_CONFIG_ENCODING = "encoding";
 
@@ -172,6 +169,12 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "tableName", example = "table1")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME = "tableName";
+
+	@ApiSingleParam(value = "useGenerateKey", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY = "useGenerateKey";
+
+	@ApiSingleParam(value = "generateKeys", type = Integer.class, example = "generateKeys")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS = "generateKeys";
 
 	@ApiSingleParam(value = "domainObjectName", example = "table1")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME = "domainObjectName";

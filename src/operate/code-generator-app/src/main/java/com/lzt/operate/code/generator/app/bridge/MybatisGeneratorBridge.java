@@ -142,24 +142,27 @@ public class MybatisGeneratorBridge {
 		}
 
 		//添加GeneratedKey主键生成
-		if (StringUtils.isNotEmpty(databaseGeneratorConfig.getGenerateKeys())) {
+		if (!ConstantCollection.ZERO_INT.equals(dataTableGeneratorConfig.getUseGenerateKey())) {
+			if (StringUtils.isNotEmpty(dataTableGeneratorConfig.getGenerateKeys())) {
 
-			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
-																								.equals(databaseType.getName())) {
+				if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
+																									.equals(databaseType
+																											.getName())) {
 
-				//dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
-				//使用该KeyGenerator的好处就是直接在一次INSERT 语句内，通过resultSet获取得到 生成的主键值，
-				//并很好的支持设置了读写分离代理的数据库
-				//例如阿里云RDS + 读写分离代理
-				//无需指定主库
-				//当使用SelectKey时，Mybatis会使用SelectKeyGenerator，INSERT之后，多发送一次查询语句，获得主键值
-				//在上述读写分离被代理的情况下，会得不到正确的主键
-				tableConfig.setGeneratedKey(new GeneratedKey(databaseGeneratorConfig.getGenerateKeys(), "JDBC", true, null));
-			} else {
-				tableConfig.setGeneratedKey(new GeneratedKey(databaseGeneratorConfig.getGenerateKeys(), databaseType
-						.getName(), true, null));
+					//dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
+					//使用该KeyGenerator的好处就是直接在一次INSERT 语句内，通过resultSet获取得到 生成的主键值，
+					//并很好的支持设置了读写分离代理的数据库
+					//例如阿里云RDS + 读写分离代理
+					//无需指定主库
+					//当使用SelectKey时，Mybatis会使用SelectKeyGenerator，INSERT之后，多发送一次查询语句，获得主键值
+					//在上述读写分离被代理的情况下，会得不到正确的主键
+					tableConfig.setGeneratedKey(new GeneratedKey(dataTableGeneratorConfig.getGenerateKeys(), "JDBC", true, null));
+				} else {
+					tableConfig.setGeneratedKey(new GeneratedKey(dataTableGeneratorConfig.getGenerateKeys(), databaseType
+							.getName(), true, null));
+				}
+
 			}
-
 		}
 
 		if (dataTableGeneratorConfig.getMapperName() != null) {

@@ -248,7 +248,6 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_EXAMPLE),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_GENERATE_KEYS),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE),
@@ -332,7 +331,6 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DatabaseGeneratorConfig::getAnnotation);
 		getterList.add(DatabaseGeneratorConfig::getUseActualColumnNames);
 		getterList.add(DatabaseGeneratorConfig::getUseExample);
-		getterList.add(DatabaseGeneratorConfig::getGenerateKeys);
 		getterList.add(DatabaseGeneratorConfig::getEncoding);
 		getterList.add(DatabaseGeneratorConfig::getUseTableNameAlias);
 		getterList.add(DatabaseGeneratorConfig::getUseDAOExtendStyle);
@@ -361,7 +359,6 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		databaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
 		databaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
 		databaseGeneratorConfig.setEncoding(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING));
-		databaseGeneratorConfig.setGenerateKeys(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATE_KEYS));
 		databaseGeneratorConfig.setJsr310Support(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
 														  .toInt());
 		databaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));

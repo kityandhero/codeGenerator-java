@@ -66,9 +66,6 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "use_example", nullable = false)
 	private int useExample;
 
-	@Column(name = "generate_keys", nullable = false)
-	private String generateKeys;
-
 	@Column(name = "encoding", nullable = false)
 	private String encoding;
 
@@ -105,7 +102,6 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.annotation = Whether.No.getFlag();
 		this.useActualColumnNames = Whether.No.getFlag();
 		this.useExample = Whether.No.getFlag();
-		this.generateKeys = "";
 		this.encoding = "";
 		this.useTableNameAlias = Whether.No.getFlag();
 		this.useDAOExtendStyle = Whether.No.getFlag();
@@ -240,14 +236,6 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 
 	public void setUseExample(int useExample) {
 		this.useExample = useExample;
-	}
-
-	public String getGenerateKeys() {
-		return generateKeys;
-	}
-
-	public void setGenerateKeys(String generateKeys) {
-		this.generateKeys = generateKeys;
 	}
 
 	public String getEncoding() {

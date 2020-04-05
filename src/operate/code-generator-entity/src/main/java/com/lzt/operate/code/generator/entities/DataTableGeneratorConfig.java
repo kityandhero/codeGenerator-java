@@ -33,6 +33,12 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "table_name", nullable = false)
 	private String tableName;
 
+	@Column(name = "use_generate_key", nullable = false)
+	private int useGenerateKey;
+
+	@Column(name = "generate_keys", nullable = false)
+	private String generateKeys;
+
 	@Column(name = "domain_object_name", nullable = false)
 	private String domainObjectName;
 
@@ -49,6 +55,8 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		connectionConfigId = 0;
 		databaseGeneratorConfigId = 0;
 		tableName = "";
+		useGenerateKey = 0;
+		this.generateKeys = "";
 		domainObjectName = "";
 		mapperName = "";
 		comment = "";
@@ -76,6 +84,22 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	public String getGenerateKeys() {
+		return generateKeys;
+	}
+
+	public void setGenerateKeys(String generateKeys) {
+		this.generateKeys = generateKeys;
+	}
+
+	public int getUseGenerateKey() {
+		return useGenerateKey;
+	}
+
+	public void setUseGenerateKey(int useGenerateKey) {
+		this.useGenerateKey = useGenerateKey;
 	}
 
 	public String getDomainObjectName() {

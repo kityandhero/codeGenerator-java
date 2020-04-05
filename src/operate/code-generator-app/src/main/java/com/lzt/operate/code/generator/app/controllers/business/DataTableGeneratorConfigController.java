@@ -148,6 +148,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 												getterList.add(DataTableGeneratorConfig::getConnectionConfigId);
 												getterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
 												getterList.add(DataTableGeneratorConfig::getTableName);
+												getterList.add(DataTableGeneratorConfig::getUseGenerateKey);
+												getterList.add(DataTableGeneratorConfig::getGenerateKeys);
 												getterList.add(DataTableGeneratorConfig::getDomainObjectName);
 												getterList.add(DataTableGeneratorConfig::getMapperName);
 												getterList.add(DataTableGeneratorConfig::getComment);
@@ -200,6 +202,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			getterList.add(DataTableGeneratorConfig::getConnectionConfigId);
 			getterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
 			getterList.add(DataTableGeneratorConfig::getTableName);
+			getterList.add(DataTableGeneratorConfig::getUseGenerateKey);
+			getterList.add(DataTableGeneratorConfig::getGenerateKeys);
 			getterList.add(DataTableGeneratorConfig::getDomainObjectName);
 			getterList.add(DataTableGeneratorConfig::getMapperName);
 			getterList.add(DataTableGeneratorConfig::getComment);
@@ -223,6 +227,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	@ApiOperation(value = "设置数据表生成配置信息", notes = "设置数据表生成配置信息", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET, value = {
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_COMMENT)},
@@ -236,8 +242,11 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	public ResultSingleData set(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
-		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
+		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY)
 												   .toLong();
+		Integer useGenerateKey = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
+										  .toInt();
+		String generateKeys = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS);
 		String domainObjectName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME);
 		String mapperName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME);
 		String comment = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_COMMENT);
@@ -248,6 +257,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		if (optional.isPresent()) {
 			DataTableGeneratorConfig dataTableGeneratorConfig = optional.get();
 
+			dataTableGeneratorConfig.setUseGenerateKey(ConstantCollection.NO_INT.equals(useGenerateKey) ? ConstantCollection.NO_INT : ConstantCollection.YES_INT);
+			dataTableGeneratorConfig.setGenerateKeys(generateKeys);
 			dataTableGeneratorConfig.setDomainObjectName(domainObjectName);
 			dataTableGeneratorConfig.setMapperName(mapperName);
 			dataTableGeneratorConfig.setComment(comment);
