@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.entities;
 
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
+import com.lzt.operate.utility.general.ConstantCollection;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
@@ -55,7 +56,7 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		connectionConfigId = 0;
 		databaseGeneratorConfigId = 0;
 		tableName = "";
-		useGenerateKey = 0;
+		useGenerateKey = ConstantCollection.NO_INT;
 		this.generateKeys = "";
 		domainObjectName = "";
 		mapperName = "";

@@ -5,6 +5,7 @@ import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus;
+import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
@@ -16,6 +17,7 @@ import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
@@ -358,7 +360,16 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 														  .toInt());
 		databaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
 		databaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
-		databaseGeneratorConfig.setEncoding(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING));
+
+		Integer encoding = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING).toInt();
+		Optional<FileEncoding> optionalFileEncoding = EnumAssist.getTargetValue(FileEncoding.valuesToList(), FileEncoding::getFlag, encoding);
+
+		if (optionalFileEncoding.isPresent()) {
+			databaseGeneratorConfig.setEncoding(optionalFileEncoding.get());
+		} else {
+			databaseGeneratorConfig.setEncoding(FileEncoding.UTF8);
+		}
+
 		databaseGeneratorConfig.setJsr310Support(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
 														  .toInt());
 		databaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));

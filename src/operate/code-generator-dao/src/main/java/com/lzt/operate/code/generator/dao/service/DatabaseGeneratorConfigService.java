@@ -48,7 +48,7 @@ public interface DatabaseGeneratorConfigService extends BaseService<DatabaseGene
 			}
 		};
 
-		return getRepository().findOne(specification);
+		return findFirst(specification);
 	}
 
 	/**

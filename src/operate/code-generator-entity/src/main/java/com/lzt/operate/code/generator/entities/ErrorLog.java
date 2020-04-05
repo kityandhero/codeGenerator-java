@@ -38,6 +38,13 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	private String message;
 
 	/**
+	 * 消息描述
+	 */
+	@Lob
+	@Column(nullable = false)
+	private String causeMessage;
+
+	/**
 	 * 堆栈跟踪
 	 */
 	@Lob
@@ -187,6 +194,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 	public ErrorLog() {
 		this.uri = "";
 		this.message = "";
+		this.causeMessage = "";
 		this.stackTrace = "";
 		this.source = "";
 		this.scene = "";
@@ -226,6 +234,14 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getCauseMessage() {
+		return causeMessage;
+	}
+
+	public void setCauseMessage(String causeMessage) {
+		this.causeMessage = causeMessage;
 	}
 
 	public String getStackTrace() {

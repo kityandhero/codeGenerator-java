@@ -155,6 +155,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 												List<IGetter<ErrorLog>> getterList = new ArrayList<>();
 
 												getterList.add(ErrorLog::getMessage);
+												getterList.add(ErrorLog::getCauseMessage);
 												getterList.add(ErrorLog::getUri);
 												getterList.add(ErrorLog::getScene);
 												getterList.add(ErrorLog::getChannel);
@@ -201,6 +202,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 			List<IGetter<ErrorLog>> getterList = new ArrayList<>();
 
 			getterList.add(ErrorLog::getMessage);
+			getterList.add(ErrorLog::getCauseMessage);
 			getterList.add(ErrorLog::getUri);
 			getterList.add(ErrorLog::getDegree);
 			getterList.add(ErrorLog::getDegreeNote);

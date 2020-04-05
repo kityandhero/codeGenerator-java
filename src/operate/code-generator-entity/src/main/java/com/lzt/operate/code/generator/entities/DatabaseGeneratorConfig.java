@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.entities;
 
+import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 import com.lzt.operate.utility.enums.Whether;
 import lombok.EqualsAndHashCode;
@@ -67,7 +68,7 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	private int useExample;
 
 	@Column(name = "encoding", nullable = false)
-	private String encoding;
+	private int encoding;
 
 	@Column(name = "use_table_name_alias", nullable = false)
 	private int useTableNameAlias;
@@ -89,12 +90,12 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 
 		this.connectorJarFile = "";
 		this.projectFolder = "";
-		this.modelPackage = "";
-		this.modelTargetFolder = "";
-		this.daoPackage = "";
-		this.daoTargetFolder = "";
-		this.mappingXmlPackage = "";
-		this.mappingXmlTargetFolder = "";
+		this.modelPackage = "model";
+		this.modelTargetFolder = "model";
+		this.daoPackage = "dao";
+		this.daoTargetFolder = "dao";
+		this.mappingXmlPackage = "mapping";
+		this.mappingXmlTargetFolder = "mapping";
 		this.offsetLimit = Whether.No.getFlag();
 		this.needToStringHashCodeEquals = Whether.No.getFlag();
 		this.needForUpdate = Whether.No.getFlag();
@@ -102,7 +103,7 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.annotation = Whether.No.getFlag();
 		this.useActualColumnNames = Whether.No.getFlag();
 		this.useExample = Whether.No.getFlag();
-		this.encoding = "";
+		this.encoding = FileEncoding.UTF8.getFlag();
 		this.useTableNameAlias = Whether.No.getFlag();
 		this.useDAOExtendStyle = Whether.No.getFlag();
 		this.useSchemaPrefix = Whether.No.getFlag();
@@ -238,12 +239,12 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.useExample = useExample;
 	}
 
-	public String getEncoding() {
+	public int getEncoding() {
 		return encoding;
 	}
 
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
+	public void setEncoding(FileEncoding fileEncoding) {
+		this.encoding = fileEncoding.getFlag();
 	}
 
 	public int getUseTableNameAlias() {
