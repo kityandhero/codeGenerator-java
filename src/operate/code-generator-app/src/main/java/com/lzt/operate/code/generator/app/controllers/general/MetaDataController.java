@@ -1,4 +1,4 @@
-package com.lzt.operate.code.generator.app.controllers.business;
+package com.lzt.operate.code.generator.app.controllers.general;
 
 import com.lzt.operate.code.generator.app.common.OperateBaseController;
 import com.lzt.operate.code.generator.common.enums.AccountStatus;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @EnableConfigurationProperties
-@RequestMapping("/business/metaData")
+@RequestMapping("/general/metaData")
 @Api(tags = {"公共资源"})
 public class MetaDataController extends OperateBaseController {
 
