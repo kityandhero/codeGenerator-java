@@ -307,7 +307,7 @@ public class MybatisGeneratorBridge {
 
 		// if overrideXML selected, delete oldXML ang generate new one
 		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getOverrideXML())) {
-			String mappingXMLFilePath = this.getMappingXMLFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
+			String mappingXMLFilePath = this.getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
 			File mappingXMLFile = new File(mappingXMLFilePath);
 			if (mappingXMLFile.exists()) {
 				boolean delete = mappingXMLFile.delete();
@@ -317,12 +317,13 @@ public class MybatisGeneratorBridge {
 				}
 			}
 		}
+
 		myBatisGenerator.generate(this.progressCallback, contexts, fullyqualifiedTables);
 
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
-	private String getMappingXMLFilePath(DatabaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
+	private String getMappingXmlFilePath(DatabaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(generatorConfig.getProjectFolder()).append("/");
 		sb.append(generatorConfig.getMappingXmlTargetFolder()).append("/");

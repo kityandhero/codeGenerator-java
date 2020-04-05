@@ -8,6 +8,7 @@ import com.lzt.operate.code.generator.common.enums.CustomConfigCategory;
 import com.lzt.operate.code.generator.common.enums.DataColumnStatus;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
+import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -79,6 +80,12 @@ public class MetaDataController extends OperateBaseController {
 				DataColumnStatus::getFlag,
 				DataColumnStatus::getName,
 				DataColumnStatus::getDescription).toArray());
+
+		result.append(FileEncoding.META_KEY, EnumAssist.buildFlagDataCollection(
+				FileEncoding.valuesToList(),
+				FileEncoding::getFlag,
+				FileEncoding::getName,
+				FileEncoding::getDescription).toArray());
 
 		return this.singleData(result);
 	}

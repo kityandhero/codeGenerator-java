@@ -7,44 +7,40 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author lzt
+ * @author luzhita
  */
-public enum DatabaseEncoding {
+
+public enum FileEncoding {
 
 	/**
 	 * utf8
 	 */
-	UTF8(100, "utf8", "utf8"),
+	UTF8(100, "UTF-8", "UTF-8"),
 
 	/**
 	 * GB2312
 	 */
-	GB2312(101, "gb2312", "gb2312"),
-
-	/**
-	 * GBK
-	 */
-	GBK(103, "gbk", "gbk");
+	GB2312(101, "GBK", "GBK");
 
 	/**
 	 * 元数据键值集合中的key
 	 */
-	public static final String META_KEY = "databaseEncodingList";
+	public static final String META_KEY = "fileEncodingList";
 
 	private final Integer flag;
 	private final String name;
 	private final String description;
 
-	DatabaseEncoding(int flag, String name, String description) {
+	FileEncoding(int flag, String name, String description) {
 		this.flag = flag;
 		this.name = name;
 		this.description = description;
 	}
 
-	public static Optional<DatabaseEncoding> valueOfFlag(@NonNull Integer flag) {
-		DatabaseEncoding[] values = DatabaseEncoding.values();
+	public static Optional<FileEncoding> valueOfFlag(@NonNull Integer flag) {
+		FileEncoding[] values = FileEncoding.values();
 
-		for (DatabaseEncoding d : values) {
+		for (FileEncoding d : values) {
 			if (flag.equals(d.getFlag())) {
 				return Optional.of(d);
 			}
@@ -53,8 +49,8 @@ public enum DatabaseEncoding {
 		return Optional.empty();
 	}
 
-	public static List<DatabaseEncoding> valuesToList() {
-		return Arrays.asList(DatabaseEncoding.values());
+	public static List<FileEncoding> valuesToList() {
+		return Arrays.asList(FileEncoding.values());
 	}
 
 	public Integer getFlag() {
