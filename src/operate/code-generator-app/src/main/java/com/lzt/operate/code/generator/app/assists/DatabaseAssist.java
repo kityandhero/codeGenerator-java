@@ -9,9 +9,9 @@ import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
+import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataColumn;
-import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -190,9 +190,8 @@ public class DatabaseAssist {
 
 		DatabaseType dbType = optionalDatabaseType.get();
 
-		Optional<DatabaseEncoding> optionalDatabaseEncoding = EnumAssist.getTargetValue(Arrays.asList(DatabaseEncoding.values()), DatabaseEncoding::getFlag, ConvertAssist
-				.stringToInt(dbConfig
-						.getEncoding()));
+		Optional<DatabaseEncoding> optionalDatabaseEncoding = EnumAssist.getTargetValue(Arrays.asList(DatabaseEncoding.values()), DatabaseEncoding::getFlag, dbConfig
+				.getEncoding());
 
 		if (!optionalDatabaseEncoding.isPresent()) {
 			throw new SQLException("连接字符串编码设置无效");

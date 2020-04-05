@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.app.assists;
 
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
+import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
 import com.lzt.operate.code.generator.common.jackson.ObjectMapperAssist;
@@ -77,13 +78,18 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 			return new ExecutiveResult<>(ReturnDataCode.ParamError.appendMessage(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值"));
 		}
 
+		int encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING).toInt();
+
+		if (!EnumAssist.existTargetValue(DatabaseEncoding.valuesToList(), DatabaseEncoding::getFlag, encoding)) {
+			return new ExecutiveResult<>(ReturnDataCode.ParamError.appendMessage(GlobalString.CONNECTION_CONFIG_ENCODING, "允许范围之外的值"));
+		}
+
 		StringEx description = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_DESCRIPTION);
 		StringEx host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
 		StringEx port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
 		StringEx schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
 		StringEx username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
 		StringEx password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
-		StringEx encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
 		StringEx localPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
 		StringEx remotePort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
 		StringEx sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
@@ -102,7 +108,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 		connectionConfig.setSchema(schema.toString());
 		connectionConfig.setUserName(username.toString());
 		connectionConfig.setPassword(password.toString());
-		connectionConfig.setEncoding(encoding.toString());
+		connectionConfig.setEncoding(DatabaseEncoding.valueOfFlag(encoding).orElse(DatabaseEncoding.UTF8));
 		connectionConfig.setLocalPort(localPort.toString());
 		connectionConfig.setRemotePort(remotePort.toString());
 		connectionConfig.setSshPort(sshPort.toString());
@@ -141,12 +147,17 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 			return new ExecutiveResult<>(ReturnDataCode.ParamError.appendMessage(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值"));
 		}
 
+		int encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING).toInt();
+
+		if (!EnumAssist.existTargetValue(DatabaseEncoding.valuesToList(), DatabaseEncoding::getFlag, encoding)) {
+			return new ExecutiveResult<>(ReturnDataCode.ParamError.appendMessage(GlobalString.CONNECTION_CONFIG_ENCODING, "允许范围之外的值"));
+		}
+
 		StringEx host = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_HOST);
 		StringEx port = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PORT);
 		StringEx schema = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
 		StringEx username = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
 		StringEx password = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
-		StringEx encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
 		StringEx localPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
 		StringEx remotePort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
 		StringEx sshPort = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
@@ -162,7 +173,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 		connectionConfig.setSchema(schema.toString());
 		connectionConfig.setUserName(username.toString());
 		connectionConfig.setPassword(password.toString());
-		connectionConfig.setEncoding(encoding.toString());
+		connectionConfig.setEncoding(DatabaseEncoding.valueOfFlag(encoding).orElse(DatabaseEncoding.UTF8));
 		connectionConfig.setLocalPort(localPort.toString());
 		connectionConfig.setRemotePort(remotePort.toString());
 		connectionConfig.setSshPort(sshPort.toString());

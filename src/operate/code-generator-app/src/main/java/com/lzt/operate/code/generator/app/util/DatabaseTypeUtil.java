@@ -4,11 +4,12 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.lzt.operate.code.generator.app.exceptions.DbDriverLoadingException;
+import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
+import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataColumn;
-import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -233,8 +234,8 @@ public class DatabaseTypeUtil {
 		}
 	}
 
-	public static String getConnectionUrlWithSchema(ConnectionConfig dbConfig) throws SQLException {
-		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(dbConfig.getDatabaseType());
+	public static String getConnectionUrlWithSchema(ConnectionConfig connectionConfig) throws SQLException {
+		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(connectionConfig.getDatabaseType());
 
 		if (!optionalDatabaseType.isPresent()) {
 			throw new SQLException("连接字符串无效");
@@ -243,10 +244,12 @@ public class DatabaseTypeUtil {
 		DatabaseType dbType = optionalDatabaseType.get();
 
 		String connectionUrl = String.format(dbType.getConnectionUrlPattern(),
-				DatabaseTypeUtil.portForwaring ? "127.0.0.1" : dbConfig.getHost(), DatabaseTypeUtil.portForwaring ? dbConfig
-						.getLocalPort() : dbConfig
-						.getPort(), dbConfig
-						.getSchema(), dbConfig.getEncoding());
+				DatabaseTypeUtil.portForwaring ? "127.0.0.1" : connectionConfig.getHost(), DatabaseTypeUtil.portForwaring ? connectionConfig
+						.getLocalPort() : connectionConfig
+						.getPort(), connectionConfig
+						.getSchema(), DatabaseEncoding.valueOfFlag(connectionConfig.getEncoding())
+													  .orElse(DatabaseEncoding.UTF8)
+													  .getName());
 		DatabaseTypeUtil._LOG.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
 		return connectionUrl;
 	}

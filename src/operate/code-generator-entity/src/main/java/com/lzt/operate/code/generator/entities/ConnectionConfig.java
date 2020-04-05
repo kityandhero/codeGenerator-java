@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.entities;
 
+import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 
 import javax.persistence.Column;
@@ -47,7 +48,7 @@ public class ConnectionConfig extends BaseEntity {
 	private String password;
 
 	@Column(nullable = false)
-	private String encoding;
+	private int encoding;
 
 	@Column(name = "local_port", nullable = false)
 	private String localPort;
@@ -69,6 +70,8 @@ public class ConnectionConfig extends BaseEntity {
 
 	public ConnectionConfig() {
 		super();
+
+		this.encoding = DatabaseEncoding.UTF8.getFlag();
 	}
 
 	public int getDatabaseType() {
@@ -143,12 +146,12 @@ public class ConnectionConfig extends BaseEntity {
 		this.password = password;
 	}
 
-	public String getEncoding() {
+	public int getEncoding() {
 		return encoding;
 	}
 
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
+	public void setEncoding(DatabaseEncoding databaseEncoding) {
+		this.encoding = databaseEncoding.getFlag();
 	}
 
 	public String getLocalPort() {
@@ -237,7 +240,7 @@ public class ConnectionConfig extends BaseEntity {
 		result = 31 * result + (getSchema() != null ? getSchema().hashCode() : 0);
 		result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
 		result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
-		result = 31 * result + (getEncoding() != null ? getEncoding().hashCode() : 0);
+		result = 31 * result + getEncoding();
 		result = 31 * result + (getLocalPort() != null ? getLocalPort().hashCode() : 0);
 		result = 31 * result + (getRemotePort() != null ? getRemotePort().hashCode() : 0);
 		result = 31 * result + (getSshPort() != null ? getSshPort().hashCode() : 0);

@@ -31,7 +31,7 @@ public class CustomBodyReaderHttpServletRequestWrapper extends HttpServletReques
 
 	@Override
 	public ServletInputStream getInputStream() {
-		final ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes());
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body.getBytes());
 
 		return new ServletInputStream() {
 
@@ -52,7 +52,7 @@ public class CustomBodyReaderHttpServletRequestWrapper extends HttpServletReques
 
 			@Override
 			public int read() {
-				return bais.read();
+				return byteArrayInputStream.read();
 			}
 		};
 	}

@@ -8,6 +8,7 @@ import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.ConnectionConfigStatus;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus;
+import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
@@ -319,6 +320,12 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_CONNECTION_TYPE, "允许范围之外的值");
 		}
 
+		int encoding = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ENCODING).toInt();
+
+		if (!EnumAssist.existTargetValue(DatabaseEncoding.valuesToList(), DatabaseEncoding::getFlag, encoding)) {
+			return this.paramError(GlobalString.CONNECTION_CONFIG_ENCODING, "允许范围之外的值");
+		}
+
 		Optional<ConnectionConfig> result = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
@@ -332,7 +339,6 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			String schema = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SCHEMA);
 			String username = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_USERNAME);
 			String password = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_PASSWORD);
-			String encoding = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_ENCODING);
 			String localPort = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_LOCAL_PORT);
 			String remotePort = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_REMOTE_PORT);
 			String sshPort = paramJson.getStringByKey(GlobalString.CONNECTION_CONFIG_SSH_PORT);
@@ -349,7 +355,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			data.setSchema(schema);
 			data.setUserName(username);
 			data.setPassword(password);
-			data.setEncoding(encoding);
+			data.setEncoding(DatabaseEncoding.valueOfFlag(encoding).orElse(DatabaseEncoding.UTF8));
 			data.setLocalPort(localPort);
 			data.setRemotePort(remotePort);
 			data.setSshPort(sshPort);
