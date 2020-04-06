@@ -172,7 +172,7 @@ public class MybatisGeneratorBridge {
 		tableConfig.setTableName(tableName);
 		tableConfig.setDomainObjectName(Optional.ofNullable(dataTableGeneratorConfig.getDomainObjectName()).orElse(""));
 
-		boolean useExample = !ConstantCollection.ZERO_INT.equals(dataTableGeneratorConfig.getUseExample());
+		boolean useExample = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseExample());
 
 		tableConfig.setUpdateByExampleStatementEnabled(useExample);
 		tableConfig.setCountByExampleStatementEnabled(useExample);
@@ -181,17 +181,14 @@ public class MybatisGeneratorBridge {
 
 		// 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
 		//         一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
-		context.addProperty("autoDelimitKeywords", String.valueOf(ConstantCollection.NO_INT.equals(databaseGeneratorConfig
+		context.addProperty("autoDelimitKeywords", String.valueOf(Whether.Yes.getFlag().equals(databaseGeneratorConfig
 				.getAutoDelimitKeywords())));
 
 		if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
 																							   .equals(databaseType.getFlag())) {
-			tableConfig.setSchema(this.connectionConfig.getSchema());
 			// 由于beginningDelimiter和endingDelimiter的默认值为双引号(")，在Mysql中不能这么写，所以还要将这两个默认值改为`
 			context.addProperty("beginningDelimiter", "`");
 			context.addProperty("endingDelimiter", "`");
-		} else {
-			tableConfig.setCatalog(this.connectionConfig.getSchema());
 		}
 
 		boolean useSchemaPrefix = Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseSchemaPrefix());
@@ -301,13 +298,11 @@ public class MybatisGeneratorBridge {
 		CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
 		commentConfig.setConfigurationType(DbRemarksCommentGenerator.class.getName());
 
-		if (!StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getComment())) {
-			commentConfig.addProperty("columnRemarks", "true");
-		}
+		commentConfig.addProperty("columnRemarks", String.valueOf(Whether.Yes.getFlag()
+																			 .equals(databaseGeneratorConfig.getComment())));
 
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getAnnotation())) {
-			commentConfig.addProperty("annotations", "true");
-		}
+		commentConfig.addProperty("annotations", String.valueOf(Whether.Yes.getFlag()
+																		   .equals(databaseGeneratorConfig.getAnnotation())));
 
 		context.setCommentGeneratorConfiguration(commentConfig);
 		context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, fileEncoding.getName());
@@ -317,8 +312,9 @@ public class MybatisGeneratorBridge {
 		serializablePluginConfiguration.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
 		serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
 		context.addPluginConfiguration(serializablePluginConfiguration);
+
 		// toString, hashCode, equals插件
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getNeedToStringHashCodeEquals())) {
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedToStringHashCodeEquals())) {
 			PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
 			pluginConfiguration1.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
 			pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");
@@ -330,8 +326,9 @@ public class MybatisGeneratorBridge {
 
 			context.addPluginConfiguration(pluginConfiguration2);
 		}
+
 		// limit/offset插件
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getOffsetLimit())) {
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOffsetLimit())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
@@ -345,8 +342,9 @@ public class MybatisGeneratorBridge {
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
+
 		//for JSR310
-		if (ConstantCollection.ZERO_INT.equals((databaseGeneratorConfig.getJsr310Support()))) {
+		if (Whether.Yes.getFlag().equals((databaseGeneratorConfig.getJsr310Support()))) {
 			JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
 
 			String javaTypeResolverJsr310ImplName = JavaTypeResolverJsr310Impl.class.getName();
@@ -357,7 +355,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		//forUpdate 插件
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getNeedForUpdate())) {
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedForUpdate())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -371,7 +369,7 @@ public class MybatisGeneratorBridge {
 			}
 		}
 		//repository 插件
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getAnnotationDAO())) {
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getAnnotationDAO())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
@@ -385,7 +383,7 @@ public class MybatisGeneratorBridge {
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getUseDAOExtendStyle())) {
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseDAOExtendStyle())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
@@ -414,7 +412,7 @@ public class MybatisGeneratorBridge {
 		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
 
 		// if overrideXML selected, delete oldXML ang generate new one
-		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getOverrideXML())) {
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOverrideXML())) {
 			String mappingXMLFilePath = this.getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
 			File mappingXMLFile = new File(mappingXMLFilePath);
 			if (mappingXMLFile.exists()) {

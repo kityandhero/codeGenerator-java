@@ -148,6 +148,9 @@ public class GlobalString {
 	@ApiSingleParam(value = "autoDelimitKeywords", type = Integer.class, example = "1")
 	public static final String DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
 
+	@ApiSingleParam(value = "comment", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_COMMENT = "comment";
+
 	//endregion
 
 	//region
@@ -175,9 +178,6 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "mapperName", example = "table1")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME = "mapperName";
-
-	@ApiSingleParam(value = "comment", example = "table1")
-	public static final String DATA_TABLE_GENERATOR_CONFIG_COMMENT = "comment";
 
 	@ApiSingleParam(value = "useExample", type = Integer.class, example = "0")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";

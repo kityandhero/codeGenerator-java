@@ -78,6 +78,9 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "auto_delimit_keywords", nullable = false)
 	private int autoDelimitKeywords;
 
+	@Column(name = "comment", nullable = false)
+	private int comment;
+
 	public DatabaseGeneratorConfig() {
 		super();
 
@@ -100,6 +103,7 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.jsr310Support = Whether.No.getFlag();
 		this.overrideXML = Whether.No.getFlag();
 		this.autoDelimitKeywords = Whether.Yes.getFlag();
+		this.comment = Whether.No.getFlag();
 	}
 
 	public long getConnectionConfigId() {
@@ -178,40 +182,40 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		return offsetLimit;
 	}
 
-	public void setOffsetLimit(int offsetLimit) {
-		this.offsetLimit = offsetLimit;
+	public void setOffsetLimit(Whether whether) {
+		this.offsetLimit = whether.getFlag();
 	}
 
 	public int getNeedToStringHashCodeEquals() {
 		return needToStringHashCodeEquals;
 	}
 
-	public void setNeedToStringHashCodeEquals(int needToStringHashcodeEquals) {
-		this.needToStringHashCodeEquals = needToStringHashcodeEquals;
+	public void setNeedToStringHashCodeEquals(Whether whether) {
+		this.needToStringHashCodeEquals = whether.getFlag();
 	}
 
 	public int getNeedForUpdate() {
 		return needForUpdate;
 	}
 
-	public void setNeedForUpdate(int needForUpdate) {
-		this.needForUpdate = needForUpdate;
+	public void setNeedForUpdate(Whether whether) {
+		this.needForUpdate = whether.getFlag();
 	}
 
 	public int getAnnotationDAO() {
 		return annotationDAO;
 	}
 
-	public void setAnnotationDAO(int annotationDAO) {
-		this.annotationDAO = annotationDAO;
+	public void setAnnotationDAO(Whether whether) {
+		this.annotationDAO = whether.getFlag();
 	}
 
 	public int getAnnotation() {
 		return annotation;
 	}
 
-	public void setAnnotation(int annotation) {
-		this.annotation = annotation;
+	public void setAnnotation(Whether whether) {
+		this.annotation = whether.getFlag();
 	}
 
 	public int getEncoding() {
@@ -226,32 +230,32 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		return useDAOExtendStyle;
 	}
 
-	public void setUseDAOExtendStyle(int useDAOExtendStyle) {
-		this.useDAOExtendStyle = useDAOExtendStyle;
+	public void setUseDAOExtendStyle(Whether whether) {
+		this.useDAOExtendStyle = whether.getFlag();
 	}
 
 	public int getUseSchemaPrefix() {
 		return useSchemaPrefix;
 	}
 
-	public void setUseSchemaPrefix(int useSchemaPrefix) {
-		this.useSchemaPrefix = useSchemaPrefix;
+	public void setUseSchemaPrefix(Whether whether) {
+		this.useSchemaPrefix = whether.getFlag();
 	}
 
 	public int getJsr310Support() {
 		return jsr310Support;
 	}
 
-	public void setJsr310Support(int jsr310Support) {
-		this.jsr310Support = jsr310Support;
+	public void setJsr310Support(Whether whether) {
+		this.jsr310Support = whether.getFlag();
 	}
 
 	public int getOverrideXML() {
 		return overrideXML;
 	}
 
-	public void setOverrideXML(int overrideXML) {
-		this.overrideXML = overrideXML;
+	public void setOverrideXML(Whether whether) {
+		this.overrideXML = whether.getFlag();
 	}
 
 	public int getAutoDelimitKeywords() {
@@ -261,4 +265,13 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	public void setAutoDelimitKeywords(Whether whether) {
 		this.autoDelimitKeywords = whether.getFlag();
 	}
+
+	public int getComment() {
+		return comment;
+	}
+
+	public void setComment(Whether whether) {
+		this.comment = whether.getFlag();
+	}
+
 }

@@ -179,7 +179,6 @@ public class DataTableController extends BaseOperateAuthController {
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getGenerateKeys);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getDomainObjectName);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getMapperName);
-			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getComment);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getChannel);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getChannelNote);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getStatus);

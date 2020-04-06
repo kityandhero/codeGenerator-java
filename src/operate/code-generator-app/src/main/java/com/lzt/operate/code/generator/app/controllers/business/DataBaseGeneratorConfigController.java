@@ -247,7 +247,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS)},
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_COMMENT)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET)
@@ -329,6 +330,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DatabaseGeneratorConfig::getJsr310Support);
 		getterList.add(DatabaseGeneratorConfig::getOverrideXML);
 		getterList.add(DatabaseGeneratorConfig::getAutoDelimitKeywords);
+		getterList.add(DatabaseGeneratorConfig::getComment);
 		getterList.add(DatabaseGeneratorConfig::getChannel);
 		getterList.add(DatabaseGeneratorConfig::getChannelNote);
 		getterList.add(DatabaseGeneratorConfig::getStatus);
@@ -344,10 +346,12 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	}
 
 	private DatabaseGeneratorConfig fill(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull ParamData paramJson) {
-		databaseGeneratorConfig.setAnnotation(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
-													   .toInt());
-		databaseGeneratorConfig.setAnnotationDAO(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
-														  .toInt());
+		databaseGeneratorConfig.setAnnotation(Whether.No.getFlag()
+														.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
+																		 .toInt()) ? Whether.No : Whether.Yes);
+		databaseGeneratorConfig.setAnnotationDAO(Whether.No.getFlag()
+														   .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
+																			.toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
 		databaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
 
@@ -360,31 +364,39 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			databaseGeneratorConfig.setEncoding(FileEncoding.UTF8);
 		}
 
-		databaseGeneratorConfig.setJsr310Support(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
-														  .toInt());
+		databaseGeneratorConfig.setJsr310Support(Whether.No.getFlag()
+														   .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
+																			.toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
 		databaseGeneratorConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
 		databaseGeneratorConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
 		databaseGeneratorConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
-		databaseGeneratorConfig.setNeedForUpdate(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
-														  .toInt());
-		databaseGeneratorConfig.setNeedToStringHashCodeEquals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
-																	   .toInt());
-		databaseGeneratorConfig.setOffsetLimit(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT)
-														.toInt());
-		databaseGeneratorConfig.setOverrideXML(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)
-														.toInt());
+		databaseGeneratorConfig.setNeedForUpdate(Whether.No.getFlag()
+														   .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
+																			.toInt()) ? Whether.No : Whether.Yes);
+		databaseGeneratorConfig.setNeedToStringHashCodeEquals(Whether.No.getFlag()
+																		.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
+																						 .toInt()) ? Whether.No : Whether.Yes);
+		databaseGeneratorConfig.setOffsetLimit(Whether.No.getFlag()
+														 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT)
+																		  .toInt()) ? Whether.No : Whether.Yes);
+		databaseGeneratorConfig.setOverrideXML(Whether.No.getFlag()
+														 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)
+																		  .toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setProjectFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER));
 
-		databaseGeneratorConfig.setUseDAOExtendStyle(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE)
-															  .toInt());
-		databaseGeneratorConfig.setUseSchemaPrefix(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX)
-															.toInt());
-
-		Integer autoDelimitKeywords = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS)
-											   .toInt();
+		databaseGeneratorConfig.setUseDAOExtendStyle(Whether.No.getFlag()
+															   .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE)
+																				.toInt()) ? Whether.No : Whether.Yes);
+		databaseGeneratorConfig.setUseSchemaPrefix(Whether.No.getFlag()
+															 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX)
+																			  .toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setAutoDelimitKeywords(Whether.No.getFlag()
-																 .equals(autoDelimitKeywords) ? Whether.No : Whether.Yes);
+																 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS)
+																				  .toInt()) ? Whether.No : Whether.Yes);
+		databaseGeneratorConfig.setComment(Whether.No.getFlag()
+													 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_COMMENT)
+																	  .toInt()) ? Whether.No : Whether.Yes);
 
 		long operatorId = getOperatorId();
 

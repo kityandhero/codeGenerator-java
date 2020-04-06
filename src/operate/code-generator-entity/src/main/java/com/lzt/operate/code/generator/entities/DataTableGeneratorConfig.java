@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -46,10 +45,6 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "mapper_name", nullable = false)
 	private String mapperName;
 
-	@Lob
-	@Column(name = "comment", nullable = false)
-	private String comment;
-
 	@Column(name = "use_example", nullable = false)
 	private int useExample;
 
@@ -72,7 +67,6 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.generateKeys = "";
 		this.domainObjectName = "";
 		this.mapperName = "";
-		this.comment = "";
 		this.useExample = Whether.No.getFlag();
 		this.useActualColumnNames = Whether.No.getFlag();
 		this.useTableNameAlias = Whether.No.getFlag();
@@ -133,14 +127,6 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	public void setMapperName(String mapperName) {
 		this.mapperName = mapperName;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
 	}
 
 	public int getUseExample() {
