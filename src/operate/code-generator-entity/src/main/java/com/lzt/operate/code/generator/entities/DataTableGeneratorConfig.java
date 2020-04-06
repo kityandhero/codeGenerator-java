@@ -27,7 +27,7 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
 
-	@Column(name = "database_generator_config_id", nullable = false, unique = true)
+	@Column(name = "database_generator_config_id", nullable = false)
 	private long databaseGeneratorConfigId;
 
 	@Column(name = "table_name", nullable = false)

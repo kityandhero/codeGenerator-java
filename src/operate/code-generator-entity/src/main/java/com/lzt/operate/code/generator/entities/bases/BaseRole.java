@@ -21,7 +21,7 @@ public abstract class BaseRole extends BaseEntity {
 	/**
 	 * 名称
 	 */
-	@Column(length = 50, unique = true, nullable = false)
+	@Column(length = 50, nullable = false)
 	private String name;
 
 	/**

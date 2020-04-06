@@ -6,6 +6,7 @@ import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.custommessagequeue.concurrentlinkeddeque.BaseProducerAdapter;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
@@ -35,7 +36,11 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 		Throwable throwable = ex.getCause();
 
 		if (Optional.ofNullable(throwable).isPresent()) {
-			errorLog.setCauseMessage(throwable.getMessage());
+			if (throwable instanceof ConstraintViolationException) {
+				errorLog.setCauseMessage(((ConstraintViolationException) throwable).getSQLException().getMessage());
+			} else {
+				errorLog.setCauseMessage(throwable.getMessage());
+			}
 		} else {
 			errorLog.setCauseMessage("");
 		}

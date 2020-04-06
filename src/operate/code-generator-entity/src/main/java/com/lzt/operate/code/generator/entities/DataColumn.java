@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * 数据表列设置
@@ -14,7 +13,7 @@ import javax.persistence.UniqueConstraint;
  * @author luzhitao
  */
 @Entity
-@Table(name = "data_column", uniqueConstraints = @UniqueConstraint(columnNames = {"column_name"}))
+@Table(name = "data_column")
 @EqualsAndHashCode(callSuper = true)
 public class DataColumn extends BaseEntity {
 
@@ -23,10 +22,10 @@ public class DataColumn extends BaseEntity {
 	@Column(name = "connection_config_id", nullable = false)
 	private long connectionConfigId;
 
-	@Column(name = "database_generator_config_id", nullable = false, unique = true)
+	@Column(name = "database_generator_config_id", nullable = false)
 	private long databaseGeneratorConfigId;
 
-	@Column(name = "data_table_generator_config_id", nullable = false, unique = true)
+	@Column(name = "data_table_generator_config_id", nullable = false)
 	private long dataTableGeneratorConfigId;
 
 	@Column(name = "table_name", nullable = false)
