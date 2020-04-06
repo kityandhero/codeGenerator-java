@@ -3,7 +3,6 @@ package com.lzt.operate.utility.pojo;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.interfaces.IObjectExtensionMethod;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -44,46 +43,6 @@ public class Competence implements IObjectExtensionMethod {
 		relativePath = "";
 		explain = "";
 		expansionSet = "";
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
-
-	public String getRelativePath() {
-		return relativePath;
-	}
-
-	public void setRelativePath(String relativePath) {
-		this.relativePath = relativePath;
-	}
-
-	public String getExplain() {
-		return explain;
-	}
-
-	public void setExplain(String explain) {
-		this.explain = explain;
-	}
-
-	private String getExpansionSet() {
-		return expansionSet;
-	}
-
-	public void setExpansionSet(String expansionSet) {
-		this.expansionSet = expansionSet;
 	}
 
 	public static Competence plus(Competence competenceBefore, Competence competenceAfter) {
@@ -159,6 +118,46 @@ public class Competence implements IObjectExtensionMethod {
 		return StringAssist.join(list, ",");
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
+
+	public String getExplain() {
+		return explain;
+	}
+
+	public void setExplain(String explain) {
+		this.explain = explain;
+	}
+
+	private String getExpansionSet() {
+		return expansionSet;
+	}
+
+	public void setExpansionSet(String expansionSet) {
+		this.expansionSet = expansionSet;
+	}
+
 	public List<SerializableData> getExpansionSetCollection() {
 		List<SerializableData> result = new ArrayList<>();
 
@@ -178,7 +177,7 @@ public class Competence implements IObjectExtensionMethod {
 					SerializableData s = new SerializableData();
 
 					s.append("indexNo", i);
-					s.append("name", (Serializable) listExpand[i]);
+					s.append("name", listExpand[i]);
 					s.append("value", "0");
 
 					result.add(s);
@@ -188,7 +187,7 @@ public class Competence implements IObjectExtensionMethod {
 					SerializableData s = new SerializableData();
 
 					s.append("indexNo", i);
-					s.append("name", (Serializable) listExpand[i]);
+					s.append("name", listExpand[i]);
 					s.append("value", listExpansionSet[i] == "1" ? "1" : "0");
 
 					result.add(s);

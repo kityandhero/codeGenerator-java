@@ -21,7 +21,7 @@ public class ValidatorAssist {
 	/**
 	 * 是否boolean值范围
 	 */
-	private static final Set<String> TRUE_SET = new HashSet() {
+	private static final Set<String> TRUE_SET = new HashSet<String>() {
 		private static final long serialVersionUID = -4172497703574134267L;
 
 		{
@@ -33,7 +33,7 @@ public class ValidatorAssist {
 		}
 	};
 
-	private static final Set<String> FALSE_SET = new HashSet() {
+	private static final Set<String> FALSE_SET = new HashSet<String>() {
 		private static final long serialVersionUID = 4081063522698495608L;
 
 		{

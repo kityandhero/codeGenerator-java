@@ -1,6 +1,5 @@
 package com.lzt.operate.code.generator.app.bridge;
 
-import com.lzt.operate.code.generator.app.plugins.DbRemarksCommentGenerator;
 import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import com.lzt.operate.code.generator.app.util.DatabaseTypeUtil;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
@@ -9,11 +8,17 @@ import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
-import com.lzt.operate.utility.assists.EnumAssist;
+import com.lzt.operate.mybatis.custom.plugins.CommonDAOInterfacePlugin;
+import com.lzt.operate.mybatis.custom.plugins.DbRemarksCommentGenerator;
+import com.lzt.operate.mybatis.custom.plugins.JavaTypeResolverJsr310Impl;
+import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
+import com.lzt.operate.mybatis.custom.plugins.mysql.LimitPlugin;
+import com.lzt.operate.mybatis.custom.plugins.RepositoryPlugin;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
@@ -34,8 +39,6 @@ import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -51,9 +54,8 @@ import java.util.Set;
  * <p>
  * Created by Owen on 6/30/16.
  */
+@Slf4j
 public class MybatisGeneratorBridge {
-
-	private static final Logger _LOG = LoggerFactory.getLogger(MybatisGeneratorBridge.class);
 
 	private final DatabaseGeneratorConfigService databaseGeneratorConfigService;
 
@@ -90,27 +92,46 @@ public class MybatisGeneratorBridge {
 			throw new RuntimeException("数据表生成配置与数据连接配置不相配");
 		}
 
-		Configuration configuration = new Configuration();
-		Context context = new Context(ModelType.CONDITIONAL);
-		configuration.addContext(context);
+		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
 
-		context.addProperty("javaFileEncoding", "UTF-8");
+		FileEncoding fileEncoding = FileEncoding.UTF8;
+
+		if (optionalFileEncoding.isPresent()) {
+			fileEncoding = optionalFileEncoding.get();
+		}
 
 		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(this.connectionConfig.getDatabaseType());
 
 		if (!optionalDatabaseType.isPresent()) {
 			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("databaseType无效"));
 		}
+
 		DatabaseType databaseType = optionalDatabaseType.get();
+
+		String tableName = dataTableGeneratorConfig.getTableName();
+
+		if (StringAssist.isNullOrEmpty(tableName)) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("tableName无效"));
+		}
+
+		Configuration configuration = new Configuration();
+
+		Context context = new Context(ModelType.CONDITIONAL);
+
+		configuration.addContext(context);
+		context.addProperty("javaFileEncoding", fileEncoding.getName());
 
 		String connectorLibPath = ConfigHelper.findConnectorLibPath(databaseType.getName());
 
-		MybatisGeneratorBridge._LOG.info("connectorLibPath: {}", connectorLibPath);
+		// log.info("connectorLibPath: {}", connectorLibPath);
 		configuration.addClasspathEntry(connectorLibPath);
+
 		// Table configuration
 		TableConfiguration tableConfig = new TableConfiguration(context);
-		tableConfig.setTableName(dataTableGeneratorConfig.getTableName());
-		tableConfig.setDomainObjectName(dataTableGeneratorConfig.getDomainObjectName());
+
+		tableConfig.setTableName(tableName);
+		tableConfig.setDomainObjectName(Optional.ofNullable(dataTableGeneratorConfig.getDomainObjectName()).orElse(""));
+
 		if (!ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getUseExample())) {
 			tableConfig.setUpdateByExampleStatementEnabled(false);
 			tableConfig.setCountByExampleStatementEnabled(false);
@@ -118,7 +139,10 @@ public class MybatisGeneratorBridge {
 			tableConfig.setSelectByExampleStatementEnabled(false);
 		}
 
-		context.addProperty("autoDelimitKeywords", "true");
+		// 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
+		//         一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
+		context.addProperty("autoDelimitKeywords", ConstantCollection.NO_INT.equals(databaseGeneratorConfig.getAutoDelimitKeywords()) ? "false" : "true");
+
 		if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
 																							   .equals(databaseType.getFlag())) {
 			tableConfig.setSchema(this.connectionConfig.getSchema());
@@ -233,15 +257,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		context.setCommentGeneratorConfiguration(commentConfig);
-
-		Integer encoding = databaseGeneratorConfig.getEncoding();
-		Optional<FileEncoding> optionalFileEncoding = EnumAssist.getTargetValue(FileEncoding.valuesToList(), FileEncoding::getFlag, encoding);
-
-		if (optionalFileEncoding.isPresent()) {
-			context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, optionalFileEncoding.get().getName());
-		} else {
-			context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, FileEncoding.UTF8.getName());
-		}
+		context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, fileEncoding.getName());
 
 		//实体添加序列化
 		PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
@@ -255,8 +271,10 @@ public class MybatisGeneratorBridge {
 			pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");
 			context.addPluginConfiguration(pluginConfiguration1);
 			PluginConfiguration pluginConfiguration2 = new PluginConfiguration();
+
 			pluginConfiguration2.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
 			pluginConfiguration2.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+
 			context.addPluginConfiguration(pluginConfiguration2);
 		}
 		// limit/offset插件
@@ -265,24 +283,37 @@ public class MybatisGeneratorBridge {
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
-				pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.MySQLLimitPlugin");
-				pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.MySQLLimitPlugin");
+
+				String limitPluginName = LimitPlugin.class.getName();
+
+				pluginConfiguration.addProperty("type", limitPluginName);
+				pluginConfiguration.setConfigurationType(limitPluginName);
+
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
 		//for JSR310
 		if (ConstantCollection.ZERO_INT.equals((databaseGeneratorConfig.getJsr310Support()))) {
 			JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
-			javaTypeResolverConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.JavaTypeResolverJsr310Impl");
+
+			String javaTypeResolverJsr310ImplName = JavaTypeResolverJsr310Impl.class.getName();
+
+			javaTypeResolverConfiguration.setConfigurationType(javaTypeResolverJsr310ImplName);
+
 			context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
 		}
+
 		//forUpdate 插件
 		if (ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig.getNeedForUpdate())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
-				pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.MySQLForUpdatePlugin");
-				pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.MySQLForUpdatePlugin");
+
+				String updatePluginName = UpdatePlugin.class.getName();
+
+				pluginConfiguration.addProperty("type", updatePluginName);
+				pluginConfiguration.setConfigurationType(updatePluginName);
+
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
@@ -292,8 +323,12 @@ public class MybatisGeneratorBridge {
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
-				pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.RepositoryPlugin");
-				pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.RepositoryPlugin");
+
+				String repositoryPluginName = RepositoryPlugin.class.getName();
+
+				pluginConfiguration.addProperty("type", repositoryPluginName);
+				pluginConfiguration.setConfigurationType(repositoryPluginName);
+
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
@@ -304,8 +339,12 @@ public class MybatisGeneratorBridge {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
 				pluginConfiguration.addProperty("useExample", String.valueOf(ConstantCollection.ZERO_INT.equals(databaseGeneratorConfig
 						.getUseExample())));
-				pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.CommonDAOInterfacePlugin");
-				pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.CommonDAOInterfacePlugin");
+
+				String commonInterfacePluginName = CommonDAOInterfacePlugin.class.getName();
+
+				pluginConfiguration.addProperty("type", commonInterfacePluginName);
+				pluginConfiguration.setConfigurationType(commonInterfacePluginName);
+
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}

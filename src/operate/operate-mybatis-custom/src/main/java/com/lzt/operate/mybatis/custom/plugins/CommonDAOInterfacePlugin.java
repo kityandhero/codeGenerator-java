@@ -1,4 +1,4 @@
-package com.lzt.operate.code.generator.app.plugins;
+package com.lzt.operate.mybatis.custom.plugins;
 
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;

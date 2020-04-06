@@ -84,6 +84,9 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "override_xml", nullable = false)
 	private int overrideXML;
 
+	@Column(name = "auto_delimit_keywords", nullable = false)
+	private int autoDelimitKeywords;
+
 	public DatabaseGeneratorConfig() {
 		super();
 
@@ -108,6 +111,7 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.useSchemaPrefix = Whether.No.getFlag();
 		this.jsr310Support = Whether.No.getFlag();
 		this.overrideXML = Whether.No.getFlag();
+		this.autoDelimitKeywords = Whether.Yes.getFlag();
 	}
 
 	public long getConnectionConfigId() {
@@ -284,5 +288,13 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 
 	public void setOverrideXML(int overrideXML) {
 		this.overrideXML = overrideXML;
+	}
+
+	public int getAutoDelimitKeywords() {
+		return autoDelimitKeywords;
+	}
+
+	public void setAutoDelimitKeywords(Whether whether) {
+		this.autoDelimitKeywords = whether.getFlag();
 	}
 }

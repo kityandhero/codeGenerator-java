@@ -1,4 +1,4 @@
-package com.lzt.operate.code.generator.app.plugins;
+package com.lzt.operate.mybatis.custom.plugins.mysql;
 
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -16,11 +16,9 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import java.util.List;
 
 /**
- * Project: mybatis-generator-gui
- *
- * @author slankka on 2017/11/4.
+ * @author luzhitao
  */
-public class MySQLForUpdatePlugin extends PluginAdapter {
+public class UpdatePlugin extends PluginAdapter {
 
 	@Override
 	public boolean validate(List<String> warnings) {

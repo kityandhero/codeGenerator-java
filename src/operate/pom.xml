@@ -12,7 +12,7 @@
 
     <!-- 声明子模块 -->
     <modules>
-        <module>utility</module>
+        <module>operate-utility</module>
         <module>swagger-spring-boot-starter</module>
         <module>id-spring-boot-starter</module>
         <module>code-generator-app</module>
@@ -20,6 +20,7 @@
         <module>code-generator-dao</module>
         <module>code-generator-common</module>
         <module>code-generator-message-queue</module>
+        <module>operate-mybatis-custom</module>
     </modules>
 
     <properties>
