@@ -251,6 +251,14 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		String mapperName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME);
 		String comment = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_COMMENT);
 
+		if (ConstantCollection.YES_INT.equals(useGenerateKey)) {
+			if (StringAssist.isNullOrEmpty(generateKeys)) {
+				return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS, "启用自增键，需要提交自增列");
+			}
+		} else {
+			generateKeys = "";
+		}
+
 		Optional<DataTableGeneratorConfig> optional = this.connectionConfigAssist.getDataTableGeneratorConfigService()
 																				 .get(dataTableGeneratorConfigId);
 

@@ -212,9 +212,9 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 
 		long id = entity.getId();
 
-		id = id > 0 ? id : generateId();
-
-		entity.setId(id);
+		if (id <= 0) {
+			entity.setId(generateId());
+		}
 
 		String ip = RequestAssist.getCurrentRequestRemoteAddress();
 
