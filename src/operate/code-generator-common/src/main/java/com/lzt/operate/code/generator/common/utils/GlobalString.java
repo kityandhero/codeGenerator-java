@@ -130,17 +130,8 @@ public class GlobalString {
 	@ApiSingleParam(value = "annotation", type = Integer.class, example = "annotation")
 	public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION = "annotation";
 
-	@ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "useActualColumnNames")
-	public static final String DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
-
-	@ApiSingleParam(value = "useExample", type = Integer.class, example = "useExample")
-	public static final String DATABASE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";
-
 	@ApiSingleParam(value = "encoding", example = "encoding")
 	public static final String DATABASE_GENERATOR_CONFIG_ENCODING = "encoding";
-
-	@ApiSingleParam(value = "useTableNameAlias", type = Integer.class, example = "useTableNameAlias")
-	public static final String DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS = "useTableNameAlias";
 
 	@ApiSingleParam(value = "useDAOExtendStyle", type = Integer.class, example = "useDAOExtendStyle")
 	public static final String DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE = "useDAOExtendStyle";
@@ -153,6 +144,9 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "overrideXML", type = Integer.class, example = "overrideXML")
 	public static final String DATABASE_GENERATOR_CONFIG_OVERRIDE_XML = "overrideXML";
+
+	@ApiSingleParam(value = "autoDelimitKeywords", type = Integer.class, example = "1")
+	public static final String DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
 
 	//endregion
 
@@ -184,6 +178,18 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "comment", example = "table1")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_COMMENT = "comment";
+
+	@ApiSingleParam(value = "useExample", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";
+
+	@ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
+
+	@ApiSingleParam(value = "useTableNameAlias", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS = "useTableNameAlias";
+
+	@ApiSingleParam(value = "aliasName", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME = "aliasName";
 
 	//endregion
 

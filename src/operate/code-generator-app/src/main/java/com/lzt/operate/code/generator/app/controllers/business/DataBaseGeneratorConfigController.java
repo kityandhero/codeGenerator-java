@@ -21,6 +21,7 @@ import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
@@ -139,12 +140,6 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 												List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
 												getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
-												// getterList.add(DataBaseGeneratorConfig::getDescription);
-												// getterList.add(DataBaseGeneratorConfig::getConnectionType);
-												// getterList.add(DataBaseGeneratorConfig::getDatabaseType);
-												// getterList.add(DataBaseGeneratorConfig::getHost);
-												// getterList.add(DataBaseGeneratorConfig::getPort);
-												// getterList.add(DataBaseGeneratorConfig::getSchema);
 												getterList.add(DatabaseGeneratorConfig::getEncoding);
 												getterList.add(DatabaseGeneratorConfig::getChannel);
 												getterList.add(DatabaseGeneratorConfig::getChannelNote);
@@ -247,14 +242,12 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_EXAMPLE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)},
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET)
@@ -330,14 +323,12 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DatabaseGeneratorConfig::getNeedForUpdate);
 		getterList.add(DatabaseGeneratorConfig::getAnnotationDAO);
 		getterList.add(DatabaseGeneratorConfig::getAnnotation);
-		getterList.add(DatabaseGeneratorConfig::getUseActualColumnNames);
-		getterList.add(DatabaseGeneratorConfig::getUseExample);
 		getterList.add(DatabaseGeneratorConfig::getEncoding);
-		getterList.add(DatabaseGeneratorConfig::getUseTableNameAlias);
 		getterList.add(DatabaseGeneratorConfig::getUseDAOExtendStyle);
 		getterList.add(DatabaseGeneratorConfig::getUseSchemaPrefix);
 		getterList.add(DatabaseGeneratorConfig::getJsr310Support);
 		getterList.add(DatabaseGeneratorConfig::getOverrideXML);
+		getterList.add(DatabaseGeneratorConfig::getAutoDelimitKeywords);
 		getterList.add(DatabaseGeneratorConfig::getChannel);
 		getterList.add(DatabaseGeneratorConfig::getChannelNote);
 		getterList.add(DatabaseGeneratorConfig::getStatus);
@@ -384,17 +375,16 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		databaseGeneratorConfig.setOverrideXML(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)
 														.toInt());
 		databaseGeneratorConfig.setProjectFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER));
-		databaseGeneratorConfig.setUseActualColumnNames(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
-																 .toInt());
+
 		databaseGeneratorConfig.setUseDAOExtendStyle(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE)
 															  .toInt());
-		databaseGeneratorConfig.setUseExample(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_EXAMPLE)
-													   .toInt());
 		databaseGeneratorConfig.setUseSchemaPrefix(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX)
 															.toInt());
-		databaseGeneratorConfig.setUseTableNameAlias(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
 
-															  .toInt());
+		Integer autoDelimitKeywords = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS)
+											   .toInt();
+		databaseGeneratorConfig.setAutoDelimitKeywords(Whether.No.getFlag()
+																 .equals(autoDelimitKeywords) ? Whether.No : Whether.Yes);
 
 		long operatorId = getOperatorId();
 

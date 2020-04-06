@@ -19,6 +19,7 @@ import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
@@ -153,6 +154,10 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 												getterList.add(DataTableGeneratorConfig::getDomainObjectName);
 												getterList.add(DataTableGeneratorConfig::getMapperName);
 												getterList.add(DataTableGeneratorConfig::getComment);
+												getterList.add(DataTableGeneratorConfig::getUseExample);
+												getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
+												getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
+												getterList.add(DataTableGeneratorConfig::getAliasName);
 												getterList.add(DataTableGeneratorConfig::getChannel);
 												getterList.add(DataTableGeneratorConfig::getChannelNote);
 												getterList.add(DataTableGeneratorConfig::getStatus);
@@ -207,6 +212,10 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			getterList.add(DataTableGeneratorConfig::getDomainObjectName);
 			getterList.add(DataTableGeneratorConfig::getMapperName);
 			getterList.add(DataTableGeneratorConfig::getComment);
+			getterList.add(DataTableGeneratorConfig::getUseExample);
+			getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
+			getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
+			getterList.add(DataTableGeneratorConfig::getAliasName);
 			getterList.add(DataTableGeneratorConfig::getChannel);
 			getterList.add(DataTableGeneratorConfig::getChannelNote);
 			getterList.add(DataTableGeneratorConfig::getStatus);
@@ -231,7 +240,11 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_COMMENT)},
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_COMMENT),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS),
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET)
@@ -250,13 +263,28 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		String domainObjectName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME);
 		String mapperName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME);
 		String comment = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_COMMENT);
+		Integer useExample = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE)
+									  .toInt();
+		Integer useActualColumnNames = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
+												.toInt();
+		Integer useTableNameAlias = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
+											 .toInt();
+		String aliasName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME);
 
-		if (ConstantCollection.YES_INT.equals(useGenerateKey)) {
+		if (Whether.Yes.getFlag().equals(useGenerateKey)) {
 			if (StringAssist.isNullOrEmpty(generateKeys)) {
 				return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS, "启用自增键，需要提交自增列");
 			}
 		} else {
 			generateKeys = "";
+		}
+
+		if (Whether.Yes.getFlag().equals(useTableNameAlias)) {
+			if (StringAssist.isNullOrEmpty(aliasName)) {
+				return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME, "启用表别名，需要提交别名");
+			}
+		} else {
+			aliasName = "";
 		}
 
 		Optional<DataTableGeneratorConfig> optional = this.connectionConfigAssist.getDataTableGeneratorConfigService()
@@ -265,11 +293,18 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		if (optional.isPresent()) {
 			DataTableGeneratorConfig dataTableGeneratorConfig = optional.get();
 
-			dataTableGeneratorConfig.setUseGenerateKey(ConstantCollection.NO_INT.equals(useGenerateKey) ? ConstantCollection.NO_INT : ConstantCollection.YES_INT);
+			dataTableGeneratorConfig.setUseGenerateKey(Whether.No.getFlag()
+																 .equals(useGenerateKey) ? Whether.No : Whether.Yes);
 			dataTableGeneratorConfig.setGenerateKeys(generateKeys);
 			dataTableGeneratorConfig.setDomainObjectName(domainObjectName);
 			dataTableGeneratorConfig.setMapperName(mapperName);
 			dataTableGeneratorConfig.setComment(comment);
+			dataTableGeneratorConfig.setUseExample(Whether.No.getFlag().equals(useExample) ? Whether.No : Whether.Yes);
+			dataTableGeneratorConfig.setUseActualColumnNames(Whether.No.getFlag()
+																	   .equals(useActualColumnNames) ? Whether.No : Whether.Yes);
+			dataTableGeneratorConfig.setUseTableNameAlias(Whether.No.getFlag()
+																	.equals(useTableNameAlias) ? Whether.No : Whether.Yes);
+			dataTableGeneratorConfig.setAliasName(aliasName);
 
 			dataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
 																  .save(dataTableGeneratorConfig);

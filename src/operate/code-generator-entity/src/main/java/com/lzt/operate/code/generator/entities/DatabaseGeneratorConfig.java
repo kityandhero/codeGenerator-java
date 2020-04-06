@@ -60,17 +60,8 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "annotation", nullable = false)
 	private int annotation;
 
-	@Column(name = "use_actual_column_names", nullable = false)
-	private int useActualColumnNames;
-
-	@Column(name = "use_example", nullable = false)
-	private int useExample;
-
 	@Column(name = "encoding", nullable = false)
 	private int encoding;
-
-	@Column(name = "use_table_name_alias", nullable = false)
-	private int useTableNameAlias;
 
 	@Column(name = "use_dao_extend_style", nullable = false)
 	private int useDAOExtendStyle;
@@ -103,10 +94,7 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.needForUpdate = Whether.No.getFlag();
 		this.annotationDAO = Whether.No.getFlag();
 		this.annotation = Whether.No.getFlag();
-		this.useActualColumnNames = Whether.No.getFlag();
-		this.useExample = Whether.No.getFlag();
 		this.encoding = FileEncoding.UTF8.getFlag();
-		this.useTableNameAlias = Whether.No.getFlag();
 		this.useDAOExtendStyle = Whether.No.getFlag();
 		this.useSchemaPrefix = Whether.No.getFlag();
 		this.jsr310Support = Whether.No.getFlag();
@@ -226,36 +214,12 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.annotation = annotation;
 	}
 
-	public int getUseActualColumnNames() {
-		return useActualColumnNames;
-	}
-
-	public void setUseActualColumnNames(int useActualColumnNames) {
-		this.useActualColumnNames = useActualColumnNames;
-	}
-
-	public int getUseExample() {
-		return useExample;
-	}
-
-	public void setUseExample(int useExample) {
-		this.useExample = useExample;
-	}
-
 	public int getEncoding() {
 		return encoding;
 	}
 
 	public void setEncoding(FileEncoding fileEncoding) {
 		this.encoding = fileEncoding.getFlag();
-	}
-
-	public int getUseTableNameAlias() {
-		return useTableNameAlias;
-	}
-
-	public void setUseTableNameAlias(int useTableNameAlias) {
-		this.useTableNameAlias = useTableNameAlias;
 	}
 
 	public int getUseDAOExtendStyle() {

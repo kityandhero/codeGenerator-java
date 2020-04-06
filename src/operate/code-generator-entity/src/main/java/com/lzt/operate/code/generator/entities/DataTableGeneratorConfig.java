@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.entities;
 
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
+import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
 import lombok.EqualsAndHashCode;
 
@@ -49,17 +50,33 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "comment", nullable = false)
 	private String comment;
 
+	@Column(name = "use_example", nullable = false)
+	private int useExample;
+
+	@Column(name = "use_actual_column_names", nullable = false)
+	private int useActualColumnNames;
+
+	@Column(name = "use_table_name_alias", nullable = false)
+	private int useTableNameAlias;
+
+	@Column(name = "alias_name", nullable = false)
+	private String aliasName;
+
 	public DataTableGeneratorConfig() {
 		super();
 
-		connectionConfigId = 0;
-		databaseGeneratorConfigId = 0;
-		tableName = "";
-		useGenerateKey = ConstantCollection.NO_INT;
+		this.connectionConfigId = 0;
+		this.databaseGeneratorConfigId = 0;
+		this.tableName = "";
+		this.useGenerateKey = ConstantCollection.NO_INT;
 		this.generateKeys = "";
-		domainObjectName = "";
-		mapperName = "";
-		comment = "";
+		this.domainObjectName = "";
+		this.mapperName = "";
+		this.comment = "";
+		this.useExample = Whether.No.getFlag();
+		this.useActualColumnNames = Whether.No.getFlag();
+		this.useTableNameAlias = Whether.No.getFlag();
+		this.aliasName = "";
 	}
 
 	public long getConnectionConfigId() {
@@ -98,8 +115,8 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		return useGenerateKey;
 	}
 
-	public void setUseGenerateKey(int useGenerateKey) {
-		this.useGenerateKey = useGenerateKey;
+	public void setUseGenerateKey(Whether whether) {
+		this.useGenerateKey = whether.getFlag();
 	}
 
 	public String getDomainObjectName() {
@@ -125,4 +142,37 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
+	public int getUseExample() {
+		return useExample;
+	}
+
+	public void setUseExample(Whether whether) {
+		this.useExample = whether.getFlag();
+	}
+
+	public int getUseActualColumnNames() {
+		return useActualColumnNames;
+	}
+
+	public void setUseActualColumnNames(Whether whether) {
+		this.useActualColumnNames = whether.getFlag();
+	}
+
+	public int getUseTableNameAlias() {
+		return useTableNameAlias;
+	}
+
+	public void setUseTableNameAlias(Whether whether) {
+		this.useTableNameAlias = whether.getFlag();
+	}
+
+	public String getAliasName() {
+		return aliasName;
+	}
+
+	public void setAliasName(String aliasName) {
+		this.aliasName = aliasName;
+	}
+
 }
