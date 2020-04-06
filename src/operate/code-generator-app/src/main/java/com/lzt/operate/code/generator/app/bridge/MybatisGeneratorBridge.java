@@ -11,13 +11,12 @@ import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.mybatis.custom.plugins.CommonDAOInterfacePlugin;
 import com.lzt.operate.mybatis.custom.plugins.DbRemarksCommentGenerator;
 import com.lzt.operate.mybatis.custom.plugins.JavaTypeResolverJsr310Impl;
-import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
-import com.lzt.operate.mybatis.custom.plugins.mysql.LimitPlugin;
 import com.lzt.operate.mybatis.custom.plugins.RepositoryPlugin;
+import com.lzt.operate.mybatis.custom.plugins.mysql.LimitPlugin;
+import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.enums.Whether;
-import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -368,6 +367,7 @@ public class MybatisGeneratorBridge {
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
+
 		//repository 插件
 		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getAnnotationDAO())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
@@ -388,8 +388,9 @@ public class MybatisGeneratorBridge {
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
-				pluginConfiguration.addProperty("useExample", String.valueOf(!ConstantCollection.ZERO_INT.equals(dataTableGeneratorConfig
-						.getUseExample())));
+				pluginConfiguration.addProperty("useExample", String.valueOf(Whether.Yes.getFlag()
+																						.equals(dataTableGeneratorConfig
+																								.getUseExample())));
 
 				String commonInterfacePluginName = CommonDAOInterfacePlugin.class.getName();
 
