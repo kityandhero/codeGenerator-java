@@ -382,10 +382,13 @@ public class MybatisGeneratorBridge {
 		StringBuilder sb = new StringBuilder();
 		sb.append(generatorConfig.getProjectFolder()).append("/");
 		sb.append(generatorConfig.getMappingXmlTargetFolder()).append("/");
-		String mappingXMLPackage = generatorConfig.getMappingXmlPackage();
-		if (StringUtils.isNotEmpty(mappingXMLPackage)) {
-			sb.append(mappingXMLPackage.replace(".", "/")).append("/");
+
+		String mappingXmlPackage = generatorConfig.getMappingXmlPackage();
+
+		if (StringUtils.isNotEmpty(mappingXmlPackage)) {
+			sb.append(mappingXmlPackage.replace(".", "/")).append("/");
 		}
+
 		if (StringUtils.isNotEmpty(dataTableGeneratorConfig.getMapperName())) {
 			sb.append(dataTableGeneratorConfig.getMapperName()).append(".xml");
 		} else {
