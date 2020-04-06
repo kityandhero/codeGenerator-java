@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -272,7 +271,6 @@ public class DataColumnController extends BaseOperateAuthController {
 			dataColumn.setJavaType(javaType);
 			dataColumn.setTypeHandler(typeHandler);
 			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
-			dataColumn.setUpdateTime(LocalDateTime.now());
 		} else {
 			dataColumn.setConnectionConfigId(connectionConfigId);
 			dataColumn.setTableName(tableName);

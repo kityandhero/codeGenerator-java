@@ -107,6 +107,8 @@ public abstract class BaseEntity implements Serializable {
 	private long updateUnixTime;
 
 	protected BaseEntity() {
+		long nowUnixTime = LocalDateTimeAssist.toUnixTime(LocalDateTime.now());
+
 		channel = Channel.Unknown.getFlag();
 		channelNote = Channel.Unknown.getName();
 		autoRemark = "";
@@ -114,8 +116,10 @@ public abstract class BaseEntity implements Serializable {
 		statusNote = "";
 		ip = "";
 		createTime = LocalDateTime.now();
+		createUnixTime = nowUnixTime;
 		createOperatorId = 0;
 		updateTime = LocalDateTime.now();
+		updateUnixTime = nowUnixTime;
 		updateOperatorId = 0;
 	}
 

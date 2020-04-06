@@ -64,7 +64,6 @@ public class AccessWayQueueRunner implements Runnable {
 								accessWay.setChannel(Channel.CodeGenerator);
 								accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getFlag, AccessWayStatus::getName);
 								accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
-								accessWay.setUpdateTime(LocalDateTime.now());
 
 								this.accessWayService.save(accessWay);
 							}
@@ -79,9 +78,7 @@ public class AccessWayQueueRunner implements Runnable {
 							accessWay.setChannel(Channel.CodeGenerator);
 							accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getFlag, AccessWayStatus::getName);
 							accessWay.setCreateOperatorId(OperatorCollection.System.getId());
-							accessWay.setCreateTime(LocalDateTime.now());
 							accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
-							accessWay.setUpdateTime(LocalDateTime.now());
 
 							this.accessWayService.save(accessWay);
 						}

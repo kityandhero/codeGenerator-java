@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -206,7 +207,7 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 	 *
 	 * @param entity 数据实体
 	 */
-	default void beforeSave(S entity) {
+	default void beforeSave(@NotNull S entity) {
 		fixDataBeforeSave(entity);
 
 		long id = entity.getId();
@@ -223,9 +224,7 @@ public interface BaseService<R extends JpaRepositoryEx<S, Long>, S extends BaseE
 
 		entity.setIp(Optional.of(ip).orElse(""));
 
-		LocalDateTime updateTime = entity.getUpdateTime();
-
-		entity.setUpdateTime(Optional.of(updateTime).orElse(LocalDateTime.now()));
+		entity.setUpdateTime(LocalDateTime.now());
 	}
 
 	/**

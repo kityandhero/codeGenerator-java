@@ -44,9 +44,7 @@ public class ErrorLogQueueRunner implements Runnable {
 					errorLog.setChannel(Channel.CodeGenerator);
 					errorLog.setStatus(ErrorLogStatus.Normal, ErrorLogStatus::getFlag, ErrorLogStatus::getName);
 					errorLog.setCreateOperatorId(OperatorCollection.System.getId());
-					errorLog.setCreateTime(LocalDateTime.now());
 					errorLog.setUpdateOperatorId(OperatorCollection.System.getId());
-					errorLog.setUpdateTime(LocalDateTime.now());
 
 					this.errorLogService.save(errorLog);
 				} else {

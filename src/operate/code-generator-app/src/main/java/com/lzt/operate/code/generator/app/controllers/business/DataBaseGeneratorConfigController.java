@@ -52,7 +52,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -403,12 +402,10 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			databaseGeneratorConfig.setChannel(Channel.CodeGenerator);
 
 			databaseGeneratorConfig.setCreateOperatorId(operatorId);
-			databaseGeneratorConfig.setCreateTime(LocalDateTime.now());
 			databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
 		}
 
 		databaseGeneratorConfig.setUpdateOperatorId(operatorId);
-		databaseGeneratorConfig.setUpdateTime(LocalDateTime.now());
 
 		return databaseGeneratorConfig;
 	}

@@ -40,7 +40,6 @@ public class GeneralLogQueueRunner implements Runnable {
 					generalLog.setCreateOperatorId(OperatorCollection.System.getId());
 					generalLog.setCreateTime(LocalDateTime.now());
 					generalLog.setUpdateOperatorId(OperatorCollection.System.getId());
-					generalLog.setUpdateTime(LocalDateTime.now());
 
 					this.generalLogService.save(generalLog);
 				} else {

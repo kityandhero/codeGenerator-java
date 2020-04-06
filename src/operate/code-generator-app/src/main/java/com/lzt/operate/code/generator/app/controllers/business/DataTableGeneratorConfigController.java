@@ -242,9 +242,9 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 	public ResultSingleData set(@RequestBody Map<String, Object> json) {
 		ParamData paramJson = getParamData(json);
 
-		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY)
+		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
 												   .toLong();
-		Integer useGenerateKey = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
+		Integer useGenerateKey = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY)
 										  .toInt();
 		String generateKeys = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS);
 		String domainObjectName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME);
