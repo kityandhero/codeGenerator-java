@@ -43,10 +43,17 @@ spring:
     show-sql: true
     open-in-view: false
   #jpa end
+  #cache start
   cache:
-    type: ehcache
-    ehcache:
-      config: ehcache.xml
+    cache-names: outLimit，notOutLimit
+    #    ehcache:
+    #      config: ehcache.xml
+    #    type: ehcache
+    type: caffeine
+    caffeine:
+      spec: initialCapacity=100,maximumSize=1000,expireAfterWrite=500s,refreshAfterWrite=10s
+  #cache end
+  #redis start
   redis:
     # Redis数据库索引（默认为0）
     database: 0
@@ -68,6 +75,7 @@ spring:
         min-idle: 50
     # 连接超时时间（毫秒）
     timeout: 0s
+  #redis end
 #jwt start
 # 自定义凭证
 frame:
@@ -83,3 +91,6 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    redis:
+      enabled: false
