@@ -4,6 +4,7 @@ import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import com.lzt.operate.code.generator.app.util.DatabaseTypeUtil;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
+import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
@@ -18,6 +19,8 @@ import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
+import com.lzt.operate.utility.pojo.ReturnMessage;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -99,6 +102,8 @@ public class MybatisGeneratorBridge {
 
 	private final DatabaseGeneratorConfigService databaseGeneratorConfigService;
 
+	private final DataTableGeneratorConfigService dataTableGeneratorConfigService;
+
 	private final ConnectionConfig connectionConfig;
 
 	private ProgressCallback progressCallback;
@@ -107,9 +112,13 @@ public class MybatisGeneratorBridge {
 
 	private List<ColumnOverride> columnOverrides;
 
-	public MybatisGeneratorBridge(@NotNull ConnectionConfig selectedConnectionConfig, @NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService) {
+	public MybatisGeneratorBridge(
+			@NotNull ConnectionConfig selectedConnectionConfig,
+			@NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService,
+			@NotNull DataTableGeneratorConfigService dataTableGeneratorConfigService) {
 		this.connectionConfig = selectedConnectionConfig;
 		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
+		this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
 	}
 
 	private DatabaseGeneratorConfig getDataBaseGeneratorConfig() throws RuntimeException {
@@ -123,8 +132,14 @@ public class MybatisGeneratorBridge {
 		throw new RuntimeException("数据连接缺少相关生成配置");
 	}
 
-	private ExecutiveSimpleResult checkFolder(String projectFolderData, String modelTargetFolderData, String daoTargetFolderData, String mappingXmlTargetFolderData) {
-		String projectFolder = Optional.ofNullable(projectFolderData).orElse("");
+	private ExecutiveSimpleResult checkFolder(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
+		String projectFolder = Optional.ofNullable(databaseGeneratorConfig.getProjectFolder()).orElse("").trim();
+		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
+										   .orElse("")
+										   .trim();
+		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
+		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
+												.orElse("").trim();
 
 		if (StringAssist.isNullOrEmpty(projectFolder)) {
 			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("请先配置项目文件夹"));
@@ -144,7 +159,7 @@ public class MybatisGeneratorBridge {
 			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("项目文件夹路径无效"));
 		}
 
-		String modelTargetFolder = Optional.ofNullable(modelTargetFolderData).orElse("");
+		modelTargetFolder = Optional.of(modelTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(modelTargetFolder)) {
 			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -168,7 +183,7 @@ public class MybatisGeneratorBridge {
 			}
 		}
 
-		String daoTargetFolder = Optional.ofNullable(daoTargetFolderData).orElse("");
+		daoTargetFolder = Optional.of(daoTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(daoTargetFolder)) {
 			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -192,7 +207,7 @@ public class MybatisGeneratorBridge {
 			}
 		}
 
-		String mappingXmlTargetFolder = Optional.ofNullable(mappingXmlTargetFolderData).orElse("");
+		mappingXmlTargetFolder = Optional.of(mappingXmlTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
 			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -219,28 +234,58 @@ public class MybatisGeneratorBridge {
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
+	public ExecutiveSimpleResult generateAll() throws Exception {
+		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
+
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
+
+		if (!checkFolderResult.getSuccess()) {
+			return new ExecutiveSimpleResult(checkFolderResult.getCode());
+		}
+
+		List<String> listError = new ArrayList<>();
+
+		List<DataTableGeneratorConfig> list = this.dataTableGeneratorConfigService.list();
+
+		for (DataTableGeneratorConfig item : list) {
+			ExecutiveSimpleResult itemResult = this.generateCore(databaseGeneratorConfig, item);
+
+			if (!itemResult.getSuccess()) {
+
+				listError.add(itemResult.getMessage());
+			}
+		}
+
+		ReturnMessage returnMessage = listError.size() > 0 ? ReturnDataCode.DataError.toMessage() : ReturnDataCode.Ok.toMessage();
+
+		return new ExecutiveSimpleResult(returnMessage.toMessage(StringAssist.join(listError)));
+	}
+
 	public ExecutiveSimpleResult generate(@NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
 		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
 
-		String projectFolder = Optional.ofNullable(databaseGeneratorConfig.getProjectFolder()).orElse("").trim();
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
+
+		if (!checkFolderResult.getSuccess()) {
+			return checkFolderResult;
+		}
+
+		return this.generateCore(databaseGeneratorConfig, dataTableGeneratorConfig);
+	}
+
+	public ExecutiveSimpleResult generateCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
+		Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
+
+		if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
+			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
+		}
+
 		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
 										   .orElse("")
 										   .trim();
 		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
 		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
 												.orElse("").trim();
-
-		ExecutiveSimpleResult checkFolderResult = this.checkFolder(projectFolder, modelTargetFolder, daoTargetFolder, mappingXmlTargetFolder);
-
-		if (!checkFolderResult.getSuccess()) {
-			return checkFolderResult;
-		}
-
-		Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
-
-		if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
-			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
-		}
 
 		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
 
@@ -273,7 +318,6 @@ public class MybatisGeneratorBridge {
 
 		String connectorLibPath = ConfigHelper.findConnectorLibPath(databaseType.getName());
 
-		// log.info("connectorLibPath: {}", connectorLibPath);
 		configuration.addClasspathEntry(connectorLibPath);
 
 		// Table configuration

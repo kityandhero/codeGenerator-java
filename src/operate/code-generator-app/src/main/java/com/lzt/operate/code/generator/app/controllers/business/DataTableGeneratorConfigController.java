@@ -345,8 +345,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 
 	@ApiOperation(value = "构建表对应代码", notes = "构建表对应代码", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE, value = {
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID)},
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE)
@@ -377,13 +376,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
 		}
 
-		// Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
-		// 																							   .findByConnectionConfigId(connectionConfigId);
-		//
-		// if (!optionalDatabaseGeneratorConfig.isPresent()) {
-		// 	return this.fail(ReturnDataCode.NoData.toMessage("指定的数据库生成配置不存在"));
-		// }
-
 		Optional<DataTableGeneratorConfig> optionalDataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
 																										 .get(dataTableGeneratorConfigId);
 
@@ -391,8 +383,10 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据表生成配置不存在"));
 		}
 
-		MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(optionalConnectionConfig.get(), this.connectionConfigAssist
-				.getDatabaseGeneratorConfigService());
+		MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
+				optionalConnectionConfig.get(),
+				this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
+				this.connectionConfigAssist.getDataTableGeneratorConfigService());
 
 		ExecutiveSimpleResult result = mybatisGeneratorBridge.generate(optionalDataTableGeneratorConfig.get());
 

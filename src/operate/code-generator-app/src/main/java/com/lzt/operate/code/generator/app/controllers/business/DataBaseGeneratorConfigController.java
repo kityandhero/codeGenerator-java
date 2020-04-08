@@ -2,6 +2,7 @@ package com.lzt.operate.code.generator.app.controllers.business;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
+import com.lzt.operate.code.generator.app.bridge.MybatisGeneratorBridge;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
@@ -31,6 +32,7 @@ import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultListData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
 import com.lzt.operate.utility.pojo.SerializableData;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -321,6 +323,46 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		}
 
 		return setCore(databaseGeneratorConfig, paramJson);
+	}
+
+	@ApiOperation(value = "构建库对应代码", notes = "构建库对应代码", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_GENERATE, value = {
+			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_GENERATE)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "构建库对应代码", description = "构建库对应代码", tag = "83ddf6ea-1f01-4cb9-b67d-0d2689184412")
+	public ResultSingleData generate(@RequestBody Map<String, Object> json) throws Exception {
+		ParamData paramJson = getParamData(json);
+
+		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+										   .toLong();
+
+		if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
+			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
+		}
+
+		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
+
+		if (!optionalConnectionConfig.isPresent()) {
+			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
+		}
+
+		MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
+				optionalConnectionConfig.get(),
+				this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
+				this.connectionConfigAssist.getDataTableGeneratorConfigService());
+
+		ExecutiveSimpleResult result = mybatisGeneratorBridge.generateAll();
+
+		if (result.getSuccess()) {
+			return this.successWithTimestamp();
+		}
+
+		return this.fail(result.getCode());
 	}
 
 	/**

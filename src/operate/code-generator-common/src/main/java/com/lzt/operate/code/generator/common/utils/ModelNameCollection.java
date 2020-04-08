@@ -44,6 +44,8 @@ public class ModelNameCollection {
 
 	public static final String DATABASE_GENERATOR_CONFIG_SET = "DATABASE_GENERATOR_CONFIG_SET";
 
+	public static final String DATABASE_GENERATOR_CONFIG_GENERATE = "DATABASE_GENERATOR_CONFIG_GENERATE";
+
 	//endregion
 
 	//region DATA_TABLE_GENERATOR_CONFIG 数据表生成配置
