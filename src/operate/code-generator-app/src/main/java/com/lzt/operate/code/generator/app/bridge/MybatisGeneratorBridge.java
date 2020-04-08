@@ -17,6 +17,7 @@ import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.enums.Whether;
+import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -122,13 +123,123 @@ public class MybatisGeneratorBridge {
 		throw new RuntimeException("数据连接缺少相关生成配置");
 	}
 
+	private ExecutiveSimpleResult checkFolder(String projectFolderData, String modelTargetFolderData, String daoTargetFolderData, String mappingXmlTargetFolderData) {
+		String projectFolder = Optional.ofNullable(projectFolderData).orElse("");
+
+		if (StringAssist.isNullOrEmpty(projectFolder)) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("请先配置项目文件夹"));
+		}
+
+		File file = new File(projectFolder);
+
+		if (!file.exists()) {
+			boolean mkdirsResult = file.mkdirs();
+
+			if (!mkdirsResult) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建项目文件夹失败"));
+			}
+		}
+
+		if (!file.isDirectory()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("项目文件夹路径无效"));
+		}
+
+		String modelTargetFolder = Optional.ofNullable(modelTargetFolderData).orElse("");
+
+		if (!StringAssist.isNullOrEmpty(modelTargetFolder)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹不能含有空格"));
+			}
+
+			String modelFolder = StringAssist.merge(projectFolder, modelTargetFolder);
+
+			file = new File(modelFolder);
+
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
+
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建model文件夹失败"));
+				}
+			}
+
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹路径无效"));
+			}
+		}
+
+		String daoTargetFolder = Optional.ofNullable(daoTargetFolderData).orElse("");
+
+		if (!StringAssist.isNullOrEmpty(daoTargetFolder)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹不能含有空格"));
+			}
+
+			String daoFolder = StringAssist.merge(projectFolder, daoTargetFolder);
+
+			file = new File(daoFolder);
+
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
+
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建dao文件夹失败"));
+				}
+			}
+
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹路径无效"));
+			}
+		}
+
+		String mappingXmlTargetFolder = Optional.ofNullable(mappingXmlTargetFolderData).orElse("");
+
+		if (!StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
+			}
+
+			String mappingXmlFolder = StringAssist.merge(projectFolder, mappingXmlTargetFolder);
+
+			file = new File(mappingXmlFolder);
+
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
+
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建mappingXml文件夹失败"));
+				}
+			}
+
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹路径无效"));
+			}
+		}
+
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
+	}
+
 	public ExecutiveSimpleResult generate(@NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
 		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
+
+		String projectFolder = Optional.ofNullable(databaseGeneratorConfig.getProjectFolder()).orElse("").trim();
+		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
+										   .orElse("")
+										   .trim();
+		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
+		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
+												.orElse("").trim();
+
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(projectFolder, modelTargetFolder, daoTargetFolder, mappingXmlTargetFolder);
+
+		if (!checkFolderResult.getSuccess()) {
+			return checkFolderResult;
+		}
 
 		Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
 
 		if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
-			throw new RuntimeException("数据表生成配置与数据连接配置不相配");
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
 		}
 
 		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
@@ -274,18 +385,33 @@ public class MybatisGeneratorBridge {
 		// java model
 		JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
 		modelConfig.setTargetPackage(databaseGeneratorConfig.getModelPackage());
-		modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + databaseGeneratorConfig
-				.getModelTargetFolder());
+
+		if (StringAssist.isNullOrEmpty(modelTargetFolder)) {
+			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
+		}
+
 		// Mapper configuration
 		SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
 		mapperConfig.setTargetPackage(databaseGeneratorConfig.getMappingXmlPackage());
-		mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + databaseGeneratorConfig
-				.getMappingXmlTargetFolder());
+
+		if (StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
+			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
+		}
+
 		// DAO
 		JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
 		daoConfig.setConfigurationType("XMLMAPPER");
 		daoConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
-		daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + databaseGeneratorConfig.getDaoTargetFolder());
+
+		if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
+			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
+		}
 
 		context.setId("myid");
 		context.addTableConfiguration(tableConfig);

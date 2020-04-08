@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
@@ -75,8 +76,8 @@ public class ErrorLogController extends BaseOperateAuthController {
 	private ErrorLogService errorLogService;
 
 	@Autowired
-	public ErrorLogController(CustomJsonWebTokenConfig customJsonWebTokenConfig, ErrorLogServiceImpl errorLogService) {
-		super(customJsonWebTokenConfig);
+	public ErrorLogController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, ErrorLogServiceImpl errorLogService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.errorLogService = errorLogService;
 	}

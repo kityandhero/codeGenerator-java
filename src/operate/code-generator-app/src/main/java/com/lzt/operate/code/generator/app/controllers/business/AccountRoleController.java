@@ -2,7 +2,7 @@ package com.lzt.operate.code.generator.app.controllers.business;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.AccountAssist;
-import com.lzt.operate.code.generator.app.common.OperateBaseController;
+import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
@@ -45,13 +45,11 @@ import java.util.Map;
 @EnableConfigurationProperties
 @RequestMapping("/business/operatorRole")
 @Api(tags = {"账户拥有角色管理"})
-public class AccountRoleController extends OperateBaseController {
+public class AccountRoleController extends BaseOperateAuthController {
 
-	private final LoadingCache<String, Object> loadingCache;
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsService roleCodeToolsService;
-	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
 	private AccountService accountService;
 
 	@Autowired
@@ -62,8 +60,8 @@ public class AccountRoleController extends OperateBaseController {
 			AccountRoleServiceImpl accountRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
-		this.loadingCache = loadingCache;
-		this.customJsonWebTokenConfig = customJsonWebTokenConfig;
+		super(loadingCache, customJsonWebTokenConfig);
+
 		this.accountService = accountService;
 		this.accountRoleService = accountRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -72,8 +70,8 @@ public class AccountRoleController extends OperateBaseController {
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
-				this.loadingCache,
-				this.customJsonWebTokenConfig,
+				this.getLoadingCache(),
+				this.getCustomJsonWebTokenConfig(),
 				this.accountService,
 				this.accountRoleService,
 				this.roleUniversalService,

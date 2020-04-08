@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
@@ -66,8 +67,8 @@ public class AccessWayController extends BaseOperateAuthController {
 	private AccessWayService accessWayService;
 
 	@Autowired
-	public AccessWayController(CustomJsonWebTokenConfig customJsonWebTokenConfig, AccessWayServiceImpl accessWayService) {
-		super(customJsonWebTokenConfig);
+	public AccessWayController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, AccessWayServiceImpl accessWayService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.accessWayService = accessWayService;
 	}

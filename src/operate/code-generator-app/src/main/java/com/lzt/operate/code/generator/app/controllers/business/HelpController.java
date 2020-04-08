@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
@@ -70,8 +71,12 @@ public class HelpController extends BaseOperateAuthController {
 	private HelpCategoryService helpCategoryService;
 
 	@Autowired
-	public HelpController(CustomJsonWebTokenConfig customJsonWebTokenConfig, HelpCategoryServiceImpl helpCategoryService, HelpServiceImpl helpService) {
-		super(customJsonWebTokenConfig);
+	public HelpController(
+			LoadingCache<String, Object> loadingCache,
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			HelpCategoryServiceImpl helpCategoryService,
+			HelpServiceImpl helpService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.helpCategoryService = helpCategoryService;
 		this.helpService = helpService;

@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.bridge.MybatisGeneratorBridge;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
@@ -73,12 +74,13 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 
 	@Autowired
 	public DataTableGeneratorConfigController(
+			LoadingCache<String, Object> loadingCache,
 			CustomJsonWebTokenConfig customJsonWebTokenConfig,
 			ConnectionConfigServiceImpl connectionConfigService,
 			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
 			DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService,
 			DataColumnService dataColumnService) {
-		super(customJsonWebTokenConfig);
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.connectionConfigAssist = new ConnectionConfigAssist(
 				connectionConfigService,

@@ -398,4 +398,11 @@ public class GlobalString {
 
 	//endregion
 
+	//region TOOLS_OPEN_FOLDER
+
+	@ApiSingleParam(value = "文件夹", example = "d:test")
+	public static final String TOOLS_OPEN_FOLDER_FOLDER = "folder";
+
+	//endregion
+
 }

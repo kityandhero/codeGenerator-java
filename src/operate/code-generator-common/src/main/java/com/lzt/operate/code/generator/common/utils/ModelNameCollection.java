@@ -152,6 +152,12 @@ public class ModelNameCollection {
 
 	//endregion
 
+	//region TOOLS 工具
+
+	public static final String TOOLS_OPEN_FOLDER = "TOOLS_OPEN_FOLDER";
+
+	//endregion
+
 	/**
 	 * 打开数据库
 	 */

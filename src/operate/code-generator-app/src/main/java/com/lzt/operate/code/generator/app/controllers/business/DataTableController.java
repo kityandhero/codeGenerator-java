@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
@@ -69,12 +70,14 @@ public class DataTableController extends BaseOperateAuthController {
 	private final ConnectionConfigAssist connectionConfigAssist;
 
 	@Autowired
-	public DataTableController(CustomJsonWebTokenConfig customJsonWebTokenConfig,
-							   ConnectionConfigServiceImpl connectionConfigService,
-							   DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
-							   DataTableGeneratorConfigService dataTableGeneratorConfigService,
-							   DataColumnService dataColumnService) {
-		super(customJsonWebTokenConfig);
+	public DataTableController(
+			LoadingCache<String, Object> loadingCache,
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			ConnectionConfigServiceImpl connectionConfigService,
+			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+			DataTableGeneratorConfigService dataTableGeneratorConfigService,
+			DataColumnService dataColumnService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.connectionConfigAssist = new ConnectionConfigAssist(
 				connectionConfigService,

@@ -51,7 +51,6 @@ import java.util.Optional;
 @Api(tags = {"操作者信息"})
 public class OperatorController extends BaseOperateAuthController {
 
-	private final LoadingCache<String, Object> loadingCache;
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
@@ -65,9 +64,8 @@ public class OperatorController extends BaseOperateAuthController {
 			AccountRoleServiceImpl operatorRoleService,
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
-		super(customJsonWebTokenConfig);
+		super(loadingCache, customJsonWebTokenConfig);
 
-		this.loadingCache = loadingCache;
 		this.operatorService = operatorService;
 		this.accountRoleService = operatorRoleService;
 		this.roleUniversalService = roleUniversalService;
@@ -76,7 +74,7 @@ public class OperatorController extends BaseOperateAuthController {
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
-				this.loadingCache,
+				this.getLoadingCache(),
 				this.getCustomJsonWebTokenConfig(),
 				this.operatorService,
 				this.accountRoleService,

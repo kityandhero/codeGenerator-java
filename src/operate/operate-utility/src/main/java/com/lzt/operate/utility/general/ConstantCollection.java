@@ -73,4 +73,6 @@ public class ConstantCollection {
 
 	public static final String ENTITY_ID_FIRST_UPPER = "Id";
 
+	public static final String EMPTY_STRING = " ";
+
 }

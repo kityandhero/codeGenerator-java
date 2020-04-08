@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
@@ -20,6 +21,7 @@ import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
@@ -73,12 +75,14 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	private final ConnectionConfigAssist connectionConfigAssist;
 
 	@Autowired
-	public DataBaseGeneratorConfigController(CustomJsonWebTokenConfig customJsonWebTokenConfig,
-											 ConnectionConfigServiceImpl connectionConfigService,
-											 DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
-											 DataTableGeneratorConfigService dataTableGeneratorConfigService,
-											 DataColumnService dataColumnService) {
-		super(customJsonWebTokenConfig);
+	public DataBaseGeneratorConfigController(
+			LoadingCache<String, Object> loadingCache,
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			ConnectionConfigServiceImpl connectionConfigService,
+			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+			DataTableGeneratorConfigService dataTableGeneratorConfigService,
+			DataColumnService dataColumnService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.connectionConfigAssist = new ConnectionConfigAssist(
 				connectionConfigService,
@@ -263,6 +267,24 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 												  .toLong();
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 										   .toLong();
+
+		String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
+
+		if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER, "model文件夹不能含有空白");
+		}
+
+		String daoTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER);
+
+		if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
+			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER, "dao文件夹不能含有空白");
+		}
+
+		String mappingXmlTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER);
+
+		if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
+			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER, "mappingXml文件夹不能含有空白");
+		}
 
 		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 

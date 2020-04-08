@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.RoleUniversalStatus;
@@ -67,8 +68,11 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	private RoleUniversalService roleUniversalService;
 
 	@Autowired
-	public RoleUniversalController(CustomJsonWebTokenConfig customJsonWebTokenConfig, RoleUniversalServiceImpl roleUniversalService) {
-		super(customJsonWebTokenConfig);
+	public RoleUniversalController(
+			LoadingCache<String, Object> loadingCache,
+			CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			RoleUniversalServiceImpl roleUniversalService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.roleUniversalService = roleUniversalService;
 	}

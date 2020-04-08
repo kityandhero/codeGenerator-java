@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
@@ -71,8 +72,8 @@ public class GeneralLogController extends BaseOperateAuthController {
 	private GeneralLogService generalLogService;
 
 	@Autowired
-	public GeneralLogController(CustomJsonWebTokenConfig customJsonWebTokenConfig, GeneralLogServiceImpl generalLogService) {
-		super(customJsonWebTokenConfig);
+	public GeneralLogController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, GeneralLogServiceImpl generalLogService) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.generalLogService = generalLogService;
 	}

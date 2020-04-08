@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.app.controllers.business;
 
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.AccountStatus;
@@ -73,8 +74,8 @@ public class AccountController extends BaseOperateAuthController {
 	private AccountService accountService;
 
 	@Autowired
-	public AccountController(CustomJsonWebTokenConfig customJsonWebTokenConfig, AccountServiceImpl accountRepository) {
-		super(customJsonWebTokenConfig);
+	public AccountController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, AccountServiceImpl accountRepository) {
+		super(loadingCache, customJsonWebTokenConfig);
 
 		this.accountService = accountRepository;
 	}
