@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -57,6 +58,18 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "alias_name", nullable = false)
 	private String aliasName;
 
+	@Lob
+	@Column(name = "model_content", nullable = false)
+	private String modelContent;
+
+	@Lob
+	@Column(name = "mapper_content", nullable = false)
+	private String mapperContent;
+
+	@Lob
+	@Column(name = "xml_content", nullable = false)
+	private String xmlContent;
+
 	public DataTableGeneratorConfig() {
 		super();
 
@@ -71,6 +84,9 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.useActualColumnNames = Whether.No.getFlag();
 		this.useTableNameAlias = Whether.No.getFlag();
 		this.aliasName = "";
+		this.modelContent = "";
+		this.mapperContent = "";
+		this.xmlContent = "";
 	}
 
 	public long getConnectionConfigId() {
@@ -161,4 +177,27 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.aliasName = aliasName;
 	}
 
+	public String getModelContent() {
+		return modelContent;
+	}
+
+	public void setModelContent(String modelContent) {
+		this.modelContent = modelContent;
+	}
+
+	public String getMapperContent() {
+		return mapperContent;
+	}
+
+	public void setMapperContent(String mapperContent) {
+		this.mapperContent = mapperContent;
+	}
+
+	public String getXmlContent() {
+		return xmlContent;
+	}
+
+	public void setXmlContent(String xmlContent) {
+		this.xmlContent = xmlContent;
+	}
 }

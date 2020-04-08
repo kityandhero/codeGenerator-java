@@ -87,11 +87,11 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.connectorJarFile = "";
 		this.projectFolder = "";
 		this.modelPackage = "model";
-		this.modelTargetFolder = "model";
+		this.modelTargetFolder = "";
 		this.daoPackage = "dao";
-		this.daoTargetFolder = "dao";
+		this.daoTargetFolder = "";
 		this.mappingXmlPackage = "mapping";
-		this.mappingXmlTargetFolder = "mapping";
+		this.mappingXmlTargetFolder = "";
 		this.offsetLimit = Whether.No.getFlag();
 		this.needToStringHashCodeEquals = Whether.No.getFlag();
 		this.needForUpdate = Whether.No.getFlag();

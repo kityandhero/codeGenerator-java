@@ -24,6 +24,8 @@ import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mybatis.generator.api.GeneratedJavaFile;
+import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.api.ShellCallback;
@@ -596,6 +598,49 @@ public class MybatisGeneratorBridge {
 		}
 
 		myBatisGenerator.generate(this.progressCallback, contexts, fullyqualifiedTables);
+
+		List<GeneratedJavaFile> javaFileList = myBatisGenerator.getGeneratedJavaFiles();
+
+		boolean needSave = false;
+
+		for (GeneratedJavaFile file : javaFileList) {
+			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
+
+			String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
+					.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+			String mapperFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getMapperName()) ? StringAssist
+					.merge(dataTableGeneratorConfig
+							.getTableName(), "Mapper") : dataTableGeneratorConfig.getMapperName();
+
+			if (modelFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setModelContent(file.getFormattedContent());
+				needSave = true;
+			}
+
+			if (mapperFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setMapperContent(file.getFormattedContent());
+				needSave = true;
+			}
+		}
+
+		List<GeneratedXmlFile> xmlFileList = myBatisGenerator.getGeneratedXmlFiles();
+
+		for (GeneratedJavaFile file : javaFileList) {
+			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
+
+			String xmlFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getMapperName()) ? StringAssist
+					.merge(dataTableGeneratorConfig
+							.getTableName(), "Mapper") : dataTableGeneratorConfig.getMapperName();
+
+			if (xmlFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setXmlContent(file.getFormattedContent());
+				needSave = true;
+			}
+		}
+
+		if (needSave) {
+			this.dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
+		}
 
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
