@@ -3,17 +3,15 @@ package com.lzt.operate.code.generator.app.controllers.business;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.util.CommandUtil;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.assists.StringAssist;
-import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ParamData;
 import com.lzt.operate.utility.pojo.ResultSingleData;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.util.Map;
 
 /**
@@ -46,15 +43,9 @@ public class ToolsController extends BaseOperateAuthController {
 		super(loadingCache, customJsonWebTokenConfig);
 	}
 
-	@ApiOperation(value = "更新操作者基本信息", notes = "更新操作者基本信息", httpMethod = "POST")
+	@ApiOperation(value = "打开文件夹", notes = "打开文件夹", httpMethod = "POST")
 	@ApiJsonObject(name = ModelNameCollection.TOOLS_OPEN_FOLDER, value = {
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_NAME),
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_CITY_NAME),
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_CITY_CODE),
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_EMAIL),
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_PHONE),
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_AVATAR),
-			@ApiJsonProperty(name = GlobalString.ACCOUNT_DESCRIPTION)},
+			@ApiJsonProperty(name = GlobalString.TOOLS_OPEN_FOLDER_FOLDER)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.TOOLS_OPEN_FOLDER)
@@ -66,23 +57,13 @@ public class ToolsController extends BaseOperateAuthController {
 
 		String folder = paramJson.getStringByKey(GlobalString.TOOLS_OPEN_FOLDER_FOLDER).trim();
 
-		if (StringAssist.contains(folder, ConstantCollection.EMPTY_STRING)) {
-			return this.paramError(GlobalString.TOOLS_OPEN_FOLDER_FOLDER, "缺少文件夹路径");
+		ExecutiveSimpleResult result = this.openFolder(folder);
+
+		if (result.getSuccess()) {
+			return this.successWithTimestamp();
 		}
 
-		File file = new File(folder);
-
-		if (!file.exists()) {
-			return this.noChange("文件夹不存在");
-		}
-
-		if (!file.isDirectory()) {
-			return this.noChange("文件夹路径无效");
-		}
-
-		CommandUtil.open(file);
-
-		return this.successWithTimestamp();
+		return this.fail(result.getCode());
 	}
 
 }

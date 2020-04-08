@@ -365,6 +365,43 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		return this.fail(result.getCode());
 	}
 
+	@ApiOperation(value = "打开项目文件夹", notes = "打开项目文件夹", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_OPEN_PROJECT_FOLDER, value = {
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_OPEN_PROJECT_FOLDER)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/openProjectFolder", produces = "application/json")
+	public ResultSingleData openProjectFolder(@RequestBody Map<String, Object> json) {
+		ParamData paramJson = getParamData(json);
+
+		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+										   .toLong();
+
+		if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
+			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
+		}
+
+		Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																									   .findByConnectionConfigId(connectionConfigId);
+
+		if (!optionalDatabaseGeneratorConfig.isPresent()) {
+			return this.fail(ReturnDataCode.DataError.appendMessage("数据库生成配置不存在"));
+		}
+
+		String folder = optionalDatabaseGeneratorConfig.get().getProjectFolder();
+
+		ExecutiveSimpleResult result = this.openFolder(folder);
+
+		if (result.getSuccess()) {
+			return this.successWithTimestamp();
+		}
+
+		return this.fail(result.getCode());
+	}
+
 	/**
 	 * 修饰get返回数据
 	 *
