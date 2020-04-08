@@ -625,7 +625,7 @@ public class MybatisGeneratorBridge {
 
 		List<GeneratedXmlFile> xmlFileList = myBatisGenerator.getGeneratedXmlFiles();
 
-		for (GeneratedJavaFile file : javaFileList) {
+		for (GeneratedXmlFile file : xmlFileList) {
 			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
 
 			String xmlFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getMapperName()) ? StringAssist
