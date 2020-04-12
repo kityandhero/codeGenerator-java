@@ -214,7 +214,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.lzt.operate.code.generator.app.CodeToolsApplication</mainClass>
+                    <mainClass>com.lzt.operate.code.generator.app.CodeGeneratorApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
