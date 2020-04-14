@@ -26,226 +26,214 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class DataTableGeneratorConfig extends BaseEntity {
 
-	private static final long serialVersionUID = -6940964534931128004L;
+    private static final long serialVersionUID = -6940964534931128004L;
 
-	@Column(name = "connection_config_id", nullable = false)
-	private long connectionConfigId;
+    @Column(name = "connection_config_id", nullable = false)
+    private long connectionConfigId;
 
-	@Column(name = "database_generator_config_id", nullable = false)
-	private long databaseGeneratorConfigId;
+    @Column(name = "database_generator_config_id", nullable = false)
+    private long databaseGeneratorConfigId;
 
-	@Column(name = "table_name", nullable = false)
-	private String tableName;
+    @Column(name = "table_name", nullable = false)
+    private String tableName;
 
-	@Column(name = "use_generate_key", nullable = false)
-	private int useGenerateKey;
+    @Column(name = "use_generate_key", nullable = false)
+    private int useGenerateKey;
 
-	@Column(name = "generate_keys", nullable = false)
-	private String generateKeys;
+    @Column(name = "generate_keys", nullable = false)
+    private String generateKeys;
 
-	@Column(name = "domain_object_name", nullable = false)
-	private String domainObjectName;
+    @Column(name = "domain_object_name", nullable = false)
+    private String domainObjectName;
 
-	@Column(name = "mapper_name", nullable = false)
-	private String mapperName;
+    @Column(name = "use_actual_column_names", nullable = false)
+    private int useActualColumnNames;
 
-	@Column(name = "use_actual_column_names", nullable = false)
-	private int useActualColumnNames;
+    @Column(name = "use_table_name_alias", nullable = false)
+    private int useTableNameAlias;
 
-	@Column(name = "use_table_name_alias", nullable = false)
-	private int useTableNameAlias;
+    @Column(name = "alias_name", nullable = false)
+    private String aliasName;
 
-	@Column(name = "alias_name", nullable = false)
-	private String aliasName;
+    @Lob
+    @Column(name = "model_content", nullable = false)
+    private String modelContent;
 
-	@Lob
-	@Column(name = "model_content", nullable = false)
-	private String modelContent;
+    @Lob
+    @Column(name = "mapper_content", nullable = false)
+    private String mapperContent;
 
-	@Lob
-	@Column(name = "mapper_content", nullable = false)
-	private String mapperContent;
+    @Lob
+    @Column(name = "mapping_xml_content", nullable = false)
+    private String mappingXmlContent;
 
-	@Lob
-	@Column(name = "mapping_xml_content", nullable = false)
-	private String mappingXmlContent;
+    @Lob
+    @Column(name = "example_content", nullable = false)
+    private String exampleContent;
 
-	@Lob
-	@Column(name = "example_content", nullable = false)
-	private String exampleContent;
+    @Lob
+    @Column(name = "service_content", nullable = false)
+    private String serviceContent;
 
-	@Lob
-	@Column(name = "service_content", nullable = false)
-	private String serviceContent;
+    @Lob
+    @Column(name = "service_impl_content", nullable = false)
+    private String serviceImplContent;
 
-	@Lob
-	@Column(name = "service_impl_content", nullable = false)
-	private String serviceImplContent;
+    /**
+     * 最后一次的生成时间
+     */
+    @Column(name = "last_generate_time", nullable = false)
+    @DateTimeFormat
+    @JsonFormat
+    private LocalDateTime lastGenerateTime;
 
-	/**
-	 * 最后一次的生成时间
-	 */
-	@Column(name = "last_generate_time", nullable = false)
-	@DateTimeFormat
-	@JsonFormat
-	private LocalDateTime lastGenerateTime;
+    public DataTableGeneratorConfig() {
+        super();
 
-	public DataTableGeneratorConfig() {
-		super();
+        this.connectionConfigId = 0;
+        this.databaseGeneratorConfigId = 0;
+        this.tableName = "";
+        this.useGenerateKey = ConstantCollection.NO_INT;
+        this.generateKeys = "";
+        this.domainObjectName = "";
+        this.useActualColumnNames = Whether.No.getFlag();
+        this.useTableNameAlias = Whether.No.getFlag();
+        this.aliasName = "";
+        this.modelContent = "";
+        this.mapperContent = "";
+        this.mappingXmlContent = "";
+        this.exampleContent = "";
+        this.serviceContent = "";
+        this.serviceImplContent = "";
+        this.lastGenerateTime = ConstantCollection.DEFAULT_DATE_TIME;
+    }
 
-		this.connectionConfigId = 0;
-		this.databaseGeneratorConfigId = 0;
-		this.tableName = "";
-		this.useGenerateKey = ConstantCollection.NO_INT;
-		this.generateKeys = "";
-		this.domainObjectName = "";
-		this.mapperName = "";
-		this.useActualColumnNames = Whether.No.getFlag();
-		this.useTableNameAlias = Whether.No.getFlag();
-		this.aliasName = "";
-		this.modelContent = "";
-		this.mapperContent = "";
-		this.mappingXmlContent = "";
-		this.exampleContent = "";
-		this.serviceContent = "";
-		this.serviceImplContent = "";
-		this.lastGenerateTime = ConstantCollection.DEFAULT_DATE_TIME;
-	}
+    public long getConnectionConfigId() {
+        return this.connectionConfigId;
+    }
 
-	public long getConnectionConfigId() {
-		return connectionConfigId;
-	}
+    public void setConnectionConfigId(long connectionConfigId) {
+        this.connectionConfigId = connectionConfigId;
+    }
 
-	public void setConnectionConfigId(long connectionConfigId) {
-		this.connectionConfigId = connectionConfigId;
-	}
+    public long getDatabaseGeneratorConfigId() {
+        return this.databaseGeneratorConfigId;
+    }
 
-	public long getDatabaseGeneratorConfigId() {
-		return databaseGeneratorConfigId;
-	}
+    public void setDatabaseGeneratorConfigId(long databaseGeneratorConfigId) {
+        this.databaseGeneratorConfigId = databaseGeneratorConfigId;
+    }
 
-	public void setDatabaseGeneratorConfigId(long databaseGeneratorConfigId) {
-		this.databaseGeneratorConfigId = databaseGeneratorConfigId;
-	}
+    public String getTableName() {
+        return this.tableName;
+    }
 
-	public String getTableName() {
-		return tableName;
-	}
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
+    public String getGenerateKeys() {
+        return this.generateKeys;
+    }
 
-	public String getGenerateKeys() {
-		return generateKeys;
-	}
+    public void setGenerateKeys(String generateKeys) {
+        this.generateKeys = generateKeys;
+    }
 
-	public void setGenerateKeys(String generateKeys) {
-		this.generateKeys = generateKeys;
-	}
+    public int getUseGenerateKey() {
+        return this.useGenerateKey;
+    }
 
-	public int getUseGenerateKey() {
-		return useGenerateKey;
-	}
+    public void setUseGenerateKey(Whether whether) {
+        this.useGenerateKey = whether.getFlag();
+    }
 
-	public void setUseGenerateKey(Whether whether) {
-		this.useGenerateKey = whether.getFlag();
-	}
+    public String getDomainObjectName() {
+        return this.domainObjectName;
+    }
 
-	public String getDomainObjectName() {
-		return domainObjectName;
-	}
+    public void setDomainObjectName(String domainObjectName) {
+        this.domainObjectName = domainObjectName;
+    }
 
-	public void setDomainObjectName(String domainObjectName) {
-		this.domainObjectName = domainObjectName;
-	}
+    public int getUseActualColumnNames() {
+        return this.useActualColumnNames;
+    }
 
-	public String getMapperName() {
-		return mapperName;
-	}
+    public void setUseActualColumnNames(Whether whether) {
+        this.useActualColumnNames = whether.getFlag();
+    }
 
-	public void setMapperName(String mapperName) {
-		this.mapperName = mapperName;
-	}
+    public int getUseTableNameAlias() {
+        return this.useTableNameAlias;
+    }
 
-	public int getUseActualColumnNames() {
-		return useActualColumnNames;
-	}
+    public void setUseTableNameAlias(Whether whether) {
+        this.useTableNameAlias = whether.getFlag();
+    }
 
-	public void setUseActualColumnNames(Whether whether) {
-		this.useActualColumnNames = whether.getFlag();
-	}
+    public String getAliasName() {
+        return this.aliasName;
+    }
 
-	public int getUseTableNameAlias() {
-		return useTableNameAlias;
-	}
+    public void setAliasName(String aliasName) {
+        this.aliasName = aliasName;
+    }
 
-	public void setUseTableNameAlias(Whether whether) {
-		this.useTableNameAlias = whether.getFlag();
-	}
+    public String getModelContent() {
+        return this.modelContent;
+    }
 
-	public String getAliasName() {
-		return aliasName;
-	}
+    public void setModelContent(String modelContent) {
+        this.modelContent = modelContent;
+    }
 
-	public void setAliasName(String aliasName) {
-		this.aliasName = aliasName;
-	}
+    public String getMapperContent() {
+        return this.mapperContent;
+    }
 
-	public String getModelContent() {
-		return modelContent;
-	}
+    public void setMapperContent(String mapperContent) {
+        this.mapperContent = mapperContent;
+    }
 
-	public void setModelContent(String modelContent) {
-		this.modelContent = modelContent;
-	}
+    public String getMappingXmlContent() {
+        return this.mappingXmlContent;
+    }
 
-	public String getMapperContent() {
-		return mapperContent;
-	}
+    public void setMappingXmlContent(String mappingXmlContent) {
+        this.mappingXmlContent = mappingXmlContent;
+    }
 
-	public void setMapperContent(String mapperContent) {
-		this.mapperContent = mapperContent;
-	}
+    public String getExampleContent() {
+        return this.exampleContent;
+    }
 
-	public String getMappingXmlContent() {
-		return mappingXmlContent;
-	}
+    public void setExampleContent(String exampleContent) {
+        this.exampleContent = exampleContent;
+    }
 
-	public void setMappingXmlContent(String mappingXmlContent) {
-		this.mappingXmlContent = mappingXmlContent;
-	}
+    public String getServiceContent() {
+        return this.serviceContent;
+    }
 
-	public String getExampleContent() {
-		return exampleContent;
-	}
+    public void setServiceContent(String serviceContent) {
+        this.serviceContent = serviceContent;
+    }
 
-	public void setExampleContent(String exampleContent) {
-		this.exampleContent = exampleContent;
-	}
+    public String getServiceImplContent() {
+        return this.serviceImplContent;
+    }
 
-	public String getServiceContent() {
-		return serviceContent;
-	}
+    public void setServiceImplContent(String serviceImplContent) {
+        this.serviceImplContent = serviceImplContent;
+    }
 
-	public void setServiceContent(String serviceContent) {
-		this.serviceContent = serviceContent;
-	}
+    public LocalDateTime getLastGenerateTime() {
+        return this.lastGenerateTime;
+    }
 
-	public String getServiceImplContent() {
-		return serviceImplContent;
-	}
-
-	public void setServiceImplContent(String serviceImplContent) {
-		this.serviceImplContent = serviceImplContent;
-	}
-
-	public LocalDateTime getLastGenerateTime() {
-		return lastGenerateTime;
-	}
-
-	public void setLastGenerateTime(LocalDateTime lastGenerateTime) {
-		this.lastGenerateTime = lastGenerateTime;
-	}
+    public void setLastGenerateTime(LocalDateTime lastGenerateTime) {
+        this.lastGenerateTime = lastGenerateTime;
+    }
 
 }
