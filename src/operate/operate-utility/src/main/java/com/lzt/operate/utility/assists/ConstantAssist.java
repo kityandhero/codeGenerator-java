@@ -65,6 +65,8 @@ public class ConstantAssist {
 	public static final String FORMAT_DATETIME_Y4MDHM = "yyyy-MM-dd HH:mm";
 	public static final String FORMAT_DATETIME_Y4MDHMS = "yyyy-MM-dd HH:mm:ss";
 
+	public static final String USER_HOME = "user.home";
+
 	//endregion
 
 }

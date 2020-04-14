@@ -254,6 +254,15 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
 			databaseGeneratorConfig.setUpdateOperatorId(operatorId);
 
+			//创建生成文件夹
+			if (this.checkDefaultMainGenerateFolderPathEnable()) {
+				ExecutiveResult<String> createFolderResult = this.createGenerateResultFolder(data.getName());
+
+				if (createFolderResult.getSuccess()) {
+					databaseGeneratorConfig.setProjectFolder(createFolderResult.getData());
+				}
+			}
+
 			this.connectionConfigAssist.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
 
 			this.connectionConfigAssist.getDatabaseGeneratorConfigService()

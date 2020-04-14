@@ -15,4 +15,6 @@ public class CustomConstants {
 
 	public static final Integer HELP_CATEGORY_NO = 1;
 
+	public static final String DEFAULT_MAIN_GENERATE_FOLDER = "/codeGenerateResult/";
+
 }
