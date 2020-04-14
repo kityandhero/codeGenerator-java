@@ -490,7 +490,7 @@ public class MybatisGeneratorBridge {
 
         serviceConfig.getProperties().setProperty("enableSubPackages", "false");
 
-        context.setId("myid");
+        context.setId("myContext");
         context.addTableConfiguration(tableConfig);
         context.setJdbcConnectionConfiguration(jdbcConfig);
         context.setJavaModelGeneratorConfiguration(modelConfig);
