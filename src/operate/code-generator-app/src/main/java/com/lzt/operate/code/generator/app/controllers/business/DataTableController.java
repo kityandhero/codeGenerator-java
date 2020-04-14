@@ -182,6 +182,11 @@ public class DataTableController extends BaseOperateAuthController {
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getGenerateKeys);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getDomainObjectName);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getMapperName);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getUseExample);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getAliasName);
+			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getLastGenerateTime);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getChannel);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getChannelNote);
 			dataTableGeneratorConfigGetterList.add(DataTableGeneratorConfig::getStatus);
@@ -236,17 +241,18 @@ public class DataTableController extends BaseOperateAuthController {
 													   }
 												   }
 
+												   boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+																								  .checkHasGenerateContent(dataTableGeneratorConfigTemp);
+
 												   SerializableData dataTableGeneratorConfigData = SerializableData.toSerializableData(dataTableGeneratorConfigTemp, dataTableGeneratorConfigGetterList);
 
 												   dataTableGeneratorConfigData.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfigTemp
 														   .getId());
+												   dataTableGeneratorConfigData.append("generated", generated ? 1 : 0);
 
 												   data.append(StringAssist.toFirstLower(DataTableGeneratorConfig.class.getSimpleName()), dataTableGeneratorConfigData);
 
 												   data.append("initialized", initialized ? 1 : 0);
-
-												   boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
-																								  .checkHasGenerateContent(dataTableGeneratorConfigTemp);
 
 												   data.append("generated", generated ? 1 : 0);
 

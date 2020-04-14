@@ -159,6 +159,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 												getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
 												getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
 												getterList.add(DataTableGeneratorConfig::getAliasName);
+												getterList.add(DataTableGeneratorConfig::getLastGenerateTime);
 												getterList.add(DataTableGeneratorConfig::getChannel);
 												getterList.add(DataTableGeneratorConfig::getChannelNote);
 												getterList.add(DataTableGeneratorConfig::getStatus);
@@ -170,6 +171,11 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 
 												data.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), o
 														.getId());
+
+												boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+																							   .checkHasGenerateContent(o);
+
+												data.append("generated", generated ? 1 : 0);
 
 												return data;
 											})
@@ -220,6 +226,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			getterList.add(DataTableGeneratorConfig::getMapperContent);
 			getterList.add(DataTableGeneratorConfig::getMappingXmlContent);
 			getterList.add(DataTableGeneratorConfig::getExampleContent);
+			getterList.add(DataTableGeneratorConfig::getLastGenerateTime);
 			getterList.add(DataTableGeneratorConfig::getChannel);
 			getterList.add(DataTableGeneratorConfig::getChannelNote);
 			getterList.add(DataTableGeneratorConfig::getStatus);
@@ -230,6 +237,11 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			SerializableData data = SerializableData.toSerializableData(dataTableGeneratorConfig, getterList);
 
 			data.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfig.getId());
+
+			boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+														   .checkHasGenerateContent(dataTableGeneratorConfig);
+
+			data.append("generated", generated ? 1 : 0);
 
 			return this.singleData(data);
 		}
