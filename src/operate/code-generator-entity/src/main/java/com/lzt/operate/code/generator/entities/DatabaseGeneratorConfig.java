@@ -100,10 +100,11 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.encoding = FileEncoding.UTF8.getFlag();
 		this.useDAOExtendStyle = Whether.No.getFlag();
 		this.useSchemaPrefix = Whether.No.getFlag();
-		this.jsr310Support = Whether.No.getFlag();
+		this.jsr310Support = Whether.Yes.getFlag();
 		this.overrideXML = Whether.No.getFlag();
 		this.autoDelimitKeywords = Whether.Yes.getFlag();
 		this.comment = Whether.No.getFlag();
+
 	}
 
 	public long getConnectionConfigId() {

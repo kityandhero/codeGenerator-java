@@ -1,5 +1,7 @@
 package com.lzt.operate.utility.general;
 
+import java.time.LocalDateTime;
+
 /**
  * @author luzhitao
  */
@@ -74,5 +76,7 @@ public class ConstantCollection {
 	public static final String ENTITY_ID_FIRST_UPPER = "Id";
 
 	public static final String EMPTY_STRING = " ";
+
+	public static LocalDateTime DEFAULT_DATE_TIME = LocalDateTime.of(2010, 1, 1, 0, 0, 0);
 
 }

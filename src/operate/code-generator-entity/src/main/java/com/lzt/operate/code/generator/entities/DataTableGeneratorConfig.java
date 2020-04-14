@@ -1,14 +1,17 @@
 package com.lzt.operate.code.generator.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
  * GeneratorConfig is the Config of mybatis generator config exclude database
@@ -67,8 +70,20 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	private String mapperContent;
 
 	@Lob
-	@Column(name = "xml_content", nullable = false)
-	private String xmlContent;
+	@Column(name = "mapping_xml_content", nullable = false)
+	private String mappingXmlContent;
+
+	@Lob
+	@Column(name = "example_content", nullable = false)
+	private String exampleContent;
+
+	/**
+	 * 最后一次的生成时间
+	 */
+	@Column(name = "last_generate_time", nullable = false)
+	@DateTimeFormat
+	@JsonFormat
+	private LocalDateTime lastGenerateTime;
 
 	public DataTableGeneratorConfig() {
 		super();
@@ -86,7 +101,9 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.aliasName = "";
 		this.modelContent = "";
 		this.mapperContent = "";
-		this.xmlContent = "";
+		this.mappingXmlContent = "";
+		this.exampleContent = "";
+		this.lastGenerateTime = ConstantCollection.DEFAULT_DATE_TIME;
 	}
 
 	public long getConnectionConfigId() {
@@ -193,11 +210,28 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.mapperContent = mapperContent;
 	}
 
-	public String getXmlContent() {
-		return xmlContent;
+	public String getMappingXmlContent() {
+		return mappingXmlContent;
 	}
 
-	public void setXmlContent(String xmlContent) {
-		this.xmlContent = xmlContent;
+	public void setMappingXmlContent(String mappingXmlContent) {
+		this.mappingXmlContent = mappingXmlContent;
 	}
+
+	public String getExampleContent() {
+		return exampleContent;
+	}
+
+	public void setExampleContent(String exampleContent) {
+		this.exampleContent = exampleContent;
+	}
+
+	public LocalDateTime getLastGenerateTime() {
+		return lastGenerateTime;
+	}
+
+	public void setLastGenerateTime(LocalDateTime lastGenerateTime) {
+		this.lastGenerateTime = lastGenerateTime;
+	}
+
 }

@@ -48,6 +48,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -601,25 +602,28 @@ public class MybatisGeneratorBridge {
 
 		List<GeneratedJavaFile> javaFileList = myBatisGenerator.getGeneratedJavaFiles();
 
-		boolean needSave = false;
-
 		for (GeneratedJavaFile file : javaFileList) {
 			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
 
 			String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
 					.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+			String exampleFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getMapperName()) ? StringAssist
+					.merge(dataTableGeneratorConfig
+							.getTableName(), "Example") : dataTableGeneratorConfig.getMapperName();
 			String mapperFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getMapperName()) ? StringAssist
 					.merge(dataTableGeneratorConfig
 							.getTableName(), "Mapper") : dataTableGeneratorConfig.getMapperName();
 
 			if (modelFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
 				dataTableGeneratorConfig.setModelContent(file.getFormattedContent());
-				needSave = true;
+			}
+
+			if (exampleFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setExampleContent(file.getFormattedContent());
 			}
 
 			if (mapperFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
 				dataTableGeneratorConfig.setMapperContent(file.getFormattedContent());
-				needSave = true;
 			}
 		}
 
@@ -633,14 +637,13 @@ public class MybatisGeneratorBridge {
 							.getTableName(), "Mapper") : dataTableGeneratorConfig.getMapperName();
 
 			if (xmlFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-				dataTableGeneratorConfig.setXmlContent(file.getFormattedContent());
-				needSave = true;
+				dataTableGeneratorConfig.setMappingXmlContent(file.getFormattedContent());
 			}
 		}
 
-		if (needSave) {
-			this.dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
-		}
+		dataTableGeneratorConfig.setLastGenerateTime(LocalDateTime.now());
+
+		this.dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
 
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}

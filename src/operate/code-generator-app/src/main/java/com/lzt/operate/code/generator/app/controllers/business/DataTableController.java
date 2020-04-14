@@ -245,6 +245,11 @@ public class DataTableController extends BaseOperateAuthController {
 
 												   data.append("initialized", initialized ? 1 : 0);
 
+												   boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+																								  .checkHasGenerateContent(dataTableGeneratorConfigTemp);
+
+												   data.append("generated", generated ? 1 : 0);
+
 												   return data;
 											   })
 											   .collect(Collectors.toList());
