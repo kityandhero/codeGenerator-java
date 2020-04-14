@@ -49,9 +49,6 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "mapper_name", nullable = false)
 	private String mapperName;
 
-	@Column(name = "use_example", nullable = false)
-	private int useExample;
-
 	@Column(name = "use_actual_column_names", nullable = false)
 	private int useActualColumnNames;
 
@@ -77,6 +74,14 @@ public class DataTableGeneratorConfig extends BaseEntity {
 	@Column(name = "example_content", nullable = false)
 	private String exampleContent;
 
+	@Lob
+	@Column(name = "service_content", nullable = false)
+	private String serviceContent;
+
+	@Lob
+	@Column(name = "service_impl_content", nullable = false)
+	private String serviceImplContent;
+
 	/**
 	 * 最后一次的生成时间
 	 */
@@ -95,7 +100,6 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.generateKeys = "";
 		this.domainObjectName = "";
 		this.mapperName = "";
-		this.useExample = Whether.No.getFlag();
 		this.useActualColumnNames = Whether.No.getFlag();
 		this.useTableNameAlias = Whether.No.getFlag();
 		this.aliasName = "";
@@ -103,6 +107,8 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.mapperContent = "";
 		this.mappingXmlContent = "";
 		this.exampleContent = "";
+		this.serviceContent = "";
+		this.serviceImplContent = "";
 		this.lastGenerateTime = ConstantCollection.DEFAULT_DATE_TIME;
 	}
 
@@ -162,14 +168,6 @@ public class DataTableGeneratorConfig extends BaseEntity {
 		this.mapperName = mapperName;
 	}
 
-	public int getUseExample() {
-		return useExample;
-	}
-
-	public void setUseExample(Whether whether) {
-		this.useExample = whether.getFlag();
-	}
-
 	public int getUseActualColumnNames() {
 		return useActualColumnNames;
 	}
@@ -224,6 +222,22 @@ public class DataTableGeneratorConfig extends BaseEntity {
 
 	public void setExampleContent(String exampleContent) {
 		this.exampleContent = exampleContent;
+	}
+
+	public String getServiceContent() {
+		return serviceContent;
+	}
+
+	public void setServiceContent(String serviceContent) {
+		this.serviceContent = serviceContent;
+	}
+
+	public String getServiceImplContent() {
+		return serviceImplContent;
+	}
+
+	public void setServiceImplContent(String serviceImplContent) {
+		this.serviceImplContent = serviceImplContent;
 	}
 
 	public LocalDateTime getLastGenerateTime() {

@@ -179,9 +179,6 @@ public class GlobalString {
 	@ApiSingleParam(value = "mapperName", example = "table1")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME = "mapperName";
 
-	@ApiSingleParam(value = "useExample", type = Integer.class, example = "0")
-	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";
-
 	@ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "0")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
 

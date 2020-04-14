@@ -9,10 +9,14 @@ import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
+import com.lzt.operate.mybatis.custom.config.ContextCustom;
+import com.lzt.operate.mybatis.custom.config.JavaServiceGeneratorConfiguration;
+import com.lzt.operate.mybatis.custom.config.xml.ConfigurationCustom;
+import com.lzt.operate.mybatis.custom.plugins.CommentGeneratorCustom;
 import com.lzt.operate.mybatis.custom.plugins.CommonDAOInterfacePlugin;
-import com.lzt.operate.mybatis.custom.plugins.DbRemarksCommentGenerator;
 import com.lzt.operate.mybatis.custom.plugins.JavaTypeResolverJsr310Impl;
 import com.lzt.operate.mybatis.custom.plugins.RepositoryPlugin;
+import com.lzt.operate.mybatis.custom.plugins.SerializablePlugin;
 import com.lzt.operate.mybatis.custom.plugins.mysql.LimitPlugin;
 import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -31,8 +35,6 @@ import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
-import org.mybatis.generator.config.Configuration;
-import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.GeneratedKey;
 import org.mybatis.generator.config.IgnoredColumn;
 import org.mybatis.generator.config.JDBCConnectionConfiguration;
@@ -45,6 +47,7 @@ import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.mybatis.generator.plugins.ToStringPlugin;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -312,9 +315,9 @@ public class MybatisGeneratorBridge {
 			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("tableName无效"));
 		}
 
-		Configuration configuration = new Configuration();
+		ConfigurationCustom configuration = new ConfigurationCustom();
 
-		Context context = new Context(ModelType.CONDITIONAL);
+		ContextCustom context = new ContextCustom(ModelType.CONDITIONAL);
 
 		configuration.addContext(context);
 		context.addProperty("javaFileEncoding", fileEncoding.getName());
@@ -329,12 +332,17 @@ public class MybatisGeneratorBridge {
 		tableConfig.setTableName(tableName);
 		tableConfig.setDomainObjectName(Optional.ofNullable(dataTableGeneratorConfig.getDomainObjectName()).orElse(""));
 
-		boolean useExample = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseExample());
+		// boolean useExample = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseExample());
 
-		tableConfig.setUpdateByExampleStatementEnabled(useExample);
-		tableConfig.setCountByExampleStatementEnabled(useExample);
-		tableConfig.setDeleteByExampleStatementEnabled(useExample);
-		tableConfig.setSelectByExampleStatementEnabled(useExample);
+		// tableConfig.setUpdateByExampleStatementEnabled(useExample);
+		// tableConfig.setCountByExampleStatementEnabled(useExample);
+		// tableConfig.setDeleteByExampleStatementEnabled(useExample);
+		// tableConfig.setSelectByExampleStatementEnabled(useExample);
+
+		tableConfig.setUpdateByExampleStatementEnabled(true);
+		tableConfig.setCountByExampleStatementEnabled(true);
+		tableConfig.setDeleteByExampleStatementEnabled(true);
+		tableConfig.setSelectByExampleStatementEnabled(true);
 
 		// 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
 		//         一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
@@ -439,6 +447,9 @@ public class MybatisGeneratorBridge {
 			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
 		}
 
+		modelConfig.getProperties().setProperty("enableSubPackages", "false");
+		modelConfig.getProperties().setProperty("trimStrings", "true");
+
 		// Mapper configuration
 		SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
 		mapperConfig.setTargetPackage(databaseGeneratorConfig.getMappingXmlPackage());
@@ -449,7 +460,9 @@ public class MybatisGeneratorBridge {
 			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
 		}
 
-		// DAO
+		mapperConfig.getProperties().setProperty("enableSubPackages", "false");
+
+		// dao
 		JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
 		daoConfig.setConfigurationType("XMLMAPPER");
 		daoConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
@@ -460,30 +473,74 @@ public class MybatisGeneratorBridge {
 			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
 		}
 
+		daoConfig.getProperties().setProperty("enableSubPackages", "false");
+
+		// service
+		JavaServiceGeneratorConfiguration serviceConfig = new JavaServiceGeneratorConfiguration();
+		serviceConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
+		serviceConfig.setImplementationPackage(databaseGeneratorConfig.getDaoPackage() + ".impl");
+
+		if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
+			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
+		}
+
+		serviceConfig.getProperties().setProperty("enableSubPackages", "false");
+
 		context.setId("myid");
 		context.addTableConfiguration(tableConfig);
 		context.setJdbcConnectionConfiguration(jdbcConfig);
 		context.setJavaModelGeneratorConfiguration(modelConfig);
 		context.setSqlMapGeneratorConfiguration(mapperConfig);
 		context.setJavaClientGeneratorConfiguration(daoConfig);
-		// Comment
-		CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
-		commentConfig.setConfigurationType(DbRemarksCommentGenerator.class.getName());
+		context.setJavaServiceGeneratorConfiguration(serviceConfig);
 
-		commentConfig.addProperty("columnRemarks", String.valueOf(Whether.Yes.getFlag()
-																			 .equals(databaseGeneratorConfig.getComment())));
-
-		commentConfig.addProperty("annotations", String.valueOf(Whether.Yes.getFlag()
-																		   .equals(databaseGeneratorConfig.getAnnotation())));
-
-		context.setCommentGeneratorConfiguration(commentConfig);
 		context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, fileEncoding.getName());
 
+		// CommentGenerator
+		{
+			CommentGeneratorConfiguration commentGeneratorCustomConfiguration = new CommentGeneratorConfiguration();
+
+			String commentGeneratorCustomConfigurationName = CommentGeneratorCustom.class.getName();
+
+			commentGeneratorCustomConfiguration.setConfigurationType(commentGeneratorCustomConfigurationName);
+
+			context.setCommentGeneratorConfiguration(commentGeneratorCustomConfiguration);
+		}
+
+		// PluginChain
+		{
+			PluginConfiguration pluginChainConfiguration = new PluginConfiguration();
+
+			String pluginChainName = com.lzt.operate.mybatis.custom.plugins.PluginChain.class.getName();
+
+			pluginChainConfiguration.setConfigurationType(pluginChainName);
+
+			context.addPluginConfiguration(pluginChainConfiguration);
+		}
+
 		//实体添加序列化
-		PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
-		serializablePluginConfiguration.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
-		serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
-		context.addPluginConfiguration(serializablePluginConfiguration);
+		{
+			PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
+
+			String serializablePluginConfigurationName = SerializablePlugin.class.getName();
+
+			serializablePluginConfiguration.setConfigurationType(serializablePluginConfigurationName);
+
+			context.addPluginConfiguration(serializablePluginConfiguration);
+		}
+
+		// ToStringPlugin
+		{
+			PluginConfiguration toStringPluginConfiguration = new PluginConfiguration();
+
+			String toStringPluginConfigurationName = ToStringPlugin.class.getName();
+
+			toStringPluginConfiguration.setConfigurationType(toStringPluginConfigurationName);
+
+			context.addPluginConfiguration(toStringPluginConfiguration);
+		}
 
 		// toString, hashCode, equals插件
 		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedToStringHashCodeEquals())) {
@@ -561,9 +618,7 @@ public class MybatisGeneratorBridge {
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
-				pluginConfiguration.addProperty("useExample", String.valueOf(Whether.Yes.getFlag()
-																						.equals(dataTableGeneratorConfig
-																								.getUseExample())));
+				pluginConfiguration.addProperty("useExample", "true");
 
 				String commonInterfacePluginName = CommonDAOInterfacePlugin.class.getName();
 
@@ -613,6 +668,11 @@ public class MybatisGeneratorBridge {
 			String mapperFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getMapperName()) ? StringAssist
 					.merge(dataTableGeneratorConfig
 							.getTableName(), "Mapper") : dataTableGeneratorConfig.getMapperName();
+			// String serviceFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? StringAssist
+			// 		.merge(dataTableGeneratorConfig
+			// 				.getTableName(), "Service") : dataTableGeneratorConfig.getDomainObjectName();
+			// String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
+			// 		.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
 
 			if (modelFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
 				dataTableGeneratorConfig.setModelContent(file.getFormattedContent());

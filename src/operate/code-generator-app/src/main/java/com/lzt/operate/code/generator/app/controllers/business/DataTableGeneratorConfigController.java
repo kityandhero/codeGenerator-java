@@ -155,7 +155,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 												getterList.add(DataTableGeneratorConfig::getGenerateKeys);
 												getterList.add(DataTableGeneratorConfig::getDomainObjectName);
 												getterList.add(DataTableGeneratorConfig::getMapperName);
-												getterList.add(DataTableGeneratorConfig::getUseExample);
 												getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
 												getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
 												getterList.add(DataTableGeneratorConfig::getAliasName);
@@ -218,7 +217,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			getterList.add(DataTableGeneratorConfig::getGenerateKeys);
 			getterList.add(DataTableGeneratorConfig::getDomainObjectName);
 			getterList.add(DataTableGeneratorConfig::getMapperName);
-			getterList.add(DataTableGeneratorConfig::getUseExample);
 			getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
 			getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
 			getterList.add(DataTableGeneratorConfig::getAliasName);
@@ -256,7 +254,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS),
 			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME)},
@@ -277,8 +274,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 		String generateKeys = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS);
 		String domainObjectName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME);
 		String mapperName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME);
-		Integer useExample = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE)
-									  .toInt();
 		Integer useActualColumnNames = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
 												.toInt();
 		Integer useTableNameAlias = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
@@ -312,7 +307,6 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			dataTableGeneratorConfig.setGenerateKeys(generateKeys);
 			dataTableGeneratorConfig.setDomainObjectName(domainObjectName);
 			dataTableGeneratorConfig.setMapperName(mapperName);
-			dataTableGeneratorConfig.setUseExample(Whether.No.getFlag().equals(useExample) ? Whether.No : Whether.Yes);
 			dataTableGeneratorConfig.setUseActualColumnNames(Whether.No.getFlag()
 																	   .equals(useActualColumnNames) ? Whether.No : Whether.Yes);
 			dataTableGeneratorConfig.setUseTableNameAlias(Whether.No.getFlag()
