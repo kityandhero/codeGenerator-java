@@ -1,5 +1,9 @@
 package com.lzt.operate.mybatis.custom.plugins;
 
+import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.general.ConstantCollection;
+import org.apache.ibatis.annotations.Param;
+import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.JavaTypeResolver;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -17,44 +21,51 @@ import java.util.stream.Collectors;
  */
 public class ClientDaoPlugin extends EntityCommentPlugin {
 
-	@Override
-	public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
-								   IntrospectedTable introspectedTable) {
+    @Override
+    public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
+                                   IntrospectedTable introspectedTable) {
 
-		JavaTypeResolver javaTypeResolver = new JavaTypeResolverDefaultImpl();
-		FullyQualifiedJavaType calculateJavaType = javaTypeResolver
-				.calculateJavaType(introspectedTable.getPrimaryKeyColumns().get(0));
+        JavaTypeResolver javaTypeResolver = new JavaTypeResolverDefaultImpl();
 
-		FullyQualifiedJavaType superInterfaceType = new FullyQualifiedJavaType(
-				new StringBuilder("BaseMapper<")
-						.append(introspectedTable.getBaseRecordType())
-						.append(",")
-						.append(introspectedTable.getExampleType())
-						.append(",")
-						.append(calculateJavaType.getShortName())
-						.append(">")
-						.toString()
-		);
-		FullyQualifiedJavaType baseMapperInstance = FullyQualifiedJavaTypeProxyFactory.getBaseMapperInstance();
+        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 
-		interfaze.addSuperInterface(superInterfaceType);
-		interfaze.addImportedType(baseMapperInstance);
+        if (ConstantCollection.ZERO_INT.equals(primaryKeyColumns.size())) {
+            throw new RuntimeException(StringAssist.merge("表", introspectedTable.getFullyQualifiedTableNameAtRuntime(), "缺少主键设置"));
+        }
 
-		List<Method> changeMethods = interfaze.getMethods().stream()
-											  .filter(method -> method.getName().endsWith("WithBLOBs")
-													  || method.getReturnType().toString().endsWith("WithBLOBs")
-													  || Arrays.toString(method.getParameters().toArray())
-															   .contains("WithBLOBs"))
-											  .collect(Collectors.toList());
+        FullyQualifiedJavaType calculateJavaType = javaTypeResolver
+                .calculateJavaType(introspectedTable.getPrimaryKeyColumns().get(0));
 
-		interfaze.getMethods().retainAll(changeMethods);
+        FullyQualifiedJavaType superInterfaceType = new FullyQualifiedJavaType(
+                "BaseMapper<" +
+                        introspectedTable.getBaseRecordType() +
+                        "," +
+                        introspectedTable.getExampleType() +
+                        "," +
+                        calculateJavaType.getShortName() +
+                        ">"
+        );
+        FullyQualifiedJavaType baseMapperInstance = FullyQualifiedJavaTypeProxyFactory.getBaseMapperInstance();
 
-		if (changeMethods.isEmpty()) {
-			interfaze.getImportedTypes().removeIf(javaType -> javaType.getFullyQualifiedName().equals("java.util.List")
-					|| javaType.getFullyQualifiedName().equals("org.apache.ibatis.annotations.Param"));
-		}
+        interfaze.addSuperInterface(superInterfaceType);
+        interfaze.addImportedType(baseMapperInstance);
 
-		return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
-	}
+        List<Method> changeMethods = interfaze.getMethods().stream()
+                                              .filter(method -> method.getName().endsWith("WithBLOBs")
+                                                      || method.getReturnType().toString().endsWith("WithBLOBs")
+                                                      || Arrays.toString(method.getParameters().toArray())
+                                                               .contains("WithBLOBs"))
+                                              .collect(Collectors.toList());
+
+        interfaze.getMethods().retainAll(changeMethods);
+
+        if (changeMethods.isEmpty()) {
+            interfaze.getImportedTypes()
+                     .removeIf(javaType -> javaType.getFullyQualifiedName().equals(List.class.getName())
+                             || javaType.getFullyQualifiedName().equals(Param.class.getName()));
+        }
+
+        return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
+    }
 
 }
