@@ -281,27 +281,43 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 										   .toLong();
 
 		String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
+		int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
+													 .toInt();
 
-		if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER, "model文件夹不能含有空白");
+		if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER, "model文件夹不能含有空白");
+			}
 		}
 
 		String daoTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER);
+		int daoTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
+												   .toInt();
 
-		if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
-			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER, "dao文件夹不能含有空白");
+		if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode)) {
+			if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER, "dao文件夹不能含有空白");
+			}
 		}
 
 		String mappingXmlTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER);
+		int mappingXmlTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
+														  .toInt();
 
-		if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
-			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER, "mappingXml文件夹不能含有空白");
+		if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode)) {
+			if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER, "mappingXml文件夹不能含有空白");
+			}
 		}
 
 		String serviceTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER);
+		int serviceTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
+													   .toInt();
 
-		if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
-			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
+		if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
+			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
+			}
 		}
 
 		Integer daoTypeValue = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TYPE, DaoType.XmlMapper
