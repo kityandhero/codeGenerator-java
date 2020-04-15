@@ -6,6 +6,7 @@ import com.lzt.operate.mybatis.common.PageInfo;
 import com.lzt.operate.mybatis.base.service.BaseService;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class BaseServiceImpl<T, Example extends BaseExample, ID> implements BaseService<T, Example, ID> {
 
@@ -46,14 +47,20 @@ public abstract class BaseServiceImpl<T, Example extends BaseExample, ID> implem
 	}
 
 	@Override
-	public T selectByCondition(Example example) {
+	public Optional<T> selectByCondition(Example example) {
+		List<T> list = selectByExample(example);
 
-		List<T> datas = selectByExample(example);
-		return datas != null && datas.size() == 0 ? null : datas.get(0);
+		if (Optional.ofNullable(list).isPresent()) {
+			if (list.size() >= 1) {
+				return Optional.of(list.get(0));
+			}
+		}
+
+		return Optional.empty();
 	}
 
 	@Override
-	public List<T> selectByPageExmple(Example example, PageInfo pageInfo) {
+	public List<T> selectByPageExample(Example example, PageInfo pageInfo) {
 
 		if (pageInfo != null) {
 

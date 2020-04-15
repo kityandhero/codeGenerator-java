@@ -1,9 +1,9 @@
 package com.lzt.operate.code.generator.dao.service.bases;
 
-import com.lzt.operate.code.generator.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.code.generator.dao.repositories.AccessWayRepository;
 import com.lzt.operate.code.generator.entities.AccessWay;
 import com.lzt.operate.code.generator.entities.bases.BaseRole;
+import com.lzt.operate.jpa.base.repository.JpaRepositoryEx;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.Competence;

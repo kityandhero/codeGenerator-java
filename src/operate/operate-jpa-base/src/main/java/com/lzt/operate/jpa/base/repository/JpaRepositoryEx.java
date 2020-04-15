@@ -1,6 +1,6 @@
-package com.lzt.operate.code.generator.dao.jpa;
+package com.lzt.operate.jpa.base.repository;
 
-import com.lzt.operate.code.generator.entities.bases.BaseEntity;
+import com.lzt.operate.jpa.base.entity.IEntity;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * @param <ID>
  * @author luzhitao
  */
-public interface JpaRepositoryEx<T extends BaseEntity, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
+public interface JpaRepositoryEx<T extends IEntity, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
 	/**
 	 * findFirst 查找第一个匹配项目

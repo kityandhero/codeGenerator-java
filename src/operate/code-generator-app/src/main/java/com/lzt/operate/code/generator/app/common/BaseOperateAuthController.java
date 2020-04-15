@@ -87,6 +87,12 @@ public abstract class BaseOperateAuthController extends OperateBaseController {
 					}
 
 					return new ExecutiveResult<>(ReturnDataCode.Ok, file.getAbsolutePath());
+				} else {
+					if (!file.isDirectory()) {
+						return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("存在同名文件，创建文件夹失败"), "");
+					}
+
+					return new ExecutiveResult<>(ReturnDataCode.Ok, file.getAbsolutePath());
 				}
 			} catch (Exception e) {
 				ErrorLogProducerFactory.getInstance()

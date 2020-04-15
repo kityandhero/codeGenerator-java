@@ -1,8 +1,8 @@
 package com.lzt.operate.code.generator.dao.service.bases;
 
 import com.baidu.fsg.uid.service.UidGenService;
-import com.lzt.operate.code.generator.dao.jpa.JpaRepositoryEx;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
+import com.lzt.operate.jpa.base.repository.JpaRepositoryEx;
 import com.lzt.operate.utility.assists.RequestAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;

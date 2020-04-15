@@ -7,399 +7,408 @@ import com.lzt.operate.swagger2.model.ApiSingleParam;
  */
 public class GlobalString {
 
-    /**
-     * 定义的请求头中使用的标记key，用来传递 token
-     */
-    public static final String AUTH_TOKEN = "token";
+	/**
+	 * 定义的请求头中使用的标记key，用来传递 token
+	 */
+	public static final String AUTH_TOKEN = "token";
 
-    //region COMMON
+	//region COMMON
 
-    @ApiSingleParam(value = "页码", example = "1")
-    public static final String LIST_PAGE_NO = "pageNo";
+	@ApiSingleParam(value = "页码", example = "1")
+	public static final String LIST_PAGE_NO = "pageNo";
 
-    @ApiSingleParam(value = "页条目数", example = "10")
-    public static final String LIST_PAGE_SIZE = "pageSize";
+	@ApiSingleParam(value = "页条目数", example = "10")
+	public static final String LIST_PAGE_SIZE = "pageSize";
 
-    @ApiSingleParam(value = "原始密码", example = "111111")
-    public static final String ORIGINAL_PASSWORD = "originalPassword";
+	@ApiSingleParam(value = "原始密码", example = "111111")
+	public static final String ORIGINAL_PASSWORD = "originalPassword";
 
-    @ApiSingleParam(value = "验证密码", example = "123456")
-    public static final String RE_PASSWORD = "rePassword";
+	@ApiSingleParam(value = "验证密码", example = "123456")
+	public static final String RE_PASSWORD = "rePassword";
 
-    //endregion
+	//endregion
 
-    //region CONNECTION_MODEL
+	//region CONNECTION_MODEL
 
-    @ApiSingleParam(value = "标识", type = Long.class, example = "201")
-    public static final String CONNECTION_CONFIG_ID = "connectionConfigId";
+	@ApiSingleParam(value = "标识", type = Long.class, example = "201")
+	public static final String CONNECTION_CONFIG_ID = "connectionConfigId";
 
-    @ApiSingleParam(value = "连接类型", example = "100")
-    public static final String CONNECTION_CONFIG_CONNECTION_TYPE = "connectionType";
+	@ApiSingleParam(value = "连接类型", example = "100")
+	public static final String CONNECTION_CONFIG_CONNECTION_TYPE = "connectionType";
 
-    @ApiSingleParam(value = "名称", example = "my connection")
-    public static final String CONNECTION_CONFIG_NAME = "name";
+	@ApiSingleParam(value = "名称", example = "my connection")
+	public static final String CONNECTION_CONFIG_NAME = "name";
 
-    @ApiSingleParam(value = "简介描述", example = "简单描述")
-    public static final String CONNECTION_CONFIG_DESCRIPTION = "description";
+	@ApiSingleParam(value = "简介描述", example = "简单描述")
+	public static final String CONNECTION_CONFIG_DESCRIPTION = "description";
 
-    @ApiSingleParam(value = "数据库类型", example = "mysql")
-    public static final String CONNECTION_CONFIG_DATABASE_TYPE = "databaseType";
+	@ApiSingleParam(value = "数据库类型", example = "mysql")
+	public static final String CONNECTION_CONFIG_DATABASE_TYPE = "databaseType";
 
-    @ApiSingleParam(value = "数据库Host", example = "localhost")
-    public static final String CONNECTION_CONFIG_HOST = "host";
+	@ApiSingleParam(value = "数据库Host", example = "localhost")
+	public static final String CONNECTION_CONFIG_HOST = "host";
 
-    @ApiSingleParam(value = "连接Port", example = "8090")
-    public static final String CONNECTION_CONFIG_PORT = "port";
+	@ApiSingleParam(value = "连接Port", example = "8090")
+	public static final String CONNECTION_CONFIG_PORT = "port";
 
-    @ApiSingleParam(value = "schema", example = "dbo")
-    public static final String CONNECTION_CONFIG_SCHEMA = "schema";
+	@ApiSingleParam(value = "schema", example = "dbo")
+	public static final String CONNECTION_CONFIG_SCHEMA = "schema";
 
-    @ApiSingleParam(value = "用户名", example = "test")
-    public static final String CONNECTION_CONFIG_USERNAME = "userName";
+	@ApiSingleParam(value = "用户名", example = "test")
+	public static final String CONNECTION_CONFIG_USERNAME = "userName";
 
-    @ApiSingleParam(value = "密码", example = "111111")
-    public static final String CONNECTION_CONFIG_PASSWORD = "password";
+	@ApiSingleParam(value = "密码", example = "111111")
+	public static final String CONNECTION_CONFIG_PASSWORD = "password";
 
-    @ApiSingleParam(value = "编码模式", example = "utf8")
-    public static final String CONNECTION_CONFIG_ENCODING = "encoding";
+	@ApiSingleParam(value = "编码模式", example = "utf8")
+	public static final String CONNECTION_CONFIG_ENCODING = "encoding";
 
-    @ApiSingleParam(value = "localPort", example = "localPort")
-    public static final String CONNECTION_CONFIG_LOCAL_PORT = "localPort";
+	@ApiSingleParam(value = "localPort", example = "localPort")
+	public static final String CONNECTION_CONFIG_LOCAL_PORT = "localPort";
 
-    @ApiSingleParam(value = "remotePort", example = "localPort")
-    public static final String CONNECTION_CONFIG_REMOTE_PORT = "remotePort";
+	@ApiSingleParam(value = "remotePort", example = "localPort")
+	public static final String CONNECTION_CONFIG_REMOTE_PORT = "remotePort";
 
-    @ApiSingleParam(value = "sshPort", example = "sshPort")
-    public static final String CONNECTION_CONFIG_SSH_PORT = "sshPort";
+	@ApiSingleParam(value = "sshPort", example = "sshPort")
+	public static final String CONNECTION_CONFIG_SSH_PORT = "sshPort";
 
-    @ApiSingleParam(value = "sshHost", example = "sshHost")
-    public static final String CONNECTION_CONFIG_SSH_HOST = "sshHost";
+	@ApiSingleParam(value = "sshHost", example = "sshHost")
+	public static final String CONNECTION_CONFIG_SSH_HOST = "sshHost";
 
-    @ApiSingleParam(value = "sshUser", example = "sshUser")
-    public static final String CONNECTION_CONFIG_SSH_USER = "sshUser";
+	@ApiSingleParam(value = "sshUser", example = "sshUser")
+	public static final String CONNECTION_CONFIG_SSH_USER = "sshUser";
 
-    @ApiSingleParam(value = "sshPassword", example = "sshPassword")
-    public static final String CONNECTION_CONFIG_SSH_PASSWORD = "sshPassword";
+	@ApiSingleParam(value = "sshPassword", example = "sshPassword")
+	public static final String CONNECTION_CONFIG_SSH_PASSWORD = "sshPassword";
 
-    //endregion
+	//endregion
 
-    //region CONNECTION_MODEL
+	//region CONNECTION_MODEL
 
-    @ApiSingleParam(value = "数据标识", type = Long.class, example = "201")
-    public static final String DATABASE_GENERATOR_CONFIG_ID = "databaseGeneratorConfigId";
+	@ApiSingleParam(value = "数据标识", type = Long.class, example = "201")
+	public static final String DATABASE_GENERATOR_CONFIG_ID = "databaseGeneratorConfigId";
 
-    @ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
-    public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
+	@ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
+	public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
 
-    @ApiSingleParam(value = "connectorJarFile", example = "20211")
-    public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE = "connectorJarFile";
+	@ApiSingleParam(value = "connectorJarFile", example = "20211")
+	public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE = "connectorJarFile";
 
-    @ApiSingleParam(value = "connectorJarPath", example = "projectFolder")
-    public static final String DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER = "projectFolder";
+	@ApiSingleParam(value = "connectorJarPath", example = "projectFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER = "projectFolder";
 
-    @ApiSingleParam(value = "modelPackage", example = "modelPackage")
-    public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE = "modelPackage";
+	@ApiSingleParam(value = "modelPackage", example = "modelPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE = "modelPackage";
 
-    @ApiSingleParam(value = "modelPackageTargetFolder", example = "modelPackageTargetFolder")
-    public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER = "modelTargetFolder";
+	@ApiSingleParam(value = "modelPackageTargetFolder", example = "modelPackageTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER = "modelTargetFolder";
 
-    @ApiSingleParam(value = "daoPackage", example = "daoPackage")
-    public static final String DATABASE_GENERATOR_CONFIG_DAO_PACKAGE = "daoPackage";
+	@ApiSingleParam(value = "daoPackage", example = "daoPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_PACKAGE = "daoPackage";
 
-    @ApiSingleParam(value = "daoTargetFolder", example = "daoTargetFolder")
-    public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER = "daoTargetFolder";
+	@ApiSingleParam(value = "daoTargetFolder", example = "daoTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER = "daoTargetFolder";
 
-    @ApiSingleParam(value = "mappingXmlPackage", example = "mappingXmlPackage")
-    public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXmlPackage";
+	@ApiSingleParam(value = "daoType", type = Integer.class, example = "100")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_TYPE = "daoType";
 
-    @ApiSingleParam(value = "mappingXmlTargetFolder", example = "mappingXmlTargetFolder")
-    public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXmlTargetFolder";
+	@ApiSingleParam(value = "mappingXmlPackage", example = "mappingXmlPackage")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXmlPackage";
 
-    @ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
-    public static final String DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT = "offsetLimit";
+	@ApiSingleParam(value = "mappingXmlTargetFolder", example = "mappingXmlTargetFolder")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXmlTargetFolder";
 
-    @ApiSingleParam(value = "needToStringHashcodeEquals", type = Integer.class, example = "needToStringHashcodeEquals")
-    public static final String DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS = "needToStringHashcodeEquals";
+	@ApiSingleParam(value = "servicePackage", example = "service")
+	public static final String DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE = "servicePackage";
 
-    @ApiSingleParam(value = "needForUpdate", type = Integer.class, example = "needForUpdate")
-    public static final String DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE = "needForUpdate";
+	@ApiSingleParam(value = "serviceTargetFolder", example = "service1")
+	public static final String DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER = "serviceTargetFolder";
 
-    @ApiSingleParam(value = "annotationDAO", type = Integer.class, example = "annotationDAO")
-    public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO = "annotationDAO";
+	@ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
+	public static final String DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT = "offsetLimit";
 
-    @ApiSingleParam(value = "annotation", type = Integer.class, example = "annotation")
-    public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION = "annotation";
+	@ApiSingleParam(value = "needToStringHashcodeEquals", type = Integer.class, example = "needToStringHashcodeEquals")
+	public static final String DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS = "needToStringHashcodeEquals";
 
-    @ApiSingleParam(value = "encoding", example = "encoding")
-    public static final String DATABASE_GENERATOR_CONFIG_ENCODING = "encoding";
+	@ApiSingleParam(value = "needForUpdate", type = Integer.class, example = "needForUpdate")
+	public static final String DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE = "needForUpdate";
 
-    @ApiSingleParam(value = "useDAOExtendStyle", type = Integer.class, example = "useDAOExtendStyle")
-    public static final String DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE = "useDAOExtendStyle";
+	@ApiSingleParam(value = "annotationDAO", type = Integer.class, example = "annotationDAO")
+	public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO = "annotationDAO";
 
-    @ApiSingleParam(value = "useSchemaPrefix", type = Integer.class, example = "useSchemaPrefix")
-    public static final String DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX = "useSchemaPrefix";
+	@ApiSingleParam(value = "annotation", type = Integer.class, example = "annotation")
+	public static final String DATABASE_GENERATOR_CONFIG_ANNOTATION = "annotation";
 
-    @ApiSingleParam(value = "jsr310Support", type = Integer.class, example = "jsr310Support")
-    public static final String DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT = "jsr310Support";
+	@ApiSingleParam(value = "encoding", example = "encoding")
+	public static final String DATABASE_GENERATOR_CONFIG_ENCODING = "encoding";
 
-    @ApiSingleParam(value = "overrideXML", type = Integer.class, example = "overrideXML")
-    public static final String DATABASE_GENERATOR_CONFIG_OVERRIDE_XML = "overrideXML";
+	@ApiSingleParam(value = "useDAOExtendStyle", type = Integer.class, example = "useDAOExtendStyle")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE = "useDAOExtendStyle";
 
-    @ApiSingleParam(value = "autoDelimitKeywords", type = Integer.class, example = "1")
-    public static final String DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
+	@ApiSingleParam(value = "useSchemaPrefix", type = Integer.class, example = "useSchemaPrefix")
+	public static final String DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX = "useSchemaPrefix";
 
-    @ApiSingleParam(value = "comment", type = Integer.class, example = "0")
-    public static final String DATABASE_GENERATOR_CONFIG_COMMENT = "comment";
+	@ApiSingleParam(value = "jsr310Support", type = Integer.class, example = "jsr310Support")
+	public static final String DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT = "jsr310Support";
 
-    @ApiSingleParam(value = "mapperName", example = "table1")
-    public static final String DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME = "mapperExtensionName";
+	@ApiSingleParam(value = "overrideXML", type = Integer.class, example = "overrideXML")
+	public static final String DATABASE_GENERATOR_CONFIG_OVERRIDE_XML = "overrideXML";
 
-    //endregion
+	@ApiSingleParam(value = "autoDelimitKeywords", type = Integer.class, example = "1")
+	public static final String DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
 
-    //region
+	@ApiSingleParam(value = "comment", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_COMMENT = "comment";
 
-    @ApiSingleParam(value = "数据表生成配置数据标识", type = Long.class, example = "101")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_ID = "dataTableGeneratorConfigId";
+	@ApiSingleParam(value = "mapperExtensionName", example = "Dao")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME = "mapperExtensionName";
 
-    @ApiSingleParam(value = "databaseGeneratorConfigId", type = Long.class, example = "1001")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
+	//endregion
 
-    @ApiSingleParam(value = "databaseGeneratorConfigId", type = Long.class, example = "1001")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID = "databaseGeneratorConfigId";
+	//region
 
-    @ApiSingleParam(value = "tableName", example = "table1")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME = "tableName";
+	@ApiSingleParam(value = "数据表生成配置数据标识", type = Long.class, example = "101")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_ID = "dataTableGeneratorConfigId";
 
-    @ApiSingleParam(value = "useGenerateKey", type = Integer.class, example = "0")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY = "useGenerateKey";
+	@ApiSingleParam(value = "databaseGeneratorConfigId", type = Long.class, example = "1001")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
 
-    @ApiSingleParam(value = "generateKeys", type = Integer.class, example = "generateKeys")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS = "generateKeys";
+	@ApiSingleParam(value = "databaseGeneratorConfigId", type = Long.class, example = "1001")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID = "databaseGeneratorConfigId";
 
-    @ApiSingleParam(value = "domainObjectName", example = "table1")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME = "domainObjectName";
+	@ApiSingleParam(value = "tableName", example = "table1")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME = "tableName";
 
-    @ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "0")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
+	@ApiSingleParam(value = "useGenerateKey", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY = "useGenerateKey";
 
-    @ApiSingleParam(value = "useTableNameAlias", type = Integer.class, example = "0")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS = "useTableNameAlias";
+	@ApiSingleParam(value = "generateKeys", type = Integer.class, example = "generateKeys")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS = "generateKeys";
 
-    @ApiSingleParam(value = "aliasName", type = Integer.class, example = "0")
-    public static final String DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME = "aliasName";
+	@ApiSingleParam(value = "domainObjectName", example = "table1")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME = "domainObjectName";
 
-    //endregion
+	@ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
 
-    //region ACCOUNT
+	@ApiSingleParam(value = "useTableNameAlias", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS = "useTableNameAlias";
 
-    @ApiSingleParam(value = "用户标识", type = Long.class, example = "101")
-    public static final String ACCOUNT_ID = "accountId";
+	@ApiSingleParam(value = "aliasName", type = Integer.class, example = "0")
+	public static final String DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME = "aliasName";
 
-    @ApiSingleParam(value = "用户名称", example = "admin")
-    public static final String ACCOUNT_USERNAME = "userName";
+	//endregion
 
-    @ApiSingleParam(value = "登录密码", example = "123456")
-    public static final String ACCOUNT_PASSWORD = "password";
+	//region ACCOUNT
 
-    @ApiSingleParam(value = "姓名", example = "张三")
-    public static final String ACCOUNT_NAME = "name";
+	@ApiSingleParam(value = "用户标识", type = Long.class, example = "101")
+	public static final String ACCOUNT_ID = "accountId";
 
-    @ApiSingleParam(value = "所在地区", example = "北京")
-    public static final String ACCOUNT_CITY_NAME = "cityName";
+	@ApiSingleParam(value = "用户名称", example = "admin")
+	public static final String ACCOUNT_USERNAME = "userName";
 
-    @ApiSingleParam(value = "地区代码", example = "100000000")
-    public static final String ACCOUNT_CITY_CODE = "cityCode";
+	@ApiSingleParam(value = "登录密码", example = "123456")
+	public static final String ACCOUNT_PASSWORD = "password";
 
-    @ApiSingleParam(value = "电子邮箱", example = "XXX@XXX.com")
-    public static final String ACCOUNT_EMAIL = "email";
+	@ApiSingleParam(value = "姓名", example = "张三")
+	public static final String ACCOUNT_NAME = "name";
 
-    @ApiSingleParam(value = "联系方式", example = "15612562365")
-    public static final String ACCOUNT_PHONE = "phone";
+	@ApiSingleParam(value = "所在地区", example = "北京")
+	public static final String ACCOUNT_CITY_NAME = "cityName";
 
-    @ApiSingleParam(value = "头像", example = "http://XXX/user.png")
-    public static final String ACCOUNT_AVATAR = "avatar";
+	@ApiSingleParam(value = "地区代码", example = "100000000")
+	public static final String ACCOUNT_CITY_CODE = "cityCode";
 
-    @ApiSingleParam(value = "姓名", example = "张三的简介")
-    public static final String ACCOUNT_DESCRIPTION = "description";
+	@ApiSingleParam(value = "电子邮箱", example = "XXX@XXX.com")
+	public static final String ACCOUNT_EMAIL = "email";
 
-    @ApiSingleParam(value = "状态", example = "1")
-    public static final String ACCOUNT_STATUS = "status";
+	@ApiSingleParam(value = "联系方式", example = "15612562365")
+	public static final String ACCOUNT_PHONE = "phone";
 
-    //endregion
+	@ApiSingleParam(value = "头像", example = "http://XXX/user.png")
+	public static final String ACCOUNT_AVATAR = "avatar";
 
-    //region ACCESS_WAY
+	@ApiSingleParam(value = "姓名", example = "张三的简介")
+	public static final String ACCOUNT_DESCRIPTION = "description";
 
-    @ApiSingleParam(value = "模块标识", type = Long.class, example = "101")
-    public static final String ACCESS_WAY_ID = "accessWayId";
+	@ApiSingleParam(value = "状态", example = "1")
+	public static final String ACCOUNT_STATUS = "status";
 
-    @ApiSingleParam(value = "模块名称", example = "账户列表")
-    public static final String ACCESS_WAY_NAME = "name";
+	//endregion
 
-    @ApiSingleParam(value = "简介描述", example = "描述信息")
-    public static final String ACCESS_WAY_DESCRIPTION = "description";
+	//region ACCESS_WAY
 
-    @ApiSingleParam(value = "模块标记", example = "86592727-3210-4eaf-bead-c785332615f6")
-    public static final String ACCESS_WAY_TAG = "tag";
+	@ApiSingleParam(value = "模块标识", type = Long.class, example = "101")
+	public static final String ACCESS_WAY_ID = "accessWayId";
 
-    @ApiSingleParam(value = "访问路径", example = "/business/account/list")
-    public static final String ACCESS_WAY_RELATIVE_PATH = "relativePath";
+	@ApiSingleParam(value = "模块名称", example = "账户列表")
+	public static final String ACCESS_WAY_NAME = "name";
 
-    @ApiSingleParam(value = "扩展权限", example = "查看价格")
-    public static final String ACCESS_WAY_EXPAND = "expand";
+	@ApiSingleParam(value = "简介描述", example = "描述信息")
+	public static final String ACCESS_WAY_DESCRIPTION = "description";
 
-    //endregion
+	@ApiSingleParam(value = "模块标记", example = "86592727-3210-4eaf-bead-c785332615f6")
+	public static final String ACCESS_WAY_TAG = "tag";
 
-    //region ROLE_UNIVERSAL
+	@ApiSingleParam(value = "访问路径", example = "/business/account/list")
+	public static final String ACCESS_WAY_RELATIVE_PATH = "relativePath";
 
-    @ApiSingleParam(value = "角色标识", type = Long.class, example = "101")
-    public static final String ROLE_UNIVERSAL_ID = "roleUniversalId";
+	@ApiSingleParam(value = "扩展权限", example = "查看价格")
+	public static final String ACCESS_WAY_EXPAND = "expand";
 
-    @ApiSingleParam(value = "角色名称", example = "管理员")
-    public static final String ROLE_UNIVERSAL_NAME = "name";
+	//endregion
 
-    @ApiSingleParam(value = "简介描述", example = "描述信息")
-    public static final String ROLE_UNIVERSAL_DESCRIPTION = "description";
+	//region ROLE_UNIVERSAL
 
-    //endregion
+	@ApiSingleParam(value = "角色标识", type = Long.class, example = "101")
+	public static final String ROLE_UNIVERSAL_ID = "roleUniversalId";
 
-    //region ERROR_LOG
+	@ApiSingleParam(value = "角色名称", example = "管理员")
+	public static final String ROLE_UNIVERSAL_NAME = "name";
 
-    @ApiSingleParam(value = "错误日志标识", type = Long.class, example = "101")
-    public static final String ERROR_LOG_ID = "errorLogId";
+	@ApiSingleParam(value = "简介描述", example = "描述信息")
+	public static final String ROLE_UNIVERSAL_DESCRIPTION = "description";
 
-    @ApiSingleParam(value = "错误描述", example = "参数错误")
-    public static final String ERROR_LOG_MESSAGE = "message";
+	//endregion
 
-    @ApiSingleParam(value = "渠道标识", example = "12")
-    public static final String ERROR_LOG_CHANNEL = "channel";
+	//region ERROR_LOG
 
-    /**
-     * 用于返回转换后的 header json 结构
-     */
-    public static final String ERROR_LOG_HEADER_JSON = "headerJson";
+	@ApiSingleParam(value = "错误日志标识", type = Long.class, example = "101")
+	public static final String ERROR_LOG_ID = "errorLogId";
 
-    /**
-     * 用于返回转换后的 stackTrace json 结构
-     */
-    public static final String ERROR_LOG_STACK_TRACE_JSON = "stackTraceJson";
+	@ApiSingleParam(value = "错误描述", example = "参数错误")
+	public static final String ERROR_LOG_MESSAGE = "message";
 
-    /**
-     * 用于返回转换后的 data json 结构
-     */
-    public static final String ERROR_LOG_DATA_JSON = "dataJson";
+	@ApiSingleParam(value = "渠道标识", example = "12")
+	public static final String ERROR_LOG_CHANNEL = "channel";
 
-    /**
-     * 用于返回转换后的 data json 结构
-     */
-    public static final String ERROR_LOG_REQUEST_PARAMS_JSON = "requestParamsJson";
+	/**
+	 * 用于返回转换后的 header json 结构
+	 */
+	public static final String ERROR_LOG_HEADER_JSON = "headerJson";
 
-    //endregion
+	/**
+	 * 用于返回转换后的 stackTrace json 结构
+	 */
+	public static final String ERROR_LOG_STACK_TRACE_JSON = "stackTraceJson";
 
-    //region
+	/**
+	 * 用于返回转换后的 data json 结构
+	 */
+	public static final String ERROR_LOG_DATA_JSON = "dataJson";
 
-    @ApiSingleParam(value = "一般日志标识", type = Long.class, example = "101")
-    public static final String GENERAL_LOG_ID = "generalLogId";
+	/**
+	 * 用于返回转换后的 data json 结构
+	 */
+	public static final String ERROR_LOG_REQUEST_PARAMS_JSON = "requestParamsJson";
 
-    @ApiSingleParam(value = "日志描述", example = "参数错误")
-    public static final String GENERAL_LOG_MESSAGE = "message";
+	//endregion
 
-    @ApiSingleParam(value = "渠道标识", example = "12")
-    public static final String GENERAL_LOG_CHANNEL = "channel";
+	//region
 
-    //endregion
+	@ApiSingleParam(value = "一般日志标识", type = Long.class, example = "101")
+	public static final String GENERAL_LOG_ID = "generalLogId";
 
-    //region CUSTOM_CONFIG
+	@ApiSingleParam(value = "日志描述", example = "参数错误")
+	public static final String GENERAL_LOG_MESSAGE = "message";
 
-    @ApiSingleParam(value = "设置项标识", type = Long.class, example = "101")
-    public static final String CUSTOM_CONFIG_ID = "customConfigId";
+	@ApiSingleParam(value = "渠道标识", example = "12")
+	public static final String GENERAL_LOG_CHANNEL = "channel";
 
-    @ApiSingleParam(value = "设置项类别", example = "10")
-    public static final String CUSTOM_CONFIG_CATEGORY = "category";
+	//endregion
 
-    @ApiSingleParam(value = "uuid标记", example = "e111b44a-aa06-4adb-b082-229bb11ab6e7")
-    public static final String CUSTOM_CONFIG_UUID = "uuid";
+	//region CUSTOM_CONFIG
 
-    @ApiSingleParam(value = "设置项值", example = "1")
-    public static final String CUSTOM_CONFIG_VALUE = "value";
+	@ApiSingleParam(value = "设置项标识", type = Long.class, example = "101")
+	public static final String CUSTOM_CONFIG_ID = "customConfigId";
 
-    //endregion
+	@ApiSingleParam(value = "设置项类别", example = "10")
+	public static final String CUSTOM_CONFIG_CATEGORY = "category";
 
-    //region DATA_TABLE
+	@ApiSingleParam(value = "uuid标记", example = "e111b44a-aa06-4adb-b082-229bb11ab6e7")
+	public static final String CUSTOM_CONFIG_UUID = "uuid";
 
-    @ApiSingleParam(value = "数据表名", example = "table1")
-    public static final String DATA_TABLE_NAME = "name";
+	@ApiSingleParam(value = "设置项值", example = "1")
+	public static final String CUSTOM_CONFIG_VALUE = "value";
 
-    //endregion
+	//endregion
 
-    //region DATA_COLUMN
+	//region DATA_TABLE
 
-    @ApiSingleParam(value = "数据库列定制数据标识", type = Long.class, example = "101")
-    public static final String DATA_COLUMN_ID = "dataColumnId";
+	@ApiSingleParam(value = "数据表名", example = "table1")
+	public static final String DATA_TABLE_NAME = "name";
 
-    @ApiSingleParam(value = "数据表名", example = "table1")
-    public static final String DATA_COLUMN_TABLE_NAME = "tableName";
+	//endregion
 
-    @ApiSingleParam(value = "数据表列名", example = "columnName")
-    public static final String DATA_COLUMN_COLUMN_NAME = "columnName";
+	//region DATA_COLUMN
 
-    @ApiSingleParam(value = "数据表类型", example = "columnType")
-    public static final String DATA_COLUMN_COLIMN_TYPE = "columnType";
+	@ApiSingleParam(value = "数据库列定制数据标识", type = Long.class, example = "101")
+	public static final String DATA_COLUMN_ID = "dataColumnId";
 
-    @ApiSingleParam(value = "列别名", example = "aliasName")
-    public static final String DATA_COLUMN_ALIAS_NAME = "aliasName";
+	@ApiSingleParam(value = "数据表名", example = "table1")
+	public static final String DATA_COLUMN_TABLE_NAME = "tableName";
 
-    @ApiSingleParam(value = "Java类型", example = "String")
-    public static final String DATA_COLUMN_JAVA_TYPE = "javaType";
+	@ApiSingleParam(value = "数据表列名", example = "columnName")
+	public static final String DATA_COLUMN_COLUMN_NAME = "columnName";
 
-    @ApiSingleParam(value = "Type Handler", example = "typeHandler")
-    public static final String DATA_COLUMN_TYPE_HANDLER = "typeHandler";
+	@ApiSingleParam(value = "数据表类型", example = "columnType")
+	public static final String DATA_COLUMN_COLIMN_TYPE = "columnType";
 
-    //endregion
+	@ApiSingleParam(value = "列别名", example = "aliasName")
+	public static final String DATA_COLUMN_ALIAS_NAME = "aliasName";
 
-    //region HELP_CATEGORY
+	@ApiSingleParam(value = "Java类型", example = "String")
+	public static final String DATA_COLUMN_JAVA_TYPE = "javaType";
 
-    @ApiSingleParam(value = "帮助列别标识", type = Long.class, example = "101")
-    public static final String HELP_CATEGORY_ID = "helpCategoryId";
+	@ApiSingleParam(value = "Type Handler", example = "typeHandler")
+	public static final String DATA_COLUMN_TYPE_HANDLER = "typeHandler";
 
-    @ApiSingleParam(value = "名称", example = "10")
-    public static final String HELP_CATEGORY_NAME = "name";
+	//endregion
 
-    //endregion
+	//region HELP_CATEGORY
 
-    //region CUSTOM_CONFIG
+	@ApiSingleParam(value = "帮助列别标识", type = Long.class, example = "101")
+	public static final String HELP_CATEGORY_ID = "helpCategoryId";
 
-    @ApiSingleParam(value = "帮助标识", type = Long.class, example = "101")
-    public static final String HELP_ID = "helpId";
+	@ApiSingleParam(value = "名称", example = "10")
+	public static final String HELP_CATEGORY_NAME = "name";
 
-    @ApiSingleParam(value = "标题", example = "帮助标题")
-    public static final String HELP_TITLE = "title";
+	//endregion
 
-    @ApiSingleParam(value = "标识标识", type = Long.class, example = "1")
-    public static final String HELP_HELP_CATEGORY_ID = "helpCategoryId";
+	//region CUSTOM_CONFIG
 
-    @ApiSingleParam(value = "简介描述", example = "帮助简介")
-    public static final String HELP_DESCRIPTION = "description";
+	@ApiSingleParam(value = "帮助标识", type = Long.class, example = "101")
+	public static final String HELP_ID = "helpId";
 
-    //endregion
+	@ApiSingleParam(value = "标题", example = "帮助标题")
+	public static final String HELP_TITLE = "title";
 
-    //region OPERATOR_ROLE_CHANGE_COLLECTION
+	@ApiSingleParam(value = "标识标识", type = Long.class, example = "1")
+	public static final String HELP_HELP_CATEGORY_ID = "helpCategoryId";
 
-    @ApiSingleParam(value = "账户标识", example = "test1")
-    public static final String OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID = "operatorId";
+	@ApiSingleParam(value = "简介描述", example = "帮助简介")
+	public static final String HELP_DESCRIPTION = "description";
 
-    @ApiSingleParam(value = "系统角色集合")
-    public static final String OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION = "universalCollection";
+	//endregion
 
-    @ApiSingleParam(value = "自建角色集合")
-    public static final String OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION = "independentEstablishmentCollection";
+	//region OPERATOR_ROLE_CHANGE_COLLECTION
 
-    //endregion
+	@ApiSingleParam(value = "账户标识", example = "test1")
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION_OPERATOR_ID = "operatorId";
 
-    //region TOOLS_OPEN_FOLDER
+	@ApiSingleParam(value = "系统角色集合")
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION_UNIVERSAL_COLLECTION = "universalCollection";
 
-    @ApiSingleParam(value = "文件夹", example = "d:test")
-    public static final String TOOLS_OPEN_FOLDER_FOLDER = "folder";
+	@ApiSingleParam(value = "自建角色集合")
+	public static final String OPERATOR_ROLE_CHANGE_COLLECTION_INDEPENDENT_ESTABLISHMENT_COLLECTION = "independentEstablishmentCollection";
 
-    //endregion
+	//endregion
+
+	//region TOOLS_OPEN_FOLDER
+
+	@ApiSingleParam(value = "文件夹", example = "d:test")
+	public static final String TOOLS_OPEN_FOLDER_FOLDER = "folder";
+
+	//endregion
 
 }

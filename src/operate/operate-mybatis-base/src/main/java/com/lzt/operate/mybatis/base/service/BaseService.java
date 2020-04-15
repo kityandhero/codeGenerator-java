@@ -5,6 +5,7 @@ import com.lzt.operate.mybatis.common.PageInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseService<T, Example extends BaseExample, ID> {
 
@@ -28,7 +29,7 @@ public interface BaseService<T, Example extends BaseExample, ID> {
 	 * @author Marvis
 	 * @date May 23, 2018 11:37:11 AM
 	 */
-	T selectByCondition(Example example);
+	Optional<T> selectByCondition(Example example);
 
 	/**
 	 * if pageInfo == null<p/>
@@ -40,7 +41,7 @@ public interface BaseService<T, Example extends BaseExample, ID> {
 	 * @author Marvis
 	 * @date Jul 13, 2017 5:24:35 PM
 	 */
-	List<T> selectByPageExmple(Example example, PageInfo pageInfo);
+	List<T> selectByPageExample(Example example, PageInfo pageInfo);
 
 	T selectByPrimaryKey(ID id);
 

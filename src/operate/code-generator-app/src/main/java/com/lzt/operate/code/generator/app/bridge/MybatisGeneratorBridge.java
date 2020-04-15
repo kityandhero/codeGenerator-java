@@ -1,14 +1,18 @@
 package com.lzt.operate.code.generator.app.bridge;
 
+import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import com.lzt.operate.code.generator.app.util.DatabaseTypeUtil;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
+import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
+import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
+import com.lzt.operate.mybatis.base.model.BaseModel;
 import com.lzt.operate.mybatis.custom.config.ContextCustom;
 import com.lzt.operate.mybatis.custom.config.JavaServiceGeneratorConfiguration;
 import com.lzt.operate.mybatis.custom.config.xml.ConfigurationCustom;
@@ -19,6 +23,7 @@ import com.lzt.operate.mybatis.custom.plugins.RepositoryPlugin;
 import com.lzt.operate.mybatis.custom.plugins.SerializablePlugin;
 import com.lzt.operate.mybatis.custom.plugins.mysql.LimitPlugin;
 import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
+import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.enums.Whether;
@@ -48,7 +53,13 @@ import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.plugins.ToStringPlugin;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.time.LocalDateTime;
@@ -106,652 +117,718 @@ import java.util.Set;
 @Slf4j
 public class MybatisGeneratorBridge {
 
-    private final DatabaseGeneratorConfigService databaseGeneratorConfigService;
+	private final DatabaseGeneratorConfigService databaseGeneratorConfigService;
 
-    private final DataTableGeneratorConfigService dataTableGeneratorConfigService;
+	private final DataTableGeneratorConfigService dataTableGeneratorConfigService;
 
-    private final ConnectionConfig connectionConfig;
+	private final ConnectionConfig connectionConfig;
 
-    private ProgressCallback progressCallback;
+	private ProgressCallback progressCallback;
 
-    private List<IgnoredColumn> ignoredColumns;
+	private List<IgnoredColumn> ignoredColumns;
 
-    private List<ColumnOverride> columnOverrides;
+	private List<ColumnOverride> columnOverrides;
 
-    public MybatisGeneratorBridge(
-            @NotNull ConnectionConfig selectedConnectionConfig,
-            @NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService,
-            @NotNull DataTableGeneratorConfigService dataTableGeneratorConfigService) {
-        this.connectionConfig = selectedConnectionConfig;
-        this.databaseGeneratorConfigService = databaseGeneratorConfigService;
-        this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
-    }
+	public MybatisGeneratorBridge(
+			@NotNull ConnectionConfig selectedConnectionConfig,
+			@NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService,
+			@NotNull DataTableGeneratorConfigService dataTableGeneratorConfigService) {
+		this.connectionConfig = selectedConnectionConfig;
+		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
+		this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
+	}
 
-    private DatabaseGeneratorConfig getDataBaseGeneratorConfig() throws RuntimeException {
-        Optional<DatabaseGeneratorConfig> optional = this.databaseGeneratorConfigService.findByConnectionConfigId(this.connectionConfig
-                .getId());
+	private DatabaseGeneratorConfig getDataBaseGeneratorConfig() throws RuntimeException {
+		Optional<DatabaseGeneratorConfig> optional = this.databaseGeneratorConfigService.findByConnectionConfigId(this.connectionConfig
+				.getId());
 
-        if (optional.isPresent()) {
-            return optional.get();
-        }
+		if (optional.isPresent()) {
+			return optional.get();
+		}
 
-        throw new RuntimeException("数据连接缺少相关生成配置");
-    }
+		throw new RuntimeException("数据连接缺少相关生成配置");
+	}
 
-    private ExecutiveSimpleResult checkFolder(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
-        String projectFolder = Optional.ofNullable(databaseGeneratorConfig.getProjectFolder()).orElse("").trim();
-        String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
-                                           .orElse("")
-                                           .trim();
-        String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
-        String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
-                                                .orElse("").trim();
+	private ExecutiveSimpleResult checkFolder(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
+		String projectFolder = Optional.ofNullable(databaseGeneratorConfig.getProjectFolder()).orElse("").trim();
+		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
+										   .orElse("")
+										   .trim();
+		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
+		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
+												.orElse("").trim();
+		String serviceTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getServiceTargetFolder())
+											 .orElse("").trim();
 
-        if (StringAssist.isNullOrEmpty(projectFolder)) {
-            return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("请先配置项目文件夹"));
-        }
+		if (StringAssist.isNullOrEmpty(projectFolder)) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("请先配置项目文件夹"));
+		}
 
-        File file = new File(projectFolder);
+		File file = new File(projectFolder);
 
-        if (!file.exists()) {
-            boolean mkdirsResult = file.mkdirs();
+		if (!file.exists()) {
+			boolean mkdirsResult = file.mkdirs();
 
-            if (!mkdirsResult) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建项目文件夹失败"));
-            }
-        }
+			if (!mkdirsResult) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建项目文件夹失败"));
+			}
+		}
 
-        if (!file.isDirectory()) {
-            return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("项目文件夹路径无效"));
-        }
+		if (!file.isDirectory()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("项目文件夹路径无效"));
+		}
 
-        modelTargetFolder = Optional.of(modelTargetFolder).orElse("");
+		modelTargetFolder = Optional.of(modelTargetFolder).orElse("");
 
-        if (!StringAssist.isNullOrEmpty(modelTargetFolder)) {
-            if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹不能含有空格"));
-            }
+		if (!StringAssist.isNullOrEmpty(modelTargetFolder)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹不能含有空格"));
+			}
 
-            String modelFolder = StringAssist.merge(projectFolder, modelTargetFolder);
+			String modelFolder = StringAssist.merge(projectFolder, modelTargetFolder);
 
-            file = new File(modelFolder);
+			file = new File(modelFolder);
 
-            if (!file.exists()) {
-                boolean mkdirsResult = file.mkdirs();
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
 
-                if (!mkdirsResult) {
-                    return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建model文件夹失败"));
-                }
-            }
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建model文件夹失败"));
+				}
+			}
 
-            if (!file.isDirectory()) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹路径无效"));
-            }
-        }
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹路径无效"));
+			}
+		}
 
-        daoTargetFolder = Optional.of(daoTargetFolder).orElse("");
+		daoTargetFolder = Optional.of(daoTargetFolder).orElse("");
 
-        if (!StringAssist.isNullOrEmpty(daoTargetFolder)) {
-            if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹不能含有空格"));
-            }
+		if (!StringAssist.isNullOrEmpty(daoTargetFolder)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹不能含有空格"));
+			}
 
-            String daoFolder = StringAssist.merge(projectFolder, daoTargetFolder);
+			String daoFolder = StringAssist.merge(projectFolder, daoTargetFolder);
 
-            file = new File(daoFolder);
+			file = new File(daoFolder);
 
-            if (!file.exists()) {
-                boolean mkdirsResult = file.mkdirs();
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
 
-                if (!mkdirsResult) {
-                    return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建dao文件夹失败"));
-                }
-            }
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建dao文件夹失败"));
+				}
+			}
 
-            if (!file.isDirectory()) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹路径无效"));
-            }
-        }
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹路径无效"));
+			}
+		}
 
-        mappingXmlTargetFolder = Optional.of(mappingXmlTargetFolder).orElse("");
+		mappingXmlTargetFolder = Optional.of(mappingXmlTargetFolder).orElse("");
 
-        if (!StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
-            if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
-            }
+		if (!StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
+			}
 
-            String mappingXmlFolder = StringAssist.merge(projectFolder, mappingXmlTargetFolder);
+			String mappingXmlFolder = StringAssist.merge(projectFolder, mappingXmlTargetFolder);
 
-            file = new File(mappingXmlFolder);
+			file = new File(mappingXmlFolder);
 
-            if (!file.exists()) {
-                boolean mkdirsResult = file.mkdirs();
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
 
-                if (!mkdirsResult) {
-                    return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建mappingXml文件夹失败"));
-                }
-            }
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建mappingXml文件夹失败"));
+				}
+			}
 
-            if (!file.isDirectory()) {
-                return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹路径无效"));
-            }
-        }
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹路径无效"));
+			}
+		}
 
-        return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
-    }
+		serviceTargetFolder = Optional.of(serviceTargetFolder).orElse("");
 
-    public ExecutiveSimpleResult generateAll() throws Exception {
-        DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
+		if (!StringAssist.isNullOrEmpty(serviceTargetFolder)) {
+			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
+			}
 
-        ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
+			String serviceFolder = StringAssist.merge(projectFolder, serviceTargetFolder);
 
-        if (!checkFolderResult.getSuccess()) {
-            return new ExecutiveSimpleResult(checkFolderResult.getCode());
-        }
+			file = new File(serviceFolder);
 
-        List<String> listError = new ArrayList<>();
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
 
-        List<DataTableGeneratorConfig> list = this.dataTableGeneratorConfigService.list();
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建service文件夹失败"));
+				}
+			}
 
-        for (DataTableGeneratorConfig item : list) {
-            ExecutiveSimpleResult itemResult = this.generateCore(databaseGeneratorConfig, item);
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("service文件夹路径无效"));
+			}
+		}
 
-            if (!itemResult.getSuccess()) {
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
+	}
 
-                listError.add(itemResult.getMessage());
-            }
-        }
+	public ExecutiveSimpleResult generateAll() throws Exception {
+		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
 
-        ReturnMessage returnMessage = listError.size() > 0 ? ReturnDataCode.DataError.toMessage() : ReturnDataCode.Ok.toMessage();
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
 
-        return new ExecutiveSimpleResult(returnMessage.toMessage(StringAssist.join(listError)));
-    }
+		if (!checkFolderResult.getSuccess()) {
+			return new ExecutiveSimpleResult(checkFolderResult.getCode());
+		}
 
-    public ExecutiveSimpleResult generate(@NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
-        DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
+		List<String> listError = new ArrayList<>();
 
-        ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
+		ConnectionConfig connectionConfig = this.connectionConfig;
+		List<DataTable> listDataTable = DatabaseAssist.listDataTable(connectionConfig);
 
-        if (!checkFolderResult.getSuccess()) {
-            return checkFolderResult;
-        }
+		Specification<DataTableGeneratorConfig> specification = new Specification<DataTableGeneratorConfig>() {
 
-        return this.generateCore(databaseGeneratorConfig, dataTableGeneratorConfig);
-    }
+			private static final long serialVersionUID = 5826322529864777111L;
 
-    private ExecutiveSimpleResult generateCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
-        Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
+			@Override
+			public Predicate toPredicate(@NonNull Root<DataTableGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+				List<Predicate> list = new ArrayList<>();
 
-        if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
-            return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
-        }
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfig
+						.getId()));
 
-        String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
-                                           .orElse("")
-                                           .trim();
-        String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
-        String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
-                                                .orElse("").trim();
+				list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getDatabaseGeneratorConfigId)), databaseGeneratorConfig
+						.getId()));
 
-        Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
+				CriteriaBuilder.In<String> in = criteriaBuilder.in(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getTableName)));
 
-        FileEncoding fileEncoding = FileEncoding.UTF8;
+				listDataTable.forEach(o -> in.value(o.getName()));
 
-        if (optionalFileEncoding.isPresent()) {
-            fileEncoding = optionalFileEncoding.get();
-        }
+				list.add(in);
 
-        Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(this.connectionConfig.getDatabaseType());
+				Predicate[] p = new Predicate[list.size()];
 
-        if (!optionalDatabaseType.isPresent()) {
-            return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("databaseType无效"));
-        }
+				return criteriaBuilder.and(list.toArray(p));
+			}
+		};
 
-        DatabaseType databaseType = optionalDatabaseType.get();
+		List<DataTableGeneratorConfig> list = this.dataTableGeneratorConfigService.list(specification);
 
-        String tableName = dataTableGeneratorConfig.getTableName();
+		for (DataTableGeneratorConfig item : list) {
+			ExecutiveSimpleResult itemResult = this.generateCore(databaseGeneratorConfig, item);
 
-        if (StringAssist.isNullOrEmpty(tableName)) {
-            return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("tableName无效"));
-        }
+			if (!itemResult.getSuccess()) {
 
-        ConfigurationCustom configuration = new ConfigurationCustom();
+				listError.add(itemResult.getMessage());
+			}
+		}
 
-        ContextCustom context = new ContextCustom(ModelType.CONDITIONAL);
+		ReturnMessage returnMessage = listError.size() > 0 ? ReturnDataCode.DataError.toMessage() : ReturnDataCode.Ok.toMessage();
 
-        configuration.addContext(context);
-        context.addProperty("javaFileEncoding", fileEncoding.getName());
+		return new ExecutiveSimpleResult(returnMessage.toMessage(StringAssist.join(listError)));
+	}
 
-        String connectorLibPath = ConfigHelper.findConnectorLibPath(databaseType.getName());
+	public ExecutiveSimpleResult generate(@NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
+		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
 
-        configuration.addClasspathEntry(connectorLibPath);
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
 
-        // Table configuration
-        TableConfiguration tableConfig = new TableConfiguration(context);
+		if (!checkFolderResult.getSuccess()) {
+			return checkFolderResult;
+		}
 
-        tableConfig.setTableName(tableName);
-        tableConfig.setDomainObjectName(Optional.ofNullable(dataTableGeneratorConfig.getDomainObjectName()).orElse(""));
+		return this.generateCore(databaseGeneratorConfig, dataTableGeneratorConfig);
+	}
 
-        // boolean useExample = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseExample());
+	private ExecutiveSimpleResult generateCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
+		Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
 
-        // tableConfig.setUpdateByExampleStatementEnabled(useExample);
-        // tableConfig.setCountByExampleStatementEnabled(useExample);
-        // tableConfig.setDeleteByExampleStatementEnabled(useExample);
-        // tableConfig.setSelectByExampleStatementEnabled(useExample);
+		if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
+			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
+		}
 
-        tableConfig.setUpdateByExampleStatementEnabled(true);
-        tableConfig.setCountByExampleStatementEnabled(true);
-        tableConfig.setDeleteByExampleStatementEnabled(true);
-        tableConfig.setSelectByExampleStatementEnabled(true);
+		Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(databaseGeneratorConfig.getDaoType());
 
-        // 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
-        //         一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
-        context.addProperty("autoDelimitKeywords", String.valueOf(Whether.Yes.getFlag().equals(databaseGeneratorConfig
-                .getAutoDelimitKeywords())));
+		if (!optionalDaoType.isPresent()) {
+			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("无效的daoType设置"));
+		}
 
-        if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
-                                                                                               .equals(databaseType.getFlag())) {
-            // 由于beginningDelimiter和endingDelimiter的默认值为双引号(")，在Mysql中不能这么写，所以还要将这两个默认值改为`
-            context.addProperty("beginningDelimiter", "`");
-            context.addProperty("endingDelimiter", "`");
-        }
+		DaoType daoType = optionalDaoType.get();
 
-        boolean useSchemaPrefix = Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseSchemaPrefix());
+		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
+										   .orElse("")
+										   .trim();
+		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
+		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
+												.orElse("").trim();
+		String serviceTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getServiceTargetFolder())
+											 .orElse("").trim();
 
-        if (useSchemaPrefix) {
-            if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
-                                                                                                   .equals(databaseType.getFlag())) {
-                tableConfig.setSchema(this.connectionConfig.getSchema());
-            } else if (DatabaseType.Oracle.name().equals(databaseType.getName())) {
-                //Oracle的schema为用户名，如果连接用户拥有dba等高级权限，若不设schema，会导致把其他用户下同名的表也生成一遍导致mapper中代码重复
-                tableConfig.setSchema(this.connectionConfig.getUserName());
-            } else {
-                tableConfig.setCatalog(this.connectionConfig.getSchema());
-            }
-        }
+		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
 
-        // 针对 postgresql 单独配置
-        if (DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
-            tableConfig.setDelimitIdentifiers(true);
-        }
+		FileEncoding fileEncoding = FileEncoding.UTF8;
 
-        boolean useGenerateKey = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseGenerateKey());
+		if (optionalFileEncoding.isPresent()) {
+			fileEncoding = optionalFileEncoding.get();
+		}
 
-        //添加GeneratedKey主键生成
-        if (useGenerateKey) {
-            if (StringUtils.isNotEmpty(dataTableGeneratorConfig.getGenerateKeys())) {
-                if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
-                                                                                                    .equals(databaseType
-                                                                                                            .getName())) {
+		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(this.connectionConfig.getDatabaseType());
 
-                    //dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
-                    //使用该KeyGenerator的好处就是直接在一次INSERT 语句内，通过resultSet获取得到 生成的主键值，
-                    //并很好的支持设置了读写分离代理的数据库
-                    //例如阿里云RDS + 读写分离代理
-                    //无需指定主库
-                    //当使用SelectKey时，Mybatis会使用SelectKeyGenerator，INSERT之后，多发送一次查询语句，获得主键值
-                    //在上述读写分离被代理的情况下，会得不到正确的主键
-                    tableConfig.setGeneratedKey(new GeneratedKey(dataTableGeneratorConfig.getGenerateKeys(), "JDBC", true, null));
-                } else {
-                    tableConfig.setGeneratedKey(new GeneratedKey(dataTableGeneratorConfig.getGenerateKeys(), databaseType
-                            .getName(), true, null));
-                }
-
-            }
-        }
-
-        String mapperExtensionName = Optional.ofNullable(databaseGeneratorConfig.getMapperExtensionName()).orElse("");
+		if (!optionalDatabaseType.isPresent()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("databaseType无效"));
+		}
 
-        if (!StringAssist.isNullOrEmpty(mapperExtensionName)) {
-            String mapperName = StringAssist.merge(StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
-                    .getTableName() : dataTableGeneratorConfig.getDomainObjectName(), mapperExtensionName);
-            tableConfig.setMapperName(mapperName);
-        }
+		DatabaseType databaseType = optionalDatabaseType.get();
 
-        // add ignore columns
-        if (this.ignoredColumns != null) {
-            this.ignoredColumns.forEach(tableConfig::addIgnoredColumn);
-        }
+		String tableName = dataTableGeneratorConfig.getTableName();
 
-        if (this.columnOverrides != null) {
-            this.columnOverrides.forEach(tableConfig::addColumnOverride);
-        }
+		if (StringAssist.isNullOrEmpty(tableName)) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("tableName无效"));
+		}
 
-        boolean useActualColumnNames = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseActualColumnNames());
-        // 如果设置为true，生成的model类会直接使用column本身的名字，而不会再使用驼峰命名方法，比如BORN_DATE，生成的属性名字就是BORN_DATE,而不会是bornDate
-        tableConfig.addProperty("useActualColumnNames", String.valueOf(useActualColumnNames));
+		ConfigurationCustom configuration = new ConfigurationCustom();
 
-        if (Whether.No.getFlag().equals(dataTableGeneratorConfig.getUseTableNameAlias())) {
-            tableConfig.setAlias(dataTableGeneratorConfig.getTableName());
-        } else {
-            tableConfig.setAlias(dataTableGeneratorConfig.getAliasName());
-        }
+		ContextCustom context = new ContextCustom(ModelType.CONDITIONAL);
 
-        JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
-        if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
-                                                                                            .equals(databaseType.getName())) {
-            jdbcConfig.addProperty("nullCatalogMeansCurrent", "true");
-        }
-        jdbcConfig.setDriverClass(databaseType.getDriverClass());
-        jdbcConfig.setConnectionURL(DatabaseTypeUtil.getConnectionUrlWithSchema(this.connectionConfig));
-        jdbcConfig.setUserId(this.connectionConfig.getUserName());
-        jdbcConfig.setPassword(this.connectionConfig.getPassword());
-        if (DatabaseType.Oracle.name().equals(databaseType.getName())) {
-            jdbcConfig.getProperties().setProperty("remarksReporting", "true");
-        }
-        // java model
-        JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
-        modelConfig.setTargetPackage(databaseGeneratorConfig.getModelPackage());
+		configuration.addContext(context);
+		context.addProperty("javaFileEncoding", fileEncoding.getName());
 
-        if (StringAssist.isNullOrEmpty(modelTargetFolder)) {
-            modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
-        } else {
-            modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
-        }
+		String connectorLibPath = ConfigHelper.findConnectorLibPath(databaseType.getName());
 
-        modelConfig.getProperties().setProperty("enableSubPackages", "false");
-        modelConfig.getProperties().setProperty("trimStrings", "true");
+		configuration.addClasspathEntry(connectorLibPath);
 
-        // Mapper configuration
-        SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
-        mapperConfig.setTargetPackage(databaseGeneratorConfig.getMappingXmlPackage());
+		// Table configuration
+		TableConfiguration tableConfig = new TableConfiguration(context);
 
-        if (StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
-            mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
-        } else {
-            mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
-        }
+		tableConfig.setTableName(tableName);
+		tableConfig.setDomainObjectName(Optional.ofNullable(dataTableGeneratorConfig.getDomainObjectName()).orElse(""));
 
-        mapperConfig.getProperties().setProperty("enableSubPackages", "false");
+		// boolean useExample = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseExample());
 
-        // dao
-        JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
-        daoConfig.setConfigurationType("XMLMAPPER");
-        daoConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
+		// tableConfig.setUpdateByExampleStatementEnabled(useExample);
+		// tableConfig.setCountByExampleStatementEnabled(useExample);
+		// tableConfig.setDeleteByExampleStatementEnabled(useExample);
+		// tableConfig.setSelectByExampleStatementEnabled(useExample);
 
-        if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
-            daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
-        } else {
-            daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
-        }
+		tableConfig.setUpdateByExampleStatementEnabled(true);
+		tableConfig.setCountByExampleStatementEnabled(true);
+		tableConfig.setDeleteByExampleStatementEnabled(true);
+		tableConfig.setSelectByExampleStatementEnabled(true);
 
-        daoConfig.getProperties().setProperty("enableSubPackages", "false");
+		// 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
+		//         一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
+		context.addProperty("autoDelimitKeywords", String.valueOf(Whether.Yes.getFlag().equals(databaseGeneratorConfig
+				.getAutoDelimitKeywords())));
 
-        // service
-        JavaServiceGeneratorConfiguration serviceConfig = new JavaServiceGeneratorConfiguration();
-        serviceConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
-        serviceConfig.setImplementationPackage(databaseGeneratorConfig.getDaoPackage() + ".impl");
+		if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
+																							   .equals(databaseType.getFlag())) {
+			// 由于beginningDelimiter和endingDelimiter的默认值为双引号(")，在Mysql中不能这么写，所以还要将这两个默认值改为`
+			context.addProperty("beginningDelimiter", "`");
+			context.addProperty("endingDelimiter", "`");
+		}
 
-        if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
-            serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
-        } else {
-            serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
-        }
+		boolean useSchemaPrefix = Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseSchemaPrefix());
 
-        serviceConfig.getProperties().setProperty("enableSubPackages", "false");
+		if (useSchemaPrefix) {
+			if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
+																								   .equals(databaseType.getFlag())) {
+				tableConfig.setSchema(this.connectionConfig.getSchema());
+			} else if (DatabaseType.Oracle.name().equals(databaseType.getName())) {
+				//Oracle的schema为用户名，如果连接用户拥有dba等高级权限，若不设schema，会导致把其他用户下同名的表也生成一遍导致mapper中代码重复
+				tableConfig.setSchema(this.connectionConfig.getUserName());
+			} else {
+				tableConfig.setCatalog(this.connectionConfig.getSchema());
+			}
+		}
 
-        context.setId("myContext");
-        context.addTableConfiguration(tableConfig);
-        context.setJdbcConnectionConfiguration(jdbcConfig);
-        context.setJavaModelGeneratorConfiguration(modelConfig);
-        context.setSqlMapGeneratorConfiguration(mapperConfig);
-        context.setJavaClientGeneratorConfiguration(daoConfig);
-        context.setJavaServiceGeneratorConfiguration(serviceConfig);
+		// 针对 postgresql 单独配置
+		if (DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
+			tableConfig.setDelimitIdentifiers(true);
+		}
 
-        context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, fileEncoding.getName());
+		boolean useGenerateKey = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseGenerateKey());
 
-        // CommentGenerator
-        {
-            CommentGeneratorConfiguration commentGeneratorCustomConfiguration = new CommentGeneratorConfiguration();
+		//添加GeneratedKey主键生成
+		if (useGenerateKey) {
+			if (StringUtils.isNotEmpty(dataTableGeneratorConfig.getGenerateKeys())) {
+				if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
+																									.equals(databaseType
+																											.getName())) {
 
-            String commentGeneratorCustomConfigurationName = CommentGeneratorCustom.class.getName();
+					//dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
+					//使用该KeyGenerator的好处就是直接在一次INSERT 语句内，通过resultSet获取得到 生成的主键值，
+					//并很好的支持设置了读写分离代理的数据库
+					//例如阿里云RDS + 读写分离代理
+					//无需指定主库
+					//当使用SelectKey时，Mybatis会使用SelectKeyGenerator，INSERT之后，多发送一次查询语句，获得主键值
+					//在上述读写分离被代理的情况下，会得不到正确的主键
+					tableConfig.setGeneratedKey(new GeneratedKey(dataTableGeneratorConfig.getGenerateKeys(), "JDBC", true, null));
+				} else {
+					tableConfig.setGeneratedKey(new GeneratedKey(dataTableGeneratorConfig.getGenerateKeys(), databaseType
+							.getName(), true, null));
+				}
 
-            commentGeneratorCustomConfiguration.setConfigurationType(commentGeneratorCustomConfigurationName);
+			}
+		}
 
-            context.setCommentGeneratorConfiguration(commentGeneratorCustomConfiguration);
-        }
+		String mapperExtensionName = Optional.ofNullable(databaseGeneratorConfig.getMapperExtensionName()).orElse("");
 
-        // PluginChain
-        {
-            PluginConfiguration pluginChainConfiguration = new PluginConfiguration();
+		if (!StringAssist.isNullOrEmpty(mapperExtensionName)) {
+			String mapperName = StringAssist.merge(StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
+					.getTableName() : dataTableGeneratorConfig.getDomainObjectName(), mapperExtensionName);
+			tableConfig.setMapperName(mapperName);
+		}
 
-            String pluginChainName = com.lzt.operate.mybatis.custom.plugins.PluginChain.class.getName();
+		// add ignore columns
+		if (this.ignoredColumns != null) {
+			this.ignoredColumns.forEach(tableConfig::addIgnoredColumn);
+		}
 
-            pluginChainConfiguration.setConfigurationType(pluginChainName);
+		if (this.columnOverrides != null) {
+			this.columnOverrides.forEach(tableConfig::addColumnOverride);
+		}
 
-            context.addPluginConfiguration(pluginChainConfiguration);
-        }
+		boolean useActualColumnNames = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseActualColumnNames());
+		// 如果设置为true，生成的model类会直接使用column本身的名字，而不会再使用驼峰命名方法，比如BORN_DATE，生成的属性名字就是BORN_DATE,而不会是bornDate
+		tableConfig.addProperty("useActualColumnNames", String.valueOf(useActualColumnNames));
 
-        //实体添加序列化
-        {
-            PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
+		if (Whether.No.getFlag().equals(dataTableGeneratorConfig.getUseTableNameAlias())) {
+			tableConfig.setAlias(dataTableGeneratorConfig.getTableName());
+		} else {
+			tableConfig.setAlias(dataTableGeneratorConfig.getAliasName());
+		}
 
-            String serializablePluginConfigurationName = SerializablePlugin.class.getName();
+		JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
+		if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
+																							.equals(databaseType.getName())) {
+			jdbcConfig.addProperty("nullCatalogMeansCurrent", "true");
+		}
+		jdbcConfig.setDriverClass(databaseType.getDriverClass());
+		jdbcConfig.setConnectionURL(DatabaseTypeUtil.getConnectionUrlWithSchema(this.connectionConfig));
+		jdbcConfig.setUserId(this.connectionConfig.getUserName());
+		jdbcConfig.setPassword(this.connectionConfig.getPassword());
+		if (DatabaseType.Oracle.name().equals(databaseType.getName())) {
+			jdbcConfig.getProperties().setProperty("remarksReporting", "true");
+		}
+		// java model
+		JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
+		modelConfig.setTargetPackage(databaseGeneratorConfig.getModelPackage());
 
-            serializablePluginConfiguration.setConfigurationType(serializablePluginConfigurationName);
+		if (StringAssist.isNullOrEmpty(modelTargetFolder)) {
+			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
+		}
 
-            context.addPluginConfiguration(serializablePluginConfiguration);
-        }
+		modelConfig.getProperties().setProperty("enableSubPackages", "false");
+		modelConfig.getProperties().setProperty("rootClass", BaseModel.class.getName());
+		modelConfig.getProperties().setProperty("trimStrings", "true");
 
-        // ToStringPlugin
-        {
-            PluginConfiguration toStringPluginConfiguration = new PluginConfiguration();
+		// Mapper configuration
+		SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
+		mapperConfig.setTargetPackage(databaseGeneratorConfig.getMappingXmlPackage());
 
-            String toStringPluginConfigurationName = ToStringPlugin.class.getName();
+		if (StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
+			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
+		}
 
-            toStringPluginConfiguration.setConfigurationType(toStringPluginConfigurationName);
+		mapperConfig.getProperties().setProperty("enableSubPackages", "false");
 
-            context.addPluginConfiguration(toStringPluginConfiguration);
-        }
+		// dao
+		JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
+		daoConfig.setConfigurationType(daoType.getType());
+		daoConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
 
-        // toString, hashCode, equals插件
-        if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedToStringHashCodeEquals())) {
-            PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
-            pluginConfiguration1.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
-            pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");
-            context.addPluginConfiguration(pluginConfiguration1);
-            PluginConfiguration pluginConfiguration2 = new PluginConfiguration();
+		if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
+			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
+		}
 
-            pluginConfiguration2.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
-            pluginConfiguration2.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+		daoConfig.getProperties().setProperty("enableSubPackages", "false");
 
-            context.addPluginConfiguration(pluginConfiguration2);
-        }
+		// service
+		JavaServiceGeneratorConfiguration serviceConfig = new JavaServiceGeneratorConfiguration();
+		serviceConfig.setTargetPackage(databaseGeneratorConfig.getServicePackage());
+		serviceConfig.setImplementationPackage(databaseGeneratorConfig.getServicePackage() + ".impl");
 
-        // limit/offset插件
-        if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOffsetLimit())) {
-            if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
-                                                                                                .equals(databaseType.getName())
-                    || DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
-                PluginConfiguration pluginConfiguration = new PluginConfiguration();
+		if (StringAssist.isNullOrEmpty(serviceTargetFolder)) {
+			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+		} else {
+			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + serviceTargetFolder);
+		}
 
-                String limitPluginName = LimitPlugin.class.getName();
+		serviceConfig.getProperties().setProperty("enableSubPackages", "false");
 
-                pluginConfiguration.addProperty("type", limitPluginName);
-                pluginConfiguration.setConfigurationType(limitPluginName);
+		context.setId("myContext");
+		context.addTableConfiguration(tableConfig);
+		context.setJdbcConnectionConfiguration(jdbcConfig);
+		context.setJavaModelGeneratorConfiguration(modelConfig);
+		context.setSqlMapGeneratorConfiguration(mapperConfig);
+		context.setJavaClientGeneratorConfiguration(daoConfig);
+		context.setJavaServiceGeneratorConfiguration(serviceConfig);
 
-                context.addPluginConfiguration(pluginConfiguration);
-            }
-        }
+		context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, fileEncoding.getName());
 
-        //for JSR310
-        if (Whether.Yes.getFlag().equals((databaseGeneratorConfig.getJsr310Support()))) {
-            JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
+		// CommentGenerator
+		{
+			CommentGeneratorConfiguration commentGeneratorCustomConfiguration = new CommentGeneratorConfiguration();
 
-            String javaTypeResolverJsr310ImplName = JavaTypeResolverJsr310Impl.class.getName();
+			String commentGeneratorCustomConfigurationName = CommentGeneratorCustom.class.getName();
 
-            javaTypeResolverConfiguration.setConfigurationType(javaTypeResolverJsr310ImplName);
+			commentGeneratorCustomConfiguration.setConfigurationType(commentGeneratorCustomConfigurationName);
 
-            context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
-        }
+			context.setCommentGeneratorConfiguration(commentGeneratorCustomConfiguration);
+		}
 
-        //forUpdate 插件
-        if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedForUpdate())) {
-            if (DatabaseType.MySQL.name().equals(databaseType.getName())
-                    || DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
-                PluginConfiguration pluginConfiguration = new PluginConfiguration();
+		// PluginChain
+		{
+			PluginConfiguration pluginChainConfiguration = new PluginConfiguration();
 
-                String updatePluginName = UpdatePlugin.class.getName();
+			String pluginChainName = com.lzt.operate.mybatis.custom.plugins.PluginChain.class.getName();
 
-                pluginConfiguration.addProperty("type", updatePluginName);
-                pluginConfiguration.setConfigurationType(updatePluginName);
+			pluginChainConfiguration.setConfigurationType(pluginChainName);
 
-                context.addPluginConfiguration(pluginConfiguration);
-            }
-        }
+			context.addPluginConfiguration(pluginChainConfiguration);
+		}
 
-        //repository 插件
-        if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getAnnotationDAO())) {
-            if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
-                                                                                                .equals(databaseType.getName())
-                    || DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
-                PluginConfiguration pluginConfiguration = new PluginConfiguration();
+		//实体添加序列化
+		{
+			PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
 
-                String repositoryPluginName = RepositoryPlugin.class.getName();
+			String serializablePluginConfigurationName = SerializablePlugin.class.getName();
 
-                pluginConfiguration.addProperty("type", repositoryPluginName);
-                pluginConfiguration.setConfigurationType(repositoryPluginName);
+			serializablePluginConfiguration.setConfigurationType(serializablePluginConfigurationName);
 
-                context.addPluginConfiguration(pluginConfiguration);
-            }
-        }
-        if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseDAOExtendStyle())) {
-            if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
-                                                                                                .equals(databaseType.getName())
-                    || DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
-                PluginConfiguration pluginConfiguration = new PluginConfiguration();
-                pluginConfiguration.addProperty("useExample", "true");
+			context.addPluginConfiguration(serializablePluginConfiguration);
+		}
 
-                String commonInterfacePluginName = CommonDAOInterfacePlugin.class.getName();
+		// ToStringPlugin
+		{
+			PluginConfiguration toStringPluginConfiguration = new PluginConfiguration();
 
-                pluginConfiguration.addProperty("type", commonInterfacePluginName);
-                pluginConfiguration.setConfigurationType(commonInterfacePluginName);
+			String toStringPluginConfigurationName = ToStringPlugin.class.getName();
 
-                context.addPluginConfiguration(pluginConfiguration);
-            }
-        }
+			toStringPluginConfiguration.setConfigurationType(toStringPluginConfigurationName);
 
-        context.setTargetRuntime("MyBatis3");
+			context.addPluginConfiguration(toStringPluginConfiguration);
+		}
 
-        List<String> warnings = new ArrayList<>();
-        Set<String> fullyqualifiedTables = new HashSet<>();
-        Set<String> contexts = new HashSet<>();
+		// toString, hashCode, equals插件
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedToStringHashCodeEquals())) {
+			PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
+			pluginConfiguration1.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
+			pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");
+			context.addPluginConfiguration(pluginConfiguration1);
+			PluginConfiguration pluginConfiguration2 = new PluginConfiguration();
 
-        //override=true
-        ShellCallback shellCallback = new DefaultShellCallback(true);
+			pluginConfiguration2.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
+			pluginConfiguration2.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
 
-        MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
+			context.addPluginConfiguration(pluginConfiguration2);
+		}
 
-        // if overrideXML selected, delete oldXML ang generate new one
-        if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOverrideXML())) {
-            String mappingXmlFilePath = this.getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
-            File mappingXmlFile = new File(mappingXmlFilePath);
-            if (mappingXmlFile.exists()) {
-                boolean delete = mappingXmlFile.delete();
+		// limit/offset插件
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOffsetLimit())) {
+			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
+																								.equals(databaseType.getName())
+					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
+				PluginConfiguration pluginConfiguration = new PluginConfiguration();
 
-                if (!delete) {
-                    throw new Exception("文件" + mappingXmlFilePath + "删除失败！");
-                }
-            }
-        }
+				String limitPluginName = LimitPlugin.class.getName();
 
-        myBatisGenerator.generate(this.progressCallback, contexts, fullyqualifiedTables);
+				pluginConfiguration.addProperty("type", limitPluginName);
+				pluginConfiguration.setConfigurationType(limitPluginName);
 
-        List<GeneratedJavaFile> javaFileList = myBatisGenerator.getGeneratedJavaFiles();
+				context.addPluginConfiguration(pluginConfiguration);
+			}
+		}
 
-        String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
-                .getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+		//for JSR310
+		if (Whether.Yes.getFlag().equals((databaseGeneratorConfig.getJsr310Support()))) {
+			JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
 
-        String exampleFileName = StringAssist.merge(modelFileName, "Example");
+			String javaTypeResolverJsr310ImplName = JavaTypeResolverJsr310Impl.class.getName();
 
-        mapperExtensionName = StringAssist.isNullOrEmpty(databaseGeneratorConfig
-                .getMapperExtensionName()) ? "Mapper" : databaseGeneratorConfig.getMapperExtensionName();
+			javaTypeResolverConfiguration.setConfigurationType(javaTypeResolverJsr310ImplName);
 
-        String mapperFileName = StringAssist.merge(modelFileName, mapperExtensionName);
+			context.setJavaTypeResolverConfiguration(javaTypeResolverConfiguration);
+		}
 
-        String serviceFileName = StringAssist.merge(modelFileName, "Service");
-        String serviceImplFileName = StringAssist.merge(modelFileName, "ServiceImpl");
+		//forUpdate 插件
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedForUpdate())) {
+			if (DatabaseType.MySQL.name().equals(databaseType.getName())
+					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
+				PluginConfiguration pluginConfiguration = new PluginConfiguration();
 
-        for (GeneratedJavaFile file : javaFileList) {
-            String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
+				String updatePluginName = UpdatePlugin.class.getName();
 
-            // String serviceFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? StringAssist
-            // 		.merge(dataTableGeneratorConfig
-            // 				.getTableName(), "Service") : dataTableGeneratorConfig.getDomainObjectName();
-            // String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
-            // 		.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+				pluginConfiguration.addProperty("type", updatePluginName);
+				pluginConfiguration.setConfigurationType(updatePluginName);
 
-            if (modelFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-                dataTableGeneratorConfig.setModelContent(file.getFormattedContent());
-            }
+				context.addPluginConfiguration(pluginConfiguration);
+			}
+		}
 
-            if (exampleFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-                dataTableGeneratorConfig.setExampleContent(file.getFormattedContent());
-            }
+		//repository 插件
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getAnnotationDAO())) {
+			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
+																								.equals(databaseType.getName())
+					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
+				PluginConfiguration pluginConfiguration = new PluginConfiguration();
 
-            if (mapperFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-                dataTableGeneratorConfig.setMapperContent(file.getFormattedContent());
-            }
+				String repositoryPluginName = RepositoryPlugin.class.getName();
 
-            if (serviceFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-                dataTableGeneratorConfig.setServiceContent(file.getFormattedContent());
-            }
+				pluginConfiguration.addProperty("type", repositoryPluginName);
+				pluginConfiguration.setConfigurationType(repositoryPluginName);
 
-            if (serviceImplFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-                dataTableGeneratorConfig.setServiceContent(file.getFormattedContent());
-            }
-        }
+				context.addPluginConfiguration(pluginConfiguration);
+			}
+		}
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseDAOExtendStyle())) {
+			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
+																								.equals(databaseType.getName())
+					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
+				PluginConfiguration pluginConfiguration = new PluginConfiguration();
+				pluginConfiguration.addProperty("useExample", "true");
 
-        List<GeneratedXmlFile> xmlFileList = myBatisGenerator.getGeneratedXmlFiles();
+				String commonInterfacePluginName = CommonDAOInterfacePlugin.class.getName();
 
-        for (GeneratedXmlFile file : xmlFileList) {
-            String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
+				pluginConfiguration.addProperty("type", commonInterfacePluginName);
+				pluginConfiguration.setConfigurationType(commonInterfacePluginName);
 
-            if (mapperFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-                dataTableGeneratorConfig.setMappingXmlContent(file.getFormattedContent());
-            }
-        }
+				context.addPluginConfiguration(pluginConfiguration);
+			}
+		}
 
-        dataTableGeneratorConfig.setLastGenerateTime(LocalDateTime.now());
+		context.setTargetRuntime("MyBatis3");
 
-        this.dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
+		List<String> warnings = new ArrayList<>();
+		Set<String> fullyqualifiedTables = new HashSet<>();
+		Set<String> contexts = new HashSet<>();
 
-        return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
-    }
+		//override=true
+		ShellCallback shellCallback = new DefaultShellCallback(true);
 
-    private String getMappingXmlFilePath(DatabaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(generatorConfig.getProjectFolder()).append("/");
-        sb.append(generatorConfig.getMappingXmlTargetFolder()).append("/");
+		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
 
-        String mappingXmlPackage = generatorConfig.getMappingXmlPackage();
+		// if overrideXML selected, delete oldXML ang generate new one
+		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOverrideXML())) {
+			String mappingXmlFilePath = this.getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
+			File mappingXmlFile = new File(mappingXmlFilePath);
+			if (mappingXmlFile.exists()) {
+				boolean delete = mappingXmlFile.delete();
 
-        if (StringUtils.isNotEmpty(mappingXmlPackage)) {
-            sb.append(mappingXmlPackage.replace(".", "/")).append("/");
-        }
+				if (!delete) {
+					throw new Exception("文件" + mappingXmlFilePath + "删除失败！");
+				}
+			}
+		}
 
-        String modelName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
-                .getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+		myBatisGenerator.generate(this.progressCallback, contexts, fullyqualifiedTables);
 
-        String mapperExtensionName = StringAssist.isNullOrEmpty(generatorConfig
-                .getMapperExtensionName()) ? "Mapper" : generatorConfig.getMapperExtensionName();
+		List<GeneratedJavaFile> javaFileList = myBatisGenerator.getGeneratedJavaFiles();
 
-        String mapperFileName = StringAssist.merge(modelName, mapperExtensionName, ".xml");
+		String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
+				.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
 
-        sb.append(mapperFileName);
+		String exampleFileName = StringAssist.merge(modelFileName, "Example");
 
-        return sb.toString();
-    }
+		mapperExtensionName = StringAssist.isNullOrEmpty(databaseGeneratorConfig
+				.getMapperExtensionName()) ? "Mapper" : databaseGeneratorConfig.getMapperExtensionName();
 
-    public void setProgressCallback(ProgressCallback progressCallback) {
-        this.progressCallback = progressCallback;
-    }
+		String mapperFileName = StringAssist.merge(modelFileName, mapperExtensionName);
 
-    public void setIgnoredColumns(List<IgnoredColumn> ignoredColumns) {
-        this.ignoredColumns = ignoredColumns;
-    }
+		String serviceFileName = StringAssist.merge(modelFileName, "Service");
+		String serviceImplFileName = StringAssist.merge(modelFileName, "ServiceImpl");
 
-    public void setColumnOverrides(List<ColumnOverride> columnOverrides) {
-        this.columnOverrides = columnOverrides;
-    }
+		for (GeneratedJavaFile file : javaFileList) {
+			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
+
+			// String serviceFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? StringAssist
+			// 		.merge(dataTableGeneratorConfig
+			// 				.getTableName(), "Service") : dataTableGeneratorConfig.getDomainObjectName();
+			// String modelFileName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
+			// 		.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+
+			if (modelFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setModelContent(file.getFormattedContent());
+			}
+
+			if (exampleFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setExampleContent(file.getFormattedContent());
+			}
+
+			if (mapperFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setMapperContent(file.getFormattedContent());
+			}
+
+			if (serviceFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setServiceContent(file.getFormattedContent());
+			}
+
+			if (serviceImplFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setServiceContent(file.getFormattedContent());
+			}
+		}
+
+		List<GeneratedXmlFile> xmlFileList = myBatisGenerator.getGeneratedXmlFiles();
+
+		for (GeneratedXmlFile file : xmlFileList) {
+			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
+
+			if (mapperFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setMappingXmlContent(file.getFormattedContent());
+			}
+		}
+
+		dataTableGeneratorConfig.setLastGenerateTime(LocalDateTime.now());
+
+		this.dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
+
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
+	}
+
+	private String getMappingXmlFilePath(DatabaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(generatorConfig.getProjectFolder()).append("/");
+		sb.append(generatorConfig.getMappingXmlTargetFolder()).append("/");
+
+		String mappingXmlPackage = generatorConfig.getMappingXmlPackage();
+
+		if (StringUtils.isNotEmpty(mappingXmlPackage)) {
+			sb.append(mappingXmlPackage.replace(".", "/")).append("/");
+		}
+
+		String modelName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
+				.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
+
+		String mapperExtensionName = StringAssist.isNullOrEmpty(generatorConfig
+				.getMapperExtensionName()) ? "Mapper" : generatorConfig.getMapperExtensionName();
+
+		String mapperFileName = StringAssist.merge(modelName, mapperExtensionName, ".xml");
+
+		sb.append(mapperFileName);
+
+		return sb.toString();
+	}
+
+	public void setProgressCallback(ProgressCallback progressCallback) {
+		this.progressCallback = progressCallback;
+	}
+
+	public void setIgnoredColumns(List<IgnoredColumn> ignoredColumns) {
+		this.ignoredColumns = ignoredColumns;
+	}
+
+	public void setColumnOverrides(List<ColumnOverride> columnOverrides) {
+		this.columnOverrides = columnOverrides;
+	}
 }
