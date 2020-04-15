@@ -170,7 +170,7 @@ public class MybatisGeneratorBridge {
 			boolean mkdirsResult = file.mkdirs();
 
 			if (!mkdirsResult) {
-				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建项目文件夹失败"));
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建项目文件夹失败：" + file.getAbsolutePath()));
 			}
 		}
 
@@ -181,11 +181,19 @@ public class MybatisGeneratorBridge {
 		modelTargetFolder = Optional.of(modelTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(modelTargetFolder)) {
-			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹不能含有空格"));
-			}
+			String modelFolder;
 
-			String modelFolder = StringAssist.merge(projectFolder, modelTargetFolder);
+			int modelTargetFolderRelativeMode = databaseGeneratorConfig.getModelTargetFolderRelativeMode();
+
+			if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode)) {
+				if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("model文件夹不能含有空格"));
+				}
+
+				modelFolder = StringAssist.merge(projectFolder, modelTargetFolder);
+			} else {
+				modelFolder = modelTargetFolder;
+			}
 
 			file = new File(modelFolder);
 
@@ -193,7 +201,7 @@ public class MybatisGeneratorBridge {
 				boolean mkdirsResult = file.mkdirs();
 
 				if (!mkdirsResult) {
-					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建model文件夹失败"));
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建model文件夹失败：" + file.getAbsolutePath()));
 				}
 			}
 
@@ -205,11 +213,18 @@ public class MybatisGeneratorBridge {
 		daoTargetFolder = Optional.of(daoTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(daoTargetFolder)) {
-			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹不能含有空格"));
-			}
+			String daoFolder;
+			int daoTargetFolderRelativeMode = databaseGeneratorConfig.getDaoTargetFolderRelativeMode();
 
-			String daoFolder = StringAssist.merge(projectFolder, daoTargetFolder);
+			if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode)) {
+				if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("dao文件夹不能含有空格"));
+				}
+
+				daoFolder = StringAssist.merge(projectFolder, daoTargetFolder);
+			} else {
+				daoFolder = daoTargetFolder;
+			}
 
 			file = new File(daoFolder);
 
@@ -217,7 +232,7 @@ public class MybatisGeneratorBridge {
 				boolean mkdirsResult = file.mkdirs();
 
 				if (!mkdirsResult) {
-					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建dao文件夹失败"));
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建dao文件夹失败：" + file.getAbsolutePath()));
 				}
 			}
 
@@ -229,11 +244,18 @@ public class MybatisGeneratorBridge {
 		mappingXmlTargetFolder = Optional.of(mappingXmlTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
-			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
-			}
+			String mappingXmlFolder;
+			int mappingXmlTargetFolderRelativeMode = databaseGeneratorConfig.getMappingXmlTargetFolderRelativeMode();
 
-			String mappingXmlFolder = StringAssist.merge(projectFolder, mappingXmlTargetFolder);
+			if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode)) {
+				if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
+				}
+
+				mappingXmlFolder = StringAssist.merge(projectFolder, mappingXmlTargetFolder);
+			} else {
+				mappingXmlFolder = mappingXmlTargetFolder;
+			}
 
 			file = new File(mappingXmlFolder);
 
@@ -241,7 +263,7 @@ public class MybatisGeneratorBridge {
 				boolean mkdirsResult = file.mkdirs();
 
 				if (!mkdirsResult) {
-					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建mappingXml文件夹失败"));
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建mappingXml文件夹失败：" + file.getAbsolutePath()));
 				}
 			}
 
@@ -253,11 +275,18 @@ public class MybatisGeneratorBridge {
 		serviceTargetFolder = Optional.of(serviceTargetFolder).orElse("");
 
 		if (!StringAssist.isNullOrEmpty(serviceTargetFolder)) {
-			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("mappingXml文件夹不能含有空格"));
-			}
+			String serviceFolder;
+			int serviceTargetFolderRelativeMode = databaseGeneratorConfig.getServiceTargetFolderRelativeMode();
 
-			String serviceFolder = StringAssist.merge(projectFolder, serviceTargetFolder);
+			if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
+				if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("service文件夹不能含有空格"));
+				}
+
+				serviceFolder = StringAssist.merge(projectFolder, serviceTargetFolder);
+			} else {
+				serviceFolder = serviceTargetFolder;
+			}
 
 			file = new File(serviceFolder);
 
@@ -270,7 +299,7 @@ public class MybatisGeneratorBridge {
 			}
 
 			if (!file.isDirectory()) {
-				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("service文件夹路径无效"));
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("service文件夹路径无效：" + file.getAbsolutePath()));
 			}
 		}
 
@@ -319,6 +348,10 @@ public class MybatisGeneratorBridge {
 
 		List<DataTableGeneratorConfig> list = this.dataTableGeneratorConfigService.list(specification);
 
+		if (ConstantCollection.ZERO_INT.equals(list.size())) {
+			return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("没有任何数据表进行过生成初始化，请进入数据库表页"));
+		}
+
 		for (DataTableGeneratorConfig item : list) {
 			ExecutiveSimpleResult itemResult = this.generateCore(databaseGeneratorConfig, item);
 
@@ -363,11 +396,15 @@ public class MybatisGeneratorBridge {
 		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
 										   .orElse("")
 										   .trim();
+		int modelTargetFolderRelativeMode1 = databaseGeneratorConfig.getModelTargetFolderRelativeMode();
 		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
+		int daoTargetFolderRelativeMode1 = databaseGeneratorConfig.getDaoTargetFolderRelativeMode();
 		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
 												.orElse("").trim();
+		int mappingXmlTargetFolderRelativeMode1 = databaseGeneratorConfig.getMappingXmlTargetFolderRelativeMode();
 		String serviceTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getServiceTargetFolder())
 											 .orElse("").trim();
+		int serviceTargetFolderRelativeMode1 = databaseGeneratorConfig.getServiceTargetFolderRelativeMode();
 
 		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
 
@@ -522,7 +559,11 @@ public class MybatisGeneratorBridge {
 		if (StringAssist.isNullOrEmpty(modelTargetFolder)) {
 			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
 		} else {
-			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
+			if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode1)) {
+				modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
+			} else {
+				modelConfig.setTargetProject(modelTargetFolder);
+			}
 		}
 
 		modelConfig.getProperties().setProperty("enableSubPackages", "false");
@@ -536,7 +577,11 @@ public class MybatisGeneratorBridge {
 		if (StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
 			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
 		} else {
-			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
+			if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode1)) {
+				mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
+			} else {
+				mapperConfig.setTargetProject(mappingXmlTargetFolder);
+			}
 		}
 
 		mapperConfig.getProperties().setProperty("enableSubPackages", "false");
@@ -549,7 +594,11 @@ public class MybatisGeneratorBridge {
 		if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
 			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
 		} else {
-			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
+			if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode1)) {
+				daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
+			} else {
+				daoConfig.setTargetProject(daoTargetFolder);
+			}
 		}
 
 		daoConfig.getProperties().setProperty("enableSubPackages", "false");
@@ -562,7 +611,11 @@ public class MybatisGeneratorBridge {
 		if (StringAssist.isNullOrEmpty(serviceTargetFolder)) {
 			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
 		} else {
-			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + serviceTargetFolder);
+			if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode1)) {
+				serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + serviceTargetFolder);
+			} else {
+				serviceConfig.setTargetProject(serviceTargetFolder);
+			}
 		}
 
 		serviceConfig.getProperties().setProperty("enableSubPackages", "false");

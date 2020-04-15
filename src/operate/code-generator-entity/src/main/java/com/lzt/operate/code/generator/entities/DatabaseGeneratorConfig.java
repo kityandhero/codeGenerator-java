@@ -34,11 +34,17 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "model_package_target_folder", nullable = false)
 	private String modelTargetFolder;
 
+	@Column(name = "model_package_target_folder_relative_mode", nullable = false)
+	private int modelTargetFolderRelativeMode;
+
 	@Column(name = "dao_package", nullable = false)
 	private String daoPackage;
 
 	@Column(name = "dao_target_folder", nullable = false)
 	private String daoTargetFolder;
+
+	@Column(name = "dao_target_folder_relative_mode", nullable = false)
+	private int daoTargetFolderRelativeMode;
 
 	@Column(name = "dao_type", nullable = false)
 	private int daoType;
@@ -49,11 +55,17 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "mapping_xml_target_folder", nullable = false)
 	private String mappingXmlTargetFolder;
 
+	@Column(name = "mapping_xml_target_folder_relative_mode", nullable = false)
+	private int mappingXmlTargetFolderRelativeMode;
+
 	@Column(name = "service_package", nullable = false)
 	private String servicePackage;
 
 	@Column(name = "service_target_folder", nullable = false)
 	private String serviceTargetFolder;
+
+	@Column(name = "service_target_folder_relative_mode", nullable = false)
+	private int serviceTargetFolderRelativeMode;
 
 	@Column(name = "offset_limit", nullable = false)
 	private int offsetLimit;
@@ -101,13 +113,17 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.projectFolder = "";
 		this.modelPackage = "model";
 		this.modelTargetFolder = "";
+		this.modelTargetFolderRelativeMode = Whether.Yes.getFlag();
 		this.daoPackage = "dao";
 		this.daoTargetFolder = "";
+		this.daoTargetFolderRelativeMode = Whether.Yes.getFlag();
 		this.daoType = DaoType.XmlMapper.getFlag();
 		this.mappingXmlPackage = "mapping";
 		this.mappingXmlTargetFolder = "";
+		this.mappingXmlTargetFolderRelativeMode = Whether.Yes.getFlag();
 		this.servicePackage = "service";
 		this.serviceTargetFolder = "";
+		this.serviceTargetFolderRelativeMode = Whether.Yes.getFlag();
 		this.offsetLimit = Whether.No.getFlag();
 		this.needToStringHashCodeEquals = Whether.No.getFlag();
 		this.needForUpdate = Whether.No.getFlag();
@@ -164,6 +180,14 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.modelTargetFolder = modelPackageTargetFolder;
 	}
 
+	public int getModelTargetFolderRelativeMode() {
+		return modelTargetFolderRelativeMode;
+	}
+
+	public void setModelTargetFolderRelativeMode(Whether whether) {
+		this.modelTargetFolderRelativeMode = whether.getFlag();
+	}
+
 	public String getDaoPackage() {
 		return this.daoPackage;
 	}
@@ -178,6 +202,14 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 
 	public void setDaoTargetFolder(String daoTargetFolder) {
 		this.daoTargetFolder = daoTargetFolder;
+	}
+
+	public int getDaoTargetFolderRelativeMode() {
+		return daoTargetFolderRelativeMode;
+	}
+
+	public void setDaoTargetFolderRelativeMode(Whether whether) {
+		this.daoTargetFolderRelativeMode = whether.getFlag();
 	}
 
 	public int getDaoType() {
@@ -204,6 +236,14 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.mappingXmlTargetFolder = mappingXMLTargetFolder;
 	}
 
+	public int getMappingXmlTargetFolderRelativeMode() {
+		return mappingXmlTargetFolderRelativeMode;
+	}
+
+	public void setMappingXmlTargetFolderRelativeMode(Whether whether) {
+		this.mappingXmlTargetFolderRelativeMode = whether.getFlag();
+	}
+
 	public String getServicePackage() {
 		return servicePackage;
 	}
@@ -218,6 +258,14 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 
 	public void setServiceTargetFolder(String serviceTargetFolder) {
 		this.serviceTargetFolder = serviceTargetFolder;
+	}
+
+	public int getServiceTargetFolderRelativeMode() {
+		return serviceTargetFolderRelativeMode;
+	}
+
+	public void setServiceTargetFolderRelativeMode(Whether whether) {
+		this.serviceTargetFolderRelativeMode = whether.getFlag();
 	}
 
 	public int getOffsetLimit() {

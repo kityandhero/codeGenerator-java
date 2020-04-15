@@ -242,12 +242,16 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE),
@@ -443,13 +447,17 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DatabaseGeneratorConfig::getProjectFolder);
 		getterList.add(DatabaseGeneratorConfig::getModelPackage);
 		getterList.add(DatabaseGeneratorConfig::getModelTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getModelTargetFolderRelativeMode);
 		getterList.add(DatabaseGeneratorConfig::getDaoPackage);
 		getterList.add(DatabaseGeneratorConfig::getDaoTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getDaoTargetFolderRelativeMode);
 		getterList.add(DatabaseGeneratorConfig::getDaoType);
 		getterList.add(DatabaseGeneratorConfig::getMappingXmlPackage);
 		getterList.add(DatabaseGeneratorConfig::getMappingXmlTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getMappingXmlTargetFolderRelativeMode);
 		getterList.add(DatabaseGeneratorConfig::getServicePackage);
 		getterList.add(DatabaseGeneratorConfig::getServiceTargetFolder);
+		getterList.add(DatabaseGeneratorConfig::getServiceTargetFolderRelativeMode);
 		getterList.add(DatabaseGeneratorConfig::getOffsetLimit);
 		getterList.add(DatabaseGeneratorConfig::getNeedToStringHashCodeEquals);
 		getterList.add(DatabaseGeneratorConfig::getNeedForUpdate);
@@ -486,6 +494,9 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 																			.toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
 		databaseGeneratorConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
+		databaseGeneratorConfig.setDaoTargetFolderRelativeMode(Whether.No.getFlag()
+																		 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
+																						  .toInt()) ? Whether.No : Whether.Yes);
 
 		Integer encoding = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING).toInt();
 		Optional<FileEncoding> optionalFileEncoding = EnumAssist.getTargetValue(FileEncoding.valuesToList(), FileEncoding::getFlag, encoding);
@@ -501,10 +512,19 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 																			.toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
 		databaseGeneratorConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
+		databaseGeneratorConfig.setMappingXmlTargetFolderRelativeMode(Whether.No.getFlag()
+																				.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
+																								 .toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
 		databaseGeneratorConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
+		databaseGeneratorConfig.setModelTargetFolderRelativeMode(Whether.No.getFlag()
+																		   .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
+																							.toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setServicePackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE));
 		databaseGeneratorConfig.setServiceTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER));
+		databaseGeneratorConfig.setServiceTargetFolderRelativeMode(Whether.No.getFlag()
+																			 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
+																							  .toInt()) ? Whether.No : Whether.Yes);
 		databaseGeneratorConfig.setMapperExtensionName(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME));
 		databaseGeneratorConfig.setNeedForUpdate(Whether.No.getFlag()
 														   .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
