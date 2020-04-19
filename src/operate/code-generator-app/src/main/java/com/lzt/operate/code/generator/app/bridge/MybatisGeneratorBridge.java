@@ -10,7 +10,6 @@ import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
-import com.lzt.operate.code.generator.dao.service.impl.DataColumnServiceImpl;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataColumn;
 import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
@@ -138,7 +137,7 @@ public class MybatisGeneratorBridge {
             @NotNull ConnectionConfig selectedConnectionConfig,
             @NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService,
             @NotNull DataTableGeneratorConfigService dataTableGeneratorConfigService,
-            @NotNull DataColumnServiceImpl dataColumnService) {
+            @NotNull DataColumnService dataColumnService) {
         this.connectionConfig = selectedConnectionConfig;
         this.databaseGeneratorConfigService = databaseGeneratorConfigService;
         this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;

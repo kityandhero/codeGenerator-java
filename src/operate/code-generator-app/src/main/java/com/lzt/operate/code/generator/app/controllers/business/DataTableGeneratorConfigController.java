@@ -393,7 +393,8 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
         MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
                 optionalConnectionConfig.get(),
                 this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
-                this.connectionConfigAssist.getDataTableGeneratorConfigService());
+                this.connectionConfigAssist.getDataTableGeneratorConfigService(),
+                this.connectionConfigAssist.getDataColumnService());
 
         ExecutiveSimpleResult result = mybatisGeneratorBridge.generate(optionalDataTableGeneratorConfig.get());
 
