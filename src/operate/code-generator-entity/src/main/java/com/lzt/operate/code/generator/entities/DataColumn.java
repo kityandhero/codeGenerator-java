@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.entities;
 
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
+import com.lzt.operate.utility.enums.Whether;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
@@ -46,6 +47,9 @@ public class DataColumn extends BaseEntity {
 	@Column(name = "type_handler", nullable = false)
 	private String typeHandler;
 
+	@Column(name = "ignore", nullable = false)
+	private int ignore;
+
 	public DataColumn() {
 		super();
 
@@ -56,6 +60,7 @@ public class DataColumn extends BaseEntity {
 		this.aliasName = "";
 		this.javaType = "";
 		this.typeHandler = "";
+		this.ignore = Whether.No.getFlag();
 	}
 
 	public long getConnectionConfigId() {
@@ -130,4 +135,11 @@ public class DataColumn extends BaseEntity {
 		this.typeHandler = typeHandler;
 	}
 
+	public int getIgnore() {
+		return ignore;
+	}
+
+	public void setIgnore(Whether whether) {
+		this.ignore = whether.getFlag();
+	}
 }
