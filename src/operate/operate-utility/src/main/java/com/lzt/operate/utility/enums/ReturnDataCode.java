@@ -212,6 +212,11 @@ public enum ReturnDataCode {
 	 */
 	PASSWORD_ERROR(50003, "密码错误", false);
 
+	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "returnDataCodeList";
+
 	private final int code;
 	private final String message;
 	private final boolean success;

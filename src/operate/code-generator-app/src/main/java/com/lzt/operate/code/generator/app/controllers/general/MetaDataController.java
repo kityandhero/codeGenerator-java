@@ -10,6 +10,7 @@ import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -45,6 +46,12 @@ public class MetaDataController extends OperateBaseController {
 				DaoType::getFlag,
 				DaoType::getName,
 				DaoType::getDescription).toArray());
+
+		result.append(GeneratorType.META_KEY, EnumAssist.buildFlagDataCollection(
+				GeneratorType.valuesToList(),
+				GeneratorType::getFlag,
+				GeneratorType::getName,
+				GeneratorType::getDescription).toArray());
 
 		result.append(Channel.META_KEY, EnumAssist.buildFlagDataCollection(
 				Channel.valuesToList(),
@@ -94,7 +101,7 @@ public class MetaDataController extends OperateBaseController {
 				FileEncoding::getName,
 				FileEncoding::getDescription).toArray());
 
-		return this.singleData(result);
+		return singleData(result);
 	}
 
 }

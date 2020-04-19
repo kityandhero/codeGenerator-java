@@ -17,6 +17,11 @@ public enum OperatorCollection {
 	 */
 	System(-1, "系统操作", "系统操作");
 
+	/**
+	 * 元数据键值集合中的key
+	 */
+	public static final String META_KEY = "operatorCollectionList";
+
 	private final int flag;
 
 	private final String name;

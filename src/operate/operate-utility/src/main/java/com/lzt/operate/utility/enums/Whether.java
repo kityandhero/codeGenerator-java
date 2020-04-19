@@ -25,7 +25,7 @@ public enum Whether {
 	/**
 	 * 元数据键值集合中的key
 	 */
-	public static final String META_KEY = "whetherSuperList";
+	public static final String META_KEY = "whetherList";
 
 	/**
 	 * 值
