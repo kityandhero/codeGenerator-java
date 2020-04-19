@@ -11,6 +11,7 @@ import com.lzt.operate.code.generator.common.enums.CustomConfigCollection;
 import com.lzt.operate.code.generator.common.enums.HelpCategoryStatus;
 import com.lzt.operate.code.generator.common.enums.RoleUniversalStatus;
 import com.lzt.operate.code.generator.common.enums.WhetherSuper;
+import com.lzt.operate.code.generator.common.utils.CustomConstants;
 import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayConsumer;
 import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayQueueRunner;
 import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigConsumer;
@@ -339,7 +340,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			try {
 				String port = environment.getProperty("local.server.port");
 
-				CommandUtil.browse(new URI(StringAssist.merge("http://localhost:", port, "/operationPanel")));
+				CommandUtil.browse(new URI(StringAssist.merge("http://localhost:", port, StringAssist.merge("/", CustomConstants.OPERATION_PANEL))));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

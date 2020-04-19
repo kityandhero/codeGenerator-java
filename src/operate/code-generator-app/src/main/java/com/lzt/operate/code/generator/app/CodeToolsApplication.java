@@ -2,7 +2,9 @@ package com.lzt.operate.code.generator.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lzt.operate.code.generator.common.jackson.ObjectMapperAssist;
+import com.lzt.operate.code.generator.common.utils.CustomConstants;
 import com.lzt.operate.swagger2.EnableSwagger2Doc;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.net.CustomServletRequestFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +54,9 @@ public class CodeToolsApplication implements WebMvcConfigurer {
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/operationPanel").setViewName("index");
+		registry.addViewController(StringAssist.merge("/", CustomConstants.OPERATION_PANEL)).setViewName("index");
 		registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		registry.addRedirectViewController("/",StringAssist.merge("/", CustomConstants.OPERATION_PANEL));
 	}
 
 	@Bean

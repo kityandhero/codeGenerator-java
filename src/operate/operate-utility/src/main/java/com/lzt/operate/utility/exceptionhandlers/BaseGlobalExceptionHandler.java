@@ -139,8 +139,6 @@ public abstract class BaseGlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.OK)
 	@ExceptionHandler(Throwable.class)
 	public ResultSingleData handleException(Throwable e) {
-		log.error("服务运行异常", e);
-
 		Optional<HttpServletRequest> optional = RequestAssist.getCurrentHttpServletRequest();
 
 		if (optional.isPresent()) {
@@ -171,12 +169,18 @@ public abstract class BaseGlobalExceptionHandler {
 
 			return new ResultSingleData(ex.toMessage()).transferToJsonResultData();
 		} else if (e instanceof JedisConnectionException) {
+			log.error("服务运行异常", e);
+
 			//redis连接异常
 			return new ResultSingleData(ReturnDataCode.REDIS_CONNECT_ERROR.toMessage()).transferToJsonResultData();
 		} else if (e instanceof JedisException) {
+			log.error("服务运行异常", e);
+
 			//redis异常
 			return new ResultSingleData(ReturnDataCode.REDIS_ERROR.toMessage()).transferToJsonResultData();
 		}
+
+		log.error("服务运行异常", e);
 
 		SerializableData serializableData = new SerializableData();
 
