@@ -196,9 +196,9 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID).toLong();
 		String tableName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TABLE_NAME);
-		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
+		String columnName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
 
-		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, name);
+		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, columnName);
 
 		if (!result.getSuccess()) {
 			return this.fail(result.getCode());
