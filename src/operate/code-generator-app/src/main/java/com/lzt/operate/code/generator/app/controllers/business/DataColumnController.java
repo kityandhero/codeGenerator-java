@@ -141,6 +141,7 @@ public class DataColumnController extends BaseOperateAuthController {
 						getterList.add(DataColumn::getJavaType);
 						getterList.add(DataColumn::getAliasName);
 						getterList.add(DataColumn::getTypeHandler);
+						getterList.add(DataColumn::getIgnore);
 						getterList.add(DataColumn::getChannel);
 						getterList.add(DataColumn::getChannelNote);
 						getterList.add(DataColumn::getStatus);
@@ -214,6 +215,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		getterList.add(DataColumn::getJavaType);
 		getterList.add(DataColumn::getAliasName);
 		getterList.add(DataColumn::getTypeHandler);
+		getterList.add(DataColumn::getIgnore);
 		getterList.add(DataColumn::getChannel);
 		getterList.add(DataColumn::getChannelNote);
 		getterList.add(DataColumn::getStatus);
