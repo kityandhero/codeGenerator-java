@@ -2,6 +2,7 @@ package com.lzt.operate.code.generator.entities.bases;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lzt.operate.code.generator.common.enums.Channel;
+import com.lzt.operate.jpa.base.entity.IEntity;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.LocalDateTimeAssist;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * @see MappedSuperclass 标识的类表示其不能映射到数据库表，因为其不是一个完整的实体类，但是它所拥有的属性能够隐射在其子类对用的数据库表中
  */
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity implements IEntity {
 
 	private static final long serialVersionUID = 6320756028470337915L;
 

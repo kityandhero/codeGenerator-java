@@ -2,13 +2,11 @@ package com.lzt.operate.utility.pojo.results;
 
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.pojo.ReturnMessage;
-import lombok.Data;
 import org.springframework.lang.NonNull;
 
 /**
  * @author luzhitao
  */
-@Data
 public class ExecutiveSimpleResult {
 
 	/**
@@ -44,4 +42,27 @@ public class ExecutiveSimpleResult {
 		message = customMessage;
 	}
 
+	public Boolean getSuccess() {
+		return success;
+	}
+
+	public void setSuccess(Boolean success) {
+		this.success = success;
+	}
+
+	public ReturnMessage getCode() {
+		return code;
+	}
+
+	public void setCode(ReturnMessage code) {
+		this.code = code;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 }

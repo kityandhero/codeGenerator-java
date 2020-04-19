@@ -9,6 +9,7 @@ import com.lzt.operate.code.generator.common.enums.DataColumnStatus;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
+import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ResultListData;
@@ -38,6 +39,12 @@ public class MetaDataController extends OperateBaseController {
 	public ResultSingleData get() {
 
 		SerializableData result = new SerializableData();
+
+		result.append(DaoType.META_KEY, EnumAssist.buildFlagDataCollection(
+				DaoType.valuesToList(),
+				DaoType::getFlag,
+				DaoType::getName,
+				DaoType::getDescription).toArray());
 
 		result.append(Channel.META_KEY, EnumAssist.buildFlagDataCollection(
 				Channel.valuesToList(),

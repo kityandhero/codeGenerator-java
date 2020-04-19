@@ -21,6 +21,8 @@
         <module>code-generator-common</module>
         <module>code-generator-message-queue</module>
         <module>operate-mybatis-custom</module>
+        <module>operate-mybatis-base</module>
+        <module>operate-jpa-base</module>
     </modules>
 
     <properties>

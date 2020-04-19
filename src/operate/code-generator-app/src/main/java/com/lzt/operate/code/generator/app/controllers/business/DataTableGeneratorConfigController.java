@@ -68,337 +68,342 @@ import java.util.stream.Collectors;
 @Api(tags = {"数据表生成配置"})
 public class DataTableGeneratorConfigController extends BaseOperateAuthController {
 
-	private static final String CONTROLLER_DESCRIPTION = "数据表生成配置管理/";
+    private static final String CONTROLLER_DESCRIPTION = "数据表生成配置管理/";
 
-	private ConnectionConfigAssist connectionConfigAssist;
+    private ConnectionConfigAssist connectionConfigAssist;
 
-	@Autowired
-	public DataTableGeneratorConfigController(
-			LoadingCache<String, Object> loadingCache,
-			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			ConnectionConfigServiceImpl connectionConfigService,
-			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
-			DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService,
-			DataColumnService dataColumnService) {
-		super(loadingCache, customJsonWebTokenConfig);
+    @Autowired
+    public DataTableGeneratorConfigController(
+            LoadingCache<String, Object> loadingCache,
+            CustomJsonWebTokenConfig customJsonWebTokenConfig,
+            ConnectionConfigServiceImpl connectionConfigService,
+            DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+            DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService,
+            DataColumnService dataColumnService) {
+        super(loadingCache, customJsonWebTokenConfig);
 
-		this.connectionConfigAssist = new ConnectionConfigAssist(
-				connectionConfigService,
-				databaseGeneratorConfigService,
-				dataTableGeneratorConfigService,
-				dataColumnService);
-	}
+        this.connectionConfigAssist = new ConnectionConfigAssist(
+                connectionConfigService,
+                databaseGeneratorConfigService,
+                dataTableGeneratorConfigService,
+                dataColumnService);
+    }
 
-	@ApiOperation(value = "数据表生成配置列表", notes = "数据表生成配置列表", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST, value = {
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME)},
-			result = @ApiJsonResult({}))
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST)
-	})
-	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据表生成配置列表", description = "数据表生成配置列表", tag = "3884225e-99b2-4c63-a29d-d901a426fddf")
-	public ResultListData pageList(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+    @ApiOperation(value = "数据表生成配置列表", notes = "数据表生成配置列表", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST, value = {
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_PAGE_LIST)
+    })
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
+    @NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据表生成配置列表", description = "数据表生成配置列表", tag = "3884225e-99b2-4c63-a29d-d901a426fddf")
+    public ResultListData pageList(@RequestBody Map<String, Object> json) {
+        ParamData paramJson = this.getParamData(json);
 
-		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
-		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
+        int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
+        int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
 
-		pageNo = Math.max(pageNo, 1);
-		pageSize = Math.max(pageSize, 1);
+        pageNo = Math.max(pageNo, 1);
+        pageSize = Math.max(pageSize, 1);
 
-		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
-										   .toLong();
+        Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
+                                           .toLong();
 
-		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME);
+        String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME);
 
-		Specification<DataTableGeneratorConfig> specification = new Specification<DataTableGeneratorConfig>() {
+        Specification<DataTableGeneratorConfig> specification = new Specification<DataTableGeneratorConfig>() {
 
-			private static final long serialVersionUID = 5826322526864777111L;
+            private static final long serialVersionUID = 5826322526864777111L;
 
-			@Override
-			public Predicate toPredicate(@NonNull Root<DataTableGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
-				List<Predicate> list = new ArrayList<>();
+            @Override
+            public Predicate toPredicate(@NonNull Root<DataTableGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<>();
 
-				if (!ConstantCollection.SEARCH_UNLIMITED_LONG.equals(connectionConfigId)) {
-					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfigId));
-				}
+                if (!ConstantCollection.SEARCH_UNLIMITED_LONG.equals(connectionConfigId)) {
+                    list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getConnectionConfigId)), connectionConfigId));
+                }
 
-				if (!StringAssist.isNullOrEmpty(tableName)) {
-					list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getTableName)), StringAssist
-							.merge("%", tableName, "%")));
-				}
+                if (!StringAssist.isNullOrEmpty(tableName)) {
+                    list.add(criteriaBuilder.like(root.get(ReflectAssist.getFieldName(DataTableGeneratorConfig::getTableName)), StringAssist
+                            .merge("%", tableName, "%")));
+                }
 
-				Predicate[] p = new Predicate[list.size()];
+                Predicate[] p = new Predicate[list.size()];
 
-				return criteriaBuilder.and(list.toArray(p));
-			}
-		};
+                return criteriaBuilder.and(list.toArray(p));
+            }
+        };
 
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DataTableGeneratorConfig::getCreateTime));
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DataTableGeneratorConfig::getCreateTime));
 
-		Page<DataTableGeneratorConfig> result = this.connectionConfigAssist.getDataTableGeneratorConfigService()
-																		   .page(specification, pageable);
+        Page<DataTableGeneratorConfig> result = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                                           .page(specification, pageable);
 
-		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
-												List<IGetter<DataTableGeneratorConfig>> getterList = new ArrayList<>();
+        List<SerializableData> list = result.getContent()
+                                            .stream()
+                                            .map(o -> {
+                                                List<IGetter<DataTableGeneratorConfig>> getterList = new ArrayList<>();
 
-												getterList.add(DataTableGeneratorConfig::getConnectionConfigId);
-												getterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
-												getterList.add(DataTableGeneratorConfig::getTableName);
-												getterList.add(DataTableGeneratorConfig::getUseGenerateKey);
-												getterList.add(DataTableGeneratorConfig::getGenerateKeys);
-												getterList.add(DataTableGeneratorConfig::getDomainObjectName);
-												getterList.add(DataTableGeneratorConfig::getMapperName);
-												getterList.add(DataTableGeneratorConfig::getUseExample);
-												getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
-												getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
-												getterList.add(DataTableGeneratorConfig::getAliasName);
-												getterList.add(DataTableGeneratorConfig::getChannel);
-												getterList.add(DataTableGeneratorConfig::getChannelNote);
-												getterList.add(DataTableGeneratorConfig::getStatus);
-												getterList.add(DataTableGeneratorConfig::getStatusNote);
-												getterList.add(DataTableGeneratorConfig::getCreateTime);
-												getterList.add(DataTableGeneratorConfig::getUpdateTime);
+                                                getterList.add(DataTableGeneratorConfig::getConnectionConfigId);
+                                                getterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
+                                                getterList.add(DataTableGeneratorConfig::getTableName);
+                                                getterList.add(DataTableGeneratorConfig::getUseGenerateKey);
+                                                getterList.add(DataTableGeneratorConfig::getGenerateKeys);
+                                                getterList.add(DataTableGeneratorConfig::getDomainObjectName);
+                                                getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
+                                                getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
+                                                getterList.add(DataTableGeneratorConfig::getAliasName);
+                                                getterList.add(DataTableGeneratorConfig::getLastGenerateTime);
+                                                getterList.add(DataTableGeneratorConfig::getChannel);
+                                                getterList.add(DataTableGeneratorConfig::getChannelNote);
+                                                getterList.add(DataTableGeneratorConfig::getStatus);
+                                                getterList.add(DataTableGeneratorConfig::getStatusNote);
+                                                getterList.add(DataTableGeneratorConfig::getCreateTime);
+                                                getterList.add(DataTableGeneratorConfig::getUpdateTime);
 
-												SerializableData data = SerializableData.toSerializableData(o, getterList);
+                                                SerializableData data = SerializableData.toSerializableData(o, getterList);
 
-												data.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), o
-														.getId());
+                                                data.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), o
+                                                        .getId());
 
-												return data;
-											})
-											.collect(Collectors.toList());
+                                                boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                                                               .checkHasGenerateContent(o);
 
-		int pageIndex = result.getNumber();
-		long totalPages = result.getTotalPages();
+                                                data.append("generated", generated ? 1 : 0);
 
-		return this.pageData(list, pageIndex, pageSize, totalPages);
-	}
+                                                return data;
+                                            })
+                                            .collect(Collectors.toList());
 
-	@ApiOperation(value = "获取数据表生成配置信息", notes = "获取数据表生成配置信息", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GET, value = {
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)},
-			result = @ApiJsonResult({}))
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GET)
-	})
-	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "获取数据表生成配置信息", description = "获取数据表生成配置信息", tag = "d5e1f2ab-67bb-49f9-a02e-9429d763d915")
-	public ResultSingleData get(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+        int pageIndex = result.getNumber();
+        long totalPages = result.getTotalPages();
 
-		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
-												   .toLong();
+        return this.pageData(list, pageIndex, pageSize, totalPages);
+    }
 
-		Optional<DataTableGeneratorConfig> optional = this.connectionConfigAssist.getDataTableGeneratorConfigService()
-																				 .get(dataTableGeneratorConfigId);
+    @ApiOperation(value = "获取数据表生成配置信息", notes = "获取数据表生成配置信息", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GET, value = {
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GET)
+    })
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
+    @NeedAuthorization(name = CONTROLLER_DESCRIPTION + "获取数据表生成配置信息", description = "获取数据表生成配置信息", tag = "d5e1f2ab-67bb-49f9-a02e-9429d763d915")
+    public ResultSingleData get(@RequestBody Map<String, Object> json) {
+        ParamData paramJson = this.getParamData(json);
 
-		if (optional.isPresent()) {
-			DataTableGeneratorConfig dataTableGeneratorConfig = optional.get();
+        Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
+                                                   .toLong();
 
-			List<IGetter<DataTableGeneratorConfig>> getterList = new ArrayList<>();
+        Optional<DataTableGeneratorConfig> optional = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                                                 .get(dataTableGeneratorConfigId);
 
-			getterList.add(DataTableGeneratorConfig::getConnectionConfigId);
-			getterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
-			getterList.add(DataTableGeneratorConfig::getTableName);
-			getterList.add(DataTableGeneratorConfig::getUseGenerateKey);
-			getterList.add(DataTableGeneratorConfig::getGenerateKeys);
-			getterList.add(DataTableGeneratorConfig::getDomainObjectName);
-			getterList.add(DataTableGeneratorConfig::getMapperName);
-			getterList.add(DataTableGeneratorConfig::getUseExample);
-			getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
-			getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
-			getterList.add(DataTableGeneratorConfig::getAliasName);
-			getterList.add(DataTableGeneratorConfig::getModelContent);
-			getterList.add(DataTableGeneratorConfig::getMapperContent);
-			getterList.add(DataTableGeneratorConfig::getXmlContent);
-			getterList.add(DataTableGeneratorConfig::getChannel);
-			getterList.add(DataTableGeneratorConfig::getChannelNote);
-			getterList.add(DataTableGeneratorConfig::getStatus);
-			getterList.add(DataTableGeneratorConfig::getStatusNote);
-			getterList.add(DataTableGeneratorConfig::getCreateTime);
-			getterList.add(DataTableGeneratorConfig::getUpdateTime);
+        if (optional.isPresent()) {
+            DataTableGeneratorConfig dataTableGeneratorConfig = optional.get();
 
-			SerializableData data = SerializableData.toSerializableData(dataTableGeneratorConfig, getterList);
+            List<IGetter<DataTableGeneratorConfig>> getterList = new ArrayList<>();
 
-			data.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfig.getId());
+            getterList.add(DataTableGeneratorConfig::getConnectionConfigId);
+            getterList.add(DataTableGeneratorConfig::getDatabaseGeneratorConfigId);
+            getterList.add(DataTableGeneratorConfig::getTableName);
+            getterList.add(DataTableGeneratorConfig::getUseGenerateKey);
+            getterList.add(DataTableGeneratorConfig::getGenerateKeys);
+            getterList.add(DataTableGeneratorConfig::getDomainObjectName);
+            getterList.add(DataTableGeneratorConfig::getUseActualColumnNames);
+            getterList.add(DataTableGeneratorConfig::getUseTableNameAlias);
+            getterList.add(DataTableGeneratorConfig::getAliasName);
+            getterList.add(DataTableGeneratorConfig::getModelContent);
+            getterList.add(DataTableGeneratorConfig::getMapperContent);
+            getterList.add(DataTableGeneratorConfig::getMappingXmlContent);
+            getterList.add(DataTableGeneratorConfig::getExampleContent);
+            getterList.add(DataTableGeneratorConfig::getServiceContent);
+            getterList.add(DataTableGeneratorConfig::getServiceImplContent);
+            getterList.add(DataTableGeneratorConfig::getLastGenerateTime);
+            getterList.add(DataTableGeneratorConfig::getChannel);
+            getterList.add(DataTableGeneratorConfig::getChannelNote);
+            getterList.add(DataTableGeneratorConfig::getStatus);
+            getterList.add(DataTableGeneratorConfig::getStatusNote);
+            getterList.add(DataTableGeneratorConfig::getCreateTime);
+            getterList.add(DataTableGeneratorConfig::getUpdateTime);
 
-			return this.singleData(data);
-		}
+            SerializableData data = SerializableData.toSerializableData(dataTableGeneratorConfig, getterList);
 
-		return this.noDataError("获取数据库表生成配置信息不存在");
-	}
+            data.append(ReflectAssist.getFriendlyIdName(DataTableGeneratorConfig.class), dataTableGeneratorConfig.getId());
 
-	@ApiOperation(value = "设置数据表生成配置信息", notes = "设置数据表生成配置信息", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET, value = {
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME)},
-			result = @ApiJsonResult({}))
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET)
-	})
-	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据表生成配置信息", description = "设置数据表生成配置信息", tag = "f4994bd3-bba7-4b97-8224-4b6fbfc5a8d0")
-	public ResultSingleData set(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+            boolean generated = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                           .checkHasGenerateContent(dataTableGeneratorConfig);
 
-		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
-												   .toLong();
-		Integer useGenerateKey = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY)
-										  .toInt();
-		String generateKeys = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS);
-		String domainObjectName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME);
-		String mapperName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME);
-		Integer useExample = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE)
-									  .toInt();
-		Integer useActualColumnNames = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
-												.toInt();
-		Integer useTableNameAlias = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
-											 .toInt();
-		String aliasName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME);
+            data.append("generated", generated ? 1 : 0);
 
-		if (Whether.Yes.getFlag().equals(useGenerateKey)) {
-			if (StringAssist.isNullOrEmpty(generateKeys)) {
-				return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS, "启用自增键，需要提交自增列");
-			}
-		} else {
-			generateKeys = "";
-		}
+            return this.singleData(data);
+        }
 
-		if (Whether.Yes.getFlag().equals(useTableNameAlias)) {
-			if (StringAssist.isNullOrEmpty(aliasName)) {
-				return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME, "启用表别名，需要提交别名");
-			}
-		} else {
-			aliasName = "";
-		}
+        return this.noDataError("获取数据库表生成配置信息不存在");
+    }
 
-		Optional<DataTableGeneratorConfig> optional = this.connectionConfigAssist.getDataTableGeneratorConfigService()
-																				 .get(dataTableGeneratorConfigId);
+    @ApiOperation(value = "设置数据表生成配置信息", notes = "设置数据表生成配置信息", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET, value = {
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET)
+    })
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
+    @NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据表生成配置信息", description = "设置数据表生成配置信息", tag = "f4994bd3-bba7-4b97-8224-4b6fbfc5a8d0")
+    public ResultSingleData set(@RequestBody Map<String, Object> json) {
+        ParamData paramJson = this.getParamData(json);
 
-		if (optional.isPresent()) {
-			DataTableGeneratorConfig dataTableGeneratorConfig = optional.get();
+        Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
+                                                   .toLong();
+        Integer useGenerateKey = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_GENERATE_KEY)
+                                          .toInt();
+        String generateKeys = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS);
+        String domainObjectName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME);
+        Integer useActualColumnNames = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES)
+                                                .toInt();
+        Integer useTableNameAlias = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_USE_TABLE_NAME_ALIAS)
+                                             .toInt();
+        String aliasName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME);
 
-			dataTableGeneratorConfig.setUseGenerateKey(Whether.No.getFlag()
-																 .equals(useGenerateKey) ? Whether.No : Whether.Yes);
-			dataTableGeneratorConfig.setGenerateKeys(generateKeys);
-			dataTableGeneratorConfig.setDomainObjectName(domainObjectName);
-			dataTableGeneratorConfig.setMapperName(mapperName);
-			dataTableGeneratorConfig.setUseExample(Whether.No.getFlag().equals(useExample) ? Whether.No : Whether.Yes);
-			dataTableGeneratorConfig.setUseActualColumnNames(Whether.No.getFlag()
-																	   .equals(useActualColumnNames) ? Whether.No : Whether.Yes);
-			dataTableGeneratorConfig.setUseTableNameAlias(Whether.No.getFlag()
-																	.equals(useTableNameAlias) ? Whether.No : Whether.Yes);
-			dataTableGeneratorConfig.setAliasName(aliasName);
+        if (Whether.Yes.getFlag().equals(useGenerateKey)) {
+            if (StringAssist.isNullOrEmpty(generateKeys)) {
+                return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_GENERATE_KEYS, "启用自增键，需要提交自增列");
+            }
+        } else {
+            generateKeys = "";
+        }
 
-			dataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
-																  .save(dataTableGeneratorConfig);
+        if (Whether.Yes.getFlag().equals(useTableNameAlias)) {
+            if (StringAssist.isNullOrEmpty(aliasName)) {
+                return this.paramError(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ALIAS_NAME, "启用表别名，需要提交别名");
+            }
+        } else {
+            aliasName = "";
+        }
 
-			return this.singleData(new SerializableData().append(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, dataTableGeneratorConfig
-					.getId()));
-		}
+        Optional<DataTableGeneratorConfig> optional = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                                                 .get(dataTableGeneratorConfigId);
 
-		return this.noDataError("获取数据表生成配置信息不存在");
-	}
+        if (optional.isPresent()) {
+            DataTableGeneratorConfig dataTableGeneratorConfig = optional.get();
 
-	@ApiOperation(value = "初始化数据表生成配置信息", notes = "初始化数据表生成配置信息", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET, value = {
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID),
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME)},
-			result = @ApiJsonResult({}))
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET)
-	})
-	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/initialize", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "初始化数据表生成配置信息", description = "初始化数据表生成配置信息", tag = "85a8c025-dc17-4ed8-9138-9cfb212fe458")
-	public ResultSingleData initialize(@RequestBody Map<String, Object> json) throws Exception {
-		ParamData paramJson = getParamData(json);
+            dataTableGeneratorConfig.setUseGenerateKey(Whether.No.getFlag()
+                                                                 .equals(useGenerateKey) ? Whether.No : Whether.Yes);
+            dataTableGeneratorConfig.setGenerateKeys(generateKeys);
+            dataTableGeneratorConfig.setDomainObjectName(domainObjectName);
+            dataTableGeneratorConfig.setUseActualColumnNames(Whether.No.getFlag()
+                                                                       .equals(useActualColumnNames) ? Whether.No : Whether.Yes);
+            dataTableGeneratorConfig.setUseTableNameAlias(Whether.No.getFlag()
+                                                                    .equals(useTableNameAlias) ? Whether.No : Whether.Yes);
+            dataTableGeneratorConfig.setAliasName(aliasName);
 
-		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
-										   .toLong();
+            dataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                                  .save(dataTableGeneratorConfig);
 
-		String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME);
+            return this.singleData(new SerializableData().append(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, dataTableGeneratorConfig
+                    .getId()));
+        }
 
-		ExecutiveResult<DataTableGeneratorConfig> result = this.connectionConfigAssist.initializeDataTableGeneratorConfig(connectionConfigId, tableName);
+        return this.noDataError("获取数据表生成配置信息不存在");
+    }
 
-		if (result.getSuccess()) {
-			return this.singleData(new SerializableData().append(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, result.getData()
-																													.getId()));
-		}
+    @ApiOperation(value = "初始化数据表生成配置信息", notes = "初始化数据表生成配置信息", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET, value = {
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_DATABASE_GENERATOR_CONFIG_ID),
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_SET)
+    })
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/initialize", consumes = "application/json", produces = "application/json")
+    @NeedAuthorization(name = CONTROLLER_DESCRIPTION + "初始化数据表生成配置信息", description = "初始化数据表生成配置信息", tag = "85a8c025-dc17-4ed8-9138-9cfb212fe458")
+    public ResultSingleData initialize(@RequestBody Map<String, Object> json) throws Exception {
+        ParamData paramJson = this.getParamData(json);
 
-		return this.fail(result.getCode());
-	}
+        Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+                                           .toLong();
 
-	@ApiOperation(value = "构建表对应代码", notes = "构建表对应代码", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE, value = {
-			@ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)},
-			result = @ApiJsonResult({}))
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE)
-	})
-	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "构建表对应代码", description = "构建表对应代码", tag = "83ddf6ea-1f01-4cb9-b67d-0d2689184412")
-	public ResultSingleData generate(@RequestBody Map<String, Object> json) throws Exception {
-		ParamData paramJson = getParamData(json);
+        String tableName = paramJson.getStringByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_TABLE_NAME);
 
-		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
-										   .toLong();
+        ExecutiveResult<DataTableGeneratorConfig> result = this.connectionConfigAssist.initializeDataTableGeneratorConfig(connectionConfigId, tableName);
 
-		if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
-			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
-		}
+        if (result.getSuccess()) {
+            return this.singleData(new SerializableData().append(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, result.getData()
+                                                                                                                    .getId()));
+        }
 
-		Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
-												   .toLong();
+        return this.fail(result.getCode());
+    }
 
-		if (ConstantCollection.ZERO_LONG.equals(dataTableGeneratorConfigId)) {
-			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, "不能为空值"));
-		}
+    @ApiOperation(value = "构建表对应代码", notes = "构建表对应代码", httpMethod = "POST")
+    @ApiJsonObject(name = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE, value = {
+            @ApiJsonProperty(name = GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)},
+            result = @ApiJsonResult({}))
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_TABLE_GENERATOR_CONFIG_GENERATE)
+    })
+    @ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+    @PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
+    @NeedAuthorization(name = CONTROLLER_DESCRIPTION + "构建表对应代码", description = "构建表对应代码", tag = "83ddf6ea-1f01-4cb9-b67d-0d2689184412")
+    public ResultSingleData generate(@RequestBody Map<String, Object> json) throws Exception {
+        ParamData paramJson = this.getParamData(json);
 
-		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
+        Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+                                           .toLong();
 
-		if (!optionalConnectionConfig.isPresent()) {
-			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
-		}
+        if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
+            this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
+        }
 
-		Optional<DataTableGeneratorConfig> optionalDataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
-																										 .get(dataTableGeneratorConfigId);
+        Long dataTableGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID)
+                                                   .toLong();
 
-		if (!optionalDataTableGeneratorConfig.isPresent()) {
-			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据表生成配置不存在"));
-		}
+        if (ConstantCollection.ZERO_LONG.equals(dataTableGeneratorConfigId)) {
+            this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_ID, "不能为空值"));
+        }
 
-		MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
-				optionalConnectionConfig.get(),
-				this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
-				this.connectionConfigAssist.getDataTableGeneratorConfigService());
+        Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
-		ExecutiveSimpleResult result = mybatisGeneratorBridge.generate(optionalDataTableGeneratorConfig.get());
+        if (!optionalConnectionConfig.isPresent()) {
+            return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
+        }
 
-		if (result.getSuccess()) {
-			return this.successWithTimestamp();
-		}
+        Optional<DataTableGeneratorConfig> optionalDataTableGeneratorConfig = this.connectionConfigAssist.getDataTableGeneratorConfigService()
+                                                                                                         .get(dataTableGeneratorConfigId);
 
-		return this.fail(result.getCode());
-	}
+        if (!optionalDataTableGeneratorConfig.isPresent()) {
+            return this.fail(ReturnDataCode.NoData.toMessage("指定的数据表生成配置不存在"));
+        }
+
+        MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
+                optionalConnectionConfig.get(),
+                this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
+                this.connectionConfigAssist.getDataTableGeneratorConfigService(),
+                this.connectionConfigAssist.getDataColumnService());
+
+        ExecutiveSimpleResult result = mybatisGeneratorBridge.generate(optionalDataTableGeneratorConfig.get());
+
+        if (result.getSuccess()) {
+            return this.successWithTimestamp();
+        }
+
+        return this.fail(result.getCode());
+    }
 
 }
 

@@ -238,6 +238,54 @@ public class CommandUtil {
 	}
 
 	/**
+	 * @return EnumOS
+	 */
+	public static EnumOS getOs() {
+		String s = System.getProperty("os.name").toLowerCase();
+
+		if (s.contains("win")) {
+			return EnumOS.windows;
+		}
+
+		if (s.contains("mac")) {
+			return EnumOS.macos;
+		}
+
+		if (s.contains("solaris")) {
+			return EnumOS.solaris;
+		}
+
+		if (s.contains("sunos")) {
+			return EnumOS.solaris;
+		}
+
+		if (s.contains("linux")) {
+			return EnumOS.linux;
+		}
+
+		if (s.contains("unix")) {
+			return EnumOS.linux;
+		}
+		return EnumOS.unknown;
+	}
+
+	public static void openUserHome() {
+		String usrHome = System.getProperty("user.home");
+
+		File file = new File(usrHome);
+
+		CommandUtil.open(file);
+	}
+
+	public static String getUserHomePath() {
+		String usrHome = System.getProperty("user.home");
+
+		File file = new File(usrHome);
+
+		return file.getAbsolutePath();
+	}
+
+	/**
 	 * 操作系统
 	 *
 	 * @author 许畅
@@ -290,38 +338,6 @@ public class CommandUtil {
 		public boolean isWindows() {
 			return this == windows;
 		}
-	}
-
-	/**
-	 * @return EnumOS
-	 */
-	public static EnumOS getOs() {
-		String s = System.getProperty("os.name").toLowerCase();
-
-		if (s.contains("win")) {
-			return EnumOS.windows;
-		}
-
-		if (s.contains("mac")) {
-			return EnumOS.macos;
-		}
-
-		if (s.contains("solaris")) {
-			return EnumOS.solaris;
-		}
-
-		if (s.contains("sunos")) {
-			return EnumOS.solaris;
-		}
-
-		if (s.contains("linux")) {
-			return EnumOS.linux;
-		}
-
-		if (s.contains("unix")) {
-			return EnumOS.linux;
-		}
-		return EnumOS.unknown;
 	}
 
 }

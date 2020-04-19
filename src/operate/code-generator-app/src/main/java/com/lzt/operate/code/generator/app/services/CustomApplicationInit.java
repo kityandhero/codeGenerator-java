@@ -17,6 +17,7 @@ import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayQueu
 import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigConsumer;
 import com.lzt.operate.code.generator.custommessagequeue.customconfig.CustomConfigQueueRunner;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogConsumer;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogQueueRunner;
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogConsumer;
@@ -39,6 +40,7 @@ import com.lzt.operate.code.generator.dao.service.impl.RoleCodeToolsServiceImpl;
 import com.lzt.operate.code.generator.dao.service.impl.RoleUniversalServiceImpl;
 import com.lzt.operate.code.generator.entities.Account;
 import com.lzt.operate.code.generator.entities.CustomConfig;
+import com.lzt.operate.code.generator.entities.ErrorLog;
 import com.lzt.operate.code.generator.entities.HelpCategory;
 import com.lzt.operate.code.generator.entities.RoleUniversal;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -51,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -169,6 +172,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		this.openOperationPanel();
 		this.recordStartLog();
 		this.checkHelpCategory();
+		this.initDefaultMainFolder();
+
 	}
 
 	/**
@@ -385,6 +390,24 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			helpCategory.setStatus(HelpCategoryStatus.Enabled, HelpCategoryStatus::getFlag, HelpCategoryStatus::getName);
 
 			this.getHelpCategoryService().save(helpCategory);
+		}
+	}
+
+	private void initDefaultMainFolder() {
+		String defaultMainGenerateFolderPath = StringAssist.merge(CommandUtil.getUserHomePath(), CustomConstants.DEFAULT_MAIN_GENERATE_FOLDER);
+
+		File file = new File(defaultMainGenerateFolderPath);
+
+		if (!file.exists()) {
+			boolean mkdirsResult = file.mkdirs();
+
+			if (!mkdirsResult) {
+				ErrorLog errorLog = new ErrorLog();
+
+				errorLog.setMessage(StringAssist.merge("创建默认生成文件夹失败，默认文件将路径为：", file.getAbsolutePath()));
+
+				ErrorLogProducerFactory.getInstance().getProducer().push(errorLog);
+			}
 		}
 	}
 

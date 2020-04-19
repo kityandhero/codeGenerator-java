@@ -103,17 +103,38 @@ public class GlobalString {
 	@ApiSingleParam(value = "modelPackageTargetFolder", example = "modelPackageTargetFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER = "modelTargetFolder";
 
+	@ApiSingleParam(value = "modelTargetFolderRelativeMode", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE = "modelTargetFolderRelativeMode";
+
 	@ApiSingleParam(value = "daoPackage", example = "daoPackage")
 	public static final String DATABASE_GENERATOR_CONFIG_DAO_PACKAGE = "daoPackage";
 
 	@ApiSingleParam(value = "daoTargetFolder", example = "daoTargetFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER = "daoTargetFolder";
 
+	@ApiSingleParam(value = "daoTargetFolderRelativeMode", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE = "daoTargetFolderRelativeMode";
+
+	@ApiSingleParam(value = "daoType", type = Integer.class, example = "100")
+	public static final String DATABASE_GENERATOR_CONFIG_DAO_TYPE = "daoType";
+
 	@ApiSingleParam(value = "mappingXmlPackage", example = "mappingXmlPackage")
 	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE = "mappingXmlPackage";
 
 	@ApiSingleParam(value = "mappingXmlTargetFolder", example = "mappingXmlTargetFolder")
 	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER = "mappingXmlTargetFolder";
+
+	@ApiSingleParam(value = "mappingXmlTargetFolderRelativeMode", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE = "mappingXmlTargetFolderRelativeMode";
+
+	@ApiSingleParam(value = "servicePackage", example = "service")
+	public static final String DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE = "servicePackage";
+
+	@ApiSingleParam(value = "serviceTargetFolder", example = "service1")
+	public static final String DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER = "serviceTargetFolder";
+
+	@ApiSingleParam(value = "serviceTargetFolderRelativeMode", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE = "serviceTargetFolderRelativeMode";
 
 	@ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
 	public static final String DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT = "offsetLimit";
@@ -151,6 +172,9 @@ public class GlobalString {
 	@ApiSingleParam(value = "comment", type = Integer.class, example = "0")
 	public static final String DATABASE_GENERATOR_CONFIG_COMMENT = "comment";
 
+	@ApiSingleParam(value = "mapperExtensionName", example = "Dao")
+	public static final String DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME = "mapperExtensionName";
+
 	//endregion
 
 	//region
@@ -175,12 +199,6 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "domainObjectName", example = "table1")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_DOMAIN_OBJECT_NAME = "domainObjectName";
-
-	@ApiSingleParam(value = "mapperName", example = "table1")
-	public static final String DATA_TABLE_GENERATOR_CONFIG_MAPPER_NAME = "mapperName";
-
-	@ApiSingleParam(value = "useExample", type = Integer.class, example = "0")
-	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_EXAMPLE = "useExample";
 
 	@ApiSingleParam(value = "useActualColumnNames", type = Integer.class, example = "0")
 	public static final String DATA_TABLE_GENERATOR_CONFIG_USE_ACTUAL_COLUMN_NAMES = "useActualColumnNames";
