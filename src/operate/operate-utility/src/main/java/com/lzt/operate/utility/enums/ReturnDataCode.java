@@ -3,10 +3,12 @@ package com.lzt.operate.utility.enums;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.pojo.BaseResultData;
 import com.lzt.operate.utility.pojo.ReturnMessage;
+import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 操作返回码
@@ -210,14 +212,30 @@ public enum ReturnDataCode {
 	 */
 	PASSWORD_ERROR(50003, "密码错误", false);
 
-	private int code;
-	private String message;
-	private boolean success;
+	private final int code;
+	private final String message;
+	private final boolean success;
 
 	ReturnDataCode(int code, String message, boolean success) {
 		this.code = code;
 		this.message = message;
 		this.success = success;
+	}
+
+	public static Optional<ReturnDataCode> valueOfCode(@NonNull Integer code) {
+		ReturnDataCode[] values = ReturnDataCode.values();
+
+		for (ReturnDataCode d : values) {
+			if (code.equals(d.getCode())) {
+				return Optional.of(d);
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	public static List<ReturnDataCode> valuesToList() {
+		return Arrays.asList(ReturnDataCode.values());
 	}
 
 	public int getCode() {
@@ -235,26 +253,26 @@ public enum ReturnDataCode {
 	public ReturnMessage appendMessage(String... otherMessageList) {
 		List<String> list = new ArrayList<>();
 
-		list.add(this.message);
+		list.add(message);
 		list.addAll(Arrays.asList(otherMessageList));
 
 		return toMessage(StringAssist.join(list));
 	}
 
 	public ReturnMessage toMessage() {
-		return ReturnMessage.create(this.getCode(), this.getMessage(), this.getSuccess());
+		return ReturnMessage.create(getCode(), getMessage(), getSuccess());
 	}
 
 	public ReturnMessage toMessage(boolean success) {
-		return ReturnMessage.create(this.getCode(), this.getMessage(), success);
+		return ReturnMessage.create(getCode(), getMessage(), success);
 	}
 
 	public ReturnMessage toMessage(String message) {
-		return ReturnMessage.create(this.getCode(), message, this.getSuccess());
+		return ReturnMessage.create(getCode(), message, getSuccess());
 	}
 
 	public ReturnMessage toMessage(int code) {
-		return ReturnMessage.create(code, this.getMessage(), this.getSuccess());
+		return ReturnMessage.create(code, getMessage(), getSuccess());
 	}
 
 }

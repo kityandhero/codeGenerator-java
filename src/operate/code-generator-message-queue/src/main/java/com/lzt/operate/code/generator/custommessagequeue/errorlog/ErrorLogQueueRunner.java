@@ -10,7 +10,6 @@ import com.lzt.operate.utility.enums.OperatorCollection;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -24,7 +23,7 @@ public class ErrorLogQueueRunner implements Runnable {
 	private ErrorLogConsumer consumer;
 
 	public ErrorLogQueueRunner(ErrorLogService accessWayService, ErrorLogConsumer consumer) {
-		this.errorLogService = accessWayService;
+		errorLogService = accessWayService;
 
 		this.consumer = consumer;
 	}
@@ -36,17 +35,17 @@ public class ErrorLogQueueRunner implements Runnable {
 			ErrorLog errorLog = null;
 
 			try {
-				Optional<ErrorLog> optional = this.consumer.pull();
+				Optional<ErrorLog> optional = consumer.pull();
 
 				if (optional.isPresent()) {
 					errorLog = optional.get();
 
 					errorLog.setChannel(Channel.CodeGenerator);
 					errorLog.setStatus(ErrorLogStatus.Normal, ErrorLogStatus::getFlag, ErrorLogStatus::getName);
-					errorLog.setCreateOperatorId(OperatorCollection.System.getId());
-					errorLog.setUpdateOperatorId(OperatorCollection.System.getId());
+					errorLog.setCreateOperatorId(OperatorCollection.System.getFlag());
+					errorLog.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
-					this.errorLogService.save(errorLog);
+					errorLogService.save(errorLog);
 				} else {
 					Thread.sleep(1000);
 				}

@@ -2,6 +2,8 @@ package com.lzt.operate.utility.enums;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,14 +30,14 @@ public enum Whether {
 	/**
 	 * 值
 	 */
-	private Integer flag;
+	private final Integer flag;
 
-	private String name;
+	private final String name;
 
-	private String description;
+	private final String description;
 
 	Whether(int value, String name, String description) {
-		this.flag = value;
+		flag = value;
 		this.name = name;
 		this.description = description;
 	}
@@ -50,6 +52,10 @@ public enum Whether {
 		}
 
 		return Optional.empty();
+	}
+
+	public static List<Whether> valuesToList() {
+		return Arrays.asList(Whether.values());
 	}
 
 	public Integer getFlag() {

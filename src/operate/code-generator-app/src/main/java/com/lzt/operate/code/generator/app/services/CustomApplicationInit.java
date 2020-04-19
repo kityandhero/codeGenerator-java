@@ -96,7 +96,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 		this.environment = environment;
 
-		this.accountAssist = new AccountAssist(
+		accountAssist = new AccountAssist(
 				loadingCache,
 				customJsonWebTokenConfig,
 				accountService,
@@ -112,7 +112,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public CustomConfigService getCustomConfigService() {
-		Optional<CustomConfigService> optional = Optional.ofNullable(this.customConfigService);
+		Optional<CustomConfigService> optional = Optional.ofNullable(customConfigService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -122,7 +122,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public AccessWayService getAccessWayService() {
-		Optional<AccessWayService> optional = Optional.ofNullable(this.accessWayService);
+		Optional<AccessWayService> optional = Optional.ofNullable(accessWayService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -132,7 +132,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public ErrorLogService getErrorLogService() {
-		Optional<ErrorLogService> optional = Optional.ofNullable(this.errorLogService);
+		Optional<ErrorLogService> optional = Optional.ofNullable(errorLogService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -142,7 +142,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public GeneralLogService getGeneralLogService() {
-		Optional<GeneralLogService> optional = Optional.ofNullable(this.generalLogService);
+		Optional<GeneralLogService> optional = Optional.ofNullable(generalLogService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -152,7 +152,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public HelpCategoryService getHelpCategoryService() {
-		Optional<HelpCategoryService> optional = Optional.ofNullable(this.helpCategoryService);
+		Optional<HelpCategoryService> optional = Optional.ofNullable(helpCategoryService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -163,16 +163,16 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 	@Override
 	public void init() {
-		this.checkSuperRoleCompleteness();
-		this.checkExistAnyAccount();
-		this.startAccessWayRunner();
-		this.startErrorLogRunner();
-		this.startGeneralLogRunner();
-		this.startCustomConfigRunner();
-		this.openOperationPanel();
-		this.recordStartLog();
-		this.checkHelpCategory();
-		this.initDefaultMainFolder();
+		checkSuperRoleCompleteness();
+		checkExistAnyAccount();
+		startAccessWayRunner();
+		startErrorLogRunner();
+		startGeneralLogRunner();
+		startCustomConfigRunner();
+		openOperationPanel();
+		recordStartLog();
+		checkHelpCategory();
+		initDefaultMainFolder();
 
 	}
 
@@ -180,7 +180,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测超级管理员角色的完备性
 	 */
 	private void checkSuperRoleCompleteness() {
-		RoleUniversalService roleUniversalService = this.accountAssist.getRoleUniversalService();
+		RoleUniversalService roleUniversalService = accountAssist.getRoleUniversalService();
 
 		boolean exist = roleUniversalService.existSuper(Channel.CodeGenerator.getFlag());
 
@@ -191,8 +191,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			roleUniversal.setWhetherSuper(WhetherSuper.Yes.getFlag());
 			roleUniversal.setChannel(Channel.CodeGenerator);
 			roleUniversal.setStatus(RoleUniversalStatus.Enabled, RoleUniversalStatus::getFlag, RoleUniversalStatus::getName);
-			roleUniversal.setCreateOperatorId(OperatorCollection.System.getId());
-			roleUniversal.setUpdateOperatorId(OperatorCollection.System.getId());
+			roleUniversal.setCreateOperatorId(OperatorCollection.System.getFlag());
+			roleUniversal.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
 			roleUniversalService.save(roleUniversal);
 		}
@@ -202,7 +202,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测是否存在任意用户，不存在则创建默认账户
 	 */
 	private void checkExistAnyAccount() {
-		AccountService accountService = this.accountAssist.getAccountService();
+		AccountService accountService = accountAssist.getAccountService();
 
 		boolean exist = accountService.existAny(Channel.CodeGenerator.getFlag());
 
@@ -213,7 +213,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	private void createAdminAccount() {
-		AccountService accountService = this.accountAssist.getAccountService();
+		AccountService accountService = accountAssist.getAccountService();
 
 		try {
 			Account account = new Account();
@@ -225,15 +225,15 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_PASSWORD, account.getSlat()));
 			account.setChannel(Channel.CodeGenerator);
 			account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
-			account.setCreateOperatorId(OperatorCollection.System.getId());
-			account.setUpdateOperatorId(OperatorCollection.System.getId());
+			account.setCreateOperatorId(OperatorCollection.System.getFlag());
+			account.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
 			accountService.save(account);
 
-			Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
-																			  .findSuper(Channel.CodeGenerator.getFlag());
+			Optional<RoleUniversal> optionalRoleUniversal = accountAssist.getRoleUniversalService()
+																		 .findSuper(Channel.CodeGenerator.getFlag());
 
-			optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
+			optionalRoleUniversal.ifPresent(roleUniversal -> accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 		} catch (NoSuchAlgorithmException e) {
 			CustomApplicationInit.log.error("创建默认账户失败", e);
 
@@ -242,7 +242,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	private void createSupermanAccount() {
-		AccountService accountService = this.accountAssist.getAccountService();
+		AccountService accountService = accountAssist.getAccountService();
 
 		try {
 			Account account = new Account();
@@ -254,15 +254,15 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			account.setPassword(Md5Assist.toMd5(ConstantCollection.DEFAULT_OPERATOR_SUPER_PASSWORD, account.getSlat()));
 			account.setChannel(Channel.CodeGenerator);
 			account.setStatus(AccountStatus.Enabled, AccountStatus::getFlag, AccountStatus::getName);
-			account.setCreateOperatorId(OperatorCollection.System.getId());
-			account.setUpdateOperatorId(OperatorCollection.System.getId());
+			account.setCreateOperatorId(OperatorCollection.System.getFlag());
+			account.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
 			accountService.save(account);
 
-			Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
-																			  .findSuper(Channel.CodeGenerator.getFlag());
+			Optional<RoleUniversal> optionalRoleUniversal = accountAssist.getRoleUniversalService()
+																		 .findSuper(Channel.CodeGenerator.getFlag());
 
-			optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
+			optionalRoleUniversal.ifPresent(roleUniversal -> accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 		} catch (NoSuchAlgorithmException e) {
 			CustomApplicationInit.log.error("创建默认账户失败", e);
 
@@ -274,7 +274,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startAccessWayRunner
 	 */
 	private void startAccessWayRunner() {
-		AccessWayQueueRunner runner = new AccessWayQueueRunner(this.getAccessWayService(), new AccessWayConsumer());
+		AccessWayQueueRunner runner = new AccessWayQueueRunner(getAccessWayService(), new AccessWayConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("accessWay").build();
 
@@ -288,7 +288,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 */
 	private void startErrorLogRunner() {
 
-		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(this.getErrorLogService(), new ErrorLogConsumer());
+		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(getErrorLogService(), new ErrorLogConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("errorLog").build();
 
@@ -301,7 +301,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startErrorLogRunner
 	 */
 	private void startGeneralLogRunner() {
-		GeneralLogQueueRunner runner = new GeneralLogQueueRunner(this.getGeneralLogService(), new GeneralLogConsumer());
+		GeneralLogQueueRunner runner = new GeneralLogQueueRunner(getGeneralLogService(), new GeneralLogConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("generalLog").build();
 
@@ -314,7 +314,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startErrorLogRunner
 	 */
 	private void startCustomConfigRunner() {
-		CustomConfigQueueRunner runner = new CustomConfigQueueRunner(this.getCustomConfigService(), new CustomConfigConsumer());
+		CustomConfigQueueRunner runner = new CustomConfigQueueRunner(getCustomConfigService(), new CustomConfigConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("customConfig").build();
 
@@ -327,7 +327,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 打开操作面板
 	 */
 	private void openOperationPanel() {
-		Optional<CustomConfig> optional = this.getCustomConfigService()
+		Optional<CustomConfig> optional = getCustomConfigService()
 											  .findByUuid(CustomConfigCollection.AutoOpenOperatePanel.getUuid());
 
 		boolean autoOpenOperationPanel;
@@ -356,7 +356,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 记录启动日志
 	 */
 	private void recordStartLog() {
-		Optional<CustomConfig> optional = this.getCustomConfigService()
+		Optional<CustomConfig> optional = getCustomConfigService()
 											  .findByUuid(CustomConfigCollection.RecordStartLog.getUuid());
 
 		boolean recordLog;
@@ -379,7 +379,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测默认帮助分类
 	 */
 	private void checkHelpCategory() {
-		Long helpCategoryCount = this.getHelpCategoryService().count();
+		Long helpCategoryCount = getHelpCategoryService().count();
 
 		if (helpCategoryCount.equals(ConstantCollection.ZERO_LONG)) {
 			HelpCategory helpCategory = new HelpCategory();
@@ -389,7 +389,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			helpCategory.setChannel(Channel.CodeGenerator);
 			helpCategory.setStatus(HelpCategoryStatus.Enabled, HelpCategoryStatus::getFlag, HelpCategoryStatus::getName);
 
-			this.getHelpCategoryService().save(helpCategory);
+			getHelpCategoryService().save(helpCategory);
 		}
 	}
 

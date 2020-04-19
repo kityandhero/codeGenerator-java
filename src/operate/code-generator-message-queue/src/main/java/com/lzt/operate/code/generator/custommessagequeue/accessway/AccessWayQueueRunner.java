@@ -8,7 +8,6 @@ import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
 import lombok.SneakyThrows;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -31,7 +30,7 @@ public class AccessWayQueueRunner implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Optional<AccessWay> optional = this.consumer.pull();
+				Optional<AccessWay> optional = consumer.pull();
 
 				if (optional.isPresent()) {
 					AccessWay accessWayFromQueue = optional.get();
@@ -44,7 +43,7 @@ public class AccessWayQueueRunner implements Runnable {
 						String relativePath = accessWayFromQueue.getRelativePath();
 						String expand = accessWayFromQueue.getExpand();
 
-						Optional<AccessWay> optionalSearch = this.accessWayService.findByTag(tag);
+						Optional<AccessWay> optionalSearch = accessWayService.findByTag(tag);
 
 						if (optionalSearch.isPresent()) {
 							AccessWay accessWay = optional.get();
@@ -63,9 +62,9 @@ public class AccessWayQueueRunner implements Runnable {
 								accessWay.setExpand(expand);
 								accessWay.setChannel(Channel.CodeGenerator);
 								accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getFlag, AccessWayStatus::getName);
-								accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
+								accessWay.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
-								this.accessWayService.save(accessWay);
+								accessWayService.save(accessWay);
 							}
 						} else {
 							AccessWay accessWay = new AccessWay();
@@ -77,10 +76,10 @@ public class AccessWayQueueRunner implements Runnable {
 							accessWay.setExpand(expand);
 							accessWay.setChannel(Channel.CodeGenerator);
 							accessWay.setStatus(AccessWayStatus.Enabled, AccessWayStatus::getFlag, AccessWayStatus::getName);
-							accessWay.setCreateOperatorId(OperatorCollection.System.getId());
-							accessWay.setUpdateOperatorId(OperatorCollection.System.getId());
+							accessWay.setCreateOperatorId(OperatorCollection.System.getFlag());
+							accessWay.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
-							this.accessWayService.save(accessWay);
+							accessWayService.save(accessWay);
 						}
 					}
 				} else {

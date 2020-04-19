@@ -19,10 +19,12 @@ import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
 import com.lzt.operate.utility.assists.ConvertAssist;
+import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
+import com.lzt.operate.utility.enums.Whether;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
 import com.lzt.operate.utility.pojo.BaseResultData;
@@ -74,7 +76,7 @@ public class DataColumnController extends BaseOperateAuthController {
 			DataColumnService dataColumnService) {
 		super(loadingCache, customJsonWebTokenConfig);
 
-		this.connectionConfigAssist = new ConnectionConfigAssist(
+		connectionConfigAssist = new ConnectionConfigAssist(
 				connectionConfigService,
 				databaseGeneratorConfigService,
 				dataTableGeneratorConfigService,
@@ -99,19 +101,19 @@ public class DataColumnController extends BaseOperateAuthController {
 		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_ID, "0").toLong();
 
 		if (connectionConfigId <= 0) {
-			return this.pageDataEmpty();
+			return pageDataEmpty();
 		}
 
 		String tableName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TABLE_NAME);
 
 		if (StringAssist.isNullOrEmpty(tableName)) {
-			return this.listDataEmpty();
+			return listDataEmpty();
 		}
 
 		String name = paramJson.getStringByKey(GlobalString.DATA_COLUMN_COLUMN_NAME);
 
-		Optional<ConnectionConfig> optional = this.connectionConfigAssist.getConnectionConfigService()
-																		 .get(connectionConfigId);
+		Optional<ConnectionConfig> optional = connectionConfigAssist.getConnectionConfigService()
+																	.get(connectionConfigId);
 
 		if (optional.isPresent()) {
 			ConnectionConfig connectionConfig = optional.get();
@@ -124,10 +126,10 @@ public class DataColumnController extends BaseOperateAuthController {
 											   .collect(Collectors.toList());
 			}
 
-			List<DataColumn> listData = this.listDataColumn(connectionConfigId, tableName, listDataColumn.stream()
-																										 .map(DataColumn::getColumnName)
-																										 .collect(Collectors
-																												 .toList()));
+			List<DataColumn> listData = listDataColumn(connectionConfigId, tableName, listDataColumn.stream()
+																									.map(DataColumn::getColumnName)
+																									.collect(Collectors
+																											.toList()));
 
 			List<SerializableData> list = listDataColumn
 					.stream()
@@ -173,10 +175,10 @@ public class DataColumnController extends BaseOperateAuthController {
 					})
 					.collect(Collectors.toList());
 
-			return this.listData(list);
+			return listData(list);
 		}
 
-		return this.listDataEmpty();
+		return listDataEmpty();
 	}
 
 	@ApiOperation(value = "获取定时列信息", notes = "获取定时列信息", httpMethod = "POST")
@@ -201,7 +203,7 @@ public class DataColumnController extends BaseOperateAuthController {
 		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, columnName);
 
 		if (!result.getSuccess()) {
-			return this.fail(result.getCode());
+			return fail(result.getCode());
 		}
 
 		DataColumn dataColumn = result.getData();
@@ -223,13 +225,13 @@ public class DataColumnController extends BaseOperateAuthController {
 		getterList.add(DataColumn::getCreateTime);
 		getterList.add(DataColumn::getUpdateTime);
 
-		dataColumn = this.connectionConfigAssist.getDataColumnService().fillFromDataColumnConfig(dataColumn);
+		dataColumn = connectionConfigAssist.getDataColumnService().fillFromDataColumnConfig(dataColumn);
 
 		SerializableData data = SerializableData.toSerializableData(dataColumn, getterList);
 
 		data.append(ReflectAssist.getFriendlyIdName(DataColumn.class), dataColumn.getId());
 
-		return this.singleData(data);
+		return singleData(data);
 	}
 
 	@ApiOperation(value = "设置定时列信息", notes = "设置定时列信息", httpMethod = "POST")
@@ -239,7 +241,8 @@ public class DataColumnController extends BaseOperateAuthController {
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_COLUMN_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_ALIAS_NAME),
 			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_JAVA_TYPE),
-			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TYPE_HANDLER)},
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_TYPE_HANDLER),
+			@ApiJsonProperty(name = GlobalString.DATA_COLUMN_IGNORE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATA_COLUMN_SET)
@@ -256,11 +259,21 @@ public class DataColumnController extends BaseOperateAuthController {
 		String aliasName = paramJson.getStringByKey(GlobalString.DATA_COLUMN_ALIAS_NAME);
 		String javaType = paramJson.getStringByKey(GlobalString.DATA_COLUMN_JAVA_TYPE);
 		String typeHandler = paramJson.getStringByKey(GlobalString.DATA_COLUMN_TYPE_HANDLER);
+		int ignore = paramJson.getStringExByKey(GlobalString.DATA_COLUMN_IGNORE, Whether.No.getFlag().toString())
+							  .toInt();
+
+		Optional<Whether> optionalWhether = EnumAssist.getTargetValue(Whether.valuesToList(), Whether::getFlag, ignore);
+
+		if (!optionalWhether.isPresent()) {
+			return paramError(GlobalString.DATA_COLUMN_IGNORE, "参数无效");
+		}
+
+		Whether ignoreWhether = optionalWhether.get();
 
 		ExecutiveResult<DataColumn> result = getDataColumn(connectionConfigId, tableName, name);
 
 		if (!result.getSuccess()) {
-			return this.fail(result.getCode());
+			return fail(result.getCode());
 		}
 
 		long operatorId = getOperatorId();
@@ -270,10 +283,10 @@ public class DataColumnController extends BaseOperateAuthController {
 		Integer status = dataColumn.getStatus();
 
 		if (status.equals(DataColumnStatus.AlreadyCustom.getFlag())) {
-
 			dataColumn.setAliasName(aliasName);
 			dataColumn.setJavaType(javaType);
 			dataColumn.setTypeHandler(typeHandler);
+			dataColumn.setIgnore(ignoreWhether);
 			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 		} else {
 			dataColumn.setConnectionConfigId(connectionConfigId);
@@ -281,19 +294,20 @@ public class DataColumnController extends BaseOperateAuthController {
 			dataColumn.setAliasName(aliasName);
 			dataColumn.setJavaType(javaType);
 			dataColumn.setTypeHandler(typeHandler);
+			dataColumn.setIgnore(ignoreWhether);
 			dataColumn.setStatus(DataColumnStatus.AlreadyCustom, DataColumnStatus::getFlag, DataColumnStatus::getName);
 			dataColumn.setCreateOperatorId(operatorId);
 		}
 
 		dataColumn.setUpdateOperatorId(operatorId);
-		this.connectionConfigAssist.getDataColumnService().save(dataColumn);
+		connectionConfigAssist.getDataColumnService().save(dataColumn);
 
 		SerializableData serializableData = new SerializableData();
 
 		serializableData.append(GlobalString.DATA_COLUMN_ID, ConvertAssist.longToString(dataColumn
 				.getId()));
 
-		return this.singleData(serializableData);
+		return singleData(serializableData);
 	}
 
 	private ExecutiveResult<ConnectionConfig> checkConnection(Long connectionConfigId, String tableName) throws Exception {
@@ -307,8 +321,8 @@ public class DataColumnController extends BaseOperateAuthController {
 					.merge(GlobalString.CONNECTION_CONFIG_ID, "请提交数据连接标识")));
 		}
 
-		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfigService()
-																						 .get(connectionConfigId);
+		Optional<ConnectionConfig> optionalConnectionConfig = connectionConfigAssist.getConnectionConfigService()
+																					.get(connectionConfigId);
 
 		if (!optionalConnectionConfig.isPresent()) {
 			return new ExecutiveResult<>(ReturnDataCode.ParamError.toMessage(StringAssist
@@ -327,7 +341,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	}
 
 	private List<DataColumn> listDataColumn(Long connectionConfigId, String tableName, Collection<String> nameCollection) throws Exception {
-		ExecutiveResult<ConnectionConfig> resultCheckConnection = this.checkConnection(connectionConfigId, tableName);
+		ExecutiveResult<ConnectionConfig> resultCheckConnection = checkConnection(connectionConfigId, tableName);
 
 		if (!resultCheckConnection.getSuccess()) {
 			return new ArrayList<>();
@@ -335,8 +349,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		ConnectionConfig connectionConfig = resultCheckConnection.getData();
 
-		List<DataColumn> list = this.connectionConfigAssist.getDataColumnService()
-														   .findByConnectionConfigIdAndTableNameAndNames(connectionConfigId, tableName, nameCollection);
+		List<DataColumn> list = connectionConfigAssist.getDataColumnService()
+													  .findByConnectionConfigIdAndTableNameAndNames(connectionConfigId, tableName, nameCollection);
 
 		List<DataColumn> listDataColumn = DatabaseAssist.listTableColumn(connectionConfig, tableName);
 
@@ -366,7 +380,7 @@ public class DataColumnController extends BaseOperateAuthController {
 	}
 
 	private ExecutiveResult<DataColumn> getDataColumn(Long connectionConfigId, String tableName, String name) throws Exception {
-		ExecutiveResult<ConnectionConfig> resultCheckConnection = this.checkConnection(connectionConfigId, tableName);
+		ExecutiveResult<ConnectionConfig> resultCheckConnection = checkConnection(connectionConfigId, tableName);
 
 		if (!resultCheckConnection.getSuccess()) {
 			return new ExecutiveResult<>(resultCheckConnection.getCode());
@@ -374,8 +388,8 @@ public class DataColumnController extends BaseOperateAuthController {
 
 		ConnectionConfig connectionConfig = resultCheckConnection.getData();
 
-		Optional<DataColumn> optional = this.connectionConfigAssist.getDataColumnService()
-																   .findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);
+		Optional<DataColumn> optional = connectionConfigAssist.getDataColumnService()
+															  .findByConnectionConfigIdAndTableNameAndName(connectionConfigId, tableName, name);
 
 		DataColumn dataColumn;
 

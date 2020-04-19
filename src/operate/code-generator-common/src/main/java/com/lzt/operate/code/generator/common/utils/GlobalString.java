@@ -375,6 +375,9 @@ public class GlobalString {
 	@ApiSingleParam(value = "Type Handler", example = "typeHandler")
 	public static final String DATA_COLUMN_TYPE_HANDLER = "typeHandler";
 
+	@ApiSingleParam(value = "ignore", example = "0")
+	public static final String DATA_COLUMN_IGNORE = "ignore";
+
 	//endregion
 
 	//region HELP_CATEGORY

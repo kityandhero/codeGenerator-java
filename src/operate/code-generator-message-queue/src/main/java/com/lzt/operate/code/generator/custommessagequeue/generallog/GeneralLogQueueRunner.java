@@ -30,18 +30,18 @@ public class GeneralLogQueueRunner implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Optional<GeneralLog> optional = this.consumer.pull();
+				Optional<GeneralLog> optional = consumer.pull();
 
 				if (optional.isPresent()) {
 					GeneralLog generalLog = optional.get();
 
 					generalLog.setChannel(Channel.CodeGenerator);
 					generalLog.setStatus(GeneralLogStatus.Normal, GeneralLogStatus::getFlag, GeneralLogStatus::getName);
-					generalLog.setCreateOperatorId(OperatorCollection.System.getId());
+					generalLog.setCreateOperatorId(OperatorCollection.System.getFlag());
 					generalLog.setCreateTime(LocalDateTime.now());
-					generalLog.setUpdateOperatorId(OperatorCollection.System.getId());
+					generalLog.setUpdateOperatorId(OperatorCollection.System.getFlag());
 
-					this.generalLogService.save(generalLog);
+					generalLogService.save(generalLog);
 				} else {
 					Thread.sleep(1000);
 				}
