@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.entities;
 
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 
 import javax.persistence.Column;
@@ -68,10 +69,14 @@ public class ConnectionConfig extends BaseEntity {
 	@Column(name = "ssh_password", nullable = false)
 	private String sshPassword;
 
+	@Column(name = "generator_type", nullable = false)
+	private int generatorType;
+
 	public ConnectionConfig() {
 		super();
 
-		this.encoding = DatabaseEncoding.UTF8.getFlag();
+		encoding = DatabaseEncoding.UTF8.getFlag();
+		generatorType = GeneratorType.MybatisGenerator.getFlag();
 	}
 
 	public int getDatabaseType() {
@@ -135,7 +140,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public void setUserName(String username) {
-		this.userName = username;
+		userName = username;
 	}
 
 	public String getPassword() {
@@ -151,7 +156,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public void setEncoding(DatabaseEncoding databaseEncoding) {
-		this.encoding = databaseEncoding.getFlag();
+		encoding = databaseEncoding.getFlag();
 	}
 
 	public String getLocalPort() {
@@ -202,31 +207,39 @@ public class ConnectionConfig extends BaseEntity {
 		this.sshPassword = sshPassword;
 	}
 
+	public int getGeneratorType() {
+		return generatorType;
+	}
+
+	public void setGeneratorType(int generatorType) {
+		this.generatorType = generatorType;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || this.getClass() != o.getClass()) {
+		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
 		ConnectionConfig that = (ConnectionConfig) o;
-		return Objects.equals(this.getId(), that.getId()) &&
-				Objects.equals(this.connectionType, that.connectionType) &&
-				Objects.equals(this.databaseType, that.databaseType) &&
-				Objects.equals(this.name, that.name) &&
-				Objects.equals(this.host, that.host) &&
-				Objects.equals(this.port, that.port) &&
-				Objects.equals(this.schema, that.schema) &&
-				Objects.equals(this.userName, that.userName) &&
-				Objects.equals(this.password, that.password) &&
-				Objects.equals(this.encoding, that.encoding) &&
-				Objects.equals(this.localPort, that.localPort) &&
-				Objects.equals(this.remotePort, that.remotePort) &&
-				Objects.equals(this.sshPort, that.sshPort) &&
-				Objects.equals(this.sshHost, that.sshHost) &&
-				Objects.equals(this.sshUser, that.sshUser) &&
-				Objects.equals(this.sshPassword, that.sshPassword);
+		return Objects.equals(getId(), that.getId()) &&
+				Objects.equals(connectionType, that.connectionType) &&
+				Objects.equals(databaseType, that.databaseType) &&
+				Objects.equals(name, that.name) &&
+				Objects.equals(host, that.host) &&
+				Objects.equals(port, that.port) &&
+				Objects.equals(schema, that.schema) &&
+				Objects.equals(userName, that.userName) &&
+				Objects.equals(password, that.password) &&
+				Objects.equals(encoding, that.encoding) &&
+				Objects.equals(localPort, that.localPort) &&
+				Objects.equals(remotePort, that.remotePort) &&
+				Objects.equals(sshPort, that.sshPort) &&
+				Objects.equals(sshHost, that.sshHost) &&
+				Objects.equals(sshUser, that.sshUser) &&
+				Objects.equals(sshPassword, that.sshPassword);
 	}
 
 	@Override

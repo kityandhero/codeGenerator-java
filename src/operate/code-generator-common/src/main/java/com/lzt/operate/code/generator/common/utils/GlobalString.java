@@ -81,6 +81,9 @@ public class GlobalString {
 	@ApiSingleParam(value = "sshPassword", example = "sshPassword")
 	public static final String CONNECTION_CONFIG_SSH_PASSWORD = "sshPassword";
 
+	@ApiSingleParam(value = "sshPassword", example = "sshPassword")
+	public static final String CONNECTION_CONFIG_GENERATOR_TYPE = "generatorType";
+
 	//endregion
 
 	//region CONNECTION_MODEL
