@@ -11,7 +11,6 @@ import javax.persistence.Table;
 /**
  * @author luzhitao
  */
-@Data
 @Entity
 @Table(name = "account_role")
 @EqualsAndHashCode(callSuper = true)

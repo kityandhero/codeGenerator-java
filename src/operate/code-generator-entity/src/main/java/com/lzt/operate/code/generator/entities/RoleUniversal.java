@@ -10,7 +10,6 @@ import javax.persistence.Table;
 /**
  * @author luzhitao
  */
-@Data
 @Entity
 @Table(name = "role_universal")
 @EqualsAndHashCode(callSuper = true)

@@ -1,5 +1,6 @@
 package com.lzt.operate.swagger2.handler;
 
+
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Function;
@@ -35,7 +36,6 @@ import static springfox.documentation.swagger.common.SwaggerPluginSupport.plugin
 
 /**
  * @author yueh
- * @date 2018/9/10
  */
 @SuppressWarnings("Guava")
 @Component
