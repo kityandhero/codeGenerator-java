@@ -129,10 +129,6 @@ public class MybatisGeneratorBridge {
 
 	private ProgressCallback progressCallback;
 
-	private List<IgnoredColumn> ignoredColumns;
-
-	private List<ColumnOverride> columnOverrides;
-
 	public MybatisGeneratorBridge(
 			@NotNull ConnectionConfig selectedConnectionConfig,
 			@NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService,
@@ -540,15 +536,6 @@ public class MybatisGeneratorBridge {
 			tableConfig.setMapperName(mapperName);
 		}
 
-		// add ignore columns
-		if (ignoredColumns != null) {
-			ignoredColumns.forEach(tableConfig::addIgnoredColumn);
-		}
-
-		if (columnOverrides != null) {
-			columnOverrides.forEach(tableConfig::addColumnOverride);
-		}
-
 		boolean useActualColumnNames = Whether.Yes.getFlag().equals(dataTableGeneratorConfig.getUseActualColumnNames());
 		// 如果设置为true，生成的model类会直接使用column本身的名字，而不会再使用驼峰命名方法，比如BORN_DATE，生成的属性名字就是BORN_DATE,而不会是bornDate
 		tableConfig.addProperty("useActualColumnNames", String.valueOf(useActualColumnNames));
@@ -841,7 +828,7 @@ public class MybatisGeneratorBridge {
 			}
 
 			if (serviceImplFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
-				dataTableGeneratorConfig.setServiceContent(file.getFormattedContent());
+				dataTableGeneratorConfig.setServiceImplContent(file.getFormattedContent());
 			}
 		}
 
@@ -888,10 +875,6 @@ public class MybatisGeneratorBridge {
 
 	public void setProgressCallback(ProgressCallback progressCallback) {
 		this.progressCallback = progressCallback;
-	}
-
-	public void setIgnoredColumns(List<IgnoredColumn> ignoredColumns) {
-		this.ignoredColumns = ignoredColumns;
 	}
 
 	private List<ColumnOverride> buildColumnOverrideList(DataTableGeneratorConfig dataTableGeneratorConfig) {

@@ -9,6 +9,7 @@
       <entry name="!?*.java" />
     </wildcardResourcePatterns>
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -55,9 +56,6 @@
     <file url="file://$PROJECT_DIR$/operate-mybatis-custom/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/operate-utility/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/swagger-spring-boot-starter/src/main/java" charset="UTF-8" />
-  </component>
-  <component name="EntryPointsManager">
-    <entry_points />
   </component>
   <component name="ExportToHTMLSettings">
     <option name="PRINT_LINE_NUMBERS" value="false" />
@@ -166,6 +164,26 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+  </component>
+  <component name="SaveActionSettings">
+    <option name="actions">
+      <set>
+        <option value="activate" />
+        <option value="activateOnShortcut" />
+        <option value="activateOnBatch" />
+        <option value="organizeImports" />
+        <option value="reformat" />
+        <option value="fieldCanBeFinal" />
+        <option value="unqualifiedFieldAccess" />
+        <option value="unqualifiedMethodAccess" />
+        <option value="missingOverrideAnnotation" />
+        <option value="useBlocks" />
+        <option value="generateSerialVersionUID" />
+        <option value="unnecessaryThis" />
+        <option value="finalPrivateMethod" />
+      </set>
+    </option>
+    <option name="configurationPath" value="" />
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../.." vcs="Git" />
