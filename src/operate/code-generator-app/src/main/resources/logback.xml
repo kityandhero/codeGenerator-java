@@ -19,9 +19,9 @@
     <appender name="InfoRollingFileAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <Prudent>true</Prudent>
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %msg - %file:%line%n</Pattern>
-        </layout>
+        </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>${log_dir}/${contextName}_info%d{yyyy-MM-dd}.log
             </FileNamePattern>
@@ -43,9 +43,9 @@
     <appender name="ErrorRollingFileAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <Prudent>true</Prudent>
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %msg - %file:%line%n</Pattern>
-        </layout>
+        </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>${log_dir}/${contextName}_error%d{yyyy-MM-dd}.log
             </FileNamePattern>
