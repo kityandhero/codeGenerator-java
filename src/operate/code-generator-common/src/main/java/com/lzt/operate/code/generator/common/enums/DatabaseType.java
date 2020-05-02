@@ -15,12 +15,12 @@ public enum DatabaseType {
 	/**
 	 * MySQL
 	 */
-	MySQL(100, "MySQL", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-5.1.47.jar"),
+	MySQL(100, "MySQL", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s&autoReconnect=true&failOverReadOnly=false", "mysql-connector-java-5.1.47.jar"),
 
 	/**
 	 * MySQL_8
 	 */
-	MySQL_8(101, "MySQL_8", "MySQL_8", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-8.0.19.jar"),
+	MySQL_8(101, "MySQL_8", "MySQL_8", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=%s&autoReconnect=true&failOverReadOnly=false", "mysql-connector-java-8.0.19.jar"),
 
 	/**
 	 * Oracle
@@ -36,6 +36,11 @@ public enum DatabaseType {
 	 * SQL_Server
 	 */
 	SQL_Server(104, "SQL_Server", "SQL_Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc42.jar"),
+
+	/**
+	 * H2
+	 */
+	H2(106, "H2", "H2", "org.h2.Driver", "jdbc:h2:%s", "h2-1.4.199.jar"),
 
 	/**
 	 * Sqlite
