@@ -1,7 +1,9 @@
-package com.lzt.operate.mybatis.custom.plugins;
+package com.lzt.operate.mybatis.custom.plugins.servicegenerate;
 
 import com.lzt.operate.mybatis.custom.config.ContextCustom;
 import com.lzt.operate.mybatis.custom.config.JavaServiceGeneratorConfiguration;
+import com.lzt.operate.mybatis.custom.plugins.FullyQualifiedJavaTypeProxyFactory;
+import com.lzt.operate.mybatis.custom.plugins.PaginationPlugin;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.JavaTypeResolver;
@@ -19,6 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * ServiceLayerPlugin
+ *
+ * @author luzhitao
+ */
 public class ServiceLayerPlugin extends PaginationPlugin {
 	/**
 	 * 生成额外java文件
@@ -97,7 +104,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceInterface.addImportedType(exampleJavaType);
 		serviceInterface.addFileCommentLine("/*** copyright (c) 2019 Marvis  ***/");
 
-		this.additionalServiceMethods(introspectedTable, serviceInterface);
+		additionalServiceMethods(introspectedTable, serviceInterface);
 		return serviceInterface;
 	}
 
@@ -189,10 +196,10 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceImplClazz.addImportedType(logFactoryType);
 
 		String mapperName = builder.delete(0, builder.length())
-								   .append(Character.toLowerCase(domainObjectName.charAt(0)))
-								   .append(domainObjectName.substring(1))
-								   .append("Mapper")
-								   .toString();
+										 .append(Character.toLowerCase(domainObjectName.charAt(0)))
+										 .append(domainObjectName.substring(1))
+										 .append("Mapper")
+										 .toString();
 
 		FullyQualifiedJavaType JavaMapperType = new FullyQualifiedJavaType(javaMapperType);
 
@@ -216,14 +223,14 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceImplClazz
 				.addImportedType(new FullyQualifiedJavaType("org.springframework.beans.factory.annotation.Autowired"));
 
-		this.additionalServiceImplMethods(introspectedTable, serviceImplClazz, mapperName);
+		additionalServiceImplMethods(introspectedTable, serviceImplClazz, mapperName);
 
 		return serviceImplClazz;
 	}
 
 	protected void additionalServiceMethods(IntrospectedTable introspectedTable, Interface serviceInterface) {
 
-		if (this.notHasBLOBColumns(introspectedTable)) {
+		if (notHasBLOBColumns(introspectedTable)) {
 			return;
 		}
 
@@ -235,13 +242,13 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 						 .forEach(
 								 compilationUnit -> ((Interface) compilationUnit).getMethods().forEach(
 
-										 m -> serviceInterface.addMethod(this.additionalServiceLayerMethod(serviceInterface, m))));
+										 m -> serviceInterface.addMethod(additionalServiceLayerMethod(serviceInterface, m))));
 	}
 
 	protected void additionalServiceImplMethods(IntrospectedTable introspectedTable, TopLevelClass clazz,
 												String mapperName) {
 
-		if (this.notHasBLOBColumns(introspectedTable)) {
+		if (notHasBLOBColumns(introspectedTable)) {
 			return;
 		}
 
@@ -253,9 +260,9 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 						 .forEach(
 								 compilationUnit -> ((Interface) compilationUnit).getMethods().forEach(m -> {
 
-									 Method serviceImplMethod = this.additionalServiceLayerMethod(clazz, m);
+									 Method serviceImplMethod = additionalServiceLayerMethod(clazz, m);
 									 serviceImplMethod.addAnnotation("@Override");
-									 serviceImplMethod.addBodyLine(this.generateBodyForServiceImplMethod(mapperName, m));
+									 serviceImplMethod.addBodyLine(generateBodyForServiceImplMethod(mapperName, m));
 
 									 clazz.addMethod(serviceImplMethod);
 								 }));
