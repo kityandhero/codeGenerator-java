@@ -368,7 +368,19 @@ public class ConvertAssist {
 	}
 
 	/**
-	 * 序列化
+	 * deserialize
+	 *
+	 * @param json json
+	 * @return String Json
+	 */
+	public static <T> T deserialize(String json, Class<T> clazz) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+
+		return mapper.readValue(json, clazz);
+	}
+
+	/**
+	 * deserialize
 	 *
 	 * @param json json
 	 * @return String Json
@@ -380,7 +392,7 @@ public class ConvertAssist {
 	}
 
 	/**
-	 * 序列化
+	 * deserializeToList
 	 *
 	 * @param json json
 	 * @return String Json

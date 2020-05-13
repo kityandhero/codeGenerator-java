@@ -1,12 +1,15 @@
 package com.lzt.operate.code.generator.dao.service;
 
+import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.dao.repositories.DatabaseGeneratorConfigRepository;
 import com.lzt.operate.code.generator.dao.service.bases.BaseService;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
+import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.ReflectAssist;
+import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.general.ConstantCollection;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
@@ -72,7 +75,22 @@ public interface DatabaseGeneratorConfigService extends BaseService<DatabaseGene
 			if (optional.isPresent()) {
 				DatabaseGeneratorConfig databaseGeneratorConfig = optional.get();
 
-				databaseGeneratorConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
+				String mybatisGeneratorGlobalConfigText = databaseGeneratorConfig.getMybatisGeneratorGlobalConfig();
+
+				GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
+
+				if (!StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfigText)) {
+					mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(mybatisGeneratorGlobalConfigText);
+				}
+
+				mybatisGeneratorGlobalConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
+
+				try {
+					databaseGeneratorConfig.setMybatisGeneratorGlobalConfig(ConvertAssist.serialize(mybatisGeneratorGlobalConfig));
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				save(databaseGeneratorConfig);
 			}

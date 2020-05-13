@@ -5,6 +5,7 @@ import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.ConnectionConfigStatus;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
@@ -14,6 +15,7 @@ import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
+import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
@@ -142,11 +144,11 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ConnectionConfig::getCreateTime));
 
 		Page<ConnectionConfig> result = connectionConfigAssist.getConnectionConfigService()
-															  .page(specification, pageable);
+																	.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<ConnectionConfig>> getterList = new ArrayList<>();
 
 												getterList.add(ConnectionConfig::getName);
@@ -171,7 +173,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 
 												return data;
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
@@ -261,14 +263,20 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 				ExecutiveResult<String> createFolderResult = createGenerateResultFolder(data.getName());
 
 				if (createFolderResult.getSuccess()) {
-					databaseGeneratorConfig.setProjectFolder(createFolderResult.getData());
+					GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
+
+					mybatisGeneratorGlobalConfig.setProjectFolder(createFolderResult.getData());
 				}
 			}
 
-			connectionConfigAssist.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
+			try {
+				connectionConfigAssist.getDatabaseGeneratorConfigService()
+									  .changeConnectorJarPathByConnectionConfig(data);
+			} catch (Exception e) {
+				ErrorLogProducerFactory.getInstance().getProducer().pushException(e, "新增连接时");
 
-			connectionConfigAssist.getDatabaseGeneratorConfigService()
-								  .changeConnectorJarPathByConnectionConfig(data);
+				return fail(ReturnDataCode.Exception.toMessage(e.getMessage()));
+			}
 
 			return decorateSingleData(data);
 		}
@@ -388,6 +396,7 @@ public class ConnectionConfigController extends BaseOperateAuthController {
 			ConnectionConfig saveResult = connectionConfigAssist.saveConnectionConfig(data);
 
 			if (!databaseTypePre.equals(databaseType)) {
+
 				connectionConfigAssist.getDatabaseGeneratorConfigService()
 									  .changeConnectorJarPathByConnectionConfig(data);
 			}
