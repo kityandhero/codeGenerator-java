@@ -44,14 +44,14 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 		this.extra = new SerializableData();
 	}
 
-	BaseResultData(int code, boolean success, String message) {
+	BaseResultData(final int code, final boolean success, final String message) {
 		this.code = code;
 		this.success = success;
 		this.message = message;
 		this.extra = new SerializableData();
 	}
 
-	BaseResultData(@NonNull ReturnMessage returnMessage, Object extra) {
+	BaseResultData(@NonNull final ReturnMessage returnMessage, final Object extra) {
 		this.code = returnMessage.getCode();
 		this.success = returnMessage.getSuccess();
 		this.message = returnMessage.getMessage();
@@ -73,38 +73,34 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 	}
 
 	public int getCode() {
-		return code;
+		return this.code;
 	}
 
-	public void setCode(int code) {
+	public void setCode(final int code) {
 		this.code = code;
 	}
 
 	public boolean isSuccess() {
-		return success;
+		return this.success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(final boolean success) {
 		this.success = success;
 	}
 
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(final String message) {
 		this.message = message;
 	}
 
 	public Object getExtra() {
-		return extra;
+		return this.extra;
 	}
 
-	public void setExtra(Object extra) {
-		this.extra = extra;
-	}
-
-	public void setExtra(Serializable extra) {
+	public void setExtra(final Object extra) {
 		this.extra = extra;
 	}
 
@@ -128,15 +124,15 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 	 *
 	 * @return BaseResultData
 	 */
-	public final ExecutiveResult<T> toJsonResult(Class<T> clazz) {
+	public final ExecutiveResult<T> toJsonResult(final Class<T> clazz) {
 		try {
-			T result = clazz.newInstance();
+			final T result = clazz.newInstance();
 
 			result.setCode(this.getCode());
 			result.setSuccess(this.isSuccess());
 			result.setMessage(this.getMessage());
 
-			Object extraData = this.getExtra();
+			final Object extraData = this.getExtra();
 
 			if (Optional.ofNullable(extraData).isPresent()) {
 				if (extraData instanceof SerializableMap) {
@@ -154,10 +150,10 @@ public abstract class BaseResultData<T extends BaseResultData<?>> implements Ser
 				result.setExtra(new SerializableData().getMultimap().asMap());
 			}
 
-			T r = toJsonResultWithOther(result);
+			final T r = this.toJsonResultWithOther(result);
 
 			return new ExecutiveResult<>(ReturnDataCode.Ok, r);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage(ex.getLocalizedMessage()));
 		}
 	}

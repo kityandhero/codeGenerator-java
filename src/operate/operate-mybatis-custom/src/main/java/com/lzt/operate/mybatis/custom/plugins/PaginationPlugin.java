@@ -7,6 +7,11 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+/**
+ * PaginationPlugin
+ *
+ * @author luzhitao
+ */
 public class PaginationPlugin extends SqlMapIsMergeablePlugin {
 	@Override
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
@@ -62,7 +67,7 @@ public class PaginationPlugin extends SqlMapIsMergeablePlugin {
 		answer.addAttribute(new Attribute("parameterType", fqjt));
 		answer.addAttribute(new Attribute("resultType", "java.lang.Integer"));
 
-		this.context.getCommentGenerator().addComment(answer);
+		context.getCommentGenerator().addComment(answer);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count(1) from ");

@@ -23,6 +23,7 @@
         <module>operate-mybatis-custom</module>
         <module>operate-mybatis-base</module>
         <module>operate-jpa-base</module>
+        <module>code-generator-console</module>
     </modules>
 
     <properties>
