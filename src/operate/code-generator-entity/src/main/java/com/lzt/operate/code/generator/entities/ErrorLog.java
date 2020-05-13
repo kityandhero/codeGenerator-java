@@ -1,6 +1,6 @@
 package com.lzt.operate.code.generator.entities;
 
-import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.common.enums.ErrorLogDegree;
 import com.lzt.operate.code.generator.common.enums.ErrorLogResolve;
 import com.lzt.operate.code.generator.common.enums.ErrorLogType;
@@ -213,8 +213,8 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		this.port = 0;
 		this.otherLog = "";
 		this.data = "";
-		this.dataType = ErrorLogDataType.CommonValue.getFlag();
-		this.dataTypeNote = ErrorLogDataType.CommonValue.getName();
+		this.dataType = CustomDataType.PlainValue.getFlag();
+		this.dataTypeNote = CustomDataType.PlainValue.getName();
 		this.resolve = ErrorLogResolve.Unresolved.getFlag();
 		this.resolveNote = ErrorLogResolve.Unresolved.getName();
 		this.exceptionTypeName = "";
@@ -386,7 +386,7 @@ public class ErrorLog extends BaseEntity implements IErrorLog {
 		return dataType;
 	}
 
-	public void setDataType(ErrorLogDataType dataType) {
+	public void setDataType(CustomDataType dataType) {
 		this.dataType = dataType.getFlag();
 		this.dataTypeNote = dataType.getName();
 	}

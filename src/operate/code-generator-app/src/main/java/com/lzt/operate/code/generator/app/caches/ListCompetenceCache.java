@@ -1,7 +1,7 @@
 package com.lzt.operate.code.generator.app.caches;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducer;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.utility.assists.ConvertAssist;
@@ -49,7 +49,7 @@ public class ListCompetenceCache {
 
 			ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance().getProducer();
 
-			errorLogProducer.pushException(ex, "获取权限集合缓存时", json, ErrorLogDataType.CommonValue);
+			errorLogProducer.pushException(ex, "获取权限集合缓存时", json, CustomDataType.PlainValue);
 
 			competenceList = null;
 		}

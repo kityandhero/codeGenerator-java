@@ -1,5 +1,6 @@
 package com.lzt.operate.code.generator.entities;
 
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 import com.lzt.operate.code.generator.interfaces.IGeneralLog;
 import lombok.EqualsAndHashCode;
@@ -28,17 +29,31 @@ public class GeneralLog extends BaseEntity implements IGeneralLog {
 	private String message;
 
 	/**
+	 * 自定义数据类型
+	 */
+	@Column(name = "message_type", nullable = false)
+	private int messageType;
+
+	/**
 	 * 详细内容
 	 */
 	@Lob
 	@Column(nullable = false)
 	private String content;
 
+	/**
+	 * 自定义数据类型
+	 */
+	@Column(name = "content_type", nullable = false)
+	private int contentType;
+
 	public GeneralLog() {
 		super();
 
 		this.message = "";
+		this.messageType = CustomDataType.PlainValue.getFlag();
 		this.content = "";
+		this.messageType = CustomDataType.PlainValue.getFlag();
 	}
 
 	public String getMessage() {
@@ -49,6 +64,14 @@ public class GeneralLog extends BaseEntity implements IGeneralLog {
 		this.message = message;
 	}
 
+	public int getMessageType() {
+		return messageType;
+	}
+
+	public void setMessageType(CustomDataType customDataType) {
+		this.messageType = customDataType.getFlag();
+	}
+
 	public String getContent() {
 		return this.content;
 	}
@@ -56,4 +79,13 @@ public class GeneralLog extends BaseEntity implements IGeneralLog {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public int getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(CustomDataType customDataType) {
+		this.contentType = customDataType.getFlag();
+	}
+
 }

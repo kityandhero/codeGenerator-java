@@ -3,7 +3,7 @@ package com.lzt.operate.code.generator.app.assists;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
-import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.common.jackson.ObjectMapperAssist;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
@@ -256,7 +256,7 @@ public class ConnectionConfigAssist extends BaseConnectionConfigAssist {
 				ErrorLogProducer errorLogProducer = ErrorLogProducerFactory.getInstance()
 																		   .getProducer();
 
-				errorLogProducer.pushException(e, "保存数据表生成配置时", ConvertAssist.serialize(ObjectMapperAssist.createObjectMapper(), dataTableGeneratorConfig), ErrorLogDataType.JsonObject);
+				errorLogProducer.pushException(e, "保存数据表生成配置时", ConvertAssist.serialize(ObjectMapperAssist.createObjectMapper(), dataTableGeneratorConfig), CustomDataType.JsonObject);
 
 				return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage(e.getMessage()));
 			}

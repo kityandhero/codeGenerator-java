@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
-import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.ErrorLogService;
@@ -279,11 +279,11 @@ public class ErrorLogController extends BaseOperateAuthController {
 			String otherData = errorLog.getData();
 			Integer otherDataType = errorLog.getDataType();
 
-			if (otherDataType.equals(ErrorLogDataType.JsonObject.getFlag())) {
+			if (otherDataType.equals(CustomDataType.JsonObject.getFlag())) {
 				HashMap<?, ?> otherDataJson = ConvertAssist.deserialize(otherData);
 
 				data.append(GlobalString.ERROR_LOG_DATA_JSON, otherDataJson);
-			} else if (otherDataType.equals(ErrorLogDataType.JsonObjectList.getFlag())) {
+			} else if (otherDataType.equals(CustomDataType.JsonObjectList.getFlag())) {
 				List<HashMap<?, ?>> otherDataJsonList = ConvertAssist.deserializeToList(otherData);
 
 				data.append(GlobalString.ERROR_LOG_DATA_JSON, otherDataJsonList);

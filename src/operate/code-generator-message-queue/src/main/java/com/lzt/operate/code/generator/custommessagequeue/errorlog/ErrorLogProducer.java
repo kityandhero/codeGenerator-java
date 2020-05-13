@@ -1,6 +1,6 @@
 package com.lzt.operate.code.generator.custommessagequeue.errorlog;
 
-import com.lzt.operate.code.generator.common.enums.ErrorLogDataType;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.entities.ErrorLog;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.RequestAssist;
@@ -23,10 +23,10 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 	}
 
 	public void pushException(Throwable ex, String scene) {
-		pushException(ex, scene, "", ErrorLogDataType.CommonValue);
+		pushException(ex, scene, "", CustomDataType.PlainValue);
 	}
 
-	public void pushException(Throwable ex, String scene, String data, ErrorLogDataType dataType) {
+	public void pushException(Throwable ex, String scene, String data, CustomDataType dataType) {
 		Optional<HttpServletRequest> optionalHttpServletRequest = RequestAssist.getCurrentHttpServletRequest();
 
 		ErrorLog errorLog = new ErrorLog();
@@ -97,7 +97,7 @@ public class ErrorLogProducer extends BaseProducerAdapter<ErrorLog, ConcurrentLi
 					errorLogUri.setExceptionTypeName(e.getClass().getName());
 					errorLogUri.setData(uriString);
 					errorLogUri.setData(uriString);
-					errorLogUri.setDataType(ErrorLogDataType.CommonValue);
+					errorLogUri.setDataType(CustomDataType.PlainValue);
 					errorLog.setScene("获取URL相关信息与参数时");
 
 					this.push(errorLogUri);

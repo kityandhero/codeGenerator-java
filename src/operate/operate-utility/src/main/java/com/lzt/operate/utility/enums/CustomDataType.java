@@ -1,4 +1,4 @@
-package com.lzt.operate.code.generator.common.enums;
+package com.lzt.operate.utility.enums;
 
 import org.springframework.lang.NonNull;
 
@@ -9,22 +9,27 @@ import java.util.Optional;
 /**
  * @author luzhitao
  */
-public enum ErrorLogDataType {
+public enum CustomDataType {
 
 	/**
-	 * 一般记录
+	 * Json Object
+	 */
+	Unknown(0, "Unknown", "Unknown"),
+
+	/**
+	 * Json Object
 	 */
 	JsonObject(100, "JsonObject", "JsonObject"),
 
 	/**
-	 * 一般记录
+	 * Json Object List
 	 */
 	JsonObjectList(200, "JsonObject数组", "JsonObject数组"),
 
 	/**
-	 * 警告日志
+	 * Plain Value
 	 */
-	CommonValue(300, "一般值类型", "一般值类型");
+	PlainValue(300, "一般值类型", "一般值类型");
 
 	/**
 	 * 元数据键值集合中的key
@@ -46,16 +51,16 @@ public enum ErrorLogDataType {
 	 */
 	private String description;
 
-	ErrorLogDataType(int value, String name, String descriptor) {
+	CustomDataType(int value, String name, String descriptor) {
 		this.flag = value;
 		this.name = name;
 		this.description = descriptor;
 	}
 
-	public static Optional<ErrorLogDataType> valueOfFlag(@NonNull Integer flag) {
-		ErrorLogDataType[] values = ErrorLogDataType.values();
+	public static Optional<CustomDataType> valueOfFlag(@NonNull Integer flag) {
+		CustomDataType[] values = CustomDataType.values();
 
-		for (ErrorLogDataType d : values) {
+		for (CustomDataType d : values) {
 			if (flag.equals(d.getFlag())) {
 				return Optional.of(d);
 			}
@@ -64,8 +69,8 @@ public enum ErrorLogDataType {
 		return Optional.empty();
 	}
 
-	public static List<ErrorLogDataType> valuesToList() {
-		return Arrays.asList(ErrorLogDataType.values());
+	public static List<CustomDataType> valuesToList() {
+		return Arrays.asList(CustomDataType.values());
 	}
 
 	public int getFlag() {
