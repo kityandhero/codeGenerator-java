@@ -64,7 +64,7 @@ public class AccessWayController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "模块管理/";
 
-	private AccessWayService accessWayService;
+	private final AccessWayService accessWayService;
 
 	@Autowired
 	public AccessWayController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, AccessWayServiceImpl accessWayService) {
@@ -74,7 +74,7 @@ public class AccessWayController extends BaseOperateAuthController {
 	}
 
 	public AccessWayService getAccessWayService() {
-		Optional<AccessWayService> optional = Optional.ofNullable(this.accessWayService);
+		Optional<AccessWayService> optional = Optional.ofNullable(accessWayService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -141,11 +141,11 @@ public class AccessWayController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(AccessWay::getCreateTime));
 
-		Page<AccessWay> result = this.accessWayService.page(specification, pageable);
+		Page<AccessWay> result = accessWayService.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<AccessWay>> getterList = new ArrayList<>();
 
 												getterList.add(AccessWay::getName);
@@ -166,12 +166,12 @@ public class AccessWayController extends BaseOperateAuthController {
 
 												return data;
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
 
-		return this.pageData(list, pageIndex, pageSize, totalPages);
+		return pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取模块", notes = "获取模块信息", httpMethod = "POST")
@@ -212,10 +212,10 @@ public class AccessWayController extends BaseOperateAuthController {
 
 			data.append(ReflectAssist.getFriendlyIdName(AccessWay.class), accessWay.getId());
 
-			return this.singleData(data);
+			return singleData(data);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 }

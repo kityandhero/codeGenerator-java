@@ -71,17 +71,17 @@ public class AccountController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "账户管理/";
 
-	private AccountService accountService;
+	private final AccountService accountService;
 
 	@Autowired
 	public AccountController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, AccountServiceImpl accountRepository) {
 		super(loadingCache, customJsonWebTokenConfig);
 
-		this.accountService = accountRepository;
+		accountService = accountRepository;
 	}
 
 	public AccountService getAccountService() {
-		Optional<AccountService> optional = Optional.ofNullable(this.accountService);
+		Optional<AccountService> optional = Optional.ofNullable(accountService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -117,10 +117,10 @@ public class AccountController extends BaseOperateAuthController {
 		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME);
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
 		Integer status = paramJson.getStringExByKey(GlobalString.ACCOUNT_STATUS, ConstantCollection.SEARCH_UNLIMITED_STRING)
-								  .toInt();
+										.toInt();
 
 		if (!StringAssist.isNullOrEmpty(name) && !EnumAssist.existTargetValue(Arrays.asList(AccountStatus.values()), AccountStatus::getFlag, status)) {
-			return this.pageDataEmpty(pageSize);
+			return pageDataEmpty(pageSize);
 		}
 
 		Specification<Account> specification = new Specification<Account>() {
@@ -153,11 +153,11 @@ public class AccountController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(Account::getCreateTime));
 
-		Page<Account> result = this.accountService.page(specification, pageable);
+		Page<Account> result = accountService.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<Account>> getterList = new ArrayList<>();
 
 												getterList.add(Account::getUserName);
@@ -174,14 +174,14 @@ public class AccountController extends BaseOperateAuthController {
 
 												data.append(ReflectAssist.getFriendlyIdName(Account.class), o.getId());
 
-												return this.appendAccountData(o, data);
+												return appendAccountData(o, data);
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
 
-		return this.pageData(list, pageIndex, pageSize, totalPages);
+		return pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取账户", notes = "获取账户信息", httpMethod = "POST")
@@ -222,12 +222,12 @@ public class AccountController extends BaseOperateAuthController {
 
 			data.append("canSetStatus", ConstantCollection.DEFAULT_OPERATOR_SUPER_USER_NAME.equals(account.getUserName()));
 
-			SerializableData returnData = this.appendAccountData(account, data);
+			SerializableData returnData = appendAccountData(account, data);
 
-			return this.singleData(returnData);
+			return singleData(returnData);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "创建账户", notes = "创建账户信息", httpMethod = "POST")
@@ -254,7 +254,7 @@ public class AccountController extends BaseOperateAuthController {
 		ExecutiveSimpleResult result = getAccountService().verifyPassword(password, rePassword, true);
 
 		if (!result.getSuccess()) {
-			return this.fail(result);
+			return fail(result);
 		}
 
 		String userName = paramJson.getStringByKey(GlobalString.ACCOUNT_USERNAME).trim();
@@ -262,7 +262,7 @@ public class AccountController extends BaseOperateAuthController {
 		result = getAccountService().verifyUserName(userName);
 
 		if (!result.getSuccess()) {
-			return this.fail(result);
+			return fail(result);
 		}
 
 		Optional<Account> existAccount = accountService.findByUserName(userName);
@@ -272,7 +272,7 @@ public class AccountController extends BaseOperateAuthController {
 
 			error.toMessage("登录名已存在");
 
-			return this.paramError(GlobalString.ACCOUNT_USERNAME, "登录名已存在");
+			return paramError(GlobalString.ACCOUNT_USERNAME, "登录名已存在");
 		}
 
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
@@ -297,7 +297,7 @@ public class AccountController extends BaseOperateAuthController {
 
 		data = getAccountService().save(data);
 
-		return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
+		return singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 	}
 
 	@ApiOperation(value = "更新账户", notes = "更新账户信息", httpMethod = "POST")
@@ -323,7 +323,7 @@ public class AccountController extends BaseOperateAuthController {
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
 		if (accountId <= 0) {
-			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");
+			return paramError(GlobalString.ACCOUNT_ID, "数据无效");
 		}
 
 		String name = paramJson.getStringByKey(GlobalString.ACCOUNT_NAME);
@@ -353,10 +353,10 @@ public class AccountController extends BaseOperateAuthController {
 
 			data = getAccountService().save(data);
 
-			return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
+			return singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "重置密码", notes = "重置密码", httpMethod = "POST")
@@ -377,27 +377,27 @@ public class AccountController extends BaseOperateAuthController {
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
 		if (accountId <= 0) {
-			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");
+			return paramError(GlobalString.ACCOUNT_ID, "数据无效");
 		}
 
 		String password = paramJson.getStringByKey(GlobalString.ACCOUNT_PASSWORD);
 
 		if (StringAssist.isNullOrEmpty(password)) {
-			return this.paramError(GlobalString.ACCOUNT_PASSWORD, "密码无效");
+			return paramError(GlobalString.ACCOUNT_PASSWORD, "密码无效");
 		}
 
 		if (password.length() <= CustomConstants.ACCOUNT_PASSWORD_MIN_LENGTH || password.length() > CustomConstants.ACCOUNT_PASSWORD_MAX_LENGTH) {
-			return this.paramError(GlobalString.ACCOUNT_PASSWORD, "密码长度为6~32位");
+			return paramError(GlobalString.ACCOUNT_PASSWORD, "密码长度为6~32位");
 		}
 
 		String rePassword = paramJson.getStringByKey(GlobalString.RE_PASSWORD);
 
 		if (StringAssist.isNullOrEmpty(rePassword)) {
-			return this.paramError(GlobalString.RE_PASSWORD, "确认密码无效");
+			return paramError(GlobalString.RE_PASSWORD, "确认密码无效");
 		}
 
 		if (!password.equals(rePassword)) {
-			return this.paramError(GlobalString.RE_PASSWORD, "密码与确认密码不一致");
+			return paramError(GlobalString.RE_PASSWORD, "密码与确认密码不一致");
 		}
 
 		Optional<Account> result = getAccountService().get(accountId);
@@ -413,10 +413,10 @@ public class AccountController extends BaseOperateAuthController {
 
 			data = getAccountService().save(data);
 
-			return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
+			return singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 		}
 
-		return this.noDataError();
+		return noDataError();
 	}
 
 	@ApiOperation(value = "启用账户", notes = "设置账户状态为启用状态", httpMethod = "POST")
@@ -434,7 +434,7 @@ public class AccountController extends BaseOperateAuthController {
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
-		return this.setStatusCore(accountId, AccountStatus.Enabled);
+		return setStatusCore(accountId, AccountStatus.Enabled);
 	}
 
 	@ApiOperation(value = "禁用账户", notes = "设置账户状态为禁用状态", httpMethod = "POST")
@@ -452,12 +452,12 @@ public class AccountController extends BaseOperateAuthController {
 
 		long accountId = paramJson.getStringExByKey(GlobalString.ACCOUNT_ID, "0").toLong();
 
-		return this.setStatusCore(accountId, AccountStatus.Disabled);
+		return setStatusCore(accountId, AccountStatus.Disabled);
 	}
 
 	private ResultSingleData setStatusCore(long accountId, AccountStatus status) {
 		if (accountId <= 0) {
-			return this.paramError(GlobalString.ACCOUNT_ID, "数据无效");
+			return paramError(GlobalString.ACCOUNT_ID, "数据无效");
 		}
 
 		Optional<Account> result = getAccountService().get(accountId);
@@ -466,7 +466,7 @@ public class AccountController extends BaseOperateAuthController {
 			Account data = result.get();
 
 			if (ConstantCollection.DEFAULT_OPERATOR_SUPER_USER_NAME.equals(data.getUserName())) {
-				return this.noChange("该账户不允许更改状态");
+				return noChange("该账户不允许更改状态");
 			}
 
 			data.setStatus(status, AccountStatus::getFlag, AccountStatus::getName);
@@ -477,10 +477,10 @@ public class AccountController extends BaseOperateAuthController {
 
 			data = getAccountService().save(data);
 
-			return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
+			return singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 		}
 
-		return this.noDataError();
+		return noDataError();
 	}
 
 	private SerializableData appendAccountData(@NotNull Account account, @NotNull SerializableData data) {

@@ -343,5 +343,4 @@ public class GlobalConfig implements Serializable {
 			return new GlobalConfig();
 		}
 	}
-
 }

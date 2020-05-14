@@ -45,11 +45,11 @@ public class DatabaseTypeUtil {
 	private static final Logger _LOG = LoggerFactory.getLogger(DatabaseTypeUtil.class);
 	private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 1;
 
-	private static Map<DatabaseType, Driver> drivers = new HashMap<>();
+	private static final Map<DatabaseType, Driver> drivers = new HashMap<>();
 
-	private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 	private static volatile boolean portForwaring = false;
-	private static Map<Integer, Session> portForwardingSession = new ConcurrentHashMap<>();
+	private static final Map<Integer, Session> portForwardingSession = new ConcurrentHashMap<>();
 
 	private static Session getSSHSession(ConnectionConfig connectionConfig) {
 		if (StringUtils.isBlank(connectionConfig.getSshHost())
@@ -96,7 +96,7 @@ public class DatabaseTypeUtil {
 						String s = session.getPortForwardingL()[0];
 						String[] split = StringUtils.split(s, ":");
 						boolean portForwarding = String.format("%s:%s", split[0], split[1])
-													   .equals(lport + ":" + config.getHost());
+															 .equals(lport + ":" + config.getHost());
 						if (portForwarding) {
 							return;
 						}
@@ -108,7 +108,7 @@ public class DatabaseTypeUtil {
 					DatabaseTypeUtil._LOG.info("portForwarding Enabled, {}", assinged_port);
 				} catch (JSchException e) {
 					DatabaseTypeUtil._LOG.error("Connect Over SSH failed", e);
-					String a = "Address already in use: JVM_Bind";
+					final String a = "Address already in use: JVM_Bind";
 
 					if (e.getCause() != null && a.equals(e.getCause().getMessage())) {
 						throw new RuntimeException("Address already in use: JVM_Bind");
@@ -179,7 +179,7 @@ public class DatabaseTypeUtil {
 			DatabaseMetaData md = connection.getMetaData();
 			ResultSet rs;
 			if (config.getDatabaseType() == DatabaseType.SQL_Server.getFlag()) {
-				String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
+				final String sql = "select name from sysobjects  where xtype='u' or xtype='v' order by name";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
 					tables.add(new DataTable(rs.getString("name")));
@@ -188,7 +188,7 @@ public class DatabaseTypeUtil {
 				rs = md.getTables(null, config.getUserName()
 											  .toUpperCase(), null, new String[]{"TABLE", "VIEW"});
 			} else if (config.getDatabaseType() == DatabaseType.Sqlite.getFlag()) {
-				String sql = "Select name from sqlite_master;";
+				final String sql = "Select name from sqlite_master;";
 				rs = connection.createStatement().executeQuery(sql);
 				while (rs.next()) {
 					tables.add(new DataTable(rs.getString("name")));

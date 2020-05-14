@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
-import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.ErrorLogService;
@@ -20,6 +19,7 @@ import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.general.ConstantCollection;
 import com.lzt.operate.utility.permissions.NeedAuthorization;
@@ -73,7 +73,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "错误日志管理/";
 
-	private ErrorLogService errorLogService;
+	private final ErrorLogService errorLogService;
 
 	@Autowired
 	public ErrorLogController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, ErrorLogServiceImpl errorLogService) {
@@ -83,7 +83,7 @@ public class ErrorLogController extends BaseOperateAuthController {
 	}
 
 	public ErrorLogService getErrorLogService() {
-		Optional<ErrorLogService> optional = Optional.ofNullable(this.errorLogService);
+		Optional<ErrorLogService> optional = Optional.ofNullable(errorLogService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -116,11 +116,11 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 		String message = paramJson.getStringByKey(GlobalString.ERROR_LOG_MESSAGE);
 		Integer channel = paramJson.getStringExByKey(GlobalString.ERROR_LOG_CHANNEL, ConstantCollection.SEARCH_UNLIMITED_STRING)
-								   .toInt();
+										 .toInt();
 
 		if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_INT) && !EnumAssist.existTargetValue(Arrays.asList(Channel
 				.values()), Channel::getFlag, channel)) {
-			return this.pageDataEmpty(pageSize);
+			return pageDataEmpty(pageSize);
 		}
 
 		Specification<ErrorLog> specification = new Specification<ErrorLog>() {
@@ -148,11 +148,11 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ErrorLog::getCreateTime));
 
-		Page<ErrorLog> result = this.errorLogService.page(specification, pageable);
+		Page<ErrorLog> result = errorLogService.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<ErrorLog>> getterList = new ArrayList<>();
 
 												getterList.add(ErrorLog::getMessage);
@@ -172,12 +172,12 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 												return data;
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
 
-		return this.pageData(list, pageIndex, pageSize, totalPages);
+		return pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取错误日志", notes = "获取错误日志信息", httpMethod = "POST")
@@ -293,10 +293,10 @@ public class ErrorLogController extends BaseOperateAuthController {
 
 			//endregion
 
-			return this.singleData(data);
+			return singleData(data);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 }

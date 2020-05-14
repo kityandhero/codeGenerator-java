@@ -12,11 +12,12 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
  */
 public class FullyQualifiedJavaTypeProxyFactory extends FullyQualifiedJavaType {
 
-	private static FullyQualifiedJavaType pageInfoInstance = new FullyQualifiedJavaType(PageInfo.class.getName());
-	private static FullyQualifiedJavaType baseExampleInstance = new FullyQualifiedJavaType(BaseExample.class.getName());
-	private static FullyQualifiedJavaType baseMapperInstance = new FullyQualifiedJavaType(BaseMapper.class.getName());
-	private static FullyQualifiedJavaType baseServiceInstance = new FullyQualifiedJavaType(BaseService.class.getName());
-	private static FullyQualifiedJavaType baseServiceImplInstance = new FullyQualifiedJavaType(BaseServiceImpl.class.getName());
+	private static final FullyQualifiedJavaType pageInfoInstance = new FullyQualifiedJavaType(PageInfo.class.getName());
+	private static final FullyQualifiedJavaType baseExampleInstance = new FullyQualifiedJavaType(BaseExample.class.getName());
+	private static final FullyQualifiedJavaType baseMapperInstance = new FullyQualifiedJavaType(BaseMapper.class.getName());
+	private static final FullyQualifiedJavaType baseServiceInstance = new FullyQualifiedJavaType(BaseService.class.getName());
+	private static final FullyQualifiedJavaType baseServiceImplInstance = new FullyQualifiedJavaType(BaseServiceImpl.class
+			.getName());
 
 	public FullyQualifiedJavaTypeProxyFactory(String fullTypeSpecification) {
 		super(fullTypeSpecification);

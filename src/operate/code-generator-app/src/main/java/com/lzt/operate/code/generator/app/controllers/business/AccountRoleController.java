@@ -50,7 +50,7 @@ public class AccountRoleController extends BaseOperateAuthController {
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsService roleCodeToolsService;
-	private AccountService accountService;
+	private final AccountService accountService;
 
 	@Autowired
 	public AccountRoleController(
@@ -70,12 +70,12 @@ public class AccountRoleController extends BaseOperateAuthController {
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
-				this.getLoadingCache(),
-				this.getCustomJsonWebTokenConfig(),
-				this.accountService,
-				this.accountRoleService,
-				this.roleUniversalService,
-				this.roleCodeToolsService);
+				getLoadingCache(),
+				getCustomJsonWebTokenConfig(),
+				accountService,
+				accountRoleService,
+				roleUniversalService,
+				roleCodeToolsService);
 	}
 
 	@ApiOperation(value = "变更拥有角色", notes = "变更拥有角色", httpMethod = "POST")

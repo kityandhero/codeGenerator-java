@@ -41,19 +41,19 @@ import static org.mybatis.generator.internal.util.StringUtility.isTrue;
  */
 public class DbRemarksCommentGenerator implements CommentGenerator {
 
-	private Properties properties;
+	private final Properties properties;
 	private boolean columnRemarks;
 	private boolean isAnnotations;
 
 	public DbRemarksCommentGenerator() {
 		super();
-		this.properties = new Properties();
+		properties = new Properties();
 	}
 
 	@Override
 	public void addJavaFileComment(CompilationUnit compilationUnit) {
 		// add no file level comments by default
-		if (this.isAnnotations) {
+		if (isAnnotations) {
 			compilationUnit.addImportedType(new FullyQualifiedJavaType("javax.persistence.Table"));
 			compilationUnit.addImportedType(new FullyQualifiedJavaType("javax.persistence.Id"));
 			compilationUnit.addImportedType(new FullyQualifiedJavaType("javax.persistence.Column"));
@@ -103,9 +103,9 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
 	@Override
 	public void addConfigurationProperties(Properties properties) {
 		this.properties.putAll(properties);
-		this.columnRemarks = isTrue(properties
+		columnRemarks = isTrue(properties
 				.getProperty("columnRemarks"));
-		this.isAnnotations = isTrue(properties
+		isAnnotations = isTrue(properties
 				.getProperty("annotations"));
 	}
 
@@ -121,7 +121,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
 		topLevelClass.addJavaDocLine(" * " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
 		topLevelClass.addJavaDocLine(" * @author ");
 		topLevelClass.addJavaDocLine(" */");
-		if (this.isAnnotations) {
+		if (isAnnotations) {
 			topLevelClass.addAnnotation("@Table(name=\"" + introspectedTable.getFullyQualifiedTableNameAtRuntime() + "\")");
 		}
 	}
@@ -142,7 +142,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
 			field.addJavaDocLine(" */");
 		}
 
-		if (this.isAnnotations) {
+		if (isAnnotations) {
 			boolean isId = false;
 			for (IntrospectedColumn column : introspectedTable.getPrimaryKeyColumns()) {
 				if (introspectedColumn == column) {
@@ -156,7 +156,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
 				field.addAnnotation("@NotEmpty");
 			}
 			if (introspectedColumn.isIdentity()) {
-				String jdbc = "JDBC";
+				final String jdbc = "JDBC";
 
 				if (jdbc.equals(introspectedTable.getTableConfiguration()
 												 .getGeneratedKey()

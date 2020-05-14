@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public abstract class BaseConsumerAdapter<T, Q extends ConcurrentLinkedDeque<T>> implements IConsumer<T, ConcurrentLinkedDeque<T>> {
 
-	private Q queue;
+	private final Q queue;
 
 	protected BaseConsumerAdapter(@NonNull Q queue) {
 		this.queue = queue;
@@ -22,7 +22,7 @@ public abstract class BaseConsumerAdapter<T, Q extends ConcurrentLinkedDeque<T>>
 	}
 
 	public Optional<T> pull() {
-		return pull(this.queue);
+		return pull(queue);
 	}
 
 	public Optional<T> pull(Q queue) {

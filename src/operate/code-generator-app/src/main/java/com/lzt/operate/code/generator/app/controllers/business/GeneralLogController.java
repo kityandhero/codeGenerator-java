@@ -69,7 +69,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "一般日志管理/";
 
-	private GeneralLogService generalLogService;
+	private final GeneralLogService generalLogService;
 
 	@Autowired
 	public GeneralLogController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, GeneralLogServiceImpl generalLogService) {
@@ -79,7 +79,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 	}
 
 	public GeneralLogService getGeneralLogService() {
-		Optional<GeneralLogService> optional = Optional.ofNullable(this.generalLogService);
+		Optional<GeneralLogService> optional = Optional.ofNullable(generalLogService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -102,7 +102,7 @@ public class GeneralLogController extends BaseOperateAuthController {
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = GeneralLogController.CONTROLLER_DESCRIPTION + "一般日志分页列表", description = "一般日志分页列表", tag = "93231249-6171-4d8a-b7e1-a66006385bdc")
 	public ResultListData pageList(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = this.getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
 		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
@@ -112,11 +112,11 @@ public class GeneralLogController extends BaseOperateAuthController {
 
 		String message = paramJson.getStringByKey(GlobalString.GENERAL_LOG_MESSAGE);
 		Integer channel = paramJson.getStringExByKey(GlobalString.GENERAL_LOG_CHANNEL, ConstantCollection.SEARCH_UNLIMITED_STRING)
-								   .toInt();
+										 .toInt();
 
 		if (!channel.equals(ConstantCollection.SEARCH_UNLIMITED_INT) && !EnumAssist.existTargetValue(Arrays.asList(Channel
 				.values()), Channel::getFlag, channel)) {
-			return this.pageDataEmpty(pageSize);
+			return pageDataEmpty(pageSize);
 		}
 
 		Specification<GeneralLog> specification = new Specification<GeneralLog>() {
@@ -144,11 +144,11 @@ public class GeneralLogController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(GeneralLog::getCreateTime));
 
-		Page<GeneralLog> result = this.generalLogService.page(specification, pageable);
+		Page<GeneralLog> result = generalLogService.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<GeneralLog>> getterList = new ArrayList<>();
 
 												getterList.add(GeneralLog::getMessage);
@@ -165,12 +165,12 @@ public class GeneralLogController extends BaseOperateAuthController {
 
 												return data;
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
 
-		return this.pageData(list, pageIndex, pageSize, totalPages);
+		return pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取一般日志", notes = "获取一般日志信息", httpMethod = "POST")
@@ -184,11 +184,11 @@ public class GeneralLogController extends BaseOperateAuthController {
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = GeneralLogController.CONTROLLER_DESCRIPTION + "一般日志详情", description = "获取一般日志信息", tag = "ef791176-510c-442b-aac6-7da67f8c51a4")
 	public ResultSingleData get(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = this.getParamData(json);
+		ParamData paramJson = getParamData(json);
 
 		long generalLogId = paramJson.getStringExByKey(GlobalString.GENERAL_LOG_ID, "0").toLong();
 
-		Optional<GeneralLog> result = this.getGeneralLogService().get(generalLogId);
+		Optional<GeneralLog> result = getGeneralLogService().get(generalLogId);
 
 		if (result.isPresent()) {
 			GeneralLog generalLog = result.get();
@@ -212,9 +212,9 @@ public class GeneralLogController extends BaseOperateAuthController {
 
 			data.append(ReflectAssist.getFriendlyIdName(GeneralLog.class), generalLog.getId());
 
-			return this.singleData(data);
+			return singleData(data);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 }

@@ -24,7 +24,7 @@ import static com.lzt.operate.utility.assists.ConstantAssist.NUMBER_SET;
  */
 public class StringAssist {
 
-	private static Random random = new Random();
+	private static final Random random = new Random();
 
 	/**
 	 * 转换为首字母小写
@@ -120,8 +120,8 @@ public class StringAssist {
 					if (!"".equals(Optional.of(item).orElse(""))) {
 						if (whetherTrimItem) {
 							String handleTrimItem = Optional.of(item)
-															.orElse(null)
-															.trim();
+																  .orElse(null)
+																  .trim();
 
 							if (!"".equals(Optional.of(handleTrimItem).orElse(""))) {
 								collection.add(item);
@@ -202,9 +202,9 @@ public class StringAssist {
 					if (!"".equals(Optional.of(item).orElse(""))) {
 						if (whetherTrimItem) {
 							Object handleTrimItem = Optional.of(item)
-															.orElse(null)
-															.toString()
-															.trim();
+																  .orElse(null)
+																  .toString()
+																  .trim();
 
 							if (!"".equals(Optional.of(handleTrimItem).orElse(""))) {
 								collection.add(item);
@@ -433,7 +433,7 @@ public class StringAssist {
 	 * @param separator 目标字符串
 	 * @return 结果
 	 */
-	public static String substringAfter(String source, final String separator) {
+	public static String substringAfter(String source, String separator) {
 		return StringUtils.substringAfter(source, separator);
 	}
 
@@ -444,7 +444,7 @@ public class StringAssist {
 	 * @param separator 目标字符串
 	 * @return 结果
 	 */
-	public static String substringAfterLast(String source, final String separator) {
+	public static String substringAfterLast(String source, String separator) {
 		return StringUtils.substringAfterLast(source, separator);
 	}
 
@@ -455,7 +455,7 @@ public class StringAssist {
 	 * @param separator 目标字符串
 	 * @return 结果
 	 */
-	public static String substringBefore(String source, final String separator) {
+	public static String substringBefore(String source, String separator) {
 		return StringUtils.substringBefore(source, separator);
 	}
 
@@ -466,7 +466,7 @@ public class StringAssist {
 	 * @param separator 目标字符串
 	 * @return 结果
 	 */
-	public static String substringBeforeLast(String source, final String separator) {
+	public static String substringBeforeLast(String source, String separator) {
 		return StringUtils.substringBeforeLast(source, separator);
 	}
 

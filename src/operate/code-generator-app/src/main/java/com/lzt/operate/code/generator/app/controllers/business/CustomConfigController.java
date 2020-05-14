@@ -55,7 +55,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "模块管理/";
 
-	private CustomConfigService customConfigService;
+	private final CustomConfigService customConfigService;
 
 	@Autowired
 	public CustomConfigController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, CustomConfigServiceImpl customConfigService) {
@@ -65,7 +65,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 	}
 
 	public CustomConfigService getCustomConfigService() {
-		Optional<CustomConfigService> optional = Optional.ofNullable(this.customConfigService);
+		Optional<CustomConfigService> optional = Optional.ofNullable(customConfigService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -89,7 +89,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 
 		Integer category = paramJson.getStringExByKey(GlobalString.CUSTOM_CONFIG_CATEGORY).toInt();
 
-		List<CustomConfig> customConfigList = this.getCustomConfigService().list((root, query, cb) -> {
+		List<CustomConfig> customConfigList = getCustomConfigService().list((root, query, cb) -> {
 			Predicate predicate = root.isNotNull();
 
 			predicate = cb.and(predicate, cb.and(root.get(ReflectAssist.getFieldName(CustomConfig::getUuid))
@@ -102,7 +102,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 			return predicate;
 		});
 
-		List<CustomConfig> customConfigSourceList = this.getCustomConfigService().listSource(category);
+		List<CustomConfig> customConfigSourceList = getCustomConfigService().listSource(category);
 
 		customConfigSourceList = customConfigSourceList.stream().map(source -> {
 
@@ -140,7 +140,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 				})
 				.collect(Collectors.toList());
 
-		return this.listData(list);
+		return listData(list);
 	}
 
 	@ApiOperation(value = "获取错误日志", notes = "获取错误日志信息", httpMethod = "POST")
@@ -170,7 +170,7 @@ public class CustomConfigController extends BaseOperateAuthController {
 
 		customConfigProducer.push(customConfig);
 
-		return this.success();
+		return success();
 	}
 
 }

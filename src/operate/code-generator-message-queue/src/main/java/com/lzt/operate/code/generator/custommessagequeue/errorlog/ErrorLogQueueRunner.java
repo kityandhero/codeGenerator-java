@@ -18,9 +18,9 @@ import java.util.Optional;
 @Slf4j
 public class ErrorLogQueueRunner implements Runnable {
 
-	private ErrorLogService errorLogService;
+	private final ErrorLogService errorLogService;
 
-	private ErrorLogConsumer consumer;
+	private final ErrorLogConsumer consumer;
 
 	public ErrorLogQueueRunner(ErrorLogService accessWayService, ErrorLogConsumer consumer) {
 		errorLogService = accessWayService;

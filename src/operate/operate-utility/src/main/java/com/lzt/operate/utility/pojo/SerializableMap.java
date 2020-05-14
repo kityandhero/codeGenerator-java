@@ -16,12 +16,12 @@ public class SerializableMap {
 
 	private static final long serialVersionUID = 7303682875593752763L;
 
-	private HashMultimap<String, Object> multimap;
+	private final HashMultimap<String, Object> multimap;
 
 	SerializableMap(Map<String, Object> data) {
 		this();
 
-		this.appendMap(data);
+		appendMap(data);
 	}
 
 	SerializableMap() {
@@ -31,11 +31,11 @@ public class SerializableMap {
 	}
 
 	public HashMultimap<String, Object> getMultimap() {
-		return this.multimap;
+		return multimap;
 	}
 
 	public SerializableMap append(String key, Object value) {
-		this.multimap.put(key, value);
+		multimap.put(key, value);
 
 		return this;
 	}
@@ -44,7 +44,7 @@ public class SerializableMap {
 		List<java.lang.Object> objectList = ConvertAssist.toObjectList(list);
 
 		for (Object o : objectList) {
-			this.multimap.put(key, o);
+			multimap.put(key, o);
 		}
 
 		return this;
@@ -53,7 +53,7 @@ public class SerializableMap {
 	public SerializableMap appendMap(Map<String, Object> data) {
 		if (Optional.ofNullable(data).isPresent()) {
 
-			data.forEach((key, value) -> this.multimap.put(key, value));
+			data.forEach((key, value) -> multimap.put(key, value));
 		}
 
 		return this;
@@ -62,7 +62,7 @@ public class SerializableMap {
 	public SerializableMap appendMultimap(Multimap<String, Object> data) {
 		if (Optional.ofNullable(data).isPresent()) {
 
-			data.forEach((key, value) -> this.multimap.put(key, value));
+			data.forEach((key, value) -> multimap.put(key, value));
 		}
 
 		return this;

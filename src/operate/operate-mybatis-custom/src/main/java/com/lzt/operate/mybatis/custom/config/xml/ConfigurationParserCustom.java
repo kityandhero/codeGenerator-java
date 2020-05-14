@@ -26,9 +26,9 @@ import java.util.Properties;
 
 public class ConfigurationParserCustom extends ConfigurationParser {
 
-	private List<String> warnings;
-	private List<String> parseErrors;
-	private Properties extraProperties;
+	private final List<String> warnings;
+	private final List<String> parseErrors;
+	private final Properties extraProperties;
 
 	public ConfigurationParserCustom(List<String> warnings) {
 		this(null, warnings);
@@ -44,7 +44,7 @@ public class ConfigurationParserCustom extends ConfigurationParser {
 			this.warnings = warnings;
 		}
 
-		this.parseErrors = new ArrayList<>();
+		parseErrors = new ArrayList<>();
 	}
 
 	@Override
@@ -69,14 +69,14 @@ public class ConfigurationParserCustom extends ConfigurationParser {
 	}
 
 	private Configuration parseConfiguration(InputSource inputSource) throws IOException, XMLParserException {
-		this.parseErrors.clear();
+		parseErrors.clear();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(true);
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			builder.setEntityResolver(new ParserEntityResolver());
 
-			ParserErrorHandler handler = new ParserErrorHandler(this.warnings, this.parseErrors);
+			ParserErrorHandler handler = new ParserErrorHandler(warnings, parseErrors);
 
 			builder.setErrorHandler(handler);
 
@@ -84,30 +84,30 @@ public class ConfigurationParserCustom extends ConfigurationParser {
 			try {
 				document = builder.parse(inputSource);
 			} catch (SAXParseException e) {
-				throw new XMLParserException(this.parseErrors);
+				throw new XMLParserException(parseErrors);
 			} catch (SAXException e) {
 				if (e.getException() == null) {
-					this.parseErrors.add(e.getMessage());
+					parseErrors.add(e.getMessage());
 				} else {
-					this.parseErrors.add(e.getException().getMessage());
+					parseErrors.add(e.getException().getMessage());
 				}
 			}
 
-			if (this.parseErrors.size() > 0) {
-				throw new XMLParserException(this.parseErrors);
+			if (parseErrors.size() > 0) {
+				throw new XMLParserException(parseErrors);
 			}
 
 			Element rootNode = document.getDocumentElement();
 			Configuration config = parseMyBatisGeneratorConfiguration(rootNode);
 
-			if (this.parseErrors.size() > 0) {
-				throw new XMLParserException(this.parseErrors);
+			if (parseErrors.size() > 0) {
+				throw new XMLParserException(parseErrors);
 			}
 
 			return config;
 		} catch (ParserConfigurationException e) {
-			this.parseErrors.add(e.getMessage());
-			throw new XMLParserException(this.parseErrors);
+			parseErrors.add(e.getMessage());
+			throw new XMLParserException(parseErrors);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class ConfigurationParserCustom extends ConfigurationParser {
 
 		//替换MyBatisGeneratorConfigurationParser
 		MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParserCustom(
-				this.extraProperties);
+				extraProperties);
 
 		return parser.parseConfiguration(rootNode);
 	}

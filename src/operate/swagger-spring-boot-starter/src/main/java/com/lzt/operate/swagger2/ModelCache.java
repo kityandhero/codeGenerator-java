@@ -49,10 +49,10 @@ import static springfox.documentation.spi.schema.contexts.ModelContext.inputPara
 @SuppressWarnings("Guava")
 public class ModelCache {
 
-	private Map<String, Model> knownModels = new HashMap<>();
+	private final Map<String, Model> knownModels = new HashMap<>();
 	private DocumentationContext context;
 	private Function<ResolvedType, ? extends ModelReference> factory;
-	private TypeResolver typeResolver = new TypeResolver();
+	private final TypeResolver typeResolver = new TypeResolver();
 	private Map<String, ApiSingleParam> paramMap = new HashMap<>();
 	private Class<?> cls;
 
@@ -69,7 +69,7 @@ public class ModelCache {
 	}
 
 	public Class<?> getParamClass() {
-		return this.cls;
+		return cls;
 	}
 
 	private void setParamClass(Class<?> cls) {
@@ -86,7 +86,7 @@ public class ModelCache {
 	}
 
 	public DocumentationContext getContext() {
-		return this.context;
+		return context;
 	}
 
 	public void setContext(DocumentationContext context) {
@@ -94,18 +94,18 @@ public class ModelCache {
 	}
 
 	public Map<String, Model> getKnownModels() {
-		return this.knownModels;
+		return knownModels;
 	}
 
 	public void addModel(ApiJsonObject jsonObj) {
 		String modelName = jsonObj.name();
 
-		this.knownModels.put(modelName,
+		knownModels.put(modelName,
 				new Model(modelName,
 						modelName,
 						new TypeResolver().resolve(String.class),
 						"com.lzt.operate.swagger2.CommonData",
-						this.toPropertyMap(jsonObj.value(), modelName),
+						toPropertyMap(jsonObj.value(), modelName),
 						"POST参数",
 						"",
 						"",
@@ -113,12 +113,12 @@ public class ModelCache {
 				));
 		String resultName = jsonObj.name() + "-" + "result";
 
-		this.knownModels.put(resultName,
+		knownModels.put(resultName,
 				new Model(resultName,
 						resultName,
 						new TypeResolver().resolve(String.class),
 						"com.lzt.operate.swagger2.CommonData",
-						this.toResultMap(jsonObj.result(), resultName),
+						toResultMap(jsonObj.result(), resultName),
 						"返回模型",
 						"",
 						"",
@@ -136,12 +136,12 @@ public class ModelCache {
 			if (!getResultTypeNormal().equals(jsonResult.type())) {
 				//model
 				String subModelName = groupName + "-" + jsonResult.name();
-				this.knownModels.put(subModelName,
+				knownModels.put(subModelName,
 						new Model(subModelName,
 								subModelName,
 								new TypeResolver().resolve(String.class),
 								"com.lzt.operate.swagger2.CommonData",
-								this.transResultMap(values),
+								transResultMap(values),
 								"返回模型",
 								"",
 								"",
@@ -169,7 +169,7 @@ public class ModelCache {
 						null,
 						newArrayList()
 				);// new AllowableRangeValues("1", "2000"),//.allowableValues(new AllowableListValues(["ABC", "ONE", "TWO"], "string"))
-				mp.updateModelRef(this.getModelRef());
+				mp.updateModelRef(getModelRef());
 				// ResolvedType collectionElementType = collectionElementType(type);
 				try {
 					Field f = ModelProperty.class.getDeclaredField("modelRef");
@@ -186,21 +186,21 @@ public class ModelCache {
 					outer.add(getJsonTotalCount());
 				}
 
-				propertyMap.putAll(this.transResultMap(outer));
+				propertyMap.putAll(transResultMap(outer));
 				return propertyMap;
 			}
 
 			outer.addAll(values);
-			return this.transResultMap(outer);
+			return transResultMap(outer);
 		}
 
-		return this.transResultMap(values);
+		return transResultMap(values);
 	}
 
 	private Map<String, ModelProperty> transResultMap(List<String> values) {
 		Map<String, ModelProperty> propertyMap = new HashMap<>();
 		for (String resultName : values) {
-			ApiSingleParam param = this.paramMap.get(resultName);
+			ApiSingleParam param = paramMap.get(resultName);
 			if (isEmpty(param)) {
 				continue;
 			}
@@ -238,7 +238,7 @@ public class ModelCache {
 					null,
 					newArrayList()
 			);// new AllowableRangeValues("1", "2000"),//.allowableValues(new AllowableListValues(["ABC", "ONE", "TWO"], "string"))
-			mp.updateModelRef(this.getModelRef());
+			mp.updateModelRef(getModelRef());
 			propertyMap.put(resultName, mp);
 		}
 
@@ -250,7 +250,7 @@ public class ModelCache {
 
 		for (ApiJsonProperty property : jsonProp) {
 			String propertyName = property.name();
-			ApiSingleParam param = this.paramMap.get(propertyName);
+			ApiSingleParam param = paramMap.get(propertyName);
 
 			String description = property.description();
 			if (isNullOrEmpty(description) && !isEmpty(param)) {
@@ -297,7 +297,7 @@ public class ModelCache {
 					null,
 					newArrayList()
 			);// new AllowableRangeValues("1", "2000"),//.allowableValues(new AllowableListValues(["ABC", "ONE", "TWO"], "string"))
-			mp.updateModelRef(this.getModelRef());
+			mp.updateModelRef(getModelRef());
 			propertyMap.put(property.name(), mp);
 		}
 
@@ -306,31 +306,31 @@ public class ModelCache {
 
 	private Function<ResolvedType, ? extends ModelReference> getModelRef() {
 		// ModelReference stringModel = factory.apply(typeResolver.resolve(List.class, String.class));
-		return this.getFactory();
+		return getFactory();
 
 	}
 
 	public Function<ResolvedType, ? extends ModelReference> getFactory() {
-		if (this.factory == null) {
+		if (factory == null) {
 
 			List<DefaultTypeNameProvider> providers = newArrayList();
 			providers.add(new DefaultTypeNameProvider());
 			PluginRegistry<TypeNameProviderPlugin, DocumentationType> modelNameRegistry =
 					OrderAwarePluginRegistry.create(providers);
 			TypeNameExtractor typeNameExtractor = new TypeNameExtractor(
-					this.typeResolver,
+					typeResolver,
 					modelNameRegistry,
 					new JacksonEnumTypeDeterminer());
 			ModelContext modelContext = inputParam(
-					this.context.getGroupName(),
+					context.getGroupName(),
 					String.class,
-					this.context.getDocumentationType(),
-					this.context.getAlternateTypeProvider(),
-					this.context.getGenericsNamingStrategy(),
-					this.context.getIgnorableParameterTypes());
-			this.factory = ResolvedTypes.modelRefFactory(modelContext, typeNameExtractor);
+					context.getDocumentationType(),
+					context.getAlternateTypeProvider(),
+					context.getGenericsNamingStrategy(),
+					context.getIgnorableParameterTypes());
+			factory = ResolvedTypes.modelRefFactory(modelContext, typeNameExtractor);
 		}
-		return this.factory;
+		return factory;
 	}
 
 	public ModelCache setFactory(Function<ResolvedType, ? extends ModelReference> factory) {
@@ -340,7 +340,7 @@ public class ModelCache {
 
 	private static class ModelCacheSub {
 
-		private static ModelCache instance = new ModelCache();
+		private static final ModelCache instance = new ModelCache();
 
 	}
 }

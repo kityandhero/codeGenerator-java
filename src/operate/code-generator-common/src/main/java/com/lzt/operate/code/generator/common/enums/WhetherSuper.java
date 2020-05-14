@@ -31,14 +31,14 @@ public enum WhetherSuper {
 	/**
 	 * 值
 	 */
-	private Integer flag;
+	private final Integer flag;
 
-	private String name;
+	private final String name;
 
-	private String description;
+	private final String description;
 
 	WhetherSuper(int value, String name, String description) {
-		this.flag = value;
+		flag = value;
 		this.name = name;
 		this.description = description;
 	}

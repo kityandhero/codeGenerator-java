@@ -5,7 +5,7 @@ package com.lzt.operate.code.generator.custommessagequeue.accessway;
  */
 public class AccessWayProducerFactory {
 
-	private AccessWayProducer producer;
+	private final AccessWayProducer producer;
 
 	private AccessWayProducerFactory() {
 		producer = new AccessWayProducer();
@@ -20,7 +20,7 @@ public class AccessWayProducerFactory {
 	}
 
 	static class InstanceHolder {
-		private static AccessWayProducerFactory instance = new AccessWayProducerFactory();
+		private static final AccessWayProducerFactory instance = new AccessWayProducerFactory();
 	}
 
 }

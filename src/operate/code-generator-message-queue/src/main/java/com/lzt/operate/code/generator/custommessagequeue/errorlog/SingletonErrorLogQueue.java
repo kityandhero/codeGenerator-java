@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class SingletonErrorLogQueue {
 
-	private ConcurrentLinkedDeque<ErrorLog> queue;
+	private final ConcurrentLinkedDeque<ErrorLog> queue;
 
 	private SingletonErrorLogQueue() {
 		queue = new ConcurrentLinkedDeque<>();
@@ -24,6 +24,6 @@ public class SingletonErrorLogQueue {
 	}
 
 	static class InstanceHolder {
-		private static SingletonErrorLogQueue instance = new SingletonErrorLogQueue();
+		private static final SingletonErrorLogQueue instance = new SingletonErrorLogQueue();
 	}
 }

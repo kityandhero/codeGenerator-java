@@ -5,10 +5,10 @@ package com.lzt.operate.code.generator.custommessagequeue.generallog;
  */
 public class GeneralLogProducerFactory {
 
-	private GeneralLogProducer producer;
+	private final GeneralLogProducer producer;
 
 	private GeneralLogProducerFactory() {
-		this.producer = new GeneralLogProducer();
+		producer = new GeneralLogProducer();
 	}
 
 	public static GeneralLogProducerFactory getInstance() {
@@ -16,11 +16,11 @@ public class GeneralLogProducerFactory {
 	}
 
 	public GeneralLogProducer getProducer() {
-		return this.producer;
+		return producer;
 	}
 
 	static class InstanceHolder {
-		private static GeneralLogProducerFactory instance = new GeneralLogProducerFactory();
+		private static final GeneralLogProducerFactory instance = new GeneralLogProducerFactory();
 	}
 
 }

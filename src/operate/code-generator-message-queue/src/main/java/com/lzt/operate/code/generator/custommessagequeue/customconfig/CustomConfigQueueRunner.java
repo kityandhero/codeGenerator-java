@@ -16,12 +16,12 @@ import java.util.Optional;
  */
 public class CustomConfigQueueRunner implements Runnable {
 
-	private CustomConfigService customConfigService;
+	private final CustomConfigService customConfigService;
 
-	private CustomConfigConsumer consumer;
+	private final CustomConfigConsumer consumer;
 
 	public CustomConfigQueueRunner(CustomConfigService generalLogService, CustomConfigConsumer consumer) {
-		this.customConfigService = generalLogService;
+		customConfigService = generalLogService;
 
 		this.consumer = consumer;
 	}
@@ -31,7 +31,7 @@ public class CustomConfigQueueRunner implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Optional<CustomConfig> optional = this.consumer.pull();
+				Optional<CustomConfig> optional = consumer.pull();
 
 				if (optional.isPresent()) {
 					CustomConfig customConfigFromQuery = optional.get();
@@ -45,7 +45,7 @@ public class CustomConfigQueueRunner implements Runnable {
 
 						if (!StringAssist.isNullOrEmpty(customConfigFromQuery.getUuid())) {
 							if (customConfigCollection.getAvailableValue().contains(customConfigFromQuery.getValue())) {
-								Optional<CustomConfig> optionalCustomConfig = this.customConfigService.findByUuid(customConfigFromQuery
+								Optional<CustomConfig> optionalCustomConfig = customConfigService.findByUuid(customConfigFromQuery
 										.getUuid());
 
 								CustomConfig customConfig;
@@ -68,7 +68,7 @@ public class CustomConfigQueueRunner implements Runnable {
 
 								optionalChannel.ifPresent(customConfig::setChannel);
 
-								this.customConfigService.save(customConfig);
+								customConfigService.save(customConfig);
 							}
 						}
 					}

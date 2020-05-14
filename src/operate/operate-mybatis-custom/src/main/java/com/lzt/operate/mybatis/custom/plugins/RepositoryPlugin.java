@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class RepositoryPlugin extends PluginAdapter {
 
-	private FullyQualifiedJavaType annotationRepository;
-	private String annotation = "@Repository";
+	private final FullyQualifiedJavaType annotationRepository;
+	private final String annotation = "@Repository";
 
 	public RepositoryPlugin() {
 		//$NON-NLS-1$

@@ -24,7 +24,7 @@ public class MyBatisGeneratorConfigurationParserCustom extends MyBatisGeneratorC
 
 	private void parseJavaServiceGenerator(Context context, Node node) {
 
-		ContextCustom contextOverride = ContextCustom.class.cast(context); ////替换Context
+		ContextCustom contextOverride = (ContextCustom) context; ////替换Context
 
 		JavaServiceGeneratorConfiguration serviceGeneratorConfiguration = new JavaServiceGeneratorConfiguration();
 

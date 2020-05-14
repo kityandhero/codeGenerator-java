@@ -39,22 +39,22 @@ public enum CustomDataType {
 	/**
 	 * 值
 	 */
-	private int flag;
+	private final int flag;
 
 	/**
 	 * 描述
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * 描述
 	 */
-	private String description;
+	private final String description;
 
 	CustomDataType(int value, String name, String descriptor) {
-		this.flag = value;
+		flag = value;
 		this.name = name;
-		this.description = descriptor;
+		description = descriptor;
 	}
 
 	public static Optional<CustomDataType> valueOfFlag(@NonNull Integer flag) {

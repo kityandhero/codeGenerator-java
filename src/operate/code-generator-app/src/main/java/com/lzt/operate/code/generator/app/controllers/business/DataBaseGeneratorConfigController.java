@@ -366,13 +366,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
 		}
 
-		String mybatisGeneratorGlobalConfigText = databaseGeneratorConfig.getMybatisGeneratorGlobalConfig();
-
-		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
-
-		if (!StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfigText)) {
-			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(mybatisGeneratorGlobalConfigText);
-		}
+		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
 
 		mybatisGeneratorGlobalConfig.setDaoType(daoType);
 
@@ -446,14 +440,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			return fail(ReturnDataCode.DataError.appendMessage("数据库生成配置不存在"));
 		}
 
-		String mybatisGeneratorGlobalConfigText = optionalDatabaseGeneratorConfig.get()
-																					   .getMybatisGeneratorGlobalConfig();
-
-		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
-
-		if (!StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfigText)) {
-			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(mybatisGeneratorGlobalConfigText);
-		}
+		GlobalConfig mybatisGeneratorGlobalConfig = optionalDatabaseGeneratorConfig.get()
+																						 .BuildMyybatisGeneratorGlobalConfig();
 
 		String folder = mybatisGeneratorGlobalConfig.getProjectFolder();
 
@@ -488,13 +476,7 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), databaseGeneratorConfig.getId());
 
-		String mybatisGeneratorGlobalConfigText = databaseGeneratorConfig.getMybatisGeneratorGlobalConfig();
-
-		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
-
-		if (!StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfigText)) {
-			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(mybatisGeneratorGlobalConfigText);
-		}
+		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
 
 		data.append(com.lzt.operate.code.generator.common.config.mybatis.generator.ConstantCollection.GLOBALCONFIG, mybatisGeneratorGlobalConfig);
 

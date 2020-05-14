@@ -9,10 +9,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class SingletonCustomConfigQueue {
 
-	private ConcurrentLinkedDeque<CustomConfig> queue;
+	private final ConcurrentLinkedDeque<CustomConfig> queue;
 
 	private SingletonCustomConfigQueue() {
-		this.queue = new ConcurrentLinkedDeque<>();
+		queue = new ConcurrentLinkedDeque<>();
 	}
 
 	public static SingletonCustomConfigQueue getInstance() {
@@ -20,10 +20,10 @@ public class SingletonCustomConfigQueue {
 	}
 
 	public ConcurrentLinkedDeque<CustomConfig> getQueue() {
-		return this.queue;
+		return queue;
 	}
 
 	static class InstanceHolder {
-		private static SingletonCustomConfigQueue instance = new SingletonCustomConfigQueue();
+		private static final SingletonCustomConfigQueue instance = new SingletonCustomConfigQueue();
 	}
 }

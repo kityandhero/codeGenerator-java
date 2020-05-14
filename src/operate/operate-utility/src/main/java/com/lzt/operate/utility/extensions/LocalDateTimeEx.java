@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * @author luzhitao
  */
 public class LocalDateTimeEx {
-	private LocalDateTime time;
+	private final LocalDateTime time;
 
 	public LocalDateTimeEx(LocalDateTime time) {
 		this.time = time;

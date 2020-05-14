@@ -1714,22 +1714,22 @@ public enum Mime {
 	/**
 	 * 名称
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * 扩展名
 	 */
-	private String extension;
+	private final String extension;
 
 	/**
 	 * 内容类型
 	 */
-	private String contentType;
+	private final String contentType;
 
 	/**
 	 * 内容类型别名
 	 */
-	private String[] alias;
+	private final String[] alias;
 
 	Mime(String name, String extension, String contentType, String[] alias) {
 		this.name = name;

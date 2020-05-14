@@ -5,7 +5,7 @@ package com.lzt.operate.code.generator.custommessagequeue.errorlog;
  */
 public class ErrorLogProducerFactory {
 
-	private ErrorLogProducer producer;
+	private final ErrorLogProducer producer;
 
 	private ErrorLogProducerFactory() {
 		producer = new ErrorLogProducer();
@@ -20,7 +20,7 @@ public class ErrorLogProducerFactory {
 	}
 
 	static class InstanceHolder {
-		private static ErrorLogProducerFactory instance = new ErrorLogProducerFactory();
+		private static final ErrorLogProducerFactory instance = new ErrorLogProducerFactory();
 	}
 
 }

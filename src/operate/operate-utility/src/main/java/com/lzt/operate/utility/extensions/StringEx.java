@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 public class StringEx implements Serializable {
 	private static final long serialVersionUID = 4500327534935128311L;
-	private StringBuilder builder;
+	private final StringBuilder builder;
 
 	public StringEx(String source) {
 		builder = new StringBuilder();
@@ -62,7 +62,7 @@ public class StringEx implements Serializable {
 	}
 
 	public int toInt() {
-		return ConvertAssist.stringToInt(this.builder.toString());
+		return ConvertAssist.stringToInt(builder.toString());
 	}
 
 	public int toInteger() {
@@ -74,7 +74,7 @@ public class StringEx implements Serializable {
 	}
 
 	public Long toLong() {
-		return ConvertAssist.stringToLong(this.builder.toString());
+		return ConvertAssist.stringToLong(builder.toString());
 	}
 
 	public StringEx padEnd(int minLength, char padChar) {

@@ -48,22 +48,22 @@ public enum CustomConfigCollection {
 			ConstantCollection.YES_STRING,
 			"是否记录启动日志");
 
-	private String uuid;
+	private final String uuid;
 
-	private String name;
+	private final String name;
 
-	private CustomConfigCategory category;
+	private final CustomConfigCategory category;
 
-	private String valueType;
+	private final String valueType;
 
-	private List<String> availableValue;
+	private final List<String> availableValue;
 
-	private String defaultValue;
+	private final String defaultValue;
 
-	private String description;
+	private final String description;
 
 	CustomConfigCollection(String guid, String name, CustomConfigCategory category, String valueType, List<String> availableValue, String defaultValue, String description) {
-		this.uuid = guid;
+		uuid = guid;
 		this.name = name;
 		this.category = category;
 		this.valueType = valueType;

@@ -15,9 +15,9 @@ import java.util.Optional;
  */
 public class AccessWayQueueRunner implements Runnable {
 
-	private AccessWayService accessWayService;
+	private final AccessWayService accessWayService;
 
-	private AccessWayConsumer consumer;
+	private final AccessWayConsumer consumer;
 
 	public AccessWayQueueRunner(AccessWayService accessWayService, AccessWayConsumer consumer) {
 		this.accessWayService = accessWayService;

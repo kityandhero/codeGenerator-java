@@ -8,18 +8,18 @@ package com.lzt.operate.utility.extensions;
  * @author luzhitao
  */
 public class IntegerEx {
-    private Integer source;
+	private final Integer source;
 
-    IntegerEx(Integer source) {
-        this.source = source;
-    }
+	IntegerEx(Integer source) {
+		this.source = source;
+	}
 
-    @Override
-    public String toString() {
-        return this.source.toString();
-    }
+	@Override
+	public String toString() {
+		return source.toString();
+	}
 
-    public StringEx toStringEx() {
-        return new StringEx(this.toString());
-    }
+	public StringEx toStringEx() {
+		return new StringEx(toString());
+	}
 }

@@ -33,9 +33,9 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
 	private static final FullyQualifiedJavaType LIST_TYPE = FullyQualifiedJavaType.getNewListInstance();
 	private static final FullyQualifiedJavaType SERIALIZEBLE_TYPE = new FullyQualifiedJavaType("java.io.Serializable");
 
-	private List<Method> methods = new ArrayList<>();
+	private final List<Method> methods = new ArrayList<>();
 
-	private ShellCallback shellCallback;
+	private final ShellCallback shellCallback;
 
 	public CommonDAOInterfacePlugin() {
 		shellCallback = new DefaultShellCallback(false);
@@ -117,12 +117,12 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
 		interfaze.addJavaDocLine(" */");
 
 		String daoSuperClass = interfaze.getType()
-										.getPackageName() + CommonDAOInterfacePlugin.DEFAULT_DAO_SUPER_CLASS;
+											  .getPackageName() + CommonDAOInterfacePlugin.DEFAULT_DAO_SUPER_CLASS;
 		FullyQualifiedJavaType daoSuperType = new FullyQualifiedJavaType(daoSuperClass);
 
 		String targetPackage = introspectedTable.getContext()
-												.getJavaModelGeneratorConfiguration()
-												.getTargetPackage();
+													  .getJavaModelGeneratorConfiguration()
+													  .getTargetPackage();
 
 		String domainObjectName = introspectedTable.getTableConfiguration().getDomainObjectName();
 		FullyQualifiedJavaType baseModelJavaType = new FullyQualifiedJavaType(targetPackage + "." + domainObjectName);

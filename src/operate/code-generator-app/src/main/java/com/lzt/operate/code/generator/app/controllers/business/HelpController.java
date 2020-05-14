@@ -66,9 +66,9 @@ import java.util.stream.Collectors;
 @Api(tags = {"帮助管理"})
 public class HelpController extends BaseOperateAuthController {
 
-	private HelpService helpService;
+	private final HelpService helpService;
 
-	private HelpCategoryService helpCategoryService;
+	private final HelpCategoryService helpCategoryService;
 
 	@Autowired
 	public HelpController(
@@ -83,7 +83,7 @@ public class HelpController extends BaseOperateAuthController {
 	}
 
 	public HelpService getHelpService() {
-		Optional<HelpService> optional = Optional.ofNullable(this.helpService);
+		Optional<HelpService> optional = Optional.ofNullable(helpService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -93,7 +93,7 @@ public class HelpController extends BaseOperateAuthController {
 	}
 
 	public HelpCategoryService getHelpCategoryService() {
-		Optional<HelpCategoryService> optional = Optional.ofNullable(this.helpCategoryService);
+		Optional<HelpCategoryService> optional = Optional.ofNullable(helpCategoryService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -129,7 +129,7 @@ public class HelpController extends BaseOperateAuthController {
 		String helpCategoryName = "";
 
 		if (!helpCategoryId.equals(ConstantCollection.SEARCH_UNLIMITED_LONG)) {
-			Optional<HelpCategory> optional = this.getHelpCategoryService().get(helpCategoryId);
+			Optional<HelpCategory> optional = getHelpCategoryService().get(helpCategoryId);
 
 			if (optional.isPresent()) {
 				helpCategoryName = optional.get().getName();
@@ -161,11 +161,11 @@ public class HelpController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(ConnectionConfig::getCreateTime));
 
-		Page<Help> result = this.getHelpService().page(specification, pageable);
+		Page<Help> result = getHelpService().page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<Help>> getterList = new ArrayList<>();
 
 												getterList.add(Help::getTitle);
@@ -178,7 +178,7 @@ public class HelpController extends BaseOperateAuthController {
 
 												return data;
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
@@ -187,7 +187,7 @@ public class HelpController extends BaseOperateAuthController {
 
 		extra.append("helpCategoryName", helpCategoryName);
 
-		return this.pageData(list, pageIndex, pageSize, totalPages, extra);
+		return pageData(list, pageIndex, pageSize, totalPages, extra);
 	}
 
 	@ApiOperation(value = "帮助类别详情", notes = "帮助类别详情", httpMethod = "POST")
@@ -204,7 +204,7 @@ public class HelpController extends BaseOperateAuthController {
 
 		long helpId = paramJson.getStringExByKey(GlobalString.HELP_ID, "0").toLong();
 
-		Optional<Help> result = this.getHelpService().get(helpId);
+		Optional<Help> result = getHelpService().get(helpId);
 
 		if (result.isPresent()) {
 			Help help = result.get();
@@ -226,10 +226,10 @@ public class HelpController extends BaseOperateAuthController {
 
 			data.append(ReflectAssist.getFriendlyIdName(Help.class), help.getId());
 
-			return this.singleData(data);
+			return singleData(data);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 }

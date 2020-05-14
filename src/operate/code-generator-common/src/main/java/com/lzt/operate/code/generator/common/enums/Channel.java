@@ -31,15 +31,15 @@ public enum Channel {
 	/**
 	 * 标志
 	 */
-	private int flag;
+	private final int flag;
 	/**
 	 * 标志
 	 */
-	private String name;
+	private final String name;
 	/**
 	 * 简介描述
 	 */
-	private String description;
+	private final String description;
 
 	Channel(int flag, String name, String description) {
 		this.flag = flag;

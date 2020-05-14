@@ -16,15 +16,15 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class BaseRedisAssist {
 
-	private RedisTemplate<String, Object> redisTemplate;
+	private final RedisTemplate<String, Object> redisTemplate;
 
 	protected BaseRedisAssist(RedisTemplate<String, Object> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
 
 	public RedisTemplate<String, Object> getRedisTemplate() {
-		if (Optional.ofNullable(this.redisTemplate).isPresent()) {
-			return this.redisTemplate;
+		if (Optional.ofNullable(redisTemplate).isPresent()) {
+			return redisTemplate;
 		}
 
 		throw new RuntimeException("RedisTemplate<String, Object>不存在");
@@ -40,7 +40,7 @@ public abstract class BaseRedisAssist {
 	public boolean expire(String key, long time) {
 		try {
 			if (time > 0) {
-				this.getRedisTemplate().expire(key, time, TimeUnit.SECONDS);
+				getRedisTemplate().expire(key, time, TimeUnit.SECONDS);
 			}
 			return true;
 		} catch (Exception e) {
@@ -56,7 +56,7 @@ public abstract class BaseRedisAssist {
 	 * @return 时间(秒) 返回0代表为永久有效
 	 */
 	public Optional<Long> getExpire(@NotNull String key) {
-		Long expireSecond = this.getRedisTemplate().getExpire(key, TimeUnit.SECONDS);
+		Long expireSecond = getRedisTemplate().getExpire(key, TimeUnit.SECONDS);
 
 		return Optional.of(expireSecond);
 	}
@@ -69,7 +69,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean hasKey(String key) {
 		try {
-			return this.getRedisTemplate().hasKey(key);
+			return getRedisTemplate().hasKey(key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -85,9 +85,9 @@ public abstract class BaseRedisAssist {
 	public void del(String... key) {
 		if (key != null && key.length > 0) {
 			if (key.length == 1) {
-				this.getRedisTemplate().delete(key[0]);
+				getRedisTemplate().delete(key[0]);
 			} else {
-				this.getRedisTemplate().delete(CollectionUtils.arrayToList(key));
+				getRedisTemplate().delete(CollectionUtils.arrayToList(key));
 			}
 		}
 	}
@@ -100,7 +100,7 @@ public abstract class BaseRedisAssist {
 	 * @return 值
 	 */
 	public Object get(String key) {
-		return key == null ? null : this.getRedisTemplate().opsForValue().get(key);
+		return key == null ? null : getRedisTemplate().opsForValue().get(key);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean set(String key, Object value) {
 		try {
-			this.getRedisTemplate().opsForValue().set(key, value);
+			getRedisTemplate().opsForValue().set(key, value);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,7 +131,7 @@ public abstract class BaseRedisAssist {
 	public boolean set(String key, Object value, long time) {
 		try {
 			if (time > 0) {
-				this.getRedisTemplate().opsForValue().set(key, value, time, TimeUnit.SECONDS);
+				getRedisTemplate().opsForValue().set(key, value, time, TimeUnit.SECONDS);
 			} else {
 				set(key, value);
 			}
@@ -152,7 +152,7 @@ public abstract class BaseRedisAssist {
 		if (delta < 0) {
 			throw new RuntimeException("递增因子必须大于0");
 		}
-		return this.getRedisTemplate().opsForValue().increment(key, delta);
+		return getRedisTemplate().opsForValue().increment(key, delta);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public abstract class BaseRedisAssist {
 		if (delta < 0) {
 			throw new RuntimeException("递减因子必须大于0");
 		}
-		return this.getRedisTemplate().opsForValue().increment(key, -delta);
+		return getRedisTemplate().opsForValue().increment(key, -delta);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public abstract class BaseRedisAssist {
 	 * @return 值
 	 */
 	public Object hashGet(String key, String item) {
-		return this.getRedisTemplate().opsForHash().get(key, item);
+		return getRedisTemplate().opsForHash().get(key, item);
 	}
 
 	/**
@@ -187,7 +187,7 @@ public abstract class BaseRedisAssist {
 	 * @return 对应的多个键值
 	 */
 	public Map<Object, Object> mapGet(String key) {
-		return this.getRedisTemplate().opsForHash().entries(key);
+		return getRedisTemplate().opsForHash().entries(key);
 	}
 
 	/**
@@ -199,7 +199,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean mapSet(String key, Map<String, Object> map) {
 		try {
-			this.getRedisTemplate().opsForHash().putAll(key, map);
+			getRedisTemplate().opsForHash().putAll(key, map);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -217,7 +217,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean mapSet(String key, Map<String, Object> map, long time) {
 		try {
-			this.getRedisTemplate().opsForHash().putAll(key, map);
+			getRedisTemplate().opsForHash().putAll(key, map);
 			if (time > 0) {
 				expire(key, time);
 			}
@@ -239,7 +239,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean hashSet(String key, String item, Object value) {
 		try {
-			this.getRedisTemplate().opsForHash().put(key, item, value);
+			getRedisTemplate().opsForHash().put(key, item, value);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -258,7 +258,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean hashSet(String key, String item, Object value, long time) {
 		try {
-			this.getRedisTemplate().opsForHash().put(key, item, value);
+			getRedisTemplate().opsForHash().put(key, item, value);
 			if (time > 0) {
 				expire(key, time);
 			}
@@ -276,7 +276,7 @@ public abstract class BaseRedisAssist {
 	 * @param item 项 可以使多个 不能为 null
 	 */
 	public void hashDelete(String key, Object... item) {
-		this.getRedisTemplate().opsForHash().delete(key, item);
+		getRedisTemplate().opsForHash().delete(key, item);
 	}
 
 	/**
@@ -287,7 +287,7 @@ public abstract class BaseRedisAssist {
 	 * @return true 存在 false 不存在
 	 */
 	public boolean hashHasKey(String key, String item) {
-		return this.getRedisTemplate().opsForHash().hasKey(key, item);
+		return getRedisTemplate().opsForHash().hasKey(key, item);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public abstract class BaseRedisAssist {
 	 * @return double
 	 */
 	public double hashIncrease(String key, String item, double by) {
-		return this.getRedisTemplate().opsForHash().increment(key, item, by);
+		return getRedisTemplate().opsForHash().increment(key, item, by);
 	}
 
 	/**
@@ -311,7 +311,7 @@ public abstract class BaseRedisAssist {
 	 * @return
 	 */
 	public double hashDecrease(String key, String item, double by) {
-		return this.getRedisTemplate().opsForHash().increment(key, item, -by);
+		return getRedisTemplate().opsForHash().increment(key, item, -by);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public Set<Object> setMembers(String key) {
 		try {
-			return this.getRedisTemplate().opsForSet().members(key);
+			return getRedisTemplate().opsForSet().members(key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -338,7 +338,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean setIsMember(String key, Object value) {
 		try {
-			return this.getRedisTemplate().opsForSet().isMember(key, value);
+			return getRedisTemplate().opsForSet().isMember(key, value);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -354,7 +354,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public long setAdd(String key, Object... values) {
 		try {
-			return this.getRedisTemplate().opsForSet().add(key, values);
+			return getRedisTemplate().opsForSet().add(key, values);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -371,7 +371,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public Long setAndWithTime(String key, long time, Object... values) {
 		try {
-			Long count = this.getRedisTemplate().opsForSet().add(key, values);
+			Long count = getRedisTemplate().opsForSet().add(key, values);
 
 			if (time > 0) {
 				expire(key, time);
@@ -392,7 +392,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public long setGetSize(String key) {
 		try {
-			return this.getRedisTemplate().opsForSet().size(key);
+			return getRedisTemplate().opsForSet().size(key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -408,7 +408,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public long setRemove(String key, Object... values) {
 		try {
-			return this.getRedisTemplate().opsForSet().remove(key, values);
+			return getRedisTemplate().opsForSet().remove(key, values);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -425,7 +425,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public List<Object> listRange(String key, long start, long end) {
 		try {
-			return this.getRedisTemplate().opsForList().range(key, start, end);
+			return getRedisTemplate().opsForList().range(key, start, end);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -440,7 +440,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public long listGetSize(String key) {
 		try {
-			return this.getRedisTemplate().opsForList().size(key);
+			return getRedisTemplate().opsForList().size(key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -456,7 +456,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public Object listGetIndex(String key, long index) {
 		try {
-			return this.getRedisTemplate().opsForList().index(key, index);
+			return getRedisTemplate().opsForList().index(key, index);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -472,7 +472,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean listRightPush(String key, Object value) {
 		try {
-			this.getRedisTemplate().opsForList().rightPush(key, value);
+			getRedisTemplate().opsForList().rightPush(key, value);
 
 			return true;
 		} catch (Exception e) {
@@ -491,7 +491,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean listRightPush(String key, Object value, long time) {
 		try {
-			this.getRedisTemplate().opsForList().rightPush(key, value);
+			getRedisTemplate().opsForList().rightPush(key, value);
 
 			if (time > 0) {
 				expire(key, time);
@@ -512,7 +512,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean listRightPush(String key, List<Object> value) {
 		try {
-			this.getRedisTemplate().opsForList().rightPushAll(key, value);
+			getRedisTemplate().opsForList().rightPushAll(key, value);
 
 			return true;
 		} catch (Exception e) {
@@ -531,7 +531,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean listRightPush(String key, List<Object> value, long time) {
 		try {
-			this.getRedisTemplate().opsForList().rightPushAll(key, value);
+			getRedisTemplate().opsForList().rightPushAll(key, value);
 
 			if (time > 0) {
 				expire(key, time);
@@ -553,7 +553,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public boolean listSet(String key, long index, Object value) {
 		try {
-			this.getRedisTemplate().opsForList().set(key, index, value);
+			getRedisTemplate().opsForList().set(key, index, value);
 
 			return true;
 		} catch (Exception e) {
@@ -572,7 +572,7 @@ public abstract class BaseRedisAssist {
 	 */
 	public long listRemove(String key, long count, Object value) {
 		try {
-			return this.getRedisTemplate().opsForList().remove(key, count, value);
+			return getRedisTemplate().opsForList().remove(key, count, value);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;

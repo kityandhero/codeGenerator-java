@@ -9,10 +9,10 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class SingletonGeneralLogQueue {
 
-	private ConcurrentLinkedDeque<GeneralLog> queue;
+	private final ConcurrentLinkedDeque<GeneralLog> queue;
 
 	private SingletonGeneralLogQueue() {
-		this.queue = new ConcurrentLinkedDeque<>();
+		queue = new ConcurrentLinkedDeque<>();
 	}
 
 	public static SingletonGeneralLogQueue getInstance() {
@@ -20,10 +20,10 @@ public class SingletonGeneralLogQueue {
 	}
 
 	public ConcurrentLinkedDeque<GeneralLog> getQueue() {
-		return this.queue;
+		return queue;
 	}
 
 	static class InstanceHolder {
-		private static SingletonGeneralLogQueue instance = new SingletonGeneralLogQueue();
+		private static final SingletonGeneralLogQueue instance = new SingletonGeneralLogQueue();
 	}
 }

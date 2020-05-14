@@ -59,8 +59,8 @@ public class EntranceController extends OperateBaseController {
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
-	private CustomJsonWebTokenConfig customJsonWebTokenConfig;
-	private AccountService accountService;
+	private final CustomJsonWebTokenConfig customJsonWebTokenConfig;
+	private final AccountService accountService;
 
 	@Autowired
 	public EntranceController(
@@ -80,12 +80,12 @@ public class EntranceController extends OperateBaseController {
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
-				this.loadingCache,
-				this.customJsonWebTokenConfig,
-				this.accountService,
-				this.accountRoleService,
-				this.roleUniversalService,
-				this.roleCodeToolsService);
+				loadingCache,
+				customJsonWebTokenConfig,
+				accountService,
+				accountRoleService,
+				roleUniversalService,
+				roleCodeToolsService);
 	}
 
 	@ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
@@ -135,7 +135,7 @@ public class EntranceController extends OperateBaseController {
 
 			data.append("currentAuthority", operatorAssist.getCompetenceTagCollection(searchResult.getId()).toArray());
 
-			ListCompetenceCache.removeCache(searchResult.getId(), this.getAccountAssist().getLoadingCache());
+			ListCompetenceCache.removeCache(searchResult.getId(), getAccountAssist().getLoadingCache());
 
 			return singleData(data);
 		} else {

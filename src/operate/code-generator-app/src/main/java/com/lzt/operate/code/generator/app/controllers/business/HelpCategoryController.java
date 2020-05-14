@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
 @Api(tags = {"帮助类别管理"})
 public class HelpCategoryController extends BaseOperateAuthController {
 
-	private HelpCategoryService helpCategoryService;
+	private final HelpCategoryService helpCategoryService;
 
 	@Autowired
 	public HelpCategoryController(LoadingCache<String, Object> loadingCache, CustomJsonWebTokenConfig customJsonWebTokenConfig, HelpCategoryServiceImpl helpCategoryService) {
@@ -68,7 +68,7 @@ public class HelpCategoryController extends BaseOperateAuthController {
 	}
 
 	public HelpCategoryService getHelpCategoryService() {
-		Optional<HelpCategoryService> optional = Optional.ofNullable(this.helpCategoryService);
+		Optional<HelpCategoryService> optional = Optional.ofNullable(helpCategoryService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -110,7 +110,7 @@ public class HelpCategoryController extends BaseOperateAuthController {
 			}
 		};
 
-		List<HelpCategory> result = this.getHelpCategoryService().list(specification);
+		List<HelpCategory> result = getHelpCategoryService().list(specification);
 
 		List<SerializableData> list = result
 				.stream()
@@ -127,16 +127,16 @@ public class HelpCategoryController extends BaseOperateAuthController {
 				})
 				.collect(Collectors.toList());
 
-		return this.listData(list);
+		return listData(list);
 	}
 
 	@ApiOperation(value = "帮助类别树列表", notes = "帮助类别树列表", httpMethod = "POST")
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/treeList", consumes = "application/json", produces = "application/json")
 	public ResultListData treeList(@RequestBody Map<String, Object> json) {
-		List<HelpCategoryTreeItem> list = this.getHelpCategoryService().treeList();
+		List<HelpCategoryTreeItem> list = getHelpCategoryService().treeList();
 
-		return this.listData(list);
+		return listData(list);
 	}
 
 	@ApiOperation(value = "帮助类别详情", notes = "帮助类别详情", httpMethod = "POST")
@@ -153,7 +153,7 @@ public class HelpCategoryController extends BaseOperateAuthController {
 
 		long helpCategoryId = paramJson.getStringExByKey(GlobalString.HELP_CATEGORY_ID, "0").toLong();
 
-		Optional<HelpCategory> result = this.getHelpCategoryService().get(helpCategoryId);
+		Optional<HelpCategory> result = getHelpCategoryService().get(helpCategoryId);
 
 		if (result.isPresent()) {
 			HelpCategory helpCategory = result.get();
@@ -173,10 +173,10 @@ public class HelpCategoryController extends BaseOperateAuthController {
 
 			data.append(ReflectAssist.getFriendlyIdName(HelpCategory.class), helpCategory.getId());
 
-			return this.singleData(data);
+			return singleData(data);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 }

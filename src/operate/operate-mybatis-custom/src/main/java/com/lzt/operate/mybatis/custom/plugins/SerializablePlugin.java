@@ -9,21 +9,21 @@ import java.util.List;
 import java.util.Properties;
 
 public class SerializablePlugin extends PluginAdapter {
-	private FullyQualifiedJavaType serializable;
-	private FullyQualifiedJavaType gwtSerializable;
+	private final FullyQualifiedJavaType serializable;
+	private final FullyQualifiedJavaType gwtSerializable;
 	private boolean addGWTInterface;
 	private boolean suppressJavaInterface;
 
 	public SerializablePlugin() {
-		this.serializable = new FullyQualifiedJavaType("java.io.Serializable");
-		this.gwtSerializable = new FullyQualifiedJavaType("com.google.gwt.user.client.rpc.IsSerializable");
+		serializable = new FullyQualifiedJavaType("java.io.Serializable");
+		gwtSerializable = new FullyQualifiedJavaType("com.google.gwt.user.client.rpc.IsSerializable");
 	}
 
 	@Override
 	public void setProperties(Properties properties) {
 		super.setProperties(properties);
-		this.addGWTInterface = Boolean.valueOf(properties.getProperty("addGWTInterface")).booleanValue();
-		this.suppressJavaInterface = Boolean.valueOf(properties.getProperty("suppressJavaInterface")).booleanValue();
+		addGWTInterface = Boolean.valueOf(properties.getProperty("addGWTInterface")).booleanValue();
+		suppressJavaInterface = Boolean.valueOf(properties.getProperty("suppressJavaInterface")).booleanValue();
 	}
 
 	@Override
@@ -52,14 +52,14 @@ public class SerializablePlugin extends PluginAdapter {
 	}
 
 	protected void makeSerializable(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		if (this.addGWTInterface) {
-			topLevelClass.addImportedType(this.gwtSerializable);
-			topLevelClass.addSuperInterface(this.gwtSerializable);
+		if (addGWTInterface) {
+			topLevelClass.addImportedType(gwtSerializable);
+			topLevelClass.addSuperInterface(gwtSerializable);
 		}
 
-		if (!(this.suppressJavaInterface)) {
-			topLevelClass.addImportedType(this.serializable);
-			topLevelClass.addSuperInterface(this.serializable);
+		if (!(suppressJavaInterface)) {
+			topLevelClass.addImportedType(serializable);
+			topLevelClass.addSuperInterface(serializable);
 			topLevelClass.addAnnotation("@SuppressWarnings(\"serial\")");
 
 		}

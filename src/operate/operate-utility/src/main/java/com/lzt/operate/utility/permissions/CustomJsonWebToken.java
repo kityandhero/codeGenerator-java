@@ -25,8 +25,8 @@ import java.util.Optional;
  * @author luzhitao
  */
 public class CustomJsonWebToken {
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	private String token;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final String token;
 
 	private CustomJsonWebToken(String token) {
 		this.token = token;
@@ -247,6 +247,6 @@ public class CustomJsonWebToken {
 	}
 
 	public Object getToken() {
-		return this.token;
+		return token;
 	}
 }

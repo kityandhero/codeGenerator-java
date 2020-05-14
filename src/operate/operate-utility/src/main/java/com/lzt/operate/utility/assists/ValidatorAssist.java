@@ -58,7 +58,7 @@ public class ValidatorAssist {
 		} else if (obj instanceof Map) {
 			return isEmpty((Map) obj);
 		} else if (obj instanceof String[]) {
-			return isEmpty((String[]) obj);
+			return isEmpty(obj);
 		} else {
 			return obj == null;
 		}
@@ -104,7 +104,7 @@ public class ValidatorAssist {
 		} else if (obj instanceof Map) {
 			return notEmpty((Map) obj);
 		} else if (obj instanceof String[]) {
-			return notEmpty((String[]) obj);
+			return notEmpty(obj);
 		} else {
 			return obj != null;
 		}
@@ -162,7 +162,7 @@ public class ValidatorAssist {
 	 * @return true Or false
 	 */
 	public static boolean isNumber(String str) {
-		String regex = "^(-?[1-9]\\d*\\.?\\d*)|(-?0\\.\\d*[1-9])|(-?[0])|(-?[0]\\.\\d*)$";
+		final String regex = "^(-?[1-9]\\d*\\.?\\d*)|(-?0\\.\\d*[1-9])|(-?[0])|(-?[0]\\.\\d*)$";
 		return str.matches(regex);
 	}
 
@@ -323,7 +323,8 @@ public class ValidatorAssist {
 		else if (source instanceof Comparable) {
 			return (source).equals(target);
 		} else if (source instanceof Collection) {
-			Collection sourceList = (Collection) source, targetList = (Collection) target;
+			Collection sourceList = (Collection) source;
+			Collection targetList = (Collection) target;
 
 			// size不等
 			if (sourceList.size() != targetList.size()) {

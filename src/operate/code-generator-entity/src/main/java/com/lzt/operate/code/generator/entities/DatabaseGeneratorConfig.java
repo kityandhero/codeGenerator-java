@@ -1,12 +1,16 @@
 package com.lzt.operate.code.generator.entities;
 
+import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
+import com.lzt.operate.utility.assists.ConvertAssist;
+import com.lzt.operate.utility.assists.StringAssist;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author luzhitao
@@ -44,4 +48,28 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	public void setMybatisGeneratorGlobalConfig(String mybatisGeneratorGlobalConfig) {
 		this.mybatisGeneratorGlobalConfig = mybatisGeneratorGlobalConfig;
 	}
+
+	//region  mybatisGeneratorGlobalConfig
+
+	public GlobalConfig BuildMyybatisGeneratorGlobalConfig() {
+		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
+
+		if (!StringAssist.isNullOrEmpty(getMybatisGeneratorGlobalConfig())) {
+			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(getMybatisGeneratorGlobalConfig());
+		}
+
+		return mybatisGeneratorGlobalConfig;
+	}
+
+	public DatabaseGeneratorConfig fillInMyybatisGeneratorGlobalConfig(@NotNull GlobalConfig mybatisGeneratorGlobalConfig) {
+		try {
+			setMybatisGeneratorGlobalConfig(ConvertAssist.serialize(mybatisGeneratorGlobalConfig));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return this;
+	}
+
+	//endregion
 }

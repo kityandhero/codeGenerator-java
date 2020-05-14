@@ -15,9 +15,9 @@ import java.util.Optional;
  */
 public class GeneralLogQueueRunner implements Runnable {
 
-	private GeneralLogService generalLogService;
+	private final GeneralLogService generalLogService;
 
-	private GeneralLogConsumer consumer;
+	private final GeneralLogConsumer consumer;
 
 	public GeneralLogQueueRunner(GeneralLogService generalLogService, GeneralLogConsumer consumer) {
 		this.generalLogService = generalLogService;

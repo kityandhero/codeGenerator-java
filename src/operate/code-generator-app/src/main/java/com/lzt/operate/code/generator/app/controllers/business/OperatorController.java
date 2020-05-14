@@ -54,7 +54,7 @@ public class OperatorController extends BaseOperateAuthController {
 	private final AccountRoleService accountRoleService;
 	private final RoleUniversalService roleUniversalService;
 	private final RoleCodeToolsServiceImpl roleCodeToolsService;
-	private AccountService operatorService;
+	private final AccountService operatorService;
 
 	@Autowired
 	public OperatorController(
@@ -67,19 +67,19 @@ public class OperatorController extends BaseOperateAuthController {
 		super(loadingCache, customJsonWebTokenConfig);
 
 		this.operatorService = operatorService;
-		this.accountRoleService = operatorRoleService;
+		accountRoleService = operatorRoleService;
 		this.roleUniversalService = roleUniversalService;
 		this.roleCodeToolsService = roleCodeToolsService;
 	}
 
 	private AccountAssist getAccountAssist() {
 		return new AccountAssist(
-				this.getLoadingCache(),
-				this.getCustomJsonWebTokenConfig(),
-				this.operatorService,
-				this.accountRoleService,
-				this.roleUniversalService,
-				this.roleCodeToolsService);
+				getLoadingCache(),
+				getCustomJsonWebTokenConfig(),
+				operatorService,
+				accountRoleService,
+				roleUniversalService,
+				roleCodeToolsService);
 	}
 
 	@ApiOperation(value = "当前操作者信息", notes = "当前操作者信息", httpMethod = "POST")
@@ -91,10 +91,10 @@ public class OperatorController extends BaseOperateAuthController {
 		Optional<Account> result = assist.getCurrent();
 
 		if (result.isPresent()) {
-			return this.singleData(result.get());
+			return singleData(result.get());
 		}
 
-		return this.noDataError();
+		return noDataError();
 	}
 
 	@ApiOperation(value = "当前操作者基本信息", notes = "当前操作者基本信息", httpMethod = "POST")
@@ -106,10 +106,10 @@ public class OperatorController extends BaseOperateAuthController {
 		Optional<Account> result = assist.getCurrent();
 
 		if (result.isPresent()) {
-			return this.singleData(result.get());
+			return singleData(result.get());
 		}
 
-		return this.noDataError();
+		return noDataError();
 	}
 
 	@ApiOperation(value = "更新操作者基本信息", notes = "更新操作者基本信息", httpMethod = "POST")
@@ -157,10 +157,10 @@ public class OperatorController extends BaseOperateAuthController {
 
 			data.setUpdateOperatorId(operatorId);
 
-			return this.success();
+			return success();
 		}
 
-		return this.noDataError();
+		return noDataError();
 	}
 
 	@ApiOperation(value = "修改操作者密码", notes = "修改操作者密码", httpMethod = "POST")
@@ -180,21 +180,21 @@ public class OperatorController extends BaseOperateAuthController {
 		String password = paramJson.getStringByKey(GlobalString.ACCOUNT_PASSWORD);
 
 		if (StringAssist.isNullOrEmpty(password)) {
-			return this.paramError(GlobalString.ACCOUNT_PASSWORD, "密码无效");
+			return paramError(GlobalString.ACCOUNT_PASSWORD, "密码无效");
 		}
 
 		if (password.length() <= CustomConstants.ACCOUNT_PASSWORD_MIN_LENGTH || password.length() > CustomConstants.ACCOUNT_PASSWORD_MAX_LENGTH) {
-			return this.paramError(GlobalString.ACCOUNT_PASSWORD, "密码长度为6~32位");
+			return paramError(GlobalString.ACCOUNT_PASSWORD, "密码长度为6~32位");
 		}
 
 		String rePassword = paramJson.getStringByKey(GlobalString.RE_PASSWORD);
 
 		if (StringAssist.isNullOrEmpty(rePassword)) {
-			return this.paramError(GlobalString.RE_PASSWORD, "确认密码无效");
+			return paramError(GlobalString.RE_PASSWORD, "确认密码无效");
 		}
 
 		if (!password.equals(rePassword)) {
-			return this.paramError(GlobalString.RE_PASSWORD, "密码与确认密码不一致");
+			return paramError(GlobalString.RE_PASSWORD, "密码与确认密码不一致");
 		}
 
 		String originalPassword = paramJson.getStringByKey(GlobalString.ORIGINAL_PASSWORD);
@@ -207,7 +207,7 @@ public class OperatorController extends BaseOperateAuthController {
 			Account data = optional.get();
 
 			if (!data.getPassword().equals(Md5Assist.toMd5(originalPassword, data.getSlat()))) {
-				return this.fail(ReturnDataCode.PasswordNotMatch.toMessage().toMessage("原密码错误"));
+				return fail(ReturnDataCode.PasswordNotMatch.toMessage().toMessage("原密码错误"));
 			}
 
 			data.setPassword(Md5Assist.toMd5(password, data.getSlat()));
@@ -218,10 +218,10 @@ public class OperatorController extends BaseOperateAuthController {
 
 			data = assist.getAccountService().save(data);
 
-			return this.singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
+			return singleData(new SerializableData().append(GlobalString.ACCOUNT_ID, data.getId()));
 		}
 
-		return this.noDataError();
+		return noDataError();
 	}
 
 }

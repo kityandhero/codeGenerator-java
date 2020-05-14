@@ -25,22 +25,22 @@ public enum ErrorLogStatus {
 	/**
 	 * 值
 	 */
-	private int flag;
+	private final int flag;
 
 	/**
 	 * 描述
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * 描述
 	 */
-	private String description;
+	private final String description;
 
 	ErrorLogStatus(int value, String name, String descriptor) {
-		this.flag = value;
+		flag = value;
 		this.name = name;
-		this.description = descriptor;
+		description = descriptor;
 	}
 
 	public static Optional<ErrorLogStatus> valueOfFlag(@NonNull Integer flag) {
@@ -60,15 +60,15 @@ public enum ErrorLogStatus {
 	}
 
 	public int getFlag() {
-		return this.flag;
+		return flag;
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 
 }

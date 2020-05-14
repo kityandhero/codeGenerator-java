@@ -18,7 +18,7 @@ import org.springframework.lang.NonNull;
  * @author lzt
  */
 public abstract class BaseCustomApplicationListener<T extends BaseCustomApplicationInit> implements ApplicationListener<ApplicationEvent> {
-	private Class<T> customApplicationInitClass;
+	private final Class<T> customApplicationInitClass;
 
 	protected BaseCustomApplicationListener(Class<T> customApplicationInitClass) {
 		this.customApplicationInitClass = customApplicationInitClass;
@@ -53,7 +53,7 @@ public abstract class BaseCustomApplicationListener<T extends BaseCustomApplicat
 	protected abstract void handleApplicationStarted(ApplicationStartedEvent applicationEvent);
 
 	private void handleApplicationReady(ApplicationReadyEvent applicationEvent) {
-		handleApplicationCustomInit(applicationEvent, this.customApplicationInitClass);
+		handleApplicationCustomInit(applicationEvent, customApplicationInitClass);
 		handleApplicationReadyOther(applicationEvent);
 	}
 

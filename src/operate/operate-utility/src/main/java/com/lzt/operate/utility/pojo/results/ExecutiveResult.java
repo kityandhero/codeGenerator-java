@@ -16,7 +16,7 @@ public class ExecutiveResult<T> extends ExecutiveSimpleResult {
 	/**
 	 * getOptionalData
 	 */
-	private T data;
+	private final T data;
 
 	public Optional<T> getOptionalData() {
 		return Optional.of(data);
@@ -77,7 +77,7 @@ public class ExecutiveResult<T> extends ExecutiveSimpleResult {
 	}
 
 	public ExecutiveSimpleResult transferToExecutiveSimpleResult() {
-		return new ExecutiveSimpleResult(this.getCode());
+		return new ExecutiveSimpleResult(getCode());
 	}
 
 }

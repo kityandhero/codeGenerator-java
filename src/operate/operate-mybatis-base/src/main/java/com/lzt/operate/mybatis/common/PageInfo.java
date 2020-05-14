@@ -27,7 +27,7 @@ public class PageInfo {
 	/**
 	 * bean起始坐标(不包含)
 	 */
-	private Integer pageBeginId = null;
+	private final Integer pageBeginId = null;
 
 	/**
 	 * 将分布参数传入处理，最终计算出当前页码PageQuery_currPage，开始坐标PageQuery_star，
@@ -41,7 +41,7 @@ public class PageInfo {
 	 */
 	public void setPageParams(int totalCount, int pageSize, int currentPage) {
 
-		this.totalPage = pageSize == 0 ? 1 : (int) Math.ceil((double) totalCount / (double) pageSize);
+		totalPage = pageSize == 0 ? 1 : (int) Math.ceil((double) totalCount / (double) pageSize);
 
 		this.totalCount = totalCount;
 		this.pageSize = pageSize;
@@ -63,9 +63,9 @@ public class PageInfo {
 			pageBegin = (currentPage - 1) * this.pageSize;
 		}
 		pageSize = (int) Math.ceil(Psize_l);
-		this.pageEnd = currentPage * this.pageSize;
+		pageEnd = currentPage * this.pageSize;
 
-		if (this.currentPage <= 0 || this.currentPage > this.totalPage) {
+		if (this.currentPage <= 0 || this.currentPage > totalPage) {
 			this.pageSize = 0;
 		}
 	}
@@ -77,7 +77,7 @@ public class PageInfo {
 	 * @param totalCount 记录总数
 	 */
 	public void setPageParams(int totalCount) {
-		this.setPageParams(totalCount, this.pageSize, this.currentPage);
+		setPageParams(totalCount, pageSize, currentPage);
 	}
 
 	@Override

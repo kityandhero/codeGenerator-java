@@ -22,14 +22,14 @@ import java.util.Properties;
  */
 public class CommentGeneratorCustom extends DefaultCommentGenerator {
 
-	private Properties properties;
+	private final Properties properties;
 	private boolean suppressDate;
 	private boolean suppressAllComments;
 
 	public CommentGeneratorCustom() {
-		this.properties = new Properties();
-		this.suppressDate = false;
-		this.suppressAllComments = false;
+		properties = new Properties();
+		suppressDate = false;
+		suppressAllComments = false;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	 */
 	@Override
 	public void addComment(XmlElement xmlElement) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 
@@ -56,9 +56,9 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	public void addConfigurationProperties(Properties properties) {
 		this.properties.putAll(properties);
 
-		this.suppressDate = StringUtility.isTrue(properties.getProperty("suppressDate"));
+		suppressDate = StringUtility.isTrue(properties.getProperty("suppressDate"));
 
-		this.suppressAllComments = StringUtility.isTrue(properties.getProperty("suppressAllComments"));
+		suppressAllComments = StringUtility.isTrue(properties.getProperty("suppressAllComments"));
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 
 	@Override
 	protected String getDateString() {
-		if (this.suppressDate) {
+		if (suppressDate) {
 			return null;
 		}
 		return new Date().toString();
@@ -91,7 +91,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	 */
 	@Override
 	public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 
@@ -105,7 +105,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 
 	@Override
 	public void addEnumComment(InnerEnum innerEnum, IntrospectedTable introspectedTable) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 
@@ -127,7 +127,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	@Override
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable,
 								IntrospectedColumn introspectedColumn) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 
@@ -146,7 +146,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	 */
 	@Override
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 		field.addJavaDocLine("/**");
@@ -159,7 +159,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	 */
 	@Override
 	public void addGeneralMethodComment(Method method, IntrospectedTable introspectedTable) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 	}
@@ -170,7 +170,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	@Override
 	public void addGetterComment(Method method, IntrospectedTable introspectedTable,
 								 IntrospectedColumn introspectedColumn) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 
@@ -194,7 +194,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	@Override
 	public void addSetterComment(Method method, IntrospectedTable introspectedTable,
 								 IntrospectedColumn introspectedColumn) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 
@@ -224,7 +224,7 @@ public class CommentGeneratorCustom extends DefaultCommentGenerator {
 	 */
 	@Override
 	public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable, boolean markAsDoNotDelete) {
-		if (this.suppressAllComments) {
+		if (suppressAllComments) {
 			return;
 		}
 

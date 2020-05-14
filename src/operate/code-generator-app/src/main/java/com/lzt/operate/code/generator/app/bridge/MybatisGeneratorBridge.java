@@ -3,6 +3,7 @@ package com.lzt.operate.code.generator.app.bridge;
 import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import com.lzt.operate.code.generator.app.util.DatabaseTypeUtil;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
@@ -152,14 +153,18 @@ public class MybatisGeneratorBridge {
 	}
 
 	private ExecutiveSimpleResult checkFolder(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
-		String projectFolder = Optional.ofNullable(databaseGeneratorConfig.getProjectFolder()).orElse("").trim();
-		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
+		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+
+		String projectFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getProjectFolder()).orElse("").trim();
+		String modelTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getModelTargetFolder())
 										   .orElse("")
 										   .trim();
-		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
-		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
+		String daoTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getDaoTargetFolder())
+										 .orElse("")
+										 .trim();
+		String mappingXmlTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getMappingXmlTargetFolder())
 												.orElse("").trim();
-		String serviceTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getServiceTargetFolder())
+		String serviceTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getServiceTargetFolder())
 											 .orElse("").trim();
 
 		if (StringAssist.isNullOrEmpty(projectFolder)) {
@@ -185,7 +190,7 @@ public class MybatisGeneratorBridge {
 		if (!StringAssist.isNullOrEmpty(modelTargetFolder)) {
 			String modelFolder;
 
-			int modelTargetFolderRelativeMode = databaseGeneratorConfig.getModelTargetFolderRelativeMode();
+			int modelTargetFolderRelativeMode = mybatisGeneratorGlobalConfig.getModelTargetFolderRelativeMode();
 
 			if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode)) {
 				if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -216,7 +221,7 @@ public class MybatisGeneratorBridge {
 
 		if (!StringAssist.isNullOrEmpty(daoTargetFolder)) {
 			String daoFolder;
-			int daoTargetFolderRelativeMode = databaseGeneratorConfig.getDaoTargetFolderRelativeMode();
+			int daoTargetFolderRelativeMode = mybatisGeneratorGlobalConfig.getDaoTargetFolderRelativeMode();
 
 			if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode)) {
 				if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -247,7 +252,7 @@ public class MybatisGeneratorBridge {
 
 		if (!StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
 			String mappingXmlFolder;
-			int mappingXmlTargetFolderRelativeMode = databaseGeneratorConfig.getMappingXmlTargetFolderRelativeMode();
+			int mappingXmlTargetFolderRelativeMode = mybatisGeneratorGlobalConfig.getMappingXmlTargetFolderRelativeMode();
 
 			if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode)) {
 				if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -278,7 +283,7 @@ public class MybatisGeneratorBridge {
 
 		if (!StringAssist.isNullOrEmpty(serviceTargetFolder)) {
 			String serviceFolder;
-			int serviceTargetFolderRelativeMode = databaseGeneratorConfig.getServiceTargetFolderRelativeMode();
+			int serviceTargetFolderRelativeMode = mybatisGeneratorGlobalConfig.getServiceTargetFolderRelativeMode();
 
 			if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
 				if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
@@ -382,12 +387,13 @@ public class MybatisGeneratorBridge {
 
 	private ExecutiveSimpleResult generateCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
 		Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
+		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
 
 		if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
 			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
 		}
 
-		Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(databaseGeneratorConfig.getDaoType());
+		Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(mybatisGeneratorGlobalConfig.getDaoType());
 
 		if (!optionalDaoType.isPresent()) {
 			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("无效的daoType设置"));
@@ -395,20 +401,22 @@ public class MybatisGeneratorBridge {
 
 		DaoType daoType = optionalDaoType.get();
 
-		String modelTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getModelTargetFolder())
-										   .orElse("")
-										   .trim();
-		int modelTargetFolderRelativeMode1 = databaseGeneratorConfig.getModelTargetFolderRelativeMode();
-		String daoTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getDaoTargetFolder()).orElse("").trim();
-		int daoTargetFolderRelativeMode1 = databaseGeneratorConfig.getDaoTargetFolderRelativeMode();
-		String mappingXmlTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getMappingXmlTargetFolder())
-												.orElse("").trim();
-		int mappingXmlTargetFolderRelativeMode1 = databaseGeneratorConfig.getMappingXmlTargetFolderRelativeMode();
-		String serviceTargetFolder = Optional.ofNullable(databaseGeneratorConfig.getServiceTargetFolder())
-											 .orElse("").trim();
-		int serviceTargetFolderRelativeMode1 = databaseGeneratorConfig.getServiceTargetFolderRelativeMode();
+		String modelTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getModelTargetFolder())
+												 .orElse("")
+												 .trim();
+		int modelTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getModelTargetFolderRelativeMode();
+		String daoTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getDaoTargetFolder())
+											   .orElse("")
+											   .trim();
+		int daoTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getDaoTargetFolderRelativeMode();
+		String mappingXmlTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getMappingXmlTargetFolder())
+													  .orElse("").trim();
+		int mappingXmlTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getMappingXmlTargetFolderRelativeMode();
+		String serviceTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getServiceTargetFolder())
+												   .orElse("").trim();
+		int serviceTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getServiceTargetFolderRelativeMode();
 
-		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(databaseGeneratorConfig.getEncoding());
+		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(mybatisGeneratorGlobalConfig.getEncoding());
 
 		FileEncoding fileEncoding = FileEncoding.UTF8;
 
@@ -474,7 +482,7 @@ public class MybatisGeneratorBridge {
 		// 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
 		//         一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
 		context.addProperty("autoDelimitKeywords", String.valueOf(Whether.Yes.getFlag()
-																			 .equals(databaseGeneratorConfig
+																			 .equals(mybatisGeneratorGlobalConfig
 																					 .getAutoDelimitKeywords())));
 
 		if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
@@ -484,7 +492,7 @@ public class MybatisGeneratorBridge {
 			context.addProperty("endingDelimiter", "`");
 		}
 
-		boolean useSchemaPrefix = Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseSchemaPrefix());
+		boolean useSchemaPrefix = Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getUseSchemaPrefix());
 
 		if (useSchemaPrefix) {
 			if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
@@ -528,7 +536,8 @@ public class MybatisGeneratorBridge {
 			}
 		}
 
-		String mapperExtensionName = Optional.ofNullable(databaseGeneratorConfig.getMapperExtensionName()).orElse("");
+		String mapperExtensionName = Optional.ofNullable(mybatisGeneratorGlobalConfig.getMapperExtensionName())
+											 .orElse("");
 
 		if (!StringAssist.isNullOrEmpty(mapperExtensionName)) {
 			String mapperName = StringAssist.merge(StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
@@ -560,13 +569,13 @@ public class MybatisGeneratorBridge {
 		}
 		// java model
 		JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
-		modelConfig.setTargetPackage(databaseGeneratorConfig.getModelPackage());
+		modelConfig.setTargetPackage(mybatisGeneratorGlobalConfig.getModelPackage());
 
 		if (StringAssist.isNullOrEmpty(modelTargetFolder)) {
-			modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+			modelConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder());
 		} else {
 			if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode1)) {
-				modelConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + modelTargetFolder);
+				modelConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder() + "/" + modelTargetFolder);
 			} else {
 				modelConfig.setTargetProject(modelTargetFolder);
 			}
@@ -578,13 +587,13 @@ public class MybatisGeneratorBridge {
 
 		// Mapper configuration
 		SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
-		mapperConfig.setTargetPackage(databaseGeneratorConfig.getMappingXmlPackage());
+		mapperConfig.setTargetPackage(mybatisGeneratorGlobalConfig.getMappingXmlPackage());
 
 		if (StringAssist.isNullOrEmpty(mappingXmlTargetFolder)) {
-			mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+			mapperConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder());
 		} else {
 			if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode1)) {
-				mapperConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
+				mapperConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder() + "/" + mappingXmlTargetFolder);
 			} else {
 				mapperConfig.setTargetProject(mappingXmlTargetFolder);
 			}
@@ -595,13 +604,13 @@ public class MybatisGeneratorBridge {
 		// dao
 		JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
 		daoConfig.setConfigurationType(daoType.getType());
-		daoConfig.setTargetPackage(databaseGeneratorConfig.getDaoPackage());
+		daoConfig.setTargetPackage(mybatisGeneratorGlobalConfig.getDaoPackage());
 
 		if (StringAssist.isNullOrEmpty(daoTargetFolder)) {
-			daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+			daoConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder());
 		} else {
 			if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode1)) {
-				daoConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + daoTargetFolder);
+				daoConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder() + "/" + daoTargetFolder);
 			} else {
 				daoConfig.setTargetProject(daoTargetFolder);
 			}
@@ -611,14 +620,14 @@ public class MybatisGeneratorBridge {
 
 		// service
 		JavaServiceGeneratorConfiguration serviceConfig = new JavaServiceGeneratorConfiguration();
-		serviceConfig.setTargetPackage(databaseGeneratorConfig.getServicePackage());
-		serviceConfig.setImplementationPackage(databaseGeneratorConfig.getServicePackage() + ".impl");
+		serviceConfig.setTargetPackage(mybatisGeneratorGlobalConfig.getServicePackage());
+		serviceConfig.setImplementationPackage(mybatisGeneratorGlobalConfig.getServicePackage() + ".impl");
 
 		if (StringAssist.isNullOrEmpty(serviceTargetFolder)) {
-			serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder());
+			serviceConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder());
 		} else {
 			if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode1)) {
-				serviceConfig.setTargetProject(databaseGeneratorConfig.getProjectFolder() + "/" + serviceTargetFolder);
+				serviceConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder() + "/" + serviceTargetFolder);
 			} else {
 				serviceConfig.setTargetProject(serviceTargetFolder);
 			}
@@ -681,7 +690,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		// toString, hashCode, equals插件
-		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedToStringHashCodeEquals())) {
+		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getNeedToStringHashCodeEquals())) {
 			PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
 			pluginConfiguration1.addProperty("type", "org.mybatis.generator.plugins.EqualsHashCodePlugin");
 			pluginConfiguration1.setConfigurationType("org.mybatis.generator.plugins.EqualsHashCodePlugin");
@@ -695,7 +704,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		// limit/offset插件
-		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOffsetLimit())) {
+		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getOffsetLimit())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
@@ -711,7 +720,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		//for JSR310
-		if (Whether.Yes.getFlag().equals((databaseGeneratorConfig.getJsr310Support()))) {
+		if (Whether.Yes.getFlag().equals((mybatisGeneratorGlobalConfig.getJsr310Support()))) {
 			JavaTypeResolverConfiguration javaTypeResolverConfiguration = new JavaTypeResolverConfiguration();
 
 			String javaTypeResolverJsr310ImplName = JavaTypeResolverJsr310Impl.class.getName();
@@ -722,7 +731,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		//forUpdate 插件
-		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getNeedForUpdate())) {
+		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getNeedForUpdate())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
 				PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -737,7 +746,7 @@ public class MybatisGeneratorBridge {
 		}
 
 		//repository 插件
-		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getAnnotationDAO())) {
+		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getAnnotationDAO())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
@@ -751,7 +760,7 @@ public class MybatisGeneratorBridge {
 				context.addPluginConfiguration(pluginConfiguration);
 			}
 		}
-		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getUseDAOExtendStyle())) {
+		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getUseDAOExtendStyle())) {
 			if (DatabaseType.MySQL.name().equals(databaseType.getName()) || DatabaseType.MySQL_8.name()
 																								.equals(databaseType.getName())
 					|| DatabaseType.PostgreSQL.name().equals(databaseType.getName())) {
@@ -779,7 +788,7 @@ public class MybatisGeneratorBridge {
 		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
 
 		// if overrideXML selected, delete oldXML ang generate new one
-		if (Whether.Yes.getFlag().equals(databaseGeneratorConfig.getOverrideXML())) {
+		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getOverrideXML())) {
 			String mappingXmlFilePath = getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
 			File mappingXmlFile = new File(mappingXmlFilePath);
 			if (mappingXmlFile.exists()) {
@@ -800,8 +809,8 @@ public class MybatisGeneratorBridge {
 
 		String exampleFileName = StringAssist.merge(modelFileName, "Example");
 
-		mapperExtensionName = StringAssist.isNullOrEmpty(databaseGeneratorConfig
-				.getMapperExtensionName()) ? "Mapper" : databaseGeneratorConfig.getMapperExtensionName();
+		mapperExtensionName = StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig
+				.getMapperExtensionName()) ? "Mapper" : mybatisGeneratorGlobalConfig.getMapperExtensionName();
 
 		String mapperFileName = StringAssist.merge(modelFileName, mapperExtensionName);
 
@@ -850,11 +859,13 @@ public class MybatisGeneratorBridge {
 	}
 
 	private String getMappingXmlFilePath(DatabaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(generatorConfig.getProjectFolder()).append("/");
-		sb.append(generatorConfig.getMappingXmlTargetFolder()).append("/");
+		GlobalConfig mybatisGeneratorGlobalConfig = generatorConfig.BuildMyybatisGeneratorGlobalConfig();
 
-		String mappingXmlPackage = generatorConfig.getMappingXmlPackage();
+		StringBuilder sb = new StringBuilder();
+		sb.append(mybatisGeneratorGlobalConfig.getProjectFolder()).append("/");
+		sb.append(mybatisGeneratorGlobalConfig.getMappingXmlTargetFolder()).append("/");
+
+		String mappingXmlPackage = mybatisGeneratorGlobalConfig.getMappingXmlPackage();
 
 		if (StringUtils.isNotEmpty(mappingXmlPackage)) {
 			sb.append(mappingXmlPackage.replace(".", "/")).append("/");
@@ -863,8 +874,8 @@ public class MybatisGeneratorBridge {
 		String modelName = StringAssist.isNullOrEmpty(dataTableGeneratorConfig.getDomainObjectName()) ? dataTableGeneratorConfig
 				.getTableName() : dataTableGeneratorConfig.getDomainObjectName();
 
-		String mapperExtensionName = StringAssist.isNullOrEmpty(generatorConfig
-				.getMapperExtensionName()) ? "Mapper" : generatorConfig.getMapperExtensionName();
+		String mapperExtensionName = StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig
+				.getMapperExtensionName()) ? "Mapper" : mybatisGeneratorGlobalConfig.getMapperExtensionName();
 
 		String mapperFileName = StringAssist.merge(modelName, mapperExtensionName, ".xml");
 
@@ -878,7 +889,8 @@ public class MybatisGeneratorBridge {
 	}
 
 	private List<ColumnOverride> buildColumnOverrideList(DataTableGeneratorConfig dataTableGeneratorConfig) {
-		List<DataColumn> columnList = dataColumnService.findByConnectionConfigIdAndTableName(connectionConfig.getId(), dataTableGeneratorConfig
+		List<DataColumn> columnList = dataColumnService.findByConnectionConfigIdAndTableName(connectionConfig
+				.getId(), dataTableGeneratorConfig
 				.getTableName());
 
 		List<ColumnOverride> columnOverrideList = new ArrayList<>();
@@ -907,7 +919,8 @@ public class MybatisGeneratorBridge {
 	}
 
 	private List<IgnoredColumn> buildIgnoredColumnList(DataTableGeneratorConfig dataTableGeneratorConfig) {
-		List<DataColumn> columnList = dataColumnService.findByConnectionConfigIdAndTableName(connectionConfig.getId(), dataTableGeneratorConfig
+		List<DataColumn> columnList = dataColumnService.findByConnectionConfigIdAndTableName(connectionConfig
+				.getId(), dataTableGeneratorConfig
 				.getTableName());
 
 		List<IgnoredColumn> columnOverrideList = new ArrayList<>();

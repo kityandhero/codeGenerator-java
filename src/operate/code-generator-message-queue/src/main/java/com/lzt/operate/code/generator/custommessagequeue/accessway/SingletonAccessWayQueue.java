@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class SingletonAccessWayQueue {
 
-	private ConcurrentLinkedDeque<AccessWay> queue;
+	private final ConcurrentLinkedDeque<AccessWay> queue;
 
 	private SingletonAccessWayQueue() {
 		queue = new ConcurrentLinkedDeque<>();
@@ -24,6 +24,6 @@ public class SingletonAccessWayQueue {
 	}
 
 	static class InstanceHolder {
-		private static SingletonAccessWayQueue instance = new SingletonAccessWayQueue();
+		private static final SingletonAccessWayQueue instance = new SingletonAccessWayQueue();
 	}
 }

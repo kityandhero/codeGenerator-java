@@ -28,11 +28,11 @@ public enum CustomConfigCategory {
 	 */
 	public static final String META_KEY = "customConfigCategoryList";
 
-	private int flag;
+	private final int flag;
 
-	private String name;
+	private final String name;
 
-	private String description;
+	private final String description;
 
 	CustomConfigCategory(int flag, String name, String description) {
 		this.flag = flag;

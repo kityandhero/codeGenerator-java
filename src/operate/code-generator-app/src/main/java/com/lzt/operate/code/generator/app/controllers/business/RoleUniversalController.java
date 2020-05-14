@@ -65,7 +65,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 	private static final String CONTROLLER_DESCRIPTION = "公共角色管理/";
 
-	private RoleUniversalService roleUniversalService;
+	private final RoleUniversalService roleUniversalService;
 
 	@Autowired
 	public RoleUniversalController(
@@ -78,7 +78,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 	}
 
 	public RoleUniversalService getRoleUniversalService() {
-		Optional<RoleUniversalService> optional = Optional.ofNullable(this.roleUniversalService);
+		Optional<RoleUniversalService> optional = Optional.ofNullable(roleUniversalService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -131,11 +131,11 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(RoleUniversal::getCreateTime));
 
-		Page<RoleUniversal> result = this.roleUniversalService.page(specification, pageable);
+		Page<RoleUniversal> result = roleUniversalService.page(specification, pageable);
 
 		List<SerializableData> list = result.getContent()
-											.stream()
-											.map(o -> {
+												  .stream()
+												  .map(o -> {
 												List<IGetter<RoleUniversal>> getterList = new ArrayList<>();
 
 												getterList.add(RoleUniversal::getName);
@@ -153,12 +153,12 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 												return data;
 											})
-											.collect(Collectors.toList());
+												  .collect(Collectors.toList());
 
 		int pageIndex = result.getNumber();
 		long totalPages = result.getTotalPages();
 
-		return this.pageData(list, pageIndex, pageSize, totalPages);
+		return pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取公共角色", notes = "获取公共角色", httpMethod = "POST")
@@ -196,10 +196,10 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 			data.append(ReflectAssist.getFriendlyIdName(RoleUniversal.class), roleUniversal.getId());
 
-			return this.singleData(data);
+			return singleData(data);
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "创建公共角色", notes = "创建公共角色", httpMethod = "POST")
@@ -220,7 +220,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 		String name = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_NAME).trim();
 
 		if (StringAssist.isNullOrEmpty(name)) {
-			return this.paramError(GlobalString.ROLE_UNIVERSAL_NAME, "角色名称不能为空");
+			return paramError(GlobalString.ROLE_UNIVERSAL_NAME, "角色名称不能为空");
 		}
 
 		String description = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_DESCRIPTION);
@@ -239,7 +239,7 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 		data = getRoleUniversalService().save(data);
 
-		return this.singleData(new SerializableData().append(GlobalString.ROLE_UNIVERSAL_ID, data.getId()));
+		return singleData(new SerializableData().append(GlobalString.ROLE_UNIVERSAL_ID, data.getId()));
 	}
 
 	@ApiOperation(value = "更新公共角色", notes = "更新公共角色", httpMethod = "POST")
@@ -260,13 +260,13 @@ public class RoleUniversalController extends BaseOperateAuthController {
 		long accountId = paramJson.getStringExByKey(GlobalString.ROLE_UNIVERSAL_ID, "0").toLong();
 
 		if (accountId <= 0) {
-			return this.paramError(GlobalString.ROLE_UNIVERSAL_ID, "数据无效");
+			return paramError(GlobalString.ROLE_UNIVERSAL_ID, "数据无效");
 		}
 
 		String name = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_NAME);
 
 		if (StringAssist.isNullOrEmpty(name)) {
-			return this.paramError(GlobalString.ROLE_UNIVERSAL_NAME, "角色名称不能为空");
+			return paramError(GlobalString.ROLE_UNIVERSAL_NAME, "角色名称不能为空");
 		}
 
 		String description = paramJson.getStringByKey(GlobalString.ROLE_UNIVERSAL_DESCRIPTION);
@@ -285,10 +285,10 @@ public class RoleUniversalController extends BaseOperateAuthController {
 
 			data = getRoleUniversalService().save(data);
 
-			return this.singleData(new SerializableData().append(GlobalString.ROLE_UNIVERSAL_ID, data.getId()));
+			return singleData(new SerializableData().append(GlobalString.ROLE_UNIVERSAL_ID, data.getId()));
 		}
 
-		return this.fail(ReturnDataCode.NoData.toMessage());
+		return fail(ReturnDataCode.NoData.toMessage());
 	}
 
 }

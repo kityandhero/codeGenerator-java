@@ -37,7 +37,7 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 
 	private final LoadingCache<String, Object> loadingCache;
 
-	private AccountAssist accountAssist;
+	private final AccountAssist accountAssist;
 
 	@Autowired
 	public CheckAuthorization(
@@ -48,7 +48,7 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 			RoleUniversalServiceImpl roleUniversalService,
 			RoleCodeToolsServiceImpl roleCodeToolsService) {
 		this.loadingCache = loadingCache;
-		this.accountAssist = new AccountAssist(
+		accountAssist = new AccountAssist(
 				loadingCache,
 				customJsonWebTokenConfig,
 				accountService,
@@ -59,12 +59,12 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 	}
 
 	private AccountAssist getAccountAssist() {
-		return this.accountAssist;
+		return accountAssist;
 	}
 
 	@Override
 	protected BaseCustomJsonWebTokenConfig getCustomJsonWebTokenConfig() {
-		return this.accountAssist.getCustomJsonWebTokenConfig();
+		return accountAssist.getCustomJsonWebTokenConfig();
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class CheckAuthorization extends BaseCheckAuthorization {
 
 			Optional<BaseOperator> resultBaseOperator = customJsonWebToken.getOperator();
 
-			return resultBaseOperator.filter(baseOperator -> this.getAccountAssist()
+			return resultBaseOperator.filter(baseOperator -> getAccountAssist()
 																 .checkAccessPermission(baseOperator.getOperatorId(), tag))
 									 .isPresent();
 		}

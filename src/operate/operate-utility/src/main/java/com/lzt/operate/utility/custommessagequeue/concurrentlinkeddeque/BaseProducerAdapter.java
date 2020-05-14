@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public abstract class BaseProducerAdapter<T, Q extends ConcurrentLinkedDeque<T>> implements IProducer<T, ConcurrentLinkedDeque<T>> {
 
-	private Q queue;
+	private final Q queue;
 
 	protected BaseProducerAdapter(@NonNull Q queue) {
 		this.queue = queue;
@@ -23,7 +23,7 @@ public abstract class BaseProducerAdapter<T, Q extends ConcurrentLinkedDeque<T>>
 	}
 
 	public void push(T message) {
-		this.queue.offer(message);
+		queue.offer(message);
 	}
 
 	public void push(T message, Q queue) {

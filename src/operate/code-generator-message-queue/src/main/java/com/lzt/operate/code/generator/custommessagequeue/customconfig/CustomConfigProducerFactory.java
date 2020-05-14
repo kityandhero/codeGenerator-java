@@ -5,10 +5,10 @@ package com.lzt.operate.code.generator.custommessagequeue.customconfig;
  */
 public class CustomConfigProducerFactory {
 
-	private CustomConfigProducer producer;
+	private final CustomConfigProducer producer;
 
 	private CustomConfigProducerFactory() {
-		this.producer = new CustomConfigProducer();
+		producer = new CustomConfigProducer();
 	}
 
 	public static CustomConfigProducerFactory getInstance() {
@@ -16,11 +16,11 @@ public class CustomConfigProducerFactory {
 	}
 
 	public CustomConfigProducer getProducer() {
-		return this.producer;
+		return producer;
 	}
 
 	static class InstanceHolder {
-		private static CustomConfigProducerFactory instance = new CustomConfigProducerFactory();
+		private static final CustomConfigProducerFactory instance = new CustomConfigProducerFactory();
 	}
 
 }

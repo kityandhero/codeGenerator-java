@@ -16,7 +16,7 @@ public abstract class BaseCustomEhcacheManager implements ICustomEhcacheManager 
 
 	protected Cache springCache;
 
-	private EhCacheCacheManager ehCacheCacheManager;
+	private final EhCacheCacheManager ehCacheCacheManager;
 
 	protected BaseCustomEhcacheManager(EhCacheCacheManager ehCacheCacheManager) {
 		this.ehCacheCacheManager = ehCacheCacheManager;
@@ -51,8 +51,8 @@ public abstract class BaseCustomEhcacheManager implements ICustomEhcacheManager 
 
 	@Override
 	public void refresh() {
-		this.clear();
-		this.initCacheData();
+		clear();
+		initCacheData();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public abstract class BaseCustomEhcacheManager implements ICustomEhcacheManager 
 		Set<Map.Entry> set = map.entrySet();
 
 		for (Map.Entry entry : set) {
-			this.put(entry.getKey(), entry.getValue());
+			put(entry.getKey(), entry.getValue());
 		}
 	}
 
@@ -76,9 +76,9 @@ public abstract class BaseCustomEhcacheManager implements ICustomEhcacheManager 
 	@Override
 	@PostConstruct
 	public void initCache() {
-		springCache = this.getEhCacheCacheManager().getCache(getCacheKey());
+		springCache = getEhCacheCacheManager().getCache(getCacheKey());
 
-		if (this.springCache == null) {
+		if (springCache == null) {
 			throw new RuntimeException("请检查ehcache.xml 中是否配置 name=" + getCacheKey());
 		}
 
