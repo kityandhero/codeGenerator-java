@@ -70,7 +70,16 @@ public class BaseBusinessController extends BaseOperateAuthController {
 																.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
 																				 .toInt()) ? Whether.No.getFlag() : Whether.Yes
 				.getFlag());
-		mybatisGeneratorGlobalConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
+
+		if (paramJson.existKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE)) {
+			String daoPackage = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE);
+
+			mybatisGeneratorGlobalConfig.setDaoPackage(StringAssist.isNullOrEmpty(daoPackage) ? "dao" : daoPackage);
+		} else {
+			mybatisGeneratorGlobalConfig.setDaoPackage(StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig.getDaoPackage()) ? "dao" : mybatisGeneratorGlobalConfig
+					.getDaoPackage());
+		}
+
 		mybatisGeneratorGlobalConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setDaoTargetFolderRelativeMode(Whether.No.getFlag()
 																			  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
@@ -90,19 +99,46 @@ public class BaseBusinessController extends BaseOperateAuthController {
 																.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
 																				 .toInt()) ? Whether.No.getFlag() : Whether.Yes
 				.getFlag());
-		mybatisGeneratorGlobalConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
+
+		if (paramJson.existKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE)) {
+			String mappingXmlPackage = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE);
+
+			mybatisGeneratorGlobalConfig.setMappingXmlPackage(StringAssist.isNullOrEmpty(mappingXmlPackage) ? "mapping" : mappingXmlPackage);
+		} else {
+			mybatisGeneratorGlobalConfig.setMappingXmlPackage(StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig.getMappingXmlPackage()) ? "mapping" : mybatisGeneratorGlobalConfig
+					.getMappingXmlPackage());
+		}
+
 		mybatisGeneratorGlobalConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setMappingXmlTargetFolderRelativeMode(Whether.No.getFlag()
 																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
 																									  .toInt()) ? Whether.No
 				.getFlag() : Whether.Yes.getFlag());
-		mybatisGeneratorGlobalConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
+
+		if (paramJson.existKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE)) {
+			String modelPackage = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE);
+
+			mybatisGeneratorGlobalConfig.setModelPackage(StringAssist.isNullOrEmpty(modelPackage) ? "model" : modelPackage);
+		} else {
+			mybatisGeneratorGlobalConfig.setModelPackage(StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig.getModelPackage()) ? "model" : mybatisGeneratorGlobalConfig
+					.getModelPackage());
+		}
+
 		mybatisGeneratorGlobalConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setModelTargetFolderRelativeMode(Whether.No.getFlag()
 																				.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
 																								 .toInt()) ? Whether.No.getFlag() : Whether.Yes
 				.getFlag());
-		mybatisGeneratorGlobalConfig.setServicePackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE));
+
+		if (paramJson.existKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE)) {
+			String servicePackage = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE);
+
+			mybatisGeneratorGlobalConfig.setServicePackage(StringAssist.isNullOrEmpty(servicePackage) ? "service" : servicePackage);
+		} else {
+			mybatisGeneratorGlobalConfig.setServicePackage(StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig.getServicePackage()) ? "service" : mybatisGeneratorGlobalConfig
+					.getServicePackage());
+		}
+
 		mybatisGeneratorGlobalConfig.setServiceTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setServiceTargetFolderRelativeMode(Whether.No.getFlag()
 																				  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
