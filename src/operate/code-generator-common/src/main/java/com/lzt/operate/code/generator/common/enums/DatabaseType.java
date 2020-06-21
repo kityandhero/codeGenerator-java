@@ -85,28 +85,34 @@ public enum DatabaseType {
 		return Arrays.asList(DatabaseType.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<DatabaseType> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public Integer getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public String getDriverClass() {
-		return driverClass;
+		return this.driverClass;
 	}
 
 	public String getConnectionUrlPattern() {
-		return connectionUrlPattern;
+		return this.connectionUrlPattern;
 	}
 
 	public String getConnectorJarFile() {
-		return connectorJarFile;
+		return this.connectorJarFile;
 	}
 
 }

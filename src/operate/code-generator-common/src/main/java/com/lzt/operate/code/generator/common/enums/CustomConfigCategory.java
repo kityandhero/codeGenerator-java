@@ -56,16 +56,22 @@ public enum CustomConfigCategory {
 		return Arrays.asList(CustomConfigCategory.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<CustomConfigCategory> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

@@ -74,46 +74,46 @@ public class GlobalConfig implements Serializable {
 	private int daoType;
 
 	public GlobalConfig() {
-		connectorJarFile = "";
-		projectFolder = "";
-		modelPackage = "model";
-		modelTargetFolder = "";
-		modelTargetFolderRelativeMode = Whether.Yes.getFlag();
-		daoPackage = "dao";
-		daoTargetFolder = "";
-		daoTargetFolderRelativeMode = Whether.Yes.getFlag();
-		mappingXmlPackage = "mapping";
-		mappingXmlTargetFolder = "";
-		mappingXmlTargetFolderRelativeMode = Whether.Yes.getFlag();
-		servicePackage = "service";
-		serviceTargetFolder = "";
-		serviceTargetFolderRelativeMode = Whether.Yes.getFlag();
-		offsetLimit = Whether.No.getFlag();
-		needToStringHashCodeEquals = Whether.No.getFlag();
-		needForUpdate = Whether.No.getFlag();
-		annotationDAO = Whether.No.getFlag();
-		annotation = Whether.No.getFlag();
-		encoding = FileEncoding.UTF8.getFlag();
-		useDAOExtendStyle = Whether.No.getFlag();
-		useSchemaPrefix = Whether.No.getFlag();
-		jsr310Support = Whether.Yes.getFlag();
-		overrideXML = Whether.No.getFlag();
-		autoDelimitKeywords = Whether.Yes.getFlag();
-		comment = Whether.No.getFlag();
-		mapperExtensionName = "";
-		daoType = DaoType.XmlMapper.getFlag();
+		this.connectorJarFile = "";
+		this.projectFolder = "";
+		this.modelPackage = "model";
+		this.modelTargetFolder = "";
+		this.modelTargetFolderRelativeMode = Whether.Yes.getFlag();
+		this.daoPackage = "dao";
+		this.daoTargetFolder = "";
+		this.daoTargetFolderRelativeMode = Whether.Yes.getFlag();
+		this.mappingXmlPackage = "mapping";
+		this.mappingXmlTargetFolder = "";
+		this.mappingXmlTargetFolderRelativeMode = Whether.Yes.getFlag();
+		this.servicePackage = "service";
+		this.serviceTargetFolder = "";
+		this.serviceTargetFolderRelativeMode = Whether.Yes.getFlag();
+		this.offsetLimit = Whether.No.getFlag();
+		this.needToStringHashCodeEquals = Whether.No.getFlag();
+		this.needForUpdate = Whether.No.getFlag();
+		this.annotationDAO = Whether.No.getFlag();
+		this.annotation = Whether.No.getFlag();
+		this.encoding = FileEncoding.UTF8.getFlag();
+		this.useDAOExtendStyle = Whether.No.getFlag();
+		this.useSchemaPrefix = Whether.No.getFlag();
+		this.jsr310Support = Whether.Yes.getFlag();
+		this.overrideXML = Whether.No.getFlag();
+		this.autoDelimitKeywords = Whether.Yes.getFlag();
+		this.comment = Whether.No.getFlag();
+		this.mapperExtensionName = "";
+		this.daoType = DaoType.XmlMapper.getFlag();
 	}
 
 	public String getConnectorJarFile() {
-		return connectorJarFile;
+		return this.connectorJarFile;
 	}
 
 	public void setConnectorJarFile(String connectorJarPath) {
-		connectorJarFile = connectorJarPath;
+		this.connectorJarFile = connectorJarPath;
 	}
 
 	public String getProjectFolder() {
-		return projectFolder;
+		return this.projectFolder;
 	}
 
 	public void setProjectFolder(String projectFolder) {
@@ -121,7 +121,7 @@ public class GlobalConfig implements Serializable {
 	}
 
 	public String getModelPackage() {
-		return modelPackage;
+		return this.modelPackage;
 	}
 
 	public void setModelPackage(String modelPackage) {
@@ -129,23 +129,27 @@ public class GlobalConfig implements Serializable {
 	}
 
 	public String getModelTargetFolder() {
-		return modelTargetFolder;
+		return this.modelTargetFolder;
 	}
 
 	public void setModelTargetFolder(String modelPackageTargetFolder) {
-		modelTargetFolder = modelPackageTargetFolder;
+		this.modelTargetFolder = modelPackageTargetFolder;
 	}
 
 	public int getModelTargetFolderRelativeMode() {
-		return modelTargetFolderRelativeMode;
+		return this.modelTargetFolderRelativeMode;
 	}
 
-	public void setModelTargetFolderRelativeMode(Whether whether) {
-		modelTargetFolderRelativeMode = whether.getFlag();
+	public void setModelTargetFolderRelativeMode(int modelTargetFolderRelativeMode) {
+		if (Whether.existFlag(modelTargetFolderRelativeMode)) {
+			this.modelTargetFolderRelativeMode = modelTargetFolderRelativeMode;
+		} else {
+			this.modelTargetFolderRelativeMode = Whether.No.getFlag();
+		}
 	}
 
 	public String getDaoPackage() {
-		return daoPackage;
+		return this.daoPackage;
 	}
 
 	public void setDaoPackage(String daoPackage) {
@@ -153,7 +157,7 @@ public class GlobalConfig implements Serializable {
 	}
 
 	public String getDaoTargetFolder() {
-		return daoTargetFolder;
+		return this.daoTargetFolder;
 	}
 
 	public void setDaoTargetFolder(String daoTargetFolder) {
@@ -161,39 +165,47 @@ public class GlobalConfig implements Serializable {
 	}
 
 	public int getDaoTargetFolderRelativeMode() {
-		return daoTargetFolderRelativeMode;
+		return this.daoTargetFolderRelativeMode;
 	}
 
-	public void setDaoTargetFolderRelativeMode(Whether whether) {
-		daoTargetFolderRelativeMode = whether.getFlag();
+	public void setDaoTargetFolderRelativeMode(int daoTargetFolderRelativeMode) {
+		if (Whether.existFlag(this.daoTargetFolderRelativeMode)) {
+			this.daoTargetFolderRelativeMode = daoTargetFolderRelativeMode;
+		} else {
+			this.daoTargetFolderRelativeMode = Whether.No.getFlag();
+		}
 	}
 
 	public String getMappingXmlPackage() {
-		return mappingXmlPackage;
+		return this.mappingXmlPackage;
 	}
 
 	public void setMappingXmlPackage(String mappingXMLPackage) {
-		mappingXmlPackage = mappingXMLPackage;
+		this.mappingXmlPackage = mappingXMLPackage;
 	}
 
 	public String getMappingXmlTargetFolder() {
-		return mappingXmlTargetFolder;
+		return this.mappingXmlTargetFolder;
 	}
 
 	public void setMappingXmlTargetFolder(String mappingXMLTargetFolder) {
-		mappingXmlTargetFolder = mappingXMLTargetFolder;
+		this.mappingXmlTargetFolder = mappingXMLTargetFolder;
 	}
 
 	public int getMappingXmlTargetFolderRelativeMode() {
-		return mappingXmlTargetFolderRelativeMode;
+		return this.mappingXmlTargetFolderRelativeMode;
 	}
 
-	public void setMappingXmlTargetFolderRelativeMode(Whether whether) {
-		mappingXmlTargetFolderRelativeMode = whether.getFlag();
+	public void setMappingXmlTargetFolderRelativeMode(int mappingXmlTargetFolderRelativeMode) {
+		if (Whether.existFlag(this.mappingXmlTargetFolderRelativeMode)) {
+			this.mappingXmlTargetFolderRelativeMode = mappingXmlTargetFolderRelativeMode;
+		} else {
+			this.mappingXmlTargetFolderRelativeMode = Whether.No.getFlag();
+		}
 	}
 
 	public String getServicePackage() {
-		return servicePackage;
+		return this.servicePackage;
 	}
 
 	public void setServicePackage(String servicePackage) {
@@ -201,7 +213,7 @@ public class GlobalConfig implements Serializable {
 	}
 
 	public String getServiceTargetFolder() {
-		return serviceTargetFolder;
+		return this.serviceTargetFolder;
 	}
 
 	public void setServiceTargetFolder(String serviceTargetFolder) {
@@ -209,123 +221,180 @@ public class GlobalConfig implements Serializable {
 	}
 
 	public int getServiceTargetFolderRelativeMode() {
-		return serviceTargetFolderRelativeMode;
+		return this.serviceTargetFolderRelativeMode;
 	}
 
-	public void setServiceTargetFolderRelativeMode(Whether whether) {
-		serviceTargetFolderRelativeMode = whether.getFlag();
+	public void setServiceTargetFolderRelativeMode(int serviceTargetFolderRelativeMode) {
+		if (Whether.existFlag(serviceTargetFolderRelativeMode)) {
+			this.serviceTargetFolderRelativeMode = serviceTargetFolderRelativeMode;
+		} else {
+			this.serviceTargetFolderRelativeMode = Whether.No.getFlag();
+		}
 	}
 
 	public int getOffsetLimit() {
-		return offsetLimit;
+		return this.offsetLimit;
 	}
 
-	public void setOffsetLimit(Whether whether) {
-		offsetLimit = whether.getFlag();
+	public void setOffsetLimit(int offsetLimit) {
+		if (Whether.existFlag(offsetLimit)) {
+			this.offsetLimit = offsetLimit;
+		} else {
+			this.offsetLimit = Whether.No.getFlag();
+		}
 	}
 
 	public int getNeedToStringHashCodeEquals() {
-		return needToStringHashCodeEquals;
+		return this.needToStringHashCodeEquals;
 	}
 
-	public void setNeedToStringHashCodeEquals(Whether whether) {
-		needToStringHashCodeEquals = whether.getFlag();
+	public void setNeedToStringHashCodeEquals(int needToStringHashCodeEquals) {
+		if (Whether.existFlag(needToStringHashCodeEquals)) {
+			this.needToStringHashCodeEquals = needToStringHashCodeEquals;
+		} else {
+			this.needToStringHashCodeEquals = Whether.No.getFlag();
+		}
 	}
 
 	public int getNeedForUpdate() {
-		return needForUpdate;
+		return this.needForUpdate;
 	}
 
-	public void setNeedForUpdate(Whether whether) {
-		needForUpdate = whether.getFlag();
+	public void setNeedForUpdate(int needForUpdate) {
+		if (Whether.existFlag(needForUpdate)) {
+			this.needForUpdate = needForUpdate;
+		} else {
+			this.needForUpdate = Whether.No.getFlag();
+		}
 	}
 
 	public int getAnnotationDAO() {
-		return annotationDAO;
+		return this.annotationDAO;
 	}
 
-	public void setAnnotationDAO(Whether whether) {
-		annotationDAO = whether.getFlag();
+	public void setAnnotationDAO(int annotationDAO) {
+		if (Whether.existFlag(annotationDAO)) {
+			this.annotationDAO = annotationDAO;
+		} else {
+			this.annotationDAO = Whether.No.getFlag();
+		}
 	}
 
 	public int getAnnotation() {
-		return annotation;
+		return this.annotation;
 	}
 
-	public void setAnnotation(Whether whether) {
-		annotation = whether.getFlag();
+	public void setAnnotation(int annotation) {
+		if (Whether.existFlag(annotation)) {
+			this.annotation = annotation;
+		} else {
+			this.annotation = Whether.No.getFlag();
+		}
 	}
 
 	public int getEncoding() {
-		return encoding;
+		return this.encoding;
 	}
 
-	public void setEncoding(FileEncoding fileEncoding) {
-		encoding = fileEncoding.getFlag();
+	public void setEncoding(int encoding) {
+		if (FileEncoding.existFlag(encoding)) {
+			this.encoding = encoding;
+		} else {
+			this.encoding = FileEncoding.UTF8.getFlag();
+		}
 	}
 
 	public int getUseDAOExtendStyle() {
-		return useDAOExtendStyle;
+		return this.useDAOExtendStyle;
 	}
 
-	public void setUseDAOExtendStyle(Whether whether) {
-		useDAOExtendStyle = whether.getFlag();
+	public void setUseDAOExtendStyle(int useDAOExtendStyle) {
+		if (Whether.existFlag(useDAOExtendStyle)) {
+			this.useDAOExtendStyle = useDAOExtendStyle;
+		} else {
+			this.useDAOExtendStyle = Whether.No.getFlag();
+		}
 	}
 
 	public int getUseSchemaPrefix() {
-		return useSchemaPrefix;
+		return this.useSchemaPrefix;
 	}
 
-	public void setUseSchemaPrefix(Whether whether) {
-		useSchemaPrefix = whether.getFlag();
+	public void setUseSchemaPrefix(int useSchemaPrefix) {
+		if (Whether.existFlag(useSchemaPrefix)) {
+			this.useSchemaPrefix = useSchemaPrefix;
+		} else {
+			this.useSchemaPrefix = Whether.No.getFlag();
+		}
 	}
 
 	public int getJsr310Support() {
-		return jsr310Support;
+		return this.jsr310Support;
 	}
 
-	public void setJsr310Support(Whether whether) {
-		jsr310Support = whether.getFlag();
+	public void setJsr310Support(int jsr310Support) {
+		if (Whether.existFlag(jsr310Support)) {
+			this.jsr310Support = jsr310Support;
+		} else {
+			this.jsr310Support = Whether.No.getFlag();
+		}
 	}
 
 	public int getOverrideXML() {
-		return overrideXML;
+		return this.overrideXML;
 	}
 
-	public void setOverrideXML(Whether whether) {
-		overrideXML = whether.getFlag();
+	public void setOverrideXML(int overrideXML) {
+		if (Whether.existFlag(overrideXML)) {
+			this.overrideXML = overrideXML;
+		} else {
+			this.overrideXML = Whether.No.getFlag();
+		}
 	}
 
 	public int getAutoDelimitKeywords() {
-		return autoDelimitKeywords;
+		return this.autoDelimitKeywords;
 	}
 
-	public void setAutoDelimitKeywords(Whether whether) {
-		autoDelimitKeywords = whether.getFlag();
+	public void setAutoDelimitKeywords(int autoDelimitKeywords) {
+		if (Whether.existFlag(autoDelimitKeywords)) {
+			this.autoDelimitKeywords = autoDelimitKeywords;
+		} else {
+			this.autoDelimitKeywords = Whether.No.getFlag();
+		}
 	}
 
 	public int getComment() {
-		return comment;
+		return this.comment;
 	}
 
-	public void setComment(Whether whether) {
-		comment = whether.getFlag();
+	public void setComment(int comment) {
+		if (Whether.existFlag(comment)) {
+			this.comment = comment;
+		} else {
+			this.comment = Whether.No.getFlag();
+		}
 	}
 
 	public String getMapperExtensionName() {
-		return mapperExtensionName;
+		return this.mapperExtensionName;
 	}
 
 	public void setMapperExtensionName(String mapperName) {
-		mapperExtensionName = mapperName;
+		this.mapperExtensionName = mapperName;
 	}
 
 	public int getDaoType() {
-		return daoType;
+		return this.daoType;
 	}
 
-	public void setDaoType(DaoType daoType) {
-		this.daoType = daoType.getFlag();
+	public void setDaoType(int daoType) {
+		if (DaoType.existFlag(this.autoDelimitKeywords)) {
+			this.daoType = daoType;
+		} else {
+			this.daoType = DaoType.XmlMapper.getFlag();
+		}
+
 	}
 
 	public static GlobalConfig Deserialize(String json) {

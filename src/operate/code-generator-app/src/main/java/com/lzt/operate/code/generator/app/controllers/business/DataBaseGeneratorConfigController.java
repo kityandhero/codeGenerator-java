@@ -3,12 +3,9 @@ package com.lzt.operate.code.generator.app.controllers.business;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
 import com.lzt.operate.code.generator.app.bridge.MybatisGeneratorBridge;
-import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
+import com.lzt.operate.code.generator.app.controllers.business.base.BaseBusinessController;
 import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
-import com.lzt.operate.code.generator.common.enums.Channel;
-import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus;
-import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
@@ -21,7 +18,6 @@ import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -72,7 +68,7 @@ import java.util.stream.Collectors;
 @EnableConfigurationProperties
 @RequestMapping("/business/databaseGeneratorConfig")
 @Api(tags = {"数据库生成配置"})
-public class DataBaseGeneratorConfigController extends BaseOperateAuthController {
+public class DataBaseGeneratorConfigController extends BaseBusinessController {
 
 	private static final String CONTROLLER_DESCRIPTION = "数据库生成配置/";
 
@@ -80,15 +76,15 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 	@Autowired
 	public DataBaseGeneratorConfigController(
-			LoadingCache<String, Object> loadingCache,
-			CustomJsonWebTokenConfig customJsonWebTokenConfig,
-			ConnectionConfigServiceImpl connectionConfigService,
-			DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
-			DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService,
-			DataColumnServiceImpl dataColumnService) {
+			final LoadingCache<String, Object> loadingCache,
+			final CustomJsonWebTokenConfig customJsonWebTokenConfig,
+			final ConnectionConfigServiceImpl connectionConfigService,
+			final DataBaseGeneratorConfigServiceImpl databaseGeneratorConfigService,
+			final DataTableGeneratorConfigServiceImpl dataTableGeneratorConfigService,
+			final DataColumnServiceImpl dataColumnService) {
 		super(loadingCache, customJsonWebTokenConfig);
 
-		connectionConfigAssist = new ConnectionConfigAssist(
+		this.connectionConfigAssist = new ConnectionConfigAssist(
 				connectionConfigService,
 				databaseGeneratorConfigService,
 				dataTableGeneratorConfigService,
@@ -107,8 +103,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/pageList", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置分页列表", description = "数据库生成配置分页列表", tag = "f201e035-bfcc-4eee-a263-70fdc2968e64", config = {"显示路径", "显示子权限"})
-	public ResultListData pageList(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+	public ResultListData pageList(@RequestBody final Map<String, Object> json) {
+		final ParamData paramJson = this.getParamData(json);
 
 		int pageNo = paramJson.getStringExByKey(GlobalString.LIST_PAGE_NO, "1").toInt();
 		int pageSize = paramJson.getStringExByKey(GlobalString.LIST_PAGE_SIZE, "20").toInt();
@@ -116,58 +112,58 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		pageNo = Math.max(pageNo, 1);
 		pageSize = Math.max(pageSize, 1);
 
-		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+		final long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
 												 .toLong();
 
-		Specification<DatabaseGeneratorConfig> specification = new Specification<DatabaseGeneratorConfig>() {
+		final Specification<DatabaseGeneratorConfig> specification = new Specification<DatabaseGeneratorConfig>() {
 
 			private static final long serialVersionUID = 9114015918184208846L;
 
 			@Override
-			public Predicate toPredicate(@NonNull Root<DatabaseGeneratorConfig> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder criteriaBuilder) {
-				List<Predicate> list = new ArrayList<>();
+			public Predicate toPredicate(@NonNull final Root<DatabaseGeneratorConfig> root, @NonNull final CriteriaQuery<?> query, @NonNull final CriteriaBuilder criteriaBuilder) {
+				final List<Predicate> list = new ArrayList<>();
 
 				if (!ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
 					list.add(criteriaBuilder.equal(root.get(ReflectAssist.getFieldName(DatabaseGeneratorConfig::getConnectionConfigId)), connectionConfigId));
 				}
 
-				Predicate[] p = new Predicate[list.size()];
+				final Predicate[] p = new Predicate[list.size()];
 
 				return criteriaBuilder.and(list.toArray(p));
 			}
 		};
 
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DatabaseGeneratorConfig::getCreateTime));
+		final Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.Direction.DESC, ReflectAssist.getFieldName(DatabaseGeneratorConfig::getCreateTime));
 
-		Page<DatabaseGeneratorConfig> result = connectionConfigAssist.getDatabaseGeneratorConfigService()
-																		   .page(specification, pageable);
+		final Page<DatabaseGeneratorConfig> result = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																				.page(specification, pageable);
 
-		List<SerializableData> list = result.getContent()
+		final List<SerializableData> list = result.getContent()
 												  .stream()
 												  .map(o -> {
-												List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
+													  final List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
-												getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
-												getterList.add(DatabaseGeneratorConfig::getChannel);
-												getterList.add(DatabaseGeneratorConfig::getChannelNote);
-												getterList.add(DatabaseGeneratorConfig::getStatus);
-												getterList.add(DatabaseGeneratorConfig::getStatusNote);
-												getterList.add(DatabaseGeneratorConfig::getCreateTime);
-												getterList.add(DatabaseGeneratorConfig::getUpdateTime);
+													  getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
+													  getterList.add(DatabaseGeneratorConfig::getChannel);
+													  getterList.add(DatabaseGeneratorConfig::getChannelNote);
+													  getterList.add(DatabaseGeneratorConfig::getStatus);
+													  getterList.add(DatabaseGeneratorConfig::getStatusNote);
+													  getterList.add(DatabaseGeneratorConfig::getCreateTime);
+													  getterList.add(DatabaseGeneratorConfig::getUpdateTime);
 
-												SerializableData data = SerializableData.toSerializableData(o, getterList);
+													  final SerializableData data = SerializableData.toSerializableData(o, getterList);
 
-												data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), o
-														.getId());
+													  data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), o
+															  .getId());
 
-												return data;
-											})
+													  return data;
+												  })
 												  .collect(Collectors.toList());
 
-		int pageIndex = result.getNumber();
-		long totalPages = result.getTotalPages();
+		final int pageIndex = result.getNumber();
+		final long totalPages = result.getTotalPages();
 
-		return pageData(list, pageIndex, pageSize, totalPages);
+		return this.pageData(list, pageIndex, pageSize, totalPages);
 	}
 
 	@ApiOperation(value = "获取数据库生成配置", notes = "获取数据库生成配置", httpMethod = "POST")
@@ -180,22 +176,22 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/get", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置详情", description = "获取数据库生成配置", tag = "6552cd29-5cdb-48b3-9a74-7541e6879839")
-	public ResultSingleData get(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+	public ResultSingleData get(@RequestBody final Map<String, Object> json) {
+		final ParamData paramJson = this.getParamData(json);
 
-		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
+		final long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
 														.toLong();
 
-		Optional<DatabaseGeneratorConfig> result = connectionConfigAssist.getDatabaseGeneratorConfigService()
-																			   .get(databaseGeneratorConfigId);
+		final Optional<DatabaseGeneratorConfig> result = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																					.get(databaseGeneratorConfigId);
 
 		if (result.isPresent()) {
-			DatabaseGeneratorConfig databaseGeneratorConfig = result.get();
+			final DatabaseGeneratorConfig databaseGeneratorConfig = result.get();
 
-			return decorateSingleData(databaseGeneratorConfig);
+			return this.decorateSingleData(databaseGeneratorConfig);
 		}
 
-		return fail(ReturnDataCode.NoData.toMessage());
+		return this.fail(ReturnDataCode.NoData.toMessage());
 	}
 
 	@ApiOperation(value = "获取数据库生成配置", notes = "获取数据库生成配置", httpMethod = "POST")
@@ -208,28 +204,29 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/getByConnectionId", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "数据库生成配置详情", description = "获取数据库生成配置", tag = "6b0d1fbe-9e31-48ce-86ab-5dc1ebe387db")
-	public ResultSingleData getByConnectionId(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+	public ResultSingleData getByConnectionId(@RequestBody final Map<String, Object> json) {
+		ParamData paramJson = this.getParamData(json);
 
 		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
-												 .toLong();
+										   .toLong();
 
-		Optional<DatabaseGeneratorConfig> result = connectionConfigAssist.getDatabaseGeneratorConfigService()
-																			   .findByConnectionConfigId(connectionConfigId);
+		Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
-		DatabaseGeneratorConfig databaseGeneratorConfig;
+		if (optionalConnectionConfig.isPresent()) {
+			ConnectionConfig connectionConfig = optionalConnectionConfig.get();
 
-		if (result.isPresent()) {
-			databaseGeneratorConfig = result.get();
-		} else {
-			DatabaseGeneratorConfig v = new DatabaseGeneratorConfig();
+			Optional<DatabaseGeneratorConfig> result = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																				  .findByConnectionConfigId(connectionConfigId);
 
-			v.setConnectionConfigId(connectionConfigId);
+			DatabaseGeneratorConfig databaseGeneratorConfig;
 
-			databaseGeneratorConfig = fill(v, new GlobalConfig(), paramJson);
+			databaseGeneratorConfig = result.orElseGet(() -> this.initDatabaseGeneratorConfigByConnectionConfig(this.connectionConfigAssist
+					.getDatabaseGeneratorConfigService(), connectionConfig, new ParamData()));
+
+			return this.decorateSingleData(databaseGeneratorConfig);
 		}
 
-		return decorateSingleData(databaseGeneratorConfig);
+		return this.fail(ReturnDataCode.NoData.toMessage("无效的数据链接配置"));
 	}
 
 	@ApiOperation(value = "创建数据库生成配置", notes = "创建数据库生成配置", httpMethod = "POST")
@@ -270,77 +267,77 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据库生成配置", description = "创建数据库生成配置", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
-	public ResultSingleData set(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+	public ResultSingleData set(@RequestBody final Map<String, Object> json) {
+		final ParamData paramJson = this.getParamData(json);
 
-		long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
+		final long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
 														.toLong();
-		long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
+		final long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 												 .toLong();
 
-		String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
-		int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
+		final String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
+		final int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
 														   .toInt();
 
 		if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode)) {
 			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER, "model文件夹不能含有空白");
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER, "model文件夹不能含有空白");
 			}
 		}
 
-		String daoTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER);
-		int daoTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
+		final String daoTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER);
+		final int daoTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
 														 .toInt();
 
 		if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode)) {
 			if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return paramError(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER, "dao文件夹不能含有空白");
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER, "dao文件夹不能含有空白");
 			}
 		}
 
-		String mappingXmlTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER);
-		int mappingXmlTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
+		final String mappingXmlTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER);
+		final int mappingXmlTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
 																.toInt();
 
 		if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode)) {
 			if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER, "mappingXml文件夹不能含有空白");
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER, "mappingXml文件夹不能含有空白");
 			}
 		}
 
-		String serviceTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER);
-		int serviceTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
+		final String serviceTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER);
+		final int serviceTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
 															 .toInt();
 
 		if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
 			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
-				return paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
 			}
 		}
 
-		Integer daoTypeValue = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TYPE, DaoType.XmlMapper
+		final Integer daoTypeValue = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TYPE, DaoType.XmlMapper
 				.getFlag()
 				.toString())
 											  .toInt();
 
-		Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(daoTypeValue);
+		final Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(daoTypeValue);
 
 		if (!optionalDaoType.isPresent()) {
-			return noDataError("无效的daoType");
+			return this.noDataError("无效的daoType");
 		}
 
-		DaoType daoType = optionalDaoType.get();
+		final DaoType daoType = optionalDaoType.get();
 
-		Optional<ConnectionConfig> optionalConnectionConfig = connectionConfigAssist.getConnectionConfig(connectionConfigId);
+		final Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (!optionalConnectionConfig.isPresent()) {
-			return noDataError("数据库连接不存在");
+			return this.noDataError("数据库连接不存在");
 		}
 
 		DatabaseGeneratorConfig databaseGeneratorConfig = null;
 
 		if (databaseGeneratorConfigId > 0) {
-			Optional<DatabaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = connectionConfigAssist
+			final Optional<DatabaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = this.connectionConfigAssist
 					.getDatabaseGeneratorConfigService()
 					.get(databaseGeneratorConfigId);
 
@@ -351,8 +348,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 
 		if (!Optional.ofNullable(databaseGeneratorConfig).isPresent()) {
 			if (connectionConfigId > 0) {
-				Optional<DatabaseGeneratorConfig> optionalFindByConnectionConfigId = connectionConfigAssist.getDatabaseGeneratorConfigService()
-																												 .findByConnectionConfigId(connectionConfigId);
+				final Optional<DatabaseGeneratorConfig> optionalFindByConnectionConfigId = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																													  .findByConnectionConfigId(connectionConfigId);
 
 				if (optionalFindByConnectionConfigId.isPresent()) {
 					databaseGeneratorConfig = optionalFindByConnectionConfigId.get();
@@ -366,11 +363,11 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
 		}
 
-		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
 
-		mybatisGeneratorGlobalConfig.setDaoType(daoType);
+		mybatisGeneratorGlobalConfig.setDaoType(daoType.getFlag());
 
-		return setCore(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
+		return this.setCore(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
 	}
 
 	@ApiOperation(value = "构建库对应代码", notes = "构建库对应代码", httpMethod = "POST")
@@ -383,35 +380,35 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/generate", consumes = "application/json", produces = "application/json")
 	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "构建库对应代码", description = "构建库对应代码", tag = "83ddf6ea-1f01-4cb9-b67d-0d2689184412")
-	public ResultSingleData generate(@RequestBody Map<String, Object> json) throws Exception {
-		ParamData paramJson = getParamData(json);
+	public ResultSingleData generate(@RequestBody final Map<String, Object> json) throws Exception {
+		final ParamData paramJson = this.getParamData(json);
 
-		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+		final Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
 												 .toLong();
 
 		if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
-			fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
+			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATA_TABLE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
 		}
 
-		Optional<ConnectionConfig> optionalConnectionConfig = connectionConfigAssist.getConnectionConfig(connectionConfigId);
+		final Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (!optionalConnectionConfig.isPresent()) {
-			return fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
+			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
 		}
 
-		MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
+		final MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
 				optionalConnectionConfig.get(),
-				connectionConfigAssist.getDatabaseGeneratorConfigService(),
-				connectionConfigAssist.getDataTableGeneratorConfigService(),
-				connectionConfigAssist.getDataColumnService());
+				this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
+				this.connectionConfigAssist.getDataTableGeneratorConfigService(),
+				this.connectionConfigAssist.getDataColumnService());
 
-		ExecutiveSimpleResult result = mybatisGeneratorBridge.generateAll();
+		final ExecutiveSimpleResult result = mybatisGeneratorBridge.generateAll();
 
 		if (result.getSuccess()) {
-			return successWithTimestamp();
+			return this.successWithTimestamp();
 		}
 
-		return fail(result.getCode());
+		return this.fail(result.getCode());
 	}
 
 	@ApiOperation(value = "打开项目文件夹", notes = "打开项目文件夹", httpMethod = "POST")
@@ -423,35 +420,35 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
 	@PostMapping(path = "/openProjectFolder", produces = "application/json")
-	public ResultSingleData openProjectFolder(@RequestBody Map<String, Object> json) {
-		ParamData paramJson = getParamData(json);
+	public ResultSingleData openProjectFolder(@RequestBody final Map<String, Object> json) {
+		final ParamData paramJson = this.getParamData(json);
 
-		Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
+		final Long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)
 												 .toLong();
 
 		if (ConstantCollection.ZERO_LONG.equals(connectionConfigId)) {
-			fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
+			this.fail(ReturnDataCode.ParamError.appendMessage(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "不能为空值"));
 		}
 
-		Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = connectionConfigAssist.getDatabaseGeneratorConfigService()
-																										.findByConnectionConfigId(connectionConfigId);
+		final Optional<DatabaseGeneratorConfig> optionalDatabaseGeneratorConfig = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																											 .findByConnectionConfigId(connectionConfigId);
 
 		if (!optionalDatabaseGeneratorConfig.isPresent()) {
-			return fail(ReturnDataCode.DataError.appendMessage("数据库生成配置不存在"));
+			return this.fail(ReturnDataCode.DataError.appendMessage("数据库生成配置不存在"));
 		}
 
-		GlobalConfig mybatisGeneratorGlobalConfig = optionalDatabaseGeneratorConfig.get()
+		final GlobalConfig mybatisGeneratorGlobalConfig = optionalDatabaseGeneratorConfig.get()
 																						 .BuildMyybatisGeneratorGlobalConfig();
 
-		String folder = mybatisGeneratorGlobalConfig.getProjectFolder();
+		final String folder = mybatisGeneratorGlobalConfig.getProjectFolder();
 
-		ExecutiveSimpleResult result = openFolder(folder);
+		final ExecutiveSimpleResult result = this.openFolder(folder);
 
 		if (result.getSuccess()) {
-			return successWithTimestamp();
+			return this.successWithTimestamp();
 		}
 
-		return fail(result.getCode());
+		return this.fail(result.getCode());
 	}
 
 	/**
@@ -460,8 +457,8 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private ResultSingleData decorateSingleData(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
-		List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
+	private ResultSingleData decorateSingleData(@NotNull final DatabaseGeneratorConfig databaseGeneratorConfig) {
+		final List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
 		getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
 
@@ -472,97 +469,15 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 		getterList.add(DatabaseGeneratorConfig::getCreateTime);
 		getterList.add(DatabaseGeneratorConfig::getUpdateTime);
 
-		SerializableData data = SerializableData.toSerializableData(databaseGeneratorConfig, getterList);
+		final SerializableData data = SerializableData.toSerializableData(databaseGeneratorConfig, getterList);
 
 		data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), databaseGeneratorConfig.getId());
 
-		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
 
 		data.append(com.lzt.operate.code.generator.common.config.mybatis.generator.ConstantCollection.GLOBALCONFIG, mybatisGeneratorGlobalConfig);
 
-		return singleData(data);
-	}
-
-	private DatabaseGeneratorConfig fill(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull GlobalConfig mybatisGeneratorGlobalConfig, @NotNull ParamData paramJson) {
-		mybatisGeneratorGlobalConfig.setAnnotation(Whether.No.getFlag()
-															 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
-																			  .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setAnnotationDAO(Whether.No.getFlag()
-																.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO)
-																				 .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setDaoPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE));
-		mybatisGeneratorGlobalConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
-		mybatisGeneratorGlobalConfig.setDaoTargetFolderRelativeMode(Whether.No.getFlag()
-																			  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
-																							   .toInt()) ? Whether.No : Whether.Yes);
-
-		Integer encoding = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING).toInt();
-		Optional<FileEncoding> optionalFileEncoding = EnumAssist.getTargetValue(FileEncoding.valuesToList(), FileEncoding::getFlag, encoding);
-
-		if (optionalFileEncoding.isPresent()) {
-			mybatisGeneratorGlobalConfig.setEncoding(optionalFileEncoding.get());
-		} else {
-			mybatisGeneratorGlobalConfig.setEncoding(FileEncoding.UTF8);
-		}
-
-		mybatisGeneratorGlobalConfig.setJsr310Support(Whether.No.getFlag()
-																.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT)
-																				 .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setMappingXmlPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE));
-		mybatisGeneratorGlobalConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
-		mybatisGeneratorGlobalConfig.setMappingXmlTargetFolderRelativeMode(Whether.No.getFlag()
-																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
-																									  .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setModelPackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE));
-		mybatisGeneratorGlobalConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
-		mybatisGeneratorGlobalConfig.setModelTargetFolderRelativeMode(Whether.No.getFlag()
-																				.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
-																								 .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setServicePackage(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE));
-		mybatisGeneratorGlobalConfig.setServiceTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER));
-		mybatisGeneratorGlobalConfig.setServiceTargetFolderRelativeMode(Whether.No.getFlag()
-																				  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
-																								   .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setMapperExtensionName(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME));
-		mybatisGeneratorGlobalConfig.setNeedForUpdate(Whether.No.getFlag()
-																.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)
-																				 .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setNeedToStringHashCodeEquals(Whether.No.getFlag()
-																			 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS)
-																							  .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setOffsetLimit(Whether.No.getFlag()
-															  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT)
-																			   .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setOverrideXML(Whether.No.getFlag()
-															  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML)
-																			   .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setProjectFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER));
-
-		mybatisGeneratorGlobalConfig.setUseDAOExtendStyle(Whether.No.getFlag()
-																	.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE)
-																					 .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setUseSchemaPrefix(Whether.No.getFlag()
-																  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX)
-																				   .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setAutoDelimitKeywords(Whether.No.getFlag()
-																	  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS)
-																					   .toInt()) ? Whether.No : Whether.Yes);
-		mybatisGeneratorGlobalConfig.setComment(Whether.No.getFlag()
-														  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_COMMENT)
-																		   .toInt()) ? Whether.No : Whether.Yes);
-
-		long operatorId = getOperatorId();
-
-		if (ConstantCollection.ZERO_LONG.equals(databaseGeneratorConfig.getId())) {
-			databaseGeneratorConfig.setChannel(Channel.CodeGenerator);
-
-			databaseGeneratorConfig.setCreateOperatorId(operatorId);
-			databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
-		}
-
-		databaseGeneratorConfig.setUpdateOperatorId(operatorId);
-
-		return databaseGeneratorConfig;
+		return this.singleData(data);
 	}
 
 	/**
@@ -571,12 +486,12 @@ public class DataBaseGeneratorConfigController extends BaseOperateAuthController
 	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private ResultSingleData setCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull GlobalConfig mybatisGeneratorGlobalConfig, @NotNull ParamData paramJson) {
-		DatabaseGeneratorConfig v = fill(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
+	private ResultSingleData setCore(@NotNull final DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull final GlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
+		DatabaseGeneratorConfig v = this.fill(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
 
-		v = connectionConfigAssist.getDatabaseGeneratorConfigService().save(v);
+		v = this.connectionConfigAssist.getDatabaseGeneratorConfigService().save(v);
 
-		return decorateSingleData(v);
+		return this.decorateSingleData(v);
 	}
 
 }

@@ -49,13 +49,13 @@ public enum AccountStatus {
 	private final String description;
 
 	AccountStatus(int value, String name) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = "";
+		this.description = "";
 	}
 
 	AccountStatus(int value, String name, String description) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
 		this.description = description;
 	}
@@ -76,16 +76,22 @@ public enum AccountStatus {
 		return Arrays.asList(AccountStatus.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<AccountStatus> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

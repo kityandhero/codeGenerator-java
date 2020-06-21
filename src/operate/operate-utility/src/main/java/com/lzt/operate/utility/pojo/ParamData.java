@@ -21,18 +21,22 @@ public class ParamData extends SerializableMap {
 		super(data);
 	}
 
+	public boolean existKey(String key) {
+		return this.getMultimap().containsKey(key);
+	}
+
 	public StringEx getStringExByKey(String key) {
-		return getStringExByKey(key, "");
+		return this.getStringExByKey(key, "");
 	}
 
 	public StringEx getStringExByKey(String key, String defaultValue) {
-		String v = getStringByKey(key, defaultValue);
+		String v = this.getStringByKey(key, defaultValue);
 
 		return new StringEx(StringAssist.isNullOrEmpty(v) ? defaultValue : v);
 	}
 
 	public String getStringByKey(String key) {
-		return getStringByKey(key, "");
+		return this.getStringByKey(key, "");
 	}
 
 	public String getStringByKey(String key, String defaultValue) {

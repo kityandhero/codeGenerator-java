@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -353,8 +354,28 @@ public class ConvertAssist {
 	 * @param o Object
 	 * @return String Json
 	 */
+	public static String serialize(Serializable o) throws JsonProcessingException {
+		return serialize((Object) o);
+	}
+
+	/**
+	 * 序列化
+	 *
+	 * @param o Object
+	 * @return String Json
+	 */
 	public static String serialize(Object o) throws JsonProcessingException {
 		return serialize(new ObjectMapper(), o);
+	}
+
+	/**
+	 * 序列化
+	 *
+	 * @param o Object
+	 * @return String Json
+	 */
+	public static String serialize(@NotNull ObjectMapper objectMapper, Serializable o) throws JsonProcessingException {
+		return serialize(objectMapper, (Object) o);
 	}
 
 	/**

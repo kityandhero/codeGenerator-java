@@ -52,9 +52,9 @@ public enum CustomDataType {
 	private final String description;
 
 	CustomDataType(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<CustomDataType> valueOfFlag(@NonNull Integer flag) {
@@ -73,16 +73,22 @@ public enum CustomDataType {
 		return Arrays.asList(CustomDataType.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<CustomDataType> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

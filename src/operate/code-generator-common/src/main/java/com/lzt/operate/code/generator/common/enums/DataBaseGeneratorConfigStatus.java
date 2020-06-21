@@ -38,9 +38,9 @@ public enum DataBaseGeneratorConfigStatus {
 	private final String description;
 
 	DataBaseGeneratorConfigStatus(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<DataBaseGeneratorConfigStatus> valueOfFlag(@NonNull Integer flag) {
@@ -59,16 +59,22 @@ public enum DataBaseGeneratorConfigStatus {
 		return Arrays.asList(DataBaseGeneratorConfigStatus.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<DataBaseGeneratorConfigStatus> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

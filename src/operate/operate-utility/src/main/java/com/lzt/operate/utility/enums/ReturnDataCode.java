@@ -243,41 +243,47 @@ public enum ReturnDataCode {
 		return Arrays.asList(ReturnDataCode.values());
 	}
 
+	public static boolean existCode(@NonNull Integer flag) {
+		Optional<ReturnDataCode> optional = valueOfCode(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getCode() {
-		return code;
+		return this.code;
 	}
 
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
 	public boolean getSuccess() {
-		return success;
+		return this.success;
 	}
 
 	public ReturnMessage appendMessage(String... otherMessageList) {
 		List<String> list = new ArrayList<>();
 
-		list.add(message);
+		list.add(this.message);
 		list.addAll(Arrays.asList(otherMessageList));
 
-		return toMessage(StringAssist.join(list));
+		return this.toMessage(StringAssist.join(list));
 	}
 
 	public ReturnMessage toMessage() {
-		return ReturnMessage.create(getCode(), getMessage(), getSuccess());
+		return ReturnMessage.create(this.getCode(), this.getMessage(), this.getSuccess());
 	}
 
 	public ReturnMessage toMessage(boolean success) {
-		return ReturnMessage.create(getCode(), getMessage(), success);
+		return ReturnMessage.create(this.getCode(), this.getMessage(), success);
 	}
 
 	public ReturnMessage toMessage(String message) {
-		return ReturnMessage.create(getCode(), message, getSuccess());
+		return ReturnMessage.create(this.getCode(), message, this.getSuccess());
 	}
 
 	public ReturnMessage toMessage(int code) {
-		return ReturnMessage.create(code, getMessage(), getSuccess());
+		return ReturnMessage.create(code, this.getMessage(), this.getSuccess());
 	}
 
 }

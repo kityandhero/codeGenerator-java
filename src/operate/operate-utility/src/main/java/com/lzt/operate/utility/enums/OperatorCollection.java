@@ -1,5 +1,7 @@
 package com.lzt.operate.utility.enums;
 
+import org.springframework.lang.NonNull;
+
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
@@ -50,15 +52,21 @@ public enum OperatorCollection {
 		return Arrays.asList(OperatorCollection.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<OperatorCollection> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 }

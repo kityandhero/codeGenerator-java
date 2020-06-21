@@ -52,9 +52,9 @@ public enum ErrorLogDegree {
 	private final String description;
 
 	ErrorLogDegree(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<ErrorLogDegree> valueOfFlag(@NonNull Integer flag) {
@@ -73,16 +73,22 @@ public enum ErrorLogDegree {
 		return Arrays.asList(ErrorLogDegree.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<ErrorLogDegree> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

@@ -38,7 +38,7 @@ public enum WhetherSuper {
 	private final String description;
 
 	WhetherSuper(int value, String name, String description) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
 		this.description = description;
 	}
@@ -59,16 +59,22 @@ public enum WhetherSuper {
 		return Arrays.asList(WhetherSuper.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<WhetherSuper> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public Integer getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

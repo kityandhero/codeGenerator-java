@@ -49,9 +49,9 @@ public enum RoleUniversalStatus {
 	private final String description;
 
 	RoleUniversalStatus(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<RoleUniversalStatus> valueOfFlag(@NonNull Integer flag) {
@@ -70,16 +70,22 @@ public enum RoleUniversalStatus {
 		return Arrays.asList(RoleUniversalStatus.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<RoleUniversalStatus> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

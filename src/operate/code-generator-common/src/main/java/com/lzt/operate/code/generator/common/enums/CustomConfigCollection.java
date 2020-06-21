@@ -63,7 +63,7 @@ public enum CustomConfigCollection {
 	private final String description;
 
 	CustomConfigCollection(String guid, String name, CustomConfigCategory category, String valueType, List<String> availableValue, String defaultValue, String description) {
-		uuid = guid;
+		this.uuid = guid;
 		this.name = name;
 		this.category = category;
 		this.valueType = valueType;
@@ -77,30 +77,30 @@ public enum CustomConfigCollection {
 	}
 
 	public String getUuid() {
-		return uuid;
+		return this.uuid;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public CustomConfigCategory getCategory() {
-		return category;
+		return this.category;
 	}
 
 	public String getValueType() {
-		return valueType;
+		return this.valueType;
 	}
 
 	public List<String> getAvailableValue() {
-		return availableValue;
+		return this.availableValue;
 	}
 
 	public String getDefaultValue() {
-		return defaultValue;
+		return this.defaultValue;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 }

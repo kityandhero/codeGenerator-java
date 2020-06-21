@@ -43,9 +43,9 @@ public enum HelpCategoryStatus {
 	private final String description;
 
 	HelpCategoryStatus(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<HelpCategoryStatus> valueOfFlag(@NonNull Integer flag) {
@@ -64,16 +64,22 @@ public enum HelpCategoryStatus {
 		return Arrays.asList(HelpCategoryStatus.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<HelpCategoryStatus> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

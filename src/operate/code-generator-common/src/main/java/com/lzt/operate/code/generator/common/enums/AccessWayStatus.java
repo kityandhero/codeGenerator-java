@@ -42,9 +42,9 @@ public enum AccessWayStatus {
 	private final String description;
 
 	AccessWayStatus(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<AccessWayStatus> valueOfFlag(@NonNull Integer flag) {
@@ -63,16 +63,22 @@ public enum AccessWayStatus {
 		return Arrays.asList(AccessWayStatus.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<AccessWayStatus> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

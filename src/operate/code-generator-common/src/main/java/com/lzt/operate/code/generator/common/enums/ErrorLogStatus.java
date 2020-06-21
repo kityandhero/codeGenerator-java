@@ -38,9 +38,9 @@ public enum ErrorLogStatus {
 	private final String description;
 
 	ErrorLogStatus(int value, String name, String descriptor) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
-		description = descriptor;
+		this.description = descriptor;
 	}
 
 	public static Optional<ErrorLogStatus> valueOfFlag(@NonNull Integer flag) {
@@ -59,16 +59,22 @@ public enum ErrorLogStatus {
 		return Arrays.asList(ErrorLogStatus.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<ErrorLogStatus> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public int getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

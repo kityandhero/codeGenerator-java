@@ -54,19 +54,25 @@ public enum DaoType {
 		return Arrays.asList(DaoType.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<DaoType> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public Integer getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 }

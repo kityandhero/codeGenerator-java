@@ -52,16 +52,22 @@ public enum ConnectionType {
 		return Arrays.asList(ConnectionType.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<ConnectionType> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public Integer getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }

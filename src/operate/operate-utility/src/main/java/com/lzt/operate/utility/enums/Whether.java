@@ -37,7 +37,7 @@ public enum Whether {
 	private final String description;
 
 	Whether(int value, String name, String description) {
-		flag = value;
+		this.flag = value;
 		this.name = name;
 		this.description = description;
 	}
@@ -58,16 +58,22 @@ public enum Whether {
 		return Arrays.asList(Whether.values());
 	}
 
+	public static boolean existFlag(@NonNull Integer flag) {
+		Optional<Whether> optional = valueOfFlag(flag);
+
+		return optional.isPresent();
+	}
+
 	public Integer getFlag() {
-		return flag;
+		return this.flag;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 }
