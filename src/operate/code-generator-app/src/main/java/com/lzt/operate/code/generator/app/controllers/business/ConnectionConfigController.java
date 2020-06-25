@@ -281,8 +281,7 @@ public class ConnectionConfigController extends BaseBusinessController {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PORT),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_HOST),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_USER),
-			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PASSWORD),
-			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE)},
+			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PASSWORD)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_UPDATE_BASIC_INFO)

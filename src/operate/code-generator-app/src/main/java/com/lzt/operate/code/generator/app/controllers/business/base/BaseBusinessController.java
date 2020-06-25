@@ -63,7 +63,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 		return databaseGeneratorConfig;
 	}
 
-	protected DatabaseGeneratorConfig fill(@NotNull final DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull final GlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
+	protected DatabaseGeneratorConfig fill(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull GlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
 		mybatisGeneratorGlobalConfig.setAnnotation(Whether.No.getFlag()
 															 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
 																			  .toInt()) ? Whether.No.getFlag() : Whether.Yes

@@ -19,7 +19,6 @@ import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
-import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -226,9 +225,8 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig = result.orElseGet(() -> this.initDatabaseGeneratorConfigByConnectionConfig(this.connectionConfigAssist
 					.getDatabaseGeneratorConfigService(), connectionConfig, new ParamData()));
 
-			if (GeneratorType.existFlag(databaseGeneratorConfig.getGeneratorType())) {
-				databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisGenerator.getFlag()
-				);
+			if (!GeneratorType.existFlag(databaseGeneratorConfig.getGeneratorType())) {
+				databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisGenerator.getFlag());
 
 				this.connectionConfigAssist
 						.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
@@ -286,12 +284,6 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 		final long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 												 .toLong();
 
-		int generatorType = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE).toInt();
-
-		if (!EnumAssist.existTargetValue(GeneratorType.valuesToList(), GeneratorType::getFlag, generatorType)) {
-			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE, "允许范围之外的值");
-		}
-
 		final String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
 		final int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
 														   .toInt();
@@ -378,7 +370,10 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
 			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
-			databaseGeneratorConfig.setGeneratorType(generatorType);
+		}
+
+		if (!GeneratorType.MybatisGenerator.getFlag().equals(databaseGeneratorConfig.getGeneratorType())) {
+			databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisGenerator.getFlag());
 		}
 
 		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
@@ -434,12 +429,6 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 		final long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 												 .toLong();
 
-		int generatorType = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE).toInt();
-
-		if (!EnumAssist.existTargetValue(GeneratorType.valuesToList(), GeneratorType::getFlag, generatorType)) {
-			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE, "允许范围之外的值");
-		}
-
 		final String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
 		final int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
 														   .toInt();
@@ -526,7 +515,10 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
 			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
-			databaseGeneratorConfig.setGeneratorType(generatorType);
+		}
+
+		if (!GeneratorType.MybatisPlusGenerator.getFlag().equals(databaseGeneratorConfig.getGeneratorType())) {
+			databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisPlusGenerator.getFlag());
 		}
 
 		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
@@ -534,6 +526,21 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 		mybatisGeneratorGlobalConfig.setDaoType(daoType.getFlag());
 
 		return this.setCore(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
+	}
+
+	@ApiOperation(value = "设置CustomGenerator生成配置", notes = "设置CustomGenerator生成配置", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET_CUSTOM_GENERATOR_CONFIG, value = {
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID)},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET_CUSTOM_GENERATOR_CONFIG)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/setCustomGeneratorConfig", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置CustomGenerator生成配置", description = "设置CustomGenerator生成配置", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
+	public ResultSingleData setCustomGeneratorConfig(@RequestBody final Map<String, Object> json) {
+		return this.fail(ReturnDataCode.NoChange.toMessage("暂不支持此生成器"));
 	}
 
 	@ApiOperation(value = "构建库对应代码", notes = "构建库对应代码", httpMethod = "POST")
