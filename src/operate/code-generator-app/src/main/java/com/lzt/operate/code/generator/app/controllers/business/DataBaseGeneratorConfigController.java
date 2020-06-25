@@ -7,6 +7,7 @@ import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.app.controllers.business.base.BaseBusinessController;
 import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.dao.service.impl.ConnectionConfigServiceImpl;
@@ -18,6 +19,7 @@ import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.swagger2.model.ApiJsonObject;
 import com.lzt.operate.swagger2.model.ApiJsonProperty;
 import com.lzt.operate.swagger2.model.ApiJsonResult;
+import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.IGetter;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -144,6 +146,7 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 													  final List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
 													  getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
+													  getterList.add(DatabaseGeneratorConfig::getGeneratorType);
 													  getterList.add(DatabaseGeneratorConfig::getChannel);
 													  getterList.add(DatabaseGeneratorConfig::getChannelNote);
 													  getterList.add(DatabaseGeneratorConfig::getStatus);
@@ -223,14 +226,22 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig = result.orElseGet(() -> this.initDatabaseGeneratorConfigByConnectionConfig(this.connectionConfigAssist
 					.getDatabaseGeneratorConfigService(), connectionConfig, new ParamData()));
 
+			if (GeneratorType.existFlag(databaseGeneratorConfig.getGeneratorType())) {
+				databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisGenerator.getFlag()
+				);
+
+				this.connectionConfigAssist
+						.getDatabaseGeneratorConfigService().save(databaseGeneratorConfig);
+			}
+
 			return this.decorateSingleData(databaseGeneratorConfig);
 		}
 
 		return this.fail(ReturnDataCode.NoData.toMessage("无效的数据链接配置"));
 	}
 
-	@ApiOperation(value = "创建数据库生成配置", notes = "创建数据库生成配置", httpMethod = "POST")
-	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET, value = {
+	@ApiOperation(value = "设置MybatisGenerator生成配置", notes = "设置MybatisGenerator生成配置", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET_MYBATIS_GENERATOR_CONFIG, value = {
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE),
@@ -262,18 +273,24 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME),},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET)
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET_MYBATIS_GENERATOR_CONFIG)
 	})
 	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
-	@PostMapping(path = "/set", consumes = "application/json", produces = "application/json")
-	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置数据库生成配置", description = "创建数据库生成配置", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
-	public ResultSingleData set(@RequestBody final Map<String, Object> json) {
+	@PostMapping(path = "/setMybatisGeneratorConfig", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置MybatisGenerator生成配置", description = "设置MybatisGenerator生成配置", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
+	public ResultSingleData setMybatisGeneratorConfig(@RequestBody final Map<String, Object> json) {
 		final ParamData paramJson = this.getParamData(json);
 
 		final long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
 														.toLong();
 		final long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
 												 .toLong();
+
+		int generatorType = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE).toInt();
+
+		if (!EnumAssist.existTargetValue(GeneratorType.valuesToList(), GeneratorType::getFlag, generatorType)) {
+			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE, "允许范围之外的值");
+		}
 
 		final String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
 		final int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
@@ -361,6 +378,155 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
 			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
+			databaseGeneratorConfig.setGeneratorType(generatorType);
+		}
+
+		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+
+		mybatisGeneratorGlobalConfig.setDaoType(daoType.getFlag());
+
+		return this.setCore(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
+	}
+
+	@ApiOperation(value = "设置MybatisPlusGenerator生成配置", notes = "设置MybatisPlusGenerator生成配置", httpMethod = "POST")
+	@ApiJsonObject(name = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET_MYBATIS_PLUS_GENERATOR_CONFIG, value = {
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_PROJECT_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_DAO_PACKAGE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_PACKAGE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION_DAO),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_ENCODING),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_DAO_EXTEND_STYLE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_USE_SCHEMA_PREFIX),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_JSR_310_SUPPORT),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OVERRIDE_XML),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_AUTO_DELIMIT_KEYWORDS),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_COMMENT),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME),},
+			result = @ApiJsonResult({}))
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.DATABASE_GENERATOR_CONFIG_SET_MYBATIS_PLUS_GENERATOR_CONFIG)
+	})
+	@ApiResponses({@ApiResponse(code = BaseResultData.CODE_ACCESS_SUCCESS, message = BaseResultData.MESSAGE_ACCESS_SUCCESS, response = ResultSingleData.class)})
+	@PostMapping(path = "/setMybatisPlusGeneratorConfig", consumes = "application/json", produces = "application/json")
+	@NeedAuthorization(name = CONTROLLER_DESCRIPTION + "设置MybatisPlusGenerator生成配置", description = "设置MybatisPlusGenerator生成配置", tag = "94520b18-bcb8-499c-90fd-afb82f45f3f0")
+	public ResultSingleData setMybatisPlusGeneratorConfig(@RequestBody final Map<String, Object> json) {
+		final ParamData paramJson = this.getParamData(json);
+
+		final long databaseGeneratorConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ID, "0")
+														.toLong();
+		final long connectionConfigId = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID, "0")
+												 .toLong();
+
+		int generatorType = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE).toInt();
+
+		if (!EnumAssist.existTargetValue(GeneratorType.valuesToList(), GeneratorType::getFlag, generatorType)) {
+			return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE, "允许范围之外的值");
+		}
+
+		final String modelTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER);
+		final int modelTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
+														   .toInt();
+
+		if (Whether.Yes.getFlag().equals(modelTargetFolderRelativeMode)) {
+			if (StringAssist.contains(modelTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER, "model文件夹不能含有空白");
+			}
+		}
+
+		final String daoTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER);
+		final int daoTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
+														 .toInt();
+
+		if (Whether.Yes.getFlag().equals(daoTargetFolderRelativeMode)) {
+			if (StringAssist.contains(daoTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER, "dao文件夹不能含有空白");
+			}
+		}
+
+		final String mappingXmlTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER);
+		final int mappingXmlTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
+																.toInt();
+
+		if (Whether.Yes.getFlag().equals(mappingXmlTargetFolderRelativeMode)) {
+			if (StringAssist.contains(mappingXmlTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER, "mappingXml文件夹不能含有空白");
+			}
+		}
+
+		final String serviceTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER);
+		final int serviceTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
+															 .toInt();
+
+		if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
+			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
+			}
+		}
+
+		final Integer daoTypeValue = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TYPE, DaoType.XmlMapper
+				.getFlag()
+				.toString())
+											  .toInt();
+
+		final Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(daoTypeValue);
+
+		if (!optionalDaoType.isPresent()) {
+			return this.noDataError("无效的daoType");
+		}
+
+		final DaoType daoType = optionalDaoType.get();
+
+		final Optional<ConnectionConfig> optionalConnectionConfig = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
+
+		if (!optionalConnectionConfig.isPresent()) {
+			return this.noDataError("数据库连接不存在");
+		}
+
+		DatabaseGeneratorConfig databaseGeneratorConfig = null;
+
+		if (databaseGeneratorConfigId > 0) {
+			final Optional<DatabaseGeneratorConfig> optionalFindByDataBaseGeneratorConfigId = this.connectionConfigAssist
+					.getDatabaseGeneratorConfigService()
+					.get(databaseGeneratorConfigId);
+
+			if (optionalFindByDataBaseGeneratorConfigId.isPresent()) {
+				databaseGeneratorConfig = optionalFindByDataBaseGeneratorConfigId.get();
+			}
+		}
+
+		if (!Optional.ofNullable(databaseGeneratorConfig).isPresent()) {
+			if (connectionConfigId > 0) {
+				final Optional<DatabaseGeneratorConfig> optionalFindByConnectionConfigId = this.connectionConfigAssist.getDatabaseGeneratorConfigService()
+																													  .findByConnectionConfigId(connectionConfigId);
+
+				if (optionalFindByConnectionConfigId.isPresent()) {
+					databaseGeneratorConfig = optionalFindByConnectionConfigId.get();
+				}
+			}
+		}
+
+		if (!Optional.ofNullable(databaseGeneratorConfig).isPresent()) {
+			databaseGeneratorConfig = new DatabaseGeneratorConfig();
+
+			databaseGeneratorConfig.setConnectionConfigId(connectionConfigId);
+			databaseGeneratorConfig.setGeneratorType(generatorType);
 		}
 
 		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
@@ -461,6 +627,7 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 		final List<IGetter<DatabaseGeneratorConfig>> getterList = new ArrayList<>();
 
 		getterList.add(DatabaseGeneratorConfig::getConnectionConfigId);
+		getterList.add(DatabaseGeneratorConfig::getGeneratorType);
 
 		getterList.add(DatabaseGeneratorConfig::getChannel);
 		getterList.add(DatabaseGeneratorConfig::getChannelNote);

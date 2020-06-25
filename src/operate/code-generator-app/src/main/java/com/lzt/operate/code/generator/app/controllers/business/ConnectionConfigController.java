@@ -10,7 +10,6 @@ import com.lzt.operate.code.generator.common.enums.ConnectionConfigStatus;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
-import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.common.utils.ModelNameCollection;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
@@ -156,7 +155,6 @@ public class ConnectionConfigController extends BaseBusinessController {
 												getterList.add(ConnectionConfig::getPort);
 												getterList.add(ConnectionConfig::getSchema);
 												getterList.add(ConnectionConfig::getEncoding);
-												getterList.add(ConnectionConfig::getGeneratorType);
 												getterList.add(ConnectionConfig::getChannel);
 												getterList.add(ConnectionConfig::getChannelNote);
 												getterList.add(ConnectionConfig::getStatus);
@@ -284,7 +282,7 @@ public class ConnectionConfigController extends BaseBusinessController {
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_HOST),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_USER),
 			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_SSH_PASSWORD),
-			@ApiJsonProperty(name = GlobalString.CONNECTION_CONFIG_GENERATOR_TYPE)},
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE)},
 			result = @ApiJsonResult({}))
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "json", required = true, dataType = ModelNameCollection.CONNECTION_CONFIG_UPDATE_BASIC_INFO)
@@ -326,12 +324,6 @@ public class ConnectionConfigController extends BaseBusinessController {
 			return this.paramError(GlobalString.CONNECTION_CONFIG_ENCODING, "允许范围之外的值");
 		}
 
-		int generatorType = paramJson.getStringExByKey(GlobalString.CONNECTION_CONFIG_GENERATOR_TYPE).toInt();
-
-		if (!EnumAssist.existTargetValue(GeneratorType.valuesToList(), GeneratorType::getFlag, generatorType)) {
-			return this.paramError(GlobalString.CONNECTION_CONFIG_GENERATOR_TYPE, "允许范围之外的值");
-		}
-
 		Optional<ConnectionConfig> result = this.connectionConfigAssist.getConnectionConfig(connectionConfigId);
 
 		if (result.isPresent()) {
@@ -368,7 +360,6 @@ public class ConnectionConfigController extends BaseBusinessController {
 			data.setSshHost(sshHost);
 			data.setSshUser(sshUser);
 			data.setSshPassword(sshPassword);
-			data.setGeneratorType(generatorType);
 
 			long operatorId = this.getOperatorId();
 
@@ -473,7 +464,6 @@ public class ConnectionConfigController extends BaseBusinessController {
 		getterList.add(ConnectionConfig::getSshPort);
 		getterList.add(ConnectionConfig::getSshUser);
 		getterList.add(ConnectionConfig::getSshPassword);
-		getterList.add(ConnectionConfig::getGeneratorType);
 		getterList.add(ConnectionConfig::getChannel);
 		getterList.add(ConnectionConfig::getChannelNote);
 		getterList.add(ConnectionConfig::getStatus);

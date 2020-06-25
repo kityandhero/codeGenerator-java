@@ -1,7 +1,6 @@
 package com.lzt.operate.code.generator.entities;
 
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
-import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 
 import javax.persistence.Column;
@@ -69,18 +68,14 @@ public class ConnectionConfig extends BaseEntity {
 	@Column(name = "ssh_password", nullable = false)
 	private String sshPassword;
 
-	@Column(name = "generator_type", nullable = false)
-	private int generatorType;
-
 	public ConnectionConfig() {
 		super();
 
-		encoding = DatabaseEncoding.UTF8.getFlag();
-		generatorType = GeneratorType.MybatisGenerator.getFlag();
+		this.encoding = DatabaseEncoding.UTF8.getFlag();
 	}
 
 	public int getDatabaseType() {
-		return databaseType;
+		return this.databaseType;
 	}
 
 	public void setDatabaseType(int databaseType) {
@@ -88,7 +83,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public int getConnectionType() {
-		return connectionType;
+		return this.connectionType;
 	}
 
 	public void setConnectionType(int connectionType) {
@@ -96,7 +91,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -104,7 +99,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -112,7 +107,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getHost() {
-		return host;
+		return this.host;
 	}
 
 	public void setHost(String host) {
@@ -120,7 +115,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getPort() {
-		return port;
+		return this.port;
 	}
 
 	public void setPort(String port) {
@@ -128,7 +123,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getSchema() {
-		return schema;
+		return this.schema;
 	}
 
 	public void setSchema(String schema) {
@@ -136,15 +131,15 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getUserName() {
-		return userName;
+		return this.userName;
 	}
 
 	public void setUserName(String username) {
-		userName = username;
+		this.userName = username;
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -152,15 +147,15 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public int getEncoding() {
-		return encoding;
+		return this.encoding;
 	}
 
 	public void setEncoding(DatabaseEncoding databaseEncoding) {
-		encoding = databaseEncoding.getFlag();
+		this.encoding = databaseEncoding.getFlag();
 	}
 
 	public String getLocalPort() {
-		return localPort;
+		return this.localPort;
 	}
 
 	public void setLocalPort(String localPort) {
@@ -168,7 +163,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getRemotePort() {
-		return remotePort;
+		return this.remotePort;
 	}
 
 	public void setRemotePort(String remotePort) {
@@ -176,7 +171,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getSshPort() {
-		return sshPort;
+		return this.sshPort;
 	}
 
 	public void setSshPort(String sshPort) {
@@ -184,7 +179,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getSshHost() {
-		return sshHost;
+		return this.sshHost;
 	}
 
 	public void setSshHost(String sshHost) {
@@ -192,7 +187,7 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getSshUser() {
-		return sshUser;
+		return this.sshUser;
 	}
 
 	public void setSshUser(String sshUser) {
@@ -200,19 +195,11 @@ public class ConnectionConfig extends BaseEntity {
 	}
 
 	public String getSshPassword() {
-		return sshPassword;
+		return this.sshPassword;
 	}
 
 	public void setSshPassword(String sshPassword) {
 		this.sshPassword = sshPassword;
-	}
-
-	public int getGeneratorType() {
-		return generatorType;
-	}
-
-	public void setGeneratorType(int generatorType) {
-		this.generatorType = generatorType;
 	}
 
 	@Override
@@ -220,46 +207,46 @@ public class ConnectionConfig extends BaseEntity {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
 		ConnectionConfig that = (ConnectionConfig) o;
-		return Objects.equals(getId(), that.getId()) &&
-				Objects.equals(connectionType, that.connectionType) &&
-				Objects.equals(databaseType, that.databaseType) &&
-				Objects.equals(name, that.name) &&
-				Objects.equals(host, that.host) &&
-				Objects.equals(port, that.port) &&
-				Objects.equals(schema, that.schema) &&
-				Objects.equals(userName, that.userName) &&
-				Objects.equals(password, that.password) &&
-				Objects.equals(encoding, that.encoding) &&
-				Objects.equals(localPort, that.localPort) &&
-				Objects.equals(remotePort, that.remotePort) &&
-				Objects.equals(sshPort, that.sshPort) &&
-				Objects.equals(sshHost, that.sshHost) &&
-				Objects.equals(sshUser, that.sshUser) &&
-				Objects.equals(sshPassword, that.sshPassword);
+		return Objects.equals(this.getId(), that.getId()) &&
+				Objects.equals(this.connectionType, that.connectionType) &&
+				Objects.equals(this.databaseType, that.databaseType) &&
+				Objects.equals(this.name, that.name) &&
+				Objects.equals(this.host, that.host) &&
+				Objects.equals(this.port, that.port) &&
+				Objects.equals(this.schema, that.schema) &&
+				Objects.equals(this.userName, that.userName) &&
+				Objects.equals(this.password, that.password) &&
+				Objects.equals(this.encoding, that.encoding) &&
+				Objects.equals(this.localPort, that.localPort) &&
+				Objects.equals(this.remotePort, that.remotePort) &&
+				Objects.equals(this.sshPort, that.sshPort) &&
+				Objects.equals(this.sshHost, that.sshHost) &&
+				Objects.equals(this.sshUser, that.sshUser) &&
+				Objects.equals(this.sshPassword, that.sshPassword);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = getDatabaseType();
-		result = 31 * result + getConnectionType();
-		result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-		result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-		result = 31 * result + (getHost() != null ? getHost().hashCode() : 0);
-		result = 31 * result + (getPort() != null ? getPort().hashCode() : 0);
-		result = 31 * result + (getSchema() != null ? getSchema().hashCode() : 0);
-		result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
-		result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
-		result = 31 * result + getEncoding();
-		result = 31 * result + (getLocalPort() != null ? getLocalPort().hashCode() : 0);
-		result = 31 * result + (getRemotePort() != null ? getRemotePort().hashCode() : 0);
-		result = 31 * result + (getSshPort() != null ? getSshPort().hashCode() : 0);
-		result = 31 * result + (getSshHost() != null ? getSshHost().hashCode() : 0);
-		result = 31 * result + (getSshUser() != null ? getSshUser().hashCode() : 0);
-		result = 31 * result + (getSshPassword() != null ? getSshPassword().hashCode() : 0);
+		int result = this.getDatabaseType();
+		result = 31 * result + this.getConnectionType();
+		result = 31 * result + (this.getName() != null ? this.getName().hashCode() : 0);
+		result = 31 * result + (this.getDescription() != null ? this.getDescription().hashCode() : 0);
+		result = 31 * result + (this.getHost() != null ? this.getHost().hashCode() : 0);
+		result = 31 * result + (this.getPort() != null ? this.getPort().hashCode() : 0);
+		result = 31 * result + (this.getSchema() != null ? this.getSchema().hashCode() : 0);
+		result = 31 * result + (this.getUserName() != null ? this.getUserName().hashCode() : 0);
+		result = 31 * result + (this.getPassword() != null ? this.getPassword().hashCode() : 0);
+		result = 31 * result + this.getEncoding();
+		result = 31 * result + (this.getLocalPort() != null ? this.getLocalPort().hashCode() : 0);
+		result = 31 * result + (this.getRemotePort() != null ? this.getRemotePort().hashCode() : 0);
+		result = 31 * result + (this.getSshPort() != null ? this.getSshPort().hashCode() : 0);
+		result = 31 * result + (this.getSshHost() != null ? this.getSshHost().hashCode() : 0);
+		result = 31 * result + (this.getSshUser() != null ? this.getSshUser().hashCode() : 0);
+		result = 31 * result + (this.getSshPassword() != null ? this.getSshPassword().hashCode() : 0);
 		return result;
 	}
 

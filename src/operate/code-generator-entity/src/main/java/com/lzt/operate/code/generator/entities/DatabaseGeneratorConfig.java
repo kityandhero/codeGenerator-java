@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.entities;
 
 import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -24,25 +25,37 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "connection_config_id", nullable = false, unique = true)
 	private long connectionConfigId;
 
+	@Column(name = "generator_type", nullable = false)
+	private int generatorType;
+
 	@Lob
 	@Column(name = "mybatis_generator_global_config", nullable = false, unique = true)
 	private String mybatisGeneratorGlobalConfig;
 
 	public DatabaseGeneratorConfig() {
-		connectionConfigId = 0;
-		mybatisGeneratorGlobalConfig = "";
+		this.connectionConfigId = 0;
+		this.generatorType = GeneratorType.MybatisGenerator.getFlag();
+		this.mybatisGeneratorGlobalConfig = "";
 	}
 
 	public long getConnectionConfigId() {
-		return connectionConfigId;
+		return this.connectionConfigId;
 	}
 
 	public void setConnectionConfigId(long connectionConfigId) {
 		this.connectionConfigId = connectionConfigId;
 	}
 
+	public int getGeneratorType() {
+		return this.generatorType;
+	}
+
+	public void setGeneratorType(int generatorType) {
+		this.generatorType = generatorType;
+	}
+
 	public String getMybatisGeneratorGlobalConfig() {
-		return mybatisGeneratorGlobalConfig;
+		return this.mybatisGeneratorGlobalConfig;
 	}
 
 	public void setMybatisGeneratorGlobalConfig(String mybatisGeneratorGlobalConfig) {
@@ -54,8 +67,8 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	public GlobalConfig BuildMyybatisGeneratorGlobalConfig() {
 		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
 
-		if (!StringAssist.isNullOrEmpty(getMybatisGeneratorGlobalConfig())) {
-			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(getMybatisGeneratorGlobalConfig());
+		if (!StringAssist.isNullOrEmpty(this.getMybatisGeneratorGlobalConfig())) {
+			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(this.getMybatisGeneratorGlobalConfig());
 		}
 
 		return mybatisGeneratorGlobalConfig;
@@ -63,7 +76,7 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 
 	public DatabaseGeneratorConfig fillInMyybatisGeneratorGlobalConfig(@NotNull GlobalConfig mybatisGeneratorGlobalConfig) {
 		try {
-			setMybatisGeneratorGlobalConfig(ConvertAssist.serialize(mybatisGeneratorGlobalConfig));
+			this.setMybatisGeneratorGlobalConfig(ConvertAssist.serialize(mybatisGeneratorGlobalConfig));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

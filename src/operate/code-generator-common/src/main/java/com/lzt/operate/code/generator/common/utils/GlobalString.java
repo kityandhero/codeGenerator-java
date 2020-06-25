@@ -81,9 +81,6 @@ public class GlobalString {
 	@ApiSingleParam(value = "sshPassword", example = "sshPassword")
 	public static final String CONNECTION_CONFIG_SSH_PASSWORD = "sshPassword";
 
-	@ApiSingleParam(value = "sshPassword", example = "sshPassword")
-	public static final String CONNECTION_CONFIG_GENERATOR_TYPE = "generatorType";
-
 	//endregion
 
 	//region CONNECTION_MODEL
@@ -93,6 +90,9 @@ public class GlobalString {
 
 	@ApiSingleParam(value = "连接标识", type = Long.class, example = "20211")
 	public static final String DATABASE_GENERATOR_CONFIG_CONNECTION_CONFIG_ID = "connectionConfigId";
+
+	@ApiSingleParam(value = "生成器类型", example = "1")
+	public static final String DATABASE_GENERATOR_CONFIG_GENERATOR_TYPE = "generatorType";
 
 	@ApiSingleParam(value = "connectorJarFile", example = "20211")
 	public static final String DATABASE_GENERATOR_CONFIG_CONNECTOR_JAR_FILE = "connectorJarFile";

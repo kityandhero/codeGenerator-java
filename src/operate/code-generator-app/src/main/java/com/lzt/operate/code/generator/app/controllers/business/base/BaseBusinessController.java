@@ -7,6 +7,7 @@ import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConf
 import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
 import com.lzt.operate.code.generator.dao.service.DatabaseGeneratorConfigService;
@@ -38,6 +39,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 		DatabaseGeneratorConfig databaseGeneratorConfig = new DatabaseGeneratorConfig();
 
 		databaseGeneratorConfig.setConnectionConfigId(connectionConfig.getId());
+		databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisGenerator.getFlag());
 		databaseGeneratorConfig.setChannel(Channel.CodeGenerator);
 		databaseGeneratorConfig.setCreateOperatorId(operatorId);
 		databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);

@@ -19,7 +19,12 @@ public enum GeneratorType {
 	/**
 	 * CustomGenerator
 	 */
-	CustomGenerator(101, "CustomGenerator", "CustomGenerator");
+	CustomGenerator(101, "CustomGenerator", "CustomGenerator"),
+
+	/**
+	 * MybatisPlusGenerator
+	 */
+	MybatisPlusGenerator(102, "MybatisPlusGenerator", "MybatisPlusGenerator");
 
 	/**
 	 * 元数据键值集合中的key
