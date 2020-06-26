@@ -1,7 +1,9 @@
 package com.lzt.operate.code.generator.dao.service;
 
-import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.MybatisGeneratorGlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatisplus.generator.MybatisPlusGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.dao.repositories.DatabaseGeneratorConfigRepository;
 import com.lzt.operate.code.generator.dao.service.bases.BaseService;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
@@ -49,7 +51,7 @@ public interface DatabaseGeneratorConfigService extends BaseService<DatabaseGene
 			}
 		};
 
-		return findFirst(specification);
+		return this.findFirst(specification);
 	}
 
 	/**
@@ -68,18 +70,31 @@ public interface DatabaseGeneratorConfigService extends BaseService<DatabaseGene
 		if (optionalDatabaseType.isPresent()) {
 			DatabaseType databaseType = optionalDatabaseType.get();
 
-			Optional<DatabaseGeneratorConfig> optional = findByConnectionConfigId(connectionConfig.getId());
+			Optional<DatabaseGeneratorConfig> optional = this.findByConnectionConfigId(connectionConfig.getId());
 
 			if (optional.isPresent()) {
 				DatabaseGeneratorConfig databaseGeneratorConfig = optional.get();
 
-				GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+				if (GeneratorType.MybatisGenerator.getFlag().equals(databaseGeneratorConfig.getGeneratorType())) {
+					MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisGeneratorGlobalConfig();
 
-				mybatisGeneratorGlobalConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
+					mybatisGeneratorGlobalConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
 
-				databaseGeneratorConfig.fillInMyybatisGeneratorGlobalConfig(mybatisGeneratorGlobalConfig);
+					databaseGeneratorConfig.fillInMybatisGeneratorGlobalConfig(mybatisGeneratorGlobalConfig);
 
-				save(databaseGeneratorConfig);
+					this.save(databaseGeneratorConfig);
+				}
+
+				if (GeneratorType.MybatisPlusGenerator.getFlag().equals(databaseGeneratorConfig.getGeneratorType())) {
+					MybatisPlusGeneratorGlobalConfig mybatisPlusGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisPlusGeneratorGlobalConfig();
+
+					mybatisPlusGeneratorGlobalConfig.setConnectorJarFile(databaseType.getConnectorJarFile());
+
+					databaseGeneratorConfig.fillInMybatisPlusGeneratorGlobalConfig(mybatisPlusGeneratorGlobalConfig);
+
+					this.save(databaseGeneratorConfig);
+				}
+
 			}
 		}
 	}

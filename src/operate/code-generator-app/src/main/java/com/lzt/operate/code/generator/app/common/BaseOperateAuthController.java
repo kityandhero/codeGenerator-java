@@ -3,15 +3,19 @@ package com.lzt.operate.code.generator.app.common;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.app.util.CommandUtil;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.CustomConstants;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;
+import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.code.generator.entities.ErrorLog;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.permissions.CustomJsonWebToken;
 import com.lzt.operate.utility.pojo.BaseOperator;
 import com.lzt.operate.utility.pojo.results.ExecutiveResult;
+import com.lzt.operate.utility.pojo.results.ExecutiveSimpleResult;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.util.Optional;
 
@@ -61,15 +65,22 @@ public abstract class BaseOperateAuthController extends OperateBaseController {
 	}
 
 	protected long getOperatorId() {
-		Optional<BaseOperator> optional = getOperator();
+		Optional<BaseOperator> optional = this.getOperator();
 
 		return optional.map(BaseOperator::getOperatorId).orElse(0L);
 	}
 
-	protected ExecutiveResult<String> createGenerateResultFolder(String folderName) {
+	protected ExecutiveResult<String> createGenerateResultFolder(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull String folderName) {
 		if (!StringAssist.isNullOrEmpty(folderName)) {
 			try {
-				String folder = StringAssist.merge(getDefaultMainGenerateFolderPath(), StringAssist.trim(folderName), "/");
+				ExecutiveResult<String> executiveResult = this.getDefaultMainGenerateFolderPath(databaseGeneratorConfig);
+
+				if (!executiveResult.getSuccess()) {
+					return executiveResult;
+				}
+
+				String folder = StringAssist.merge(executiveResult.getData(), StringAssist
+						.trim(folderName), "/");
 
 				File file = new File(folder);
 
@@ -97,7 +108,7 @@ public abstract class BaseOperateAuthController extends OperateBaseController {
 			} catch (Exception e) {
 				ErrorLogProducerFactory.getInstance()
 									   .getProducer()
-									   .pushException(e, StringAssist.merge("创建生成文件夹失败,文件夹名称", folderName));
+									   .pushException(e, StringAssist.merge("创建生成文件夹失败,文件夹名称", StringAssist.trim(folderName)));
 
 				return new ExecutiveResult<>(ReturnDataCode.Exception, e.getMessage());
 			}
@@ -106,16 +117,38 @@ public abstract class BaseOperateAuthController extends OperateBaseController {
 		return new ExecutiveResult<>(ReturnDataCode.DataError, "文件夹名字无效");
 	}
 
-	protected String getDefaultMainGenerateFolderPath() {
-		return StringAssist.merge(CommandUtil.getUserHomePath(), CustomConstants.DEFAULT_MAIN_GENERATE_FOLDER);
+	protected ExecutiveResult<String> getDefaultMainGenerateFolderPath(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
+		Optional<GeneratorType> optionalGeneratorType = GeneratorType.valueOfFlag(databaseGeneratorConfig.getGeneratorType());
+
+		if (!optionalGeneratorType.isPresent()) {
+			return new ExecutiveResult<>(ReturnDataCode.DataError.toMessage("生成器类型无效"));
+		}
+
+		GeneratorType generatorType = optionalGeneratorType.get();
+
+		return new ExecutiveResult<>(ReturnDataCode.Ok, StringAssist.merge(CommandUtil.getUserHomePath(), CustomConstants.DEFAULT_MAIN_GENERATE_FOLDER, "/", StringAssist
+				.trim(generatorType.getName()), "/"));
 	}
 
-	protected boolean checkDefaultMainGenerateFolderPathEnable() {
-		String defaultMainGenerateFolderPath = StringAssist.merge(CommandUtil.getUserHomePath(), CustomConstants.DEFAULT_MAIN_GENERATE_FOLDER);
+	protected ExecutiveSimpleResult checkDefaultMainGenerateFolderPathEnable(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
+		Optional<GeneratorType> optionalGeneratorType = GeneratorType.valueOfFlag(databaseGeneratorConfig.getGeneratorType());
+
+		if (!optionalGeneratorType.isPresent()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("生成器类型无效"));
+		}
+
+		GeneratorType generatorType = optionalGeneratorType.get();
+
+		String defaultMainGenerateFolderPath = StringAssist.merge(CommandUtil.getUserHomePath(), CustomConstants.DEFAULT_MAIN_GENERATE_FOLDER, "/", StringAssist
+				.trim(generatorType.getName()), "/");
 
 		File file = new File(defaultMainGenerateFolderPath);
 
-		return file.exists() && file.isDirectory();
+		if (file.exists() && file.isDirectory()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
+		}
+
+		return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("文件错误"));
 	}
 
 }

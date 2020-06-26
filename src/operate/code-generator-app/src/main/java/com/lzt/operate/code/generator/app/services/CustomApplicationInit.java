@@ -11,6 +11,7 @@ import com.lzt.operate.code.generator.common.enums.CustomConfigCollection;
 import com.lzt.operate.code.generator.common.enums.HelpCategoryStatus;
 import com.lzt.operate.code.generator.common.enums.RoleUniversalStatus;
 import com.lzt.operate.code.generator.common.enums.WhetherSuper;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.CustomConstants;
 import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayConsumer;
 import com.lzt.operate.code.generator.custommessagequeue.accessway.AccessWayQueueRunner;
@@ -45,7 +46,9 @@ import com.lzt.operate.code.generator.entities.HelpCategory;
 import com.lzt.operate.code.generator.entities.RoleUniversal;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.OperatorCollection;
+import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.general.ConstantCollection;
+import com.lzt.operate.utility.pojo.results.ExecutiveResult;
 import com.lzt.operate.utility.secret.Md5Assist;
 import com.lzt.operate.utility.services.bases.BaseCustomApplicationInit;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +59,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadFactory;
 
@@ -96,7 +100,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 		this.environment = environment;
 
-		accountAssist = new AccountAssist(
+		this.accountAssist = new AccountAssist(
 				loadingCache,
 				customJsonWebTokenConfig,
 				accountService,
@@ -112,7 +116,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public CustomConfigService getCustomConfigService() {
-		Optional<CustomConfigService> optional = Optional.ofNullable(customConfigService);
+		Optional<CustomConfigService> optional = Optional.ofNullable(this.customConfigService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -122,7 +126,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public AccessWayService getAccessWayService() {
-		Optional<AccessWayService> optional = Optional.ofNullable(accessWayService);
+		Optional<AccessWayService> optional = Optional.ofNullable(this.accessWayService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -132,7 +136,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public ErrorLogService getErrorLogService() {
-		Optional<ErrorLogService> optional = Optional.ofNullable(errorLogService);
+		Optional<ErrorLogService> optional = Optional.ofNullable(this.errorLogService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -142,7 +146,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public GeneralLogService getGeneralLogService() {
-		Optional<GeneralLogService> optional = Optional.ofNullable(generalLogService);
+		Optional<GeneralLogService> optional = Optional.ofNullable(this.generalLogService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -152,7 +156,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	public HelpCategoryService getHelpCategoryService() {
-		Optional<HelpCategoryService> optional = Optional.ofNullable(helpCategoryService);
+		Optional<HelpCategoryService> optional = Optional.ofNullable(this.helpCategoryService);
 
 		if (optional.isPresent()) {
 			return optional.get();
@@ -163,16 +167,16 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 	@Override
 	public void init() {
-		checkSuperRoleCompleteness();
-		checkExistAnyAccount();
-		startAccessWayRunner();
-		startErrorLogRunner();
-		startGeneralLogRunner();
-		startCustomConfigRunner();
-		openOperationPanel();
-		recordStartLog();
-		checkHelpCategory();
-		initDefaultMainFolder();
+		this.checkSuperRoleCompleteness();
+		this.checkExistAnyAccount();
+		this.startAccessWayRunner();
+		this.startErrorLogRunner();
+		this.startGeneralLogRunner();
+		this.startCustomConfigRunner();
+		this.openOperationPanel();
+		this.recordStartLog();
+		this.checkHelpCategory();
+		this.initDefaultMainFolder();
 
 	}
 
@@ -180,7 +184,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测超级管理员角色的完备性
 	 */
 	private void checkSuperRoleCompleteness() {
-		RoleUniversalService roleUniversalService = accountAssist.getRoleUniversalService();
+		RoleUniversalService roleUniversalService = this.accountAssist.getRoleUniversalService();
 
 		boolean exist = roleUniversalService.existSuper(Channel.CodeGenerator.getFlag());
 
@@ -202,18 +206,18 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测是否存在任意用户，不存在则创建默认账户
 	 */
 	private void checkExistAnyAccount() {
-		AccountService accountService = accountAssist.getAccountService();
+		AccountService accountService = this.accountAssist.getAccountService();
 
 		boolean exist = accountService.existAny(Channel.CodeGenerator.getFlag());
 
 		if (!exist) {
-			createAdminAccount();
-			createSupermanAccount();
+			this.createAdminAccount();
+			this.createSupermanAccount();
 		}
 	}
 
 	private void createAdminAccount() {
-		AccountService accountService = accountAssist.getAccountService();
+		AccountService accountService = this.accountAssist.getAccountService();
 
 		try {
 			Account account = new Account();
@@ -230,10 +234,10 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 			accountService.save(account);
 
-			Optional<RoleUniversal> optionalRoleUniversal = accountAssist.getRoleUniversalService()
-																		 .findSuper(Channel.CodeGenerator.getFlag());
+			Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
+																			  .findSuper(Channel.CodeGenerator.getFlag());
 
-			optionalRoleUniversal.ifPresent(roleUniversal -> accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
+			optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 		} catch (NoSuchAlgorithmException e) {
 			CustomApplicationInit.log.error("创建默认账户失败", e);
 
@@ -242,7 +246,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	}
 
 	private void createSupermanAccount() {
-		AccountService accountService = accountAssist.getAccountService();
+		AccountService accountService = this.accountAssist.getAccountService();
 
 		try {
 			Account account = new Account();
@@ -259,10 +263,10 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 			accountService.save(account);
 
-			Optional<RoleUniversal> optionalRoleUniversal = accountAssist.getRoleUniversalService()
-																		 .findSuper(Channel.CodeGenerator.getFlag());
+			Optional<RoleUniversal> optionalRoleUniversal = this.accountAssist.getRoleUniversalService()
+																			  .findSuper(Channel.CodeGenerator.getFlag());
 
-			optionalRoleUniversal.ifPresent(roleUniversal -> accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
+			optionalRoleUniversal.ifPresent(roleUniversal -> this.accountAssist.changeRoleUniversal(account.getId(), roleUniversal));
 		} catch (NoSuchAlgorithmException e) {
 			CustomApplicationInit.log.error("创建默认账户失败", e);
 
@@ -274,7 +278,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startAccessWayRunner
 	 */
 	private void startAccessWayRunner() {
-		AccessWayQueueRunner runner = new AccessWayQueueRunner(getAccessWayService(), new AccessWayConsumer());
+		AccessWayQueueRunner runner = new AccessWayQueueRunner(this.getAccessWayService(), new AccessWayConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("accessWay").build();
 
@@ -288,7 +292,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 */
 	private void startErrorLogRunner() {
 
-		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(getErrorLogService(), new ErrorLogConsumer());
+		ErrorLogQueueRunner runner = new ErrorLogQueueRunner(this.getErrorLogService(), new ErrorLogConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("errorLog").build();
 
@@ -301,7 +305,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startErrorLogRunner
 	 */
 	private void startGeneralLogRunner() {
-		GeneralLogQueueRunner runner = new GeneralLogQueueRunner(getGeneralLogService(), new GeneralLogConsumer());
+		GeneralLogQueueRunner runner = new GeneralLogQueueRunner(this.getGeneralLogService(), new GeneralLogConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("generalLog").build();
 
@@ -314,7 +318,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * startErrorLogRunner
 	 */
 	private void startCustomConfigRunner() {
-		CustomConfigQueueRunner runner = new CustomConfigQueueRunner(getCustomConfigService(), new CustomConfigConsumer());
+		CustomConfigQueueRunner runner = new CustomConfigQueueRunner(this.getCustomConfigService(), new CustomConfigConsumer());
 
 		ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("customConfig").build();
 
@@ -327,7 +331,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 打开操作面板
 	 */
 	private void openOperationPanel() {
-		Optional<CustomConfig> optional = getCustomConfigService()
+		Optional<CustomConfig> optional = this.getCustomConfigService()
 											  .findByUuid(CustomConfigCollection.AutoOpenOperatePanel.getUuid());
 
 		boolean autoOpenOperationPanel;
@@ -343,7 +347,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 
 		if (autoOpenOperationPanel) {
 			try {
-				String port = environment.getProperty("local.server.port");
+				String port = this.environment.getProperty("local.server.port");
 
 				CommandUtil.browse(new URI(StringAssist.merge("http://localhost:", port, StringAssist.merge("/", CustomConstants.OPERATION_PANEL))));
 			} catch (Exception e) {
@@ -356,7 +360,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 记录启动日志
 	 */
 	private void recordStartLog() {
-		Optional<CustomConfig> optional = getCustomConfigService()
+		Optional<CustomConfig> optional = this.getCustomConfigService()
 											  .findByUuid(CustomConfigCollection.RecordStartLog.getUuid());
 
 		boolean recordLog;
@@ -379,7 +383,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 	 * 检测默认帮助分类
 	 */
 	private void checkHelpCategory() {
-		Long helpCategoryCount = getHelpCategoryService().count();
+		Long helpCategoryCount = this.getHelpCategoryService().count();
 
 		if (helpCategoryCount.equals(ConstantCollection.ZERO_LONG)) {
 			HelpCategory helpCategory = new HelpCategory();
@@ -389,7 +393,7 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 			helpCategory.setChannel(Channel.CodeGenerator);
 			helpCategory.setStatus(HelpCategoryStatus.Enabled, HelpCategoryStatus::getFlag, HelpCategoryStatus::getName);
 
-			getHelpCategoryService().save(helpCategory);
+			this.getHelpCategoryService().save(helpCategory);
 		}
 	}
 
@@ -397,6 +401,8 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 		String defaultMainGenerateFolderPath = StringAssist.merge(CommandUtil.getUserHomePath(), CustomConstants.DEFAULT_MAIN_GENERATE_FOLDER);
 
 		File file = new File(defaultMainGenerateFolderPath);
+
+		boolean canCreateGenerateResultByGeneratorFolder = false;
 
 		if (!file.exists()) {
 			boolean mkdirsResult = file.mkdirs();
@@ -407,7 +413,74 @@ public class CustomApplicationInit extends BaseCustomApplicationInit {
 				errorLog.setMessage(StringAssist.merge("创建默认生成文件夹失败，默认文件将路径为：", file.getAbsolutePath()));
 
 				ErrorLogProducerFactory.getInstance().getProducer().push(errorLog);
+			} else {
+				canCreateGenerateResultByGeneratorFolder = true;
 			}
+		} else {
+			canCreateGenerateResultByGeneratorFolder = true;
+		}
+
+		if (canCreateGenerateResultByGeneratorFolder) {
+			ExecutiveResult<String> executiveResult = this.createGenerateResultByGeneratorFolder(defaultMainGenerateFolderPath);
+
+			if (!executiveResult.getSuccess()) {
+				ErrorLog errorLog = new ErrorLog();
+
+				errorLog.setMessage(StringAssist.merge("创建生成器结果生成文件夹失败，默认文件将路径为：", executiveResult.getData()));
+
+				ErrorLogProducerFactory.getInstance().getProducer().push(errorLog);
+			}
+		}
+	}
+
+	protected ExecutiveResult<String> createGenerateResultByGeneratorFolder(String rootFolder) {
+		List<GeneratorType> list = GeneratorType.valuesToList();
+
+		for (GeneratorType generatorType : list) {
+			ExecutiveResult<String> executiveResult = this.createEveryGenerateResultFolder(rootFolder, generatorType);
+
+			if (!executiveResult.getSuccess()) {
+				return executiveResult;
+			}
+		}
+
+		return new ExecutiveResult<>(ReturnDataCode.Ok, "");
+	}
+
+	protected ExecutiveResult<String> createEveryGenerateResultFolder(String rootFolder, GeneratorType generatorType) {
+		try {
+			String folder = StringAssist.merge(StringAssist.trim(rootFolder), StringAssist.trim(generatorType.getName()), "/");
+
+			File file = new File(folder);
+
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
+
+				if (!mkdirsResult) {
+					ErrorLog errorLog = new ErrorLog();
+
+					errorLog.setMessage(StringAssist.merge("创建生成文件夹失败，默认文件将路径为：", file.getAbsolutePath()));
+
+					ErrorLogProducerFactory.getInstance().getProducer().push(errorLog);
+
+					return new ExecutiveResult<>(ReturnDataCode.Exception, "");
+				}
+
+				return new ExecutiveResult<>(ReturnDataCode.Ok, file.getAbsolutePath());
+			} else {
+				if (!file.isDirectory()) {
+					return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("存在同名文件，创建文件夹失败"), "");
+				}
+
+				return new ExecutiveResult<>(ReturnDataCode.Ok, file.getAbsolutePath());
+			}
+		} catch (Exception e) {
+			ErrorLogProducerFactory.getInstance()
+								   .getProducer()
+								   .pushException(e, StringAssist.merge("创建生成文件夹失败,文件夹名称", StringAssist.trim(generatorType
+										   .getName())));
+
+			return new ExecutiveResult<>(ReturnDataCode.Exception, e.getMessage());
 		}
 	}
 

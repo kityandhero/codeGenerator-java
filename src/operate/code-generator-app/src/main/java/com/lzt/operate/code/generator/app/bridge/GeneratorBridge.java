@@ -1,12 +1,26 @@
 package com.lzt.operate.code.generator.app.bridge;
 
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.FileOutConfig;
+import com.baomidou.mybatisplus.generator.config.GlobalConfig;
+import com.baomidou.mybatisplus.generator.config.PackageConfig;
+import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.TemplateConfig;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import com.lzt.operate.code.generator.app.util.DatabaseTypeUtil;
-import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.MybatisGeneratorGlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatisplus.generator.MybatisPlusGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
+import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.dao.service.DataColumnService;
 import com.lzt.operate.code.generator.dao.service.DataTableGeneratorConfigService;
@@ -118,7 +132,7 @@ import java.util.Set;
  * @author luzhitao
  */
 @Slf4j
-public class MybatisGeneratorBridge {
+public class GeneratorBridge {
 
 	private final DatabaseGeneratorConfigService databaseGeneratorConfigService;
 
@@ -130,19 +144,19 @@ public class MybatisGeneratorBridge {
 
 	private ProgressCallback progressCallback;
 
-	public MybatisGeneratorBridge(
+	public GeneratorBridge(
 			@NotNull ConnectionConfig selectedConnectionConfig,
 			@NotNull DatabaseGeneratorConfigService databaseGeneratorConfigService,
 			@NotNull DataTableGeneratorConfigService dataTableGeneratorConfigService,
 			@NotNull DataColumnService dataColumnService) {
-		connectionConfig = selectedConnectionConfig;
+		this.connectionConfig = selectedConnectionConfig;
 		this.databaseGeneratorConfigService = databaseGeneratorConfigService;
 		this.dataTableGeneratorConfigService = dataTableGeneratorConfigService;
 		this.dataColumnService = dataColumnService;
 	}
 
 	private DatabaseGeneratorConfig getDataBaseGeneratorConfig() throws RuntimeException {
-		Optional<DatabaseGeneratorConfig> optional = databaseGeneratorConfigService.findByConnectionConfigId(connectionConfig
+		Optional<DatabaseGeneratorConfig> optional = this.databaseGeneratorConfigService.findByConnectionConfigId(this.connectionConfig
 				.getId());
 
 		if (optional.isPresent()) {
@@ -153,7 +167,7 @@ public class MybatisGeneratorBridge {
 	}
 
 	private ExecutiveSimpleResult checkFolder(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig) {
-		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+		MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisGeneratorGlobalConfig();
 
 		String projectFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getProjectFolder()).orElse("").trim();
 		String modelTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getModelTargetFolder())
@@ -314,9 +328,9 @@ public class MybatisGeneratorBridge {
 	}
 
 	public ExecutiveSimpleResult generateAll() throws Exception {
-		DatabaseGeneratorConfig databaseGeneratorConfig = getDataBaseGeneratorConfig();
+		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
 
-		ExecutiveSimpleResult checkFolderResult = checkFolder(databaseGeneratorConfig);
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
 
 		if (!checkFolderResult.getSuccess()) {
 			return new ExecutiveSimpleResult(checkFolderResult.getCode());
@@ -353,14 +367,14 @@ public class MybatisGeneratorBridge {
 			}
 		};
 
-		List<DataTableGeneratorConfig> list = dataTableGeneratorConfigService.list(specification);
+		List<DataTableGeneratorConfig> list = this.dataTableGeneratorConfigService.list(specification);
 
 		if (ConstantCollection.ZERO_INT.equals(list.size())) {
 			return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage("没有任何数据表进行过生成初始化，请进入数据库表页"));
 		}
 
 		for (DataTableGeneratorConfig item : list) {
-			ExecutiveSimpleResult itemResult = generateCore(databaseGeneratorConfig, item);
+			ExecutiveSimpleResult itemResult = this.generateCore(databaseGeneratorConfig, item);
 
 			if (!itemResult.getSuccess()) {
 
@@ -374,24 +388,45 @@ public class MybatisGeneratorBridge {
 	}
 
 	public ExecutiveSimpleResult generate(@NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
-		DatabaseGeneratorConfig databaseGeneratorConfig = getDataBaseGeneratorConfig();
+		DatabaseGeneratorConfig databaseGeneratorConfig = this.getDataBaseGeneratorConfig();
 
-		ExecutiveSimpleResult checkFolderResult = checkFolder(databaseGeneratorConfig);
+		ExecutiveSimpleResult checkFolderResult = this.checkFolder(databaseGeneratorConfig);
 
 		if (!checkFolderResult.getSuccess()) {
 			return checkFolderResult;
 		}
 
-		return generateCore(databaseGeneratorConfig, dataTableGeneratorConfig);
+		return this.generateCore(databaseGeneratorConfig, dataTableGeneratorConfig);
 	}
 
 	private ExecutiveSimpleResult generateCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
 		Long connectionConfigId = databaseGeneratorConfig.getConnectionConfigId();
-		GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
 
 		if (!connectionConfigId.equals(dataTableGeneratorConfig.getConnectionConfigId())) {
 			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("数据表生成配置与数据连接配置不相配"));
 		}
+
+		Optional<GeneratorType> optionalGeneratorType = GeneratorType.valueOfFlag(databaseGeneratorConfig.getGeneratorType());
+
+		if (!optionalGeneratorType.isPresent()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.DataError.toMessage(StringAssist.merge("错误的生成器类型配置")));
+		}
+
+		GeneratorType generatorType = optionalGeneratorType.get();
+
+		if (GeneratorType.MybatisGenerator.getFlag().equals(generatorType.getFlag())) {
+			return this.generateByMybatisGeneratorCore(databaseGeneratorConfig, dataTableGeneratorConfig);
+		}
+
+		if (GeneratorType.MybatisPlusGenerator.getFlag().equals(generatorType.getFlag())) {
+			return this.generateByMybatisPlusGeneratorCore(databaseGeneratorConfig, dataTableGeneratorConfig);
+		}
+
+		return new ExecutiveSimpleResult(ReturnDataCode.NoChange.toMessage(StringAssist.merge("暂不支持生成器：", generatorType.getName())));
+	}
+
+	private ExecutiveSimpleResult generateByMybatisGeneratorCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
+		MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisGeneratorGlobalConfig();
 
 		Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(mybatisGeneratorGlobalConfig.getDaoType());
 
@@ -402,18 +437,18 @@ public class MybatisGeneratorBridge {
 		DaoType daoType = optionalDaoType.get();
 
 		String modelTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getModelTargetFolder())
-												 .orElse("")
-												 .trim();
+										   .orElse("")
+										   .trim();
 		int modelTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getModelTargetFolderRelativeMode();
 		String daoTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getDaoTargetFolder())
-											   .orElse("")
-											   .trim();
+										 .orElse("")
+										 .trim();
 		int daoTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getDaoTargetFolderRelativeMode();
 		String mappingXmlTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getMappingXmlTargetFolder())
-													  .orElse("").trim();
+												.orElse("").trim();
 		int mappingXmlTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getMappingXmlTargetFolderRelativeMode();
 		String serviceTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getServiceTargetFolder())
-												   .orElse("").trim();
+											 .orElse("").trim();
 		int serviceTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getServiceTargetFolderRelativeMode();
 
 		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(mybatisGeneratorGlobalConfig.getEncoding());
@@ -424,7 +459,7 @@ public class MybatisGeneratorBridge {
 			fileEncoding = optionalFileEncoding.get();
 		}
 
-		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(connectionConfig.getDatabaseType());
+		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(this.connectionConfig.getDatabaseType());
 
 		if (!optionalDatabaseType.isPresent()) {
 			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("databaseType无效"));
@@ -467,13 +502,13 @@ public class MybatisGeneratorBridge {
 		tableConfig.setDeleteByExampleStatementEnabled(true);
 		tableConfig.setSelectByExampleStatementEnabled(true);
 
-		List<ColumnOverride> columnOverrideList = buildColumnOverrideList(dataTableGeneratorConfig);
+		List<ColumnOverride> columnOverrideList = this.buildColumnOverrideList(dataTableGeneratorConfig);
 
 		for (ColumnOverride columnOverride : columnOverrideList) {
 			tableConfig.addColumnOverride(columnOverride);
 		}
 
-		List<IgnoredColumn> ignoredColumnList = buildIgnoredColumnList(dataTableGeneratorConfig);
+		List<IgnoredColumn> ignoredColumnList = this.buildIgnoredColumnList(dataTableGeneratorConfig);
 
 		for (IgnoredColumn ignoredColumn : ignoredColumnList) {
 			tableConfig.addIgnoredColumn(ignoredColumn);
@@ -497,12 +532,12 @@ public class MybatisGeneratorBridge {
 		if (useSchemaPrefix) {
 			if (DatabaseType.MySQL.getFlag().equals(databaseType.getFlag()) || DatabaseType.MySQL_8.getFlag()
 																								   .equals(databaseType.getFlag())) {
-				tableConfig.setSchema(connectionConfig.getSchema());
+				tableConfig.setSchema(this.connectionConfig.getSchema());
 			} else if (DatabaseType.Oracle.name().equals(databaseType.getName())) {
 				//Oracle的schema为用户名，如果连接用户拥有dba等高级权限，若不设schema，会导致把其他用户下同名的表也生成一遍导致mapper中代码重复
-				tableConfig.setSchema(connectionConfig.getUserName());
+				tableConfig.setSchema(this.connectionConfig.getUserName());
 			} else {
-				tableConfig.setCatalog(connectionConfig.getSchema());
+				tableConfig.setCatalog(this.connectionConfig.getSchema());
 			}
 		}
 
@@ -561,9 +596,9 @@ public class MybatisGeneratorBridge {
 			jdbcConfig.addProperty("nullCatalogMeansCurrent", "true");
 		}
 		jdbcConfig.setDriverClass(databaseType.getDriverClass());
-		jdbcConfig.setConnectionURL(DatabaseTypeUtil.getConnectionUrlWithSchema(connectionConfig));
-		jdbcConfig.setUserId(connectionConfig.getUserName());
-		jdbcConfig.setPassword(connectionConfig.getPassword());
+		jdbcConfig.setConnectionURL(DatabaseTypeUtil.getConnectionUrlWithSchema(this.connectionConfig));
+		jdbcConfig.setUserId(this.connectionConfig.getUserName());
+		jdbcConfig.setPassword(this.connectionConfig.getPassword());
 		if (DatabaseType.Oracle.name().equals(databaseType.getName())) {
 			jdbcConfig.getProperties().setProperty("remarksReporting", "true");
 		}
@@ -789,7 +824,7 @@ public class MybatisGeneratorBridge {
 
 		// if overrideXML selected, delete oldXML ang generate new one
 		if (Whether.Yes.getFlag().equals(mybatisGeneratorGlobalConfig.getOverrideXML())) {
-			String mappingXmlFilePath = getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
+			String mappingXmlFilePath = this.getMappingXmlFilePath(databaseGeneratorConfig, dataTableGeneratorConfig);
 			File mappingXmlFile = new File(mappingXmlFilePath);
 			if (mappingXmlFile.exists()) {
 				boolean delete = mappingXmlFile.delete();
@@ -800,7 +835,7 @@ public class MybatisGeneratorBridge {
 			}
 		}
 
-		myBatisGenerator.generate(progressCallback, contexts, fullyQualifiedTables);
+		myBatisGenerator.generate(this.progressCallback, contexts, fullyQualifiedTables);
 
 		List<GeneratedJavaFile> javaFileList = myBatisGenerator.getGeneratedJavaFiles();
 
@@ -853,13 +888,125 @@ public class MybatisGeneratorBridge {
 
 		dataTableGeneratorConfig.setLastGenerateTime(LocalDateTime.now());
 
-		dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
+		this.dataTableGeneratorConfigService.save(dataTableGeneratorConfig);
+
+		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
+	}
+
+	private ExecutiveSimpleResult generateByMybatisPlusGeneratorCore(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull DataTableGeneratorConfig dataTableGeneratorConfig) throws Exception {
+		MybatisPlusGeneratorGlobalConfig mybatisPlusGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisPlusGeneratorGlobalConfig();
+
+		Optional<DaoType> optionalDaoType = DaoType.valueOfFlag(mybatisPlusGeneratorGlobalConfig.getDaoType());
+
+		if (!optionalDaoType.isPresent()) {
+			return new ExecutiveResult<>(ReturnDataCode.Exception.toMessage("无效的daoType设置"));
+		}
+
+		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(this.connectionConfig.getDatabaseType());
+
+		if (!optionalDatabaseType.isPresent()) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("databaseType无效"));
+		}
+
+		DatabaseType databaseType = optionalDatabaseType.get();
+
+		String tableName = dataTableGeneratorConfig.getTableName();
+
+		if (StringAssist.isNullOrEmpty(tableName)) {
+			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("tableName无效"));
+		}
+
+		// 代码生成器
+		AutoGenerator mpg = new AutoGenerator();
+
+		// 全局配置
+		GlobalConfig gc = new GlobalConfig();
+		String projectPath = mybatisPlusGeneratorGlobalConfig.getProjectFolder();
+		gc.setOutputDir(projectPath);
+		gc.setAuthor("luzhitao");
+		gc.setOpen(false);
+		// 实体属性 Swagger2 注解
+		gc.setSwagger2(true);
+		mpg.setGlobalConfig(gc);
+
+		// 数据源配置
+		DataSourceConfig dsc = new DataSourceConfig();
+		dsc.setUrl(DatabaseTypeUtil.getConnectionUrlWithSchema(this.connectionConfig));
+		// dsc.setSchemaName("public");
+		dsc.setDriverName(databaseType.getDriverClass());
+		dsc.setUsername(this.connectionConfig.getUserName());
+		dsc.setPassword(this.connectionConfig.getPassword());
+		mpg.setDataSource(dsc);
+
+		// 包配置
+		PackageConfig pc = new PackageConfig();
+		pc.setModuleName(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
+		pc.setParent(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
+		mpg.setPackageInfo(pc);
+
+		// 自定义配置
+		InjectionConfig cfg = new InjectionConfig() {
+			@Override
+			public void initMap() {
+				// to do nothing
+			}
+		};
+
+		// 如果模板引擎是 freemarker
+		String templatePath = "/templates/mapper.xml.ftl";
+		// 如果模板引擎是 velocity
+		// String templatePath = "/templates/mapper.xml.vm";
+
+		// 自定义输出配置
+		List<FileOutConfig> focList = new ArrayList<>();
+		// 自定义配置会被优先输出
+		focList.add(new FileOutConfig(templatePath) {
+			@Override
+			public String outputFile(TableInfo tableInfo) {
+				// 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+				return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
+						+ "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+			}
+		});
+
+		cfg.setFileOutConfigList(focList);
+		mpg.setCfg(cfg);
+
+		// 配置模板
+		TemplateConfig templateConfig = new TemplateConfig();
+
+		// 配置自定义输出模板
+		//指定自定义模板路径，注意不要带上.ftl/.vm, 会根据使用的模板引擎自动识别
+		// templateConfig.setEntity("templates/entity2.java");
+		// templateConfig.setService();
+		// templateConfig.setController();
+
+		templateConfig.setXml(null);
+		mpg.setTemplate(templateConfig);
+
+		// 策略配置
+		StrategyConfig strategy = new StrategyConfig();
+		strategy.setNaming(NamingStrategy.underline_to_camel);
+		strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+		// strategy.setSuperEntityClass("你自己的父类实体,没有就不用设置!");
+		strategy.setEntityLombokModel(true);
+		strategy.setRestControllerStyle(true);
+		// 公共父类
+		// strategy.setSuperControllerClass("你自己的父类控制器,没有就不用设置!");
+		// 写于父类中的公共字段
+		strategy.setSuperEntityColumns("id");
+		strategy.setInclude(dataTableGeneratorConfig.getTableName());
+		strategy.setControllerMappingHyphenStyle(true);
+		strategy.setTablePrefix(pc.getModuleName() + "_");
+		mpg.setStrategy(strategy);
+		mpg.setTemplateEngine(new FreemarkerTemplateEngine());
+		mpg.execute();
 
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
 	private String getMappingXmlFilePath(DatabaseGeneratorConfig generatorConfig, DataTableGeneratorConfig dataTableGeneratorConfig) {
-		GlobalConfig mybatisGeneratorGlobalConfig = generatorConfig.BuildMyybatisGeneratorGlobalConfig();
+		MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = generatorConfig.BuildMybatisGeneratorGlobalConfig();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(mybatisGeneratorGlobalConfig.getProjectFolder()).append("/");
@@ -889,7 +1036,7 @@ public class MybatisGeneratorBridge {
 	}
 
 	private List<ColumnOverride> buildColumnOverrideList(DataTableGeneratorConfig dataTableGeneratorConfig) {
-		List<DataColumn> columnList = dataColumnService.findByConnectionConfigIdAndTableName(connectionConfig
+		List<DataColumn> columnList = this.dataColumnService.findByConnectionConfigIdAndTableName(this.connectionConfig
 				.getId(), dataTableGeneratorConfig
 				.getTableName());
 
@@ -919,7 +1066,7 @@ public class MybatisGeneratorBridge {
 	}
 
 	private List<IgnoredColumn> buildIgnoredColumnList(DataTableGeneratorConfig dataTableGeneratorConfig) {
-		List<DataColumn> columnList = dataColumnService.findByConnectionConfigIdAndTableName(connectionConfig
+		List<DataColumn> columnList = this.dataColumnService.findByConnectionConfigIdAndTableName(this.connectionConfig
 				.getId(), dataTableGeneratorConfig
 				.getTableName());
 

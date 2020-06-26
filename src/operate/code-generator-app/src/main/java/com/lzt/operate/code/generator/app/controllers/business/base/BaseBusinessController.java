@@ -3,7 +3,7 @@ package com.lzt.operate.code.generator.app.controllers.business.base;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.common.BaseOperateAuthController;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.MybatisGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.DataBaseGeneratorConfigStatus;
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
@@ -45,11 +45,12 @@ public class BaseBusinessController extends BaseOperateAuthController {
 		databaseGeneratorConfig.setStatus(DataBaseGeneratorConfigStatus.EFFECTIVE, DataBaseGeneratorConfigStatus::getFlag, DataBaseGeneratorConfigStatus::getName);
 		databaseGeneratorConfig.setUpdateOperatorId(operatorId);
 
-		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
+		MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = new MybatisGeneratorGlobalConfig();
 
 		//创建生成文件夹
-		if (this.checkDefaultMainGenerateFolderPathEnable()) {
-			ExecutiveResult<String> createFolderResult = this.createGenerateResultFolder(connectionConfig.getName());
+		if (this.checkDefaultMainGenerateFolderPathEnable(databaseGeneratorConfig).getSuccess()) {
+			ExecutiveResult<String> createFolderResult = this.createGenerateResultFolder(databaseGeneratorConfig, connectionConfig
+					.getName());
 
 			if (createFolderResult.getSuccess()) {
 				mybatisGeneratorGlobalConfig.setProjectFolder(createFolderResult.getData());
@@ -63,7 +64,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 		return databaseGeneratorConfig;
 	}
 
-	protected DatabaseGeneratorConfig fill(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull GlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
+	protected DatabaseGeneratorConfig fill(@NotNull DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
 		mybatisGeneratorGlobalConfig.setAnnotation(Whether.No.getFlag()
 															 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_ANNOTATION)
 																			  .toInt()) ? Whether.No.getFlag() : Whether.Yes

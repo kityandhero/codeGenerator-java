@@ -1,19 +1,12 @@
-package com.lzt.operate.code.generator.common.config.mybatis.generator;
+package com.lzt.operate.code.generator.common.config.base.generator;
 
 import com.lzt.operate.code.generator.common.enums.FileEncoding;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
-import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.enums.Whether;
 
 import java.io.Serializable;
-import java.util.Optional;
 
-/**
- * GlobalConfig
- *
- * @author luzhitao
- */
-public class GlobalConfig implements Serializable {
+public abstract class BaseGlobalConfig implements Serializable {
 
 	private static final long serialVersionUID = -1208551375087585488L;
 
@@ -73,7 +66,7 @@ public class GlobalConfig implements Serializable {
 
 	private int daoType;
 
-	public GlobalConfig() {
+	public BaseGlobalConfig() {
 		this.connectorJarFile = "";
 		this.projectFolder = "";
 		this.modelPackage = "model";
@@ -397,19 +390,4 @@ public class GlobalConfig implements Serializable {
 
 	}
 
-	public static GlobalConfig Deserialize(String json) {
-		try {
-			GlobalConfig result = ConvertAssist.deserialize(json, GlobalConfig.class);
-
-			if (Optional.ofNullable(result).isPresent()) {
-				return result;
-			}
-
-			return new GlobalConfig();
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return new GlobalConfig();
-		}
-	}
 }

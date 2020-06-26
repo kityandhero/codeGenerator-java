@@ -2,10 +2,10 @@ package com.lzt.operate.code.generator.app.controllers.business;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
-import com.lzt.operate.code.generator.app.bridge.MybatisGeneratorBridge;
+import com.lzt.operate.code.generator.app.bridge.GeneratorBridge;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.app.controllers.business.base.BaseBusinessController;
-import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.MybatisGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.enums.mybatis.DaoType;
 import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
@@ -376,7 +376,7 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisGenerator.getFlag());
 		}
 
-		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+		final MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisGeneratorGlobalConfig();
 
 		mybatisGeneratorGlobalConfig.setDaoType(daoType.getFlag());
 
@@ -521,7 +521,7 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			databaseGeneratorConfig.setGeneratorType(GeneratorType.MybatisPlusGenerator.getFlag());
 		}
 
-		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+		final MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisGeneratorGlobalConfig();
 
 		mybatisGeneratorGlobalConfig.setDaoType(daoType.getFlag());
 
@@ -569,13 +569,13 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			return this.fail(ReturnDataCode.NoData.toMessage("指定的数据连接不存在"));
 		}
 
-		final MybatisGeneratorBridge mybatisGeneratorBridge = new MybatisGeneratorBridge(
+		final GeneratorBridge generatorBridge = new GeneratorBridge(
 				optionalConnectionConfig.get(),
 				this.connectionConfigAssist.getDatabaseGeneratorConfigService(),
 				this.connectionConfigAssist.getDataTableGeneratorConfigService(),
 				this.connectionConfigAssist.getDataColumnService());
 
-		final ExecutiveSimpleResult result = mybatisGeneratorBridge.generateAll();
+		final ExecutiveSimpleResult result = generatorBridge.generateAll();
 
 		if (result.getSuccess()) {
 			return this.successWithTimestamp();
@@ -610,8 +610,8 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			return this.fail(ReturnDataCode.DataError.appendMessage("数据库生成配置不存在"));
 		}
 
-		final GlobalConfig mybatisGeneratorGlobalConfig = optionalDatabaseGeneratorConfig.get()
-																						 .BuildMyybatisGeneratorGlobalConfig();
+		final MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = optionalDatabaseGeneratorConfig.get()
+																										 .BuildMybatisGeneratorGlobalConfig();
 
 		final String folder = mybatisGeneratorGlobalConfig.getProjectFolder();
 
@@ -647,9 +647,9 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 
 		data.append(ReflectAssist.getFriendlyIdName(DatabaseGeneratorConfig.class), databaseGeneratorConfig.getId());
 
-		final GlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMyybatisGeneratorGlobalConfig();
+		final MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = databaseGeneratorConfig.BuildMybatisGeneratorGlobalConfig();
 
-		data.append(com.lzt.operate.code.generator.common.config.mybatis.generator.ConstantCollection.GLOBALCONFIG, mybatisGeneratorGlobalConfig);
+		data.append(com.lzt.operate.code.generator.common.config.base.generator.ConstantCollection.GLOBAL_CONFIG, mybatisGeneratorGlobalConfig);
 
 		return this.singleData(data);
 	}
@@ -660,7 +660,7 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 	 * @param databaseGeneratorConfig databaseGeneratorConfig
 	 * @return BaseResultData
 	 */
-	private ResultSingleData setCore(@NotNull final DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull final GlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
+	private ResultSingleData setCore(@NotNull final DatabaseGeneratorConfig databaseGeneratorConfig, @NotNull final MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig, @NotNull final ParamData paramJson) {
 		DatabaseGeneratorConfig v = this.fill(databaseGeneratorConfig, mybatisGeneratorGlobalConfig, paramJson);
 
 		v = this.connectionConfigAssist.getDatabaseGeneratorConfigService().save(v);

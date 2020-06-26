@@ -1,6 +1,7 @@
 package com.lzt.operate.code.generator.entities;
 
-import com.lzt.operate.code.generator.common.config.mybatis.generator.GlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatis.generator.MybatisGeneratorGlobalConfig;
+import com.lzt.operate.code.generator.common.config.mybatisplus.generator.MybatisPlusGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.entities.bases.BaseEntity;
 import com.lzt.operate.utility.assists.ConvertAssist;
@@ -32,10 +33,15 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 	@Column(name = "mybatis_generator_global_config", nullable = false, unique = true)
 	private String mybatisGeneratorGlobalConfig;
 
+	@Lob
+	@Column(name = "mybatis_plus_generator_global_config", nullable = false, unique = true)
+	private String mybatisPlusGeneratorGlobalConfig;
+
 	public DatabaseGeneratorConfig() {
 		this.connectionConfigId = 0;
 		this.generatorType = GeneratorType.MybatisGenerator.getFlag();
 		this.mybatisGeneratorGlobalConfig = "";
+		this.mybatisPlusGeneratorGlobalConfig = "";
 	}
 
 	public long getConnectionConfigId() {
@@ -62,21 +68,53 @@ public class DatabaseGeneratorConfig extends BaseEntity {
 		this.mybatisGeneratorGlobalConfig = mybatisGeneratorGlobalConfig;
 	}
 
+	public String getMybatisPlusGeneratorGlobalConfig() {
+		return this.mybatisPlusGeneratorGlobalConfig;
+	}
+
+	public void setMybatisPlusGeneratorGlobalConfig(String mybatisPlusGeneratorGlobalConfig) {
+		this.mybatisPlusGeneratorGlobalConfig = mybatisPlusGeneratorGlobalConfig;
+	}
+
 	//region  mybatisGeneratorGlobalConfig
 
-	public GlobalConfig BuildMyybatisGeneratorGlobalConfig() {
-		GlobalConfig mybatisGeneratorGlobalConfig = new GlobalConfig();
+	public MybatisGeneratorGlobalConfig BuildMybatisGeneratorGlobalConfig() {
+		MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig = new MybatisGeneratorGlobalConfig();
 
 		if (!StringAssist.isNullOrEmpty(this.getMybatisGeneratorGlobalConfig())) {
-			mybatisGeneratorGlobalConfig = GlobalConfig.Deserialize(this.getMybatisGeneratorGlobalConfig());
+			mybatisGeneratorGlobalConfig = MybatisGeneratorGlobalConfig.Deserialize(this.getMybatisGeneratorGlobalConfig());
 		}
 
 		return mybatisGeneratorGlobalConfig;
 	}
 
-	public DatabaseGeneratorConfig fillInMyybatisGeneratorGlobalConfig(@NotNull GlobalConfig mybatisGeneratorGlobalConfig) {
+	public DatabaseGeneratorConfig fillInMybatisGeneratorGlobalConfig(@NotNull MybatisGeneratorGlobalConfig mybatisGeneratorGlobalConfig) {
 		try {
 			this.setMybatisGeneratorGlobalConfig(ConvertAssist.serialize(mybatisGeneratorGlobalConfig));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return this;
+	}
+
+	//endregion
+
+	//region  mybatisPlusGeneratorGlobalConfig
+
+	public MybatisPlusGeneratorGlobalConfig BuildMybatisPlusGeneratorGlobalConfig() {
+		MybatisPlusGeneratorGlobalConfig mybatisPlusGeneratorGlobalConfig = new MybatisPlusGeneratorGlobalConfig();
+
+		if (!StringAssist.isNullOrEmpty(this.getMybatisPlusGeneratorGlobalConfig())) {
+			mybatisPlusGeneratorGlobalConfig = MybatisPlusGeneratorGlobalConfig.Deserialize(this.getMybatisPlusGeneratorGlobalConfig());
+		}
+
+		return mybatisPlusGeneratorGlobalConfig;
+	}
+
+	public DatabaseGeneratorConfig fillInMybatisPlusGeneratorGlobalConfig(@NotNull MybatisPlusGeneratorGlobalConfig mybatisPlusGeneratorGlobalConfig) {
+		try {
+			this.setMybatisPlusGeneratorGlobalConfig(ConvertAssist.serialize(mybatisPlusGeneratorGlobalConfig));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
