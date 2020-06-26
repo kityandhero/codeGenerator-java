@@ -1,7 +1,6 @@
-package com.lzt.operate.code.generator.app.util;
+package com.lzt.operate.code.generator.common.utils;
 
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
-import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.general.ConstantCollection;
 import org.slf4j.Logger;
@@ -95,11 +94,11 @@ public class ConfigHelper {
 				}
 
 				if (fileSize.equals(ConstantCollection.ZERO_INT)) {
-					GeneralLogAssist.quickRecord(StringAssist.merge("path：", file.getPath()));
+					// GeneralLogAssist.quickRecord(StringAssist.merge("path：", file.getPath()));
 				}
 
 			} catch (Exception e) {
-				GeneralLogAssist.quickRecord(StringAssist.merge("lib路径(getAllJDBCDriverJarPaths)：", path));
+				// GeneralLogAssist.quickRecord(StringAssist.merge("lib路径(getAllJDBCDriverJarPaths)：", path));
 
 				throw new RuntimeException("找不到驱动文件，请联系开发者");
 			}

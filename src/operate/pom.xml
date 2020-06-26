@@ -24,6 +24,7 @@
         <module>operate-mybatis-base</module>
         <module>operate-jpa-base</module>
         <module>code-generator-console</module>
+        <module>operate-mybatis-plus-custom</module>
     </modules>
 
     <properties>
@@ -153,47 +154,12 @@
                 <version>1.2.3</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>8.0.20</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/cn.easyproject/ojdbc6 -->
-            <dependency>
-                <groupId>cn.easyproject</groupId>
-                <artifactId>ojdbc6</artifactId>
-                <version>12.1.0.2.0</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.14</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
-            <dependency>
-                <groupId>com.microsoft.sqlserver</groupId>
-                <artifactId>mssql-jdbc</artifactId>
-                <version>8.2.2.jre8</version>
-            </dependency>
-
             <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.4.200</version>
+                <version>1.4.199</version>
                 <scope>test</scope>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
-            <dependency>
-                <groupId>org.xerial</groupId>
-                <artifactId>sqlite-jdbc</artifactId>
-                <version>3.32.3</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->

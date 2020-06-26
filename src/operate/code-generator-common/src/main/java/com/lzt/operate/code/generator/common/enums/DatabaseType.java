@@ -15,7 +15,7 @@ public enum DatabaseType {
 	/**
 	 * MySQL
 	 */
-	MySQL(100, "MySQL", "MySQL", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=%s&autoReconnect=true&failOverReadOnly=false", "mysql-connector-java-8.0.19.jar"),
+	MySQL(100, "MySQL", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s&autoReconnect=true&failOverReadOnly=false", "mysql-connector-java-5.1.47.jar"),
 
 	/**
 	 * MySQL_8

@@ -4,11 +4,11 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.lzt.operate.code.generator.app.exceptions.DbDriverLoadingException;
-import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
+import com.lzt.operate.code.generator.common.utils.ConfigHelper;
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataColumn;
@@ -105,7 +105,7 @@ public class DatabaseAssist {
 						String s = session.getPortForwardingL()[0];
 						String[] split = StringUtils.split(s, ":");
 						boolean portForwarding = String.format("%s:%s", split[0], split[1])
-															 .equals(lport + ":" + config.getHost());
+													   .equals(lport + ":" + config.getHost());
 						if (portForwarding) {
 							return;
 						}
