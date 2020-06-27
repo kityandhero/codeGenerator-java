@@ -256,6 +256,9 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_PACKAGE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE),
@@ -321,6 +324,16 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 		if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
 			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
 				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
+			}
+		}
+
+		final String controllerTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER);
+		final int controllerTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE)
+																.toInt();
+
+		if (Whether.Yes.getFlag().equals(controllerTargetFolderRelativeMode)) {
+			if (StringAssist.contains(controllerTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER, "controller文件夹不能含有空白");
 			}
 		}
 
@@ -401,6 +414,9 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_PACKAGE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_PACKAGE),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER),
+			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_TO_STRING_HASHCODE_EQUALS),
 			@ApiJsonProperty(name = GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE),
@@ -466,6 +482,16 @@ public class DataBaseGeneratorConfigController extends BaseBusinessController {
 		if (Whether.Yes.getFlag().equals(serviceTargetFolderRelativeMode)) {
 			if (StringAssist.contains(serviceTargetFolder, ConstantCollection.EMPTY_STRING)) {
 				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER, "service文件夹不能含有空白");
+			}
+		}
+
+		final String controllerTargetFolder = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER);
+		final int controllerTargetFolderRelativeMode = paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE)
+																.toInt();
+
+		if (Whether.Yes.getFlag().equals(controllerTargetFolderRelativeMode)) {
+			if (StringAssist.contains(controllerTargetFolder, ConstantCollection.EMPTY_STRING)) {
+				return this.paramError(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER, "controller文件夹不能含有空白");
 			}
 		}
 
