@@ -1,26 +1,43 @@
 package com.lzt.operate.mybatis.plus.custom.config;
 
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.lzt.operate.code.generator.app.util.ConfigHelper;
-import org.mybatis.generator.internal.util.ClassloaderUtility;
+import com.lzt.operate.code.generator.app.core.assists.DatabaseAssist;
+import com.lzt.operate.code.generator.entities.ConnectionConfig;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
+/**
+ * @author luzhitao
+ */
 public class DataSourceConfigEx extends DataSourceConfig {
+
+	ConnectionConfig connectionConfig;
+
+	public DataSourceConfigEx(@NotNull ConnectionConfig connectionConfig) {
+		super();
+
+		this.connectionConfig = connectionConfig;
+	}
+
+	public ConnectionConfig getConnectionConfig() {
+		return this.connectionConfig;
+	}
+
+	public void setConnectionConfig(ConnectionConfig connectionConfig) {
+		this.connectionConfig = connectionConfig;
+	}
 
 	@Override
 	public Connection getConn() {
-		List<String> driverJars = ConfigHelper.getAllJDBCDriverJarPaths();
-		ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
-
 		try {
-			Class.forName(this.getDriverName(), true, classloader);
-			return DriverManager.getConnection(this.getUrl(), this.getUsername(), this.getPassword());
-		} catch (SQLException | ClassNotFoundException var3) {
-			throw new RuntimeException(var3);
+			return DatabaseAssist.getConnection(this.getConnectionConfig());
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+
+			throw new RuntimeException(ex);
 		}
 	}
 

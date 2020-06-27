@@ -1,9 +1,9 @@
 package com.lzt.operate.code.generator.app.assists;
 
+import com.lzt.operate.code.generator.app.core.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
-import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.code.generator.common.jackson.ObjectMapperAssist;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
 import com.lzt.operate.code.generator.common.utils.GlobalString;
@@ -21,6 +21,7 @@ import com.lzt.operate.utility.assists.ConvertAssist;
 import com.lzt.operate.utility.assists.EnumAssist;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
+import com.lzt.operate.utility.enums.CustomDataType;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.extensions.StringEx;
 import com.lzt.operate.utility.general.ConstantCollection;

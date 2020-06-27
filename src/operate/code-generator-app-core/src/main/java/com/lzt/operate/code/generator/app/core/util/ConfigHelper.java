@@ -1,4 +1,4 @@
-package com.lzt.operate.code.generator.app.util;
+package com.lzt.operate.code.generator.app.core.util;
 
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
@@ -69,10 +69,10 @@ public class ConfigHelper {
 												  .getParentFile()
 												  .getParentFile()
 												  .getParentFile()
-												  .getPath(), "/classes/lib/");
+												  .getPath(), "\\classes\\lib\\");
 
-					GeneralLogAssist.quickRecord(path);
-					
+					// GeneralLogAssist.quickRecord(path);
+
 					URL url = new URL(path);
 
 					URI uri = url.toURI();

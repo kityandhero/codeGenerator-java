@@ -25,7 +25,7 @@
         <module>operate-jpa-base</module>
         <module>code-generator-console</module>
         <module>operate-mybatis-plus-custom</module>
-        <module>code-generator-app-util</module>
+        <module>code-generator-app-core</module>
     </modules>
 
     <properties>

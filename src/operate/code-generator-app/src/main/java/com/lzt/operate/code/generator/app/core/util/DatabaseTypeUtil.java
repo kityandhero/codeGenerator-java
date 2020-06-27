@@ -1,9 +1,9 @@
-package com.lzt.operate.code.generator.app.util;
+package com.lzt.operate.code.generator.app.core.util;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.lzt.operate.code.generator.app.exceptions.DbDriverLoadingException;
+import com.lzt.operate.code.generator.app.core.exceptions.DbDriverLoadingException;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;

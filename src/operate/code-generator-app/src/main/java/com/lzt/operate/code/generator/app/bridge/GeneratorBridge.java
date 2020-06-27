@@ -11,9 +11,9 @@ import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
-import com.lzt.operate.code.generator.app.util.ConfigHelper;
-import com.lzt.operate.code.generator.app.util.DatabaseTypeUtil;
+import com.lzt.operate.code.generator.app.core.assists.DatabaseAssist;
+import com.lzt.operate.code.generator.app.core.util.ConfigHelper;
+import com.lzt.operate.code.generator.app.core.util.DatabaseTypeUtil;
 import com.lzt.operate.code.generator.common.config.mybatis.generator.MybatisGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.config.mybatisplus.generator.MybatisPlusGeneratorGlobalConfig;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
@@ -930,7 +930,7 @@ public class GeneratorBridge {
 		mpg.setGlobalConfig(gc);
 
 		// 数据源配置
-		DataSourceConfigEx dsc = new DataSourceConfigEx();
+		DataSourceConfigEx dsc = new DataSourceConfigEx(this.connectionConfig);
 		dsc.setUrl(DatabaseTypeUtil.getConnectionUrlWithSchema(this.connectionConfig));
 		// dsc.setSchemaName("public");
 		dsc.setDriverName(databaseType.getDriverClass());

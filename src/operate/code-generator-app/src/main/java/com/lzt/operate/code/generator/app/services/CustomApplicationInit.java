@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lzt.operate.code.generator.app.assists.AccountAssist;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.util.CommandUtil;
+import com.lzt.operate.code.generator.app.core.util.CommandUtil;
 import com.lzt.operate.code.generator.common.enums.AccountStatus;
 import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.CustomConfigCollection;

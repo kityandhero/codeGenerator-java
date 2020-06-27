@@ -2,9 +2,9 @@ package com.lzt.operate.code.generator.app.controllers.business;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.assists.ConnectionConfigAssist;
-import com.lzt.operate.code.generator.app.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
 import com.lzt.operate.code.generator.app.controllers.business.base.BaseBusinessController;
+import com.lzt.operate.code.generator.app.core.assists.DatabaseAssist;
 import com.lzt.operate.code.generator.common.enums.Channel;
 import com.lzt.operate.code.generator.common.enums.ConnectionConfigStatus;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;

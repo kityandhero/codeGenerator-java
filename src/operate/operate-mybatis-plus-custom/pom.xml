@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.lzt.operate</groupId>
-            <artifactId>code-generator-app-util</artifactId>
+            <artifactId>code-generator-app-core</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

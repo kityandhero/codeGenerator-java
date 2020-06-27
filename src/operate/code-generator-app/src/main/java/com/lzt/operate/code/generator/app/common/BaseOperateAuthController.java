@@ -2,7 +2,7 @@ package com.lzt.operate.code.generator.app.common;
 
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.lzt.operate.code.generator.app.components.CustomJsonWebTokenConfig;
-import com.lzt.operate.code.generator.app.util.CommandUtil;
+import com.lzt.operate.code.generator.app.core.util.CommandUtil;
 import com.lzt.operate.code.generator.common.enums.mybatis.GeneratorType;
 import com.lzt.operate.code.generator.common.utils.CustomConstants;
 import com.lzt.operate.code.generator.custommessagequeue.errorlog.ErrorLogProducerFactory;

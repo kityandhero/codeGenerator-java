@@ -1,6 +1,6 @@
 package com.lzt.operate.code.generator.app.common;
 
-import com.lzt.operate.code.generator.app.util.CommandUtil;
+import com.lzt.operate.code.generator.app.core.util.CommandUtil;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.enums.ReturnDataCode;
 import com.lzt.operate.utility.general.ConstantCollection;

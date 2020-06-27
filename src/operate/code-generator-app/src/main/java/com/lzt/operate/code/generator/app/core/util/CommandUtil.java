@@ -1,4 +1,4 @@
-package com.lzt.operate.code.generator.app.util;
+package com.lzt.operate.code.generator.app.core.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

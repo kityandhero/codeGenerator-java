@@ -1,10 +1,10 @@
-package com.lzt.operate.code.generator.app.assists;
+package com.lzt.operate.code.generator.app.core.assists;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.lzt.operate.code.generator.app.exceptions.DbDriverLoadingException;
-import com.lzt.operate.code.generator.app.util.ConfigHelper;
+import com.lzt.operate.code.generator.app.core.exceptions.DbDriverLoadingException;
+import com.lzt.operate.code.generator.app.core.util.ConfigHelper;
 import com.lzt.operate.code.generator.common.enums.ConnectionType;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
@@ -153,7 +153,7 @@ public class DatabaseAssist {
 //		executorService.shutdown();
 	}
 
-	private static Connection getConnection(ConnectionConfig config) throws SQLException {
+	public static Connection getConnection(ConnectionConfig config) throws SQLException {
 		Optional<DatabaseType> optionalDatabaseType = DatabaseType.valueOfFlag(config.getDatabaseType());
 
 		if (!optionalDatabaseType.isPresent()) {
