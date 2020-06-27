@@ -1,7 +1,7 @@
 package com.lzt.operate.mybatis.plus.custom.config;
 
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.lzt.operate.code.generator.common.utils.ConfigHelper;
+import com.lzt.operate.code.generator.app.util.ConfigHelper;
 import org.mybatis.generator.internal.util.ClassloaderUtility;
 
 import java.sql.Connection;
@@ -18,8 +18,7 @@ public class DataSourceConfigEx extends DataSourceConfig {
 
 		try {
 			Class.forName(this.getDriverName(), true, classloader);
-			Connection conn = DriverManager.getConnection(this.getUrl(), this.getUsername(), this.getPassword());
-			return conn;
+			return DriverManager.getConnection(this.getUrl(), this.getUsername(), this.getPassword());
 		} catch (SQLException | ClassNotFoundException var3) {
 			throw new RuntimeException(var3);
 		}

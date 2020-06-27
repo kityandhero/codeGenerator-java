@@ -1,6 +1,7 @@
-package com.lzt.operate.code.generator.common.utils;
+package com.lzt.operate.code.generator.app.util;
 
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
+import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.utility.assists.StringAssist;
 import com.lzt.operate.utility.general.ConstantCollection;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.util.Optional;
  */
 public class ConfigHelper {
 
-	private static final Logger _LOG = LoggerFactory.getLogger(ConfigHelper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHelper.class);
 
 	public static String findConnectorLibPath(String dbType) {
 		DatabaseType type = DatabaseType.valueOf(dbType);
@@ -70,6 +71,8 @@ public class ConfigHelper {
 												  .getParentFile()
 												  .getPath(), "/classes/lib/");
 
+					GeneralLogAssist.quickRecord(path);
+					
 					URL url = new URL(path);
 
 					URI uri = url.toURI();
@@ -85,7 +88,7 @@ public class ConfigHelper {
 					}
 				} else {
 					for (File jarFile : jarFiles) {
-						ConfigHelper._LOG.info("jar file: {}", jarFile.getAbsolutePath());
+						ConfigHelper.LOGGER.info("jar file: {}", jarFile.getAbsolutePath());
 
 						if (jarFile.isFile() && jarFile.getAbsolutePath().endsWith(".jar")) {
 							jarFilePathList.add(jarFile.getAbsolutePath());
@@ -94,11 +97,11 @@ public class ConfigHelper {
 				}
 
 				if (fileSize.equals(ConstantCollection.ZERO_INT)) {
-					// GeneralLogAssist.quickRecord(StringAssist.merge("path：", file.getPath()));
+					GeneralLogAssist.quickRecord(StringAssist.merge("path：", file.getPath()));
 				}
 
 			} catch (Exception e) {
-				// GeneralLogAssist.quickRecord(StringAssist.merge("lib路径(getAllJDBCDriverJarPaths)：", path));
+				GeneralLogAssist.quickRecord(StringAssist.merge("lib路径(getAllJDBCDriverJarPaths)：", path));
 
 				throw new RuntimeException("找不到驱动文件，请联系开发者");
 			}

@@ -7,7 +7,6 @@ import com.lzt.operate.code.generator.app.exceptions.DbDriverLoadingException;
 import com.lzt.operate.code.generator.common.enums.DatabaseEncoding;
 import com.lzt.operate.code.generator.common.enums.DatabaseType;
 import com.lzt.operate.code.generator.common.pojos.DataTable;
-import com.lzt.operate.code.generator.common.utils.ConfigHelper;
 import com.lzt.operate.code.generator.custommessagequeue.generallog.GeneralLogAssist;
 import com.lzt.operate.code.generator.entities.ConnectionConfig;
 import com.lzt.operate.code.generator.entities.DataColumn;
