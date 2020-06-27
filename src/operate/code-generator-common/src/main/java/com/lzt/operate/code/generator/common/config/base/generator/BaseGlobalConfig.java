@@ -38,6 +38,12 @@ public abstract class BaseGlobalConfig implements Serializable {
 
 	private int serviceTargetFolderRelativeMode;
 
+	private String controllerPackage;
+
+	private String controllerTargetFolder;
+
+	private int controllerTargetFolderRelativeMode;
+
 	private int offsetLimit;
 
 	private int needToStringHashCodeEquals;
@@ -81,6 +87,9 @@ public abstract class BaseGlobalConfig implements Serializable {
 		this.servicePackage = "service";
 		this.serviceTargetFolder = "";
 		this.serviceTargetFolderRelativeMode = Whether.Yes.getFlag();
+		this.controllerPackage = "controller";
+		this.controllerTargetFolder = "";
+		this.controllerTargetFolderRelativeMode = Whether.Yes.getFlag();
 		this.offsetLimit = Whether.No.getFlag();
 		this.needToStringHashCodeEquals = Whether.No.getFlag();
 		this.needForUpdate = Whether.No.getFlag();
@@ -223,6 +232,30 @@ public abstract class BaseGlobalConfig implements Serializable {
 		} else {
 			this.serviceTargetFolderRelativeMode = Whether.No.getFlag();
 		}
+	}
+
+	public String getControllerPackage() {
+		return this.controllerPackage;
+	}
+
+	public void setControllerPackage(String controllerPackage) {
+		this.controllerPackage = controllerPackage;
+	}
+
+	public String getControllerTargetFolder() {
+		return this.controllerTargetFolder;
+	}
+
+	public void setControllerTargetFolder(String controllerTargetFolder) {
+		this.controllerTargetFolder = controllerTargetFolder;
+	}
+
+	public int getControllerTargetFolderRelativeMode() {
+		return this.controllerTargetFolderRelativeMode;
+	}
+
+	public void setControllerTargetFolderRelativeMode(int controllerTargetFolderRelativeMode) {
+		this.controllerTargetFolderRelativeMode = controllerTargetFolderRelativeMode;
 	}
 
 	public int getOffsetLimit() {

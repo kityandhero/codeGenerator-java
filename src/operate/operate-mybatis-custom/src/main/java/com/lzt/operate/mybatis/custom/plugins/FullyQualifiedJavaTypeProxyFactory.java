@@ -1,5 +1,6 @@
 package com.lzt.operate.mybatis.custom.plugins;
 
+import com.lzt.operate.mybatis.base.controller.BaseCustomController;
 import com.lzt.operate.mybatis.base.dao.BaseMapper;
 import com.lzt.operate.mybatis.base.model.BaseExample;
 import com.lzt.operate.mybatis.base.service.BaseService;
@@ -18,33 +19,41 @@ public class FullyQualifiedJavaTypeProxyFactory extends FullyQualifiedJavaType {
 	private static final FullyQualifiedJavaType baseServiceInstance = new FullyQualifiedJavaType(BaseService.class.getName());
 	private static final FullyQualifiedJavaType baseServiceImplInstance = new FullyQualifiedJavaType(BaseServiceImpl.class
 			.getName());
+	private static final FullyQualifiedJavaType baseControllerClazz = new FullyQualifiedJavaType(BaseCustomController.class
+			.getName());
 
 	public FullyQualifiedJavaTypeProxyFactory(String fullTypeSpecification) {
 		super(fullTypeSpecification);
 	}
 
-	public static final FullyQualifiedJavaType getPageInfoInstanceInstance() {
+	public static FullyQualifiedJavaType getPageInfoInstanceInstance() {
 
 		return pageInfoInstance;
 	}
 
-	public static final FullyQualifiedJavaType getBaseExampleInstance() {
+	public static FullyQualifiedJavaType getBaseExampleInstance() {
 
 		return baseExampleInstance;
 	}
 
-	public static final FullyQualifiedJavaType getBaseMapperInstance() {
+	public static FullyQualifiedJavaType getBaseMapperInstance() {
 
 		return baseMapperInstance;
 	}
 
-	public static final FullyQualifiedJavaType getBaseServiceInstance() {
+	public static FullyQualifiedJavaType getBaseServiceInstance() {
 
 		return baseServiceInstance;
 	}
 
-	public static final FullyQualifiedJavaType getBaseServiceImplInstance() {
+	public static FullyQualifiedJavaType getBaseServiceImplInstance() {
 
 		return baseServiceImplInstance;
 	}
+
+	public static FullyQualifiedJavaType getBaseControllerClazz() {
+
+		return baseControllerClazz;
+	}
+
 }

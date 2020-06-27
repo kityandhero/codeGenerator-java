@@ -147,6 +147,20 @@ public class BaseBusinessController extends BaseOperateAuthController {
 																				  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
 																								   .toInt()) ? Whether.No
 				.getFlag() : Whether.Yes.getFlag());
+		if (paramJson.existKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_PACKAGE)) {
+			String controllerPackage = paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_PACKAGE);
+
+			mybatisGeneratorGlobalConfig.setControllerPackage(StringAssist.isNullOrEmpty(controllerPackage) ? "controller" : controllerPackage);
+		} else {
+			mybatisGeneratorGlobalConfig.setControllerPackage(StringAssist.isNullOrEmpty(mybatisGeneratorGlobalConfig.getControllerPackage()) ? "controller" : mybatisGeneratorGlobalConfig
+					.getControllerPackage());
+		}
+
+		mybatisGeneratorGlobalConfig.setControllerTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER));
+		mybatisGeneratorGlobalConfig.setControllerTargetFolderRelativeMode(Whether.No.getFlag()
+																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE)
+																									  .toInt()) ? Whether.No
+				.getFlag() : Whether.Yes.getFlag());
 		mybatisGeneratorGlobalConfig.setMapperExtensionName(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME));
 		mybatisGeneratorGlobalConfig.setNeedForUpdate(Whether.No.getFlag()
 																.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_NEED_FOR_UPDATE)

@@ -35,18 +35,18 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 
 		ContextCustom context = (ContextCustom) introspectedTable.getContext();
 
-		JavaServiceGeneratorConfiguration serviceGeneratorConfiguration;
+		JavaServiceGeneratorConfiguration javaServiceGeneratorConfiguration;
 
-		if ((serviceGeneratorConfiguration = context.getJavaServiceGeneratorConfiguration()) == null) {
+		if ((javaServiceGeneratorConfiguration = context.getJavaServiceGeneratorConfiguration()) == null) {
 			return null;
 		}
 
-		String targetPackage = serviceGeneratorConfiguration.getTargetPackage();
-		String targetProject = serviceGeneratorConfiguration.getTargetProject();
-		String implementationPackage = serviceGeneratorConfiguration.getImplementationPackage();
+		String targetPackage = javaServiceGeneratorConfiguration.getTargetPackage();
+		String targetProject = javaServiceGeneratorConfiguration.getTargetProject();
+		String implementationPackage = javaServiceGeneratorConfiguration.getImplementationPackage();
 
-		CompilationUnit addServiceInterface = addServiceInterface(introspectedTable, targetPackage);
-		CompilationUnit addServiceImplClazz = addServiceImplClazz(introspectedTable, targetPackage,
+		CompilationUnit addServiceInterface = this.addServiceInterface(introspectedTable, targetPackage);
+		CompilationUnit addServiceImplClazz = this.addServiceImplClazz(introspectedTable, targetPackage,
 				implementationPackage);
 
 		GeneratedJavaFile gjfServiceInterface = new GeneratedJavaFile(addServiceInterface, targetProject,
@@ -63,7 +63,6 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 	protected CompilationUnit addServiceInterface(IntrospectedTable introspectedTable, String targetPackage) {
 
 		String entityClazzType = introspectedTable.getBaseRecordType();
-		String serviceSuperPackage = targetPackage;
 
 		String entityExampleClazzType = introspectedTable.getExampleType();
 		String domainObjectName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
@@ -86,7 +85,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 
 		Interface serviceInterface = new Interface(
 				builder.delete(0, builder.length())
-					   .append(serviceSuperPackage)
+					   .append(targetPackage)
 					   .append(".")
 					   .append(domainObjectName)
 					   .append("Service")
@@ -104,7 +103,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceInterface.addImportedType(exampleJavaType);
 		serviceInterface.addFileCommentLine("/*** copyright (c) 2019 Marvis  ***/");
 
-		additionalServiceMethods(introspectedTable, serviceInterface);
+		this.additionalServiceMethods(introspectedTable, serviceInterface);
 		return serviceInterface;
 	}
 
@@ -112,8 +111,6 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 												  String implementationPackage) {
 
 		String entityClazzType = introspectedTable.getBaseRecordType();
-		String serviceSuperPackage = targetPackage;
-		String serviceImplSuperPackage = implementationPackage;
 		String entityExampleClazzType = introspectedTable.getExampleType();
 
 		String javaMapperType = introspectedTable.getMyBatis3JavaMapperType();
@@ -140,7 +137,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		FullyQualifiedJavaType implInterfaceType = new FullyQualifiedJavaType(
 
 				builder.delete(0, builder.length())
-					   .append(serviceSuperPackage)
+					   .append(targetPackage)
 					   .append(".")
 					   .append(domainObjectName)
 					   .append("Service")
@@ -150,7 +147,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		TopLevelClass serviceImplClazz = new TopLevelClass(
 
 				builder.delete(0, builder.length())
-					   .append(serviceImplSuperPackage)
+					   .append(implementationPackage)
 					   .append(".")
 					   .append(domainObjectName)
 					   .append("ServiceImpl")
@@ -196,10 +193,10 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceImplClazz.addImportedType(logFactoryType);
 
 		String mapperName = builder.delete(0, builder.length())
-										 .append(Character.toLowerCase(domainObjectName.charAt(0)))
-										 .append(domainObjectName.substring(1))
-										 .append("Mapper")
-										 .toString();
+								   .append(Character.toLowerCase(domainObjectName.charAt(0)))
+								   .append(domainObjectName.substring(1))
+								   .append("Mapper")
+								   .toString();
 
 		FullyQualifiedJavaType JavaMapperType = new FullyQualifiedJavaType(javaMapperType);
 
@@ -223,14 +220,14 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceImplClazz
 				.addImportedType(new FullyQualifiedJavaType("org.springframework.beans.factory.annotation.Autowired"));
 
-		additionalServiceImplMethods(introspectedTable, serviceImplClazz, mapperName);
+		this.additionalServiceImplMethods(introspectedTable, serviceImplClazz, mapperName);
 
 		return serviceImplClazz;
 	}
 
 	protected void additionalServiceMethods(IntrospectedTable introspectedTable, Interface serviceInterface) {
 
-		if (notHasBLOBColumns(introspectedTable)) {
+		if (this.notHasBLOBColumns(introspectedTable)) {
 			return;
 		}
 
@@ -242,13 +239,13 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 						 .forEach(
 								 compilationUnit -> ((Interface) compilationUnit).getMethods().forEach(
 
-										 m -> serviceInterface.addMethod(additionalServiceLayerMethod(serviceInterface, m))));
+										 m -> serviceInterface.addMethod(this.additionalServiceLayerMethod(serviceInterface, m))));
 	}
 
 	protected void additionalServiceImplMethods(IntrospectedTable introspectedTable, TopLevelClass clazz,
 												String mapperName) {
 
-		if (notHasBLOBColumns(introspectedTable)) {
+		if (this.notHasBLOBColumns(introspectedTable)) {
 			return;
 		}
 
@@ -260,9 +257,9 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 						 .forEach(
 								 compilationUnit -> ((Interface) compilationUnit).getMethods().forEach(m -> {
 
-									 Method serviceImplMethod = additionalServiceLayerMethod(clazz, m);
+									 Method serviceImplMethod = this.additionalServiceLayerMethod(clazz, m);
 									 serviceImplMethod.addAnnotation("@Override");
-									 serviceImplMethod.addBodyLine(generateBodyForServiceImplMethod(mapperName, m));
+									 serviceImplMethod.addBodyLine(this.generateBodyForServiceImplMethod(mapperName, m));
 
 									 clazz.addMethod(serviceImplMethod);
 								 }));
@@ -296,7 +293,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		for (Parameter parameter : m.getParameters()) {
 
 			if (singleParam) {
-				singleParam = !singleParam;
+				singleParam = false;
 			} else {
 				sbf.append(", ");
 			}

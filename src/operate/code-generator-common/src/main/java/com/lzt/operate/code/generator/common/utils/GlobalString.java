@@ -139,6 +139,15 @@ public class GlobalString {
 	@ApiSingleParam(value = "serviceTargetFolderRelativeMode", type = Integer.class, example = "0")
 	public static final String DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE = "serviceTargetFolderRelativeMode";
 
+	@ApiSingleParam(value = "controllerPackage", example = "controller")
+	public static final String DATABASE_GENERATOR_CONFIG_CONTROLLER_PACKAGE = "controllerPackage";
+
+	@ApiSingleParam(value = "controllerTargetFolder", example = "controller1")
+	public static final String DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER = "controllerTargetFolder";
+
+	@ApiSingleParam(value = "controllerTargetFolderRelativeMode", type = Integer.class, example = "0")
+	public static final String DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE = "controllerTargetFolderRelativeMode";
+
 	@ApiSingleParam(value = "offsetLimit", type = Integer.class, example = "offsetLimit")
 	public static final String DATABASE_GENERATOR_CONFIG_OFFSET_LIMIT = "offsetLimit";
 

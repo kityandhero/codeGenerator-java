@@ -30,6 +30,7 @@ import com.lzt.operate.code.generator.entities.DataTableGeneratorConfig;
 import com.lzt.operate.code.generator.entities.DatabaseGeneratorConfig;
 import com.lzt.operate.mybatis.base.model.BaseModel;
 import com.lzt.operate.mybatis.custom.config.ContextCustom;
+import com.lzt.operate.mybatis.custom.config.JavaControllerGeneratorConfiguration;
 import com.lzt.operate.mybatis.custom.config.JavaServiceGeneratorConfiguration;
 import com.lzt.operate.mybatis.custom.config.xml.ConfigurationCustom;
 import com.lzt.operate.mybatis.custom.plugins.CommentGeneratorCustom;
@@ -37,8 +38,10 @@ import com.lzt.operate.mybatis.custom.plugins.CommonDAOInterfacePlugin;
 import com.lzt.operate.mybatis.custom.plugins.JavaTypeResolverJsr310Impl;
 import com.lzt.operate.mybatis.custom.plugins.RepositoryPlugin;
 import com.lzt.operate.mybatis.custom.plugins.SerializablePlugin;
+import com.lzt.operate.mybatis.custom.plugins.controllergenerate.ControllerLayerPluginChain;
 import com.lzt.operate.mybatis.custom.plugins.mysql.LimitPlugin;
 import com.lzt.operate.mybatis.custom.plugins.mysql.UpdatePlugin;
+import com.lzt.operate.mybatis.custom.plugins.servicegenerate.ServiceLayerPluginChain;
 import com.lzt.operate.mybatis.plus.custom.config.DataSourceConfigEx;
 import com.lzt.operate.utility.assists.ReflectAssist;
 import com.lzt.operate.utility.assists.StringAssist;
@@ -180,6 +183,8 @@ public class GeneratorBridge {
 												.orElse("").trim();
 		String serviceTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getServiceTargetFolder())
 											 .orElse("").trim();
+		String controllerTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getControllerTargetFolder())
+												.orElse("").trim();
 
 		if (StringAssist.isNullOrEmpty(projectFolder)) {
 			return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("请先配置项目文件夹"));
@@ -324,6 +329,37 @@ public class GeneratorBridge {
 			}
 		}
 
+		controllerTargetFolder = Optional.of(controllerTargetFolder).orElse("");
+
+		if (!StringAssist.isNullOrEmpty(controllerTargetFolder)) {
+			String controllerFolder;
+			int controllerTargetFolderRelativeMode = mybatisGeneratorGlobalConfig.getControllerTargetFolderRelativeMode();
+
+			if (Whether.Yes.getFlag().equals(controllerTargetFolderRelativeMode)) {
+				if (StringAssist.contains(controllerTargetFolder, ConstantCollection.EMPTY_STRING)) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("controller文件夹不能含有空格"));
+				}
+
+				controllerFolder = StringAssist.merge(projectFolder, controllerTargetFolder);
+			} else {
+				controllerFolder = controllerTargetFolder;
+			}
+
+			file = new File(controllerFolder);
+
+			if (!file.exists()) {
+				boolean mkdirsResult = file.mkdirs();
+
+				if (!mkdirsResult) {
+					return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("创建controller文件夹失败"));
+				}
+			}
+
+			if (!file.isDirectory()) {
+				return new ExecutiveSimpleResult(ReturnDataCode.Exception.toMessage("controller文件夹路径无效：" + file.getAbsolutePath()));
+			}
+		}
+
 		return new ExecutiveSimpleResult(ReturnDataCode.Ok.toMessage());
 	}
 
@@ -440,16 +476,23 @@ public class GeneratorBridge {
 										   .orElse("")
 										   .trim();
 		int modelTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getModelTargetFolderRelativeMode();
+
 		String daoTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getDaoTargetFolder())
 										 .orElse("")
 										 .trim();
 		int daoTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getDaoTargetFolderRelativeMode();
+
 		String mappingXmlTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getMappingXmlTargetFolder())
 												.orElse("").trim();
 		int mappingXmlTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getMappingXmlTargetFolderRelativeMode();
+
 		String serviceTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getServiceTargetFolder())
 											 .orElse("").trim();
 		int serviceTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getServiceTargetFolderRelativeMode();
+
+		String controllerTargetFolder = Optional.ofNullable(mybatisGeneratorGlobalConfig.getControllerTargetFolder())
+												.orElse("").trim();
+		int controllerTargetFolderRelativeMode1 = mybatisGeneratorGlobalConfig.getControllerTargetFolderRelativeMode();
 
 		Optional<FileEncoding> optionalFileEncoding = FileEncoding.valueOfFlag(mybatisGeneratorGlobalConfig.getEncoding());
 
@@ -670,6 +713,22 @@ public class GeneratorBridge {
 
 		serviceConfig.getProperties().setProperty("enableSubPackages", "false");
 
+		// controller
+		JavaControllerGeneratorConfiguration controllerConfig = new JavaControllerGeneratorConfiguration();
+		controllerConfig.setTargetPackage(mybatisGeneratorGlobalConfig.getControllerPackage());
+
+		if (StringAssist.isNullOrEmpty(controllerTargetFolder)) {
+			controllerConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder());
+		} else {
+			if (Whether.Yes.getFlag().equals(controllerTargetFolderRelativeMode1)) {
+				controllerConfig.setTargetProject(mybatisGeneratorGlobalConfig.getProjectFolder() + "/" + controllerTargetFolder);
+			} else {
+				controllerConfig.setTargetProject(controllerTargetFolder);
+			}
+		}
+
+		controllerConfig.getProperties().setProperty("enableSubPackages", "false");
+
 		context.setId("myContext");
 		context.addTableConfiguration(tableConfig);
 		context.setJdbcConnectionConfiguration(jdbcConfig);
@@ -677,6 +736,7 @@ public class GeneratorBridge {
 		context.setSqlMapGeneratorConfiguration(mapperConfig);
 		context.setJavaClientGeneratorConfiguration(daoConfig);
 		context.setJavaServiceGeneratorConfiguration(serviceConfig);
+		context.setJavaControllerGeneratorConfiguration(controllerConfig);
 
 		context.addProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING, fileEncoding.getName());
 
@@ -693,13 +753,24 @@ public class GeneratorBridge {
 
 		// PluginChain
 		{
-			PluginConfiguration pluginChainConfiguration = new PluginConfiguration();
+			// service layer
+			PluginConfiguration serviceLayerPluginChainConfiguration = new PluginConfiguration();
 
-			String pluginChainName = com.lzt.operate.mybatis.custom.plugins.PluginChain.class.getName();
+			String serviceLayerPluginChainName = ServiceLayerPluginChain.class.getName();
 
-			pluginChainConfiguration.setConfigurationType(pluginChainName);
+			serviceLayerPluginChainConfiguration.setConfigurationType(serviceLayerPluginChainName);
 
-			context.addPluginConfiguration(pluginChainConfiguration);
+			context.addPluginConfiguration(serviceLayerPluginChainConfiguration);
+
+			// controller layer
+			PluginConfiguration controllerLayerPluginChainConfiguration = new PluginConfiguration();
+
+			String controllerLayerPluginChainName = ControllerLayerPluginChain.class.getName();
+
+			controllerLayerPluginChainConfiguration.setConfigurationType(controllerLayerPluginChainName);
+
+			context.addPluginConfiguration(controllerLayerPluginChainConfiguration);
+
 		}
 
 		//实体添加序列化
@@ -852,6 +923,8 @@ public class GeneratorBridge {
 		String serviceFileName = StringAssist.merge(modelFileName, "Service");
 		String serviceImplFileName = StringAssist.merge(modelFileName, "ServiceImpl");
 
+		String controllerFileName = StringAssist.merge(modelFileName, "Controller");
+
 		for (GeneratedJavaFile file : javaFileList) {
 			String fileBaseName = org.apache.commons.io.FilenameUtils.getBaseName(file.getFileName());
 
@@ -873,6 +946,10 @@ public class GeneratorBridge {
 
 			if (serviceImplFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
 				dataTableGeneratorConfig.setServiceImplContent(file.getFormattedContent());
+			}
+
+			if (controllerFileName.toLowerCase().equals(fileBaseName.toLowerCase())) {
+				dataTableGeneratorConfig.setControllerContent(file.getFormattedContent());
 			}
 		}
 

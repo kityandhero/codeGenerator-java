@@ -4,6 +4,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @author luzhitao
+ */
 public interface BaseMapper<T, Example, ID> {
 
 	long countByExample(Example example);

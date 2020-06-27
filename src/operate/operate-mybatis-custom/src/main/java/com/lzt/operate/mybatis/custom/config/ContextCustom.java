@@ -10,22 +10,36 @@ public class ContextCustom extends Context {
 	//添加ServiceGeneratorConfiguration
 	private JavaServiceGeneratorConfiguration javaServiceGeneratorConfiguration;
 
+	private JavaControllerGeneratorConfiguration javaControllerGeneratorConfiguration;
+
 	public ContextCustom(ModelType defaultModelType) {
 		super(defaultModelType);
 	}
 
 	public JavaServiceGeneratorConfiguration getJavaServiceGeneratorConfiguration() {
-		return javaServiceGeneratorConfiguration;
+		return this.javaServiceGeneratorConfiguration;
 	}
 
 	public void setJavaServiceGeneratorConfiguration(JavaServiceGeneratorConfiguration javaServiceGeneratorConfiguration) {
 		this.javaServiceGeneratorConfiguration = javaServiceGeneratorConfiguration;
 	}
 
+	public JavaControllerGeneratorConfiguration getJavaControllerGeneratorConfiguration() {
+		return this.javaControllerGeneratorConfiguration;
+	}
+
+	public void setJavaControllerGeneratorConfiguration(JavaControllerGeneratorConfiguration javaControllerGeneratorConfiguration) {
+		this.javaControllerGeneratorConfiguration = javaControllerGeneratorConfiguration;
+	}
+
 	@Override
 	public void validate(List<String> errors) {
-		if (javaServiceGeneratorConfiguration != null) {
-			javaServiceGeneratorConfiguration.validate(errors, this.getId());
+		if (this.javaServiceGeneratorConfiguration != null) {
+			this.javaServiceGeneratorConfiguration.validate(errors, this.getId());
+		}
+
+		if (this.javaControllerGeneratorConfiguration != null) {
+			this.javaControllerGeneratorConfiguration.validate(errors, this.getId());
 		}
 
 		super.validate(errors);
@@ -35,9 +49,15 @@ public class ContextCustom extends Context {
 	public XmlElement toXmlElement() {
 
 		XmlElement xmlElement = super.toXmlElement();
-		if (javaServiceGeneratorConfiguration != null) {
-			xmlElement.addElement(javaServiceGeneratorConfiguration.toXmlElement());
+
+		if (this.javaServiceGeneratorConfiguration != null) {
+			xmlElement.addElement(this.javaServiceGeneratorConfiguration.toXmlElement());
 		}
+
+		if (this.javaControllerGeneratorConfiguration != null) {
+			xmlElement.addElement(this.javaControllerGeneratorConfiguration.toXmlElement());
+		}
+		
 		return xmlElement;
 	}
 }
