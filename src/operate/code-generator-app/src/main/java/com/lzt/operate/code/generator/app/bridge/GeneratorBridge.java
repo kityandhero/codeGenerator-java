@@ -940,8 +940,12 @@ public class GeneratorBridge {
 
 		// 包配置
 		PackageConfig pc = new PackageConfig();
-		pc.setModuleName(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
-		pc.setParent(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
+		// pc.setModuleName(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
+		// pc.setParent(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
+		pc.setMapper(mybatisPlusGeneratorGlobalConfig.getDaoPackage());
+		pc.setEntity(mybatisPlusGeneratorGlobalConfig.getModelPackage());
+		pc.setService(mybatisPlusGeneratorGlobalConfig.getServicePackage());
+		pc.setXml(mybatisPlusGeneratorGlobalConfig.getMappingXmlPackage());
 		mpg.setPackageInfo(pc);
 
 		// 自定义配置
@@ -964,12 +968,14 @@ public class GeneratorBridge {
 			@Override
 			public String outputFile(TableInfo tableInfo) {
 				// 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-				return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
-						+ "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+				return projectPath + "/mapper/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+
+				// return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
+				// 		+ "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
 			}
 		});
 
-		cfg.setFileOutConfigList(focList);
+		// cfg.setFileOutConfigList(focList);
 		mpg.setCfg(cfg);
 
 		// 配置模板
