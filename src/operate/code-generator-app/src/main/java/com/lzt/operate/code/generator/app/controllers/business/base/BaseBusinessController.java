@@ -85,7 +85,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 
 		mybatisGeneratorGlobalConfig.setDaoTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setDaoTargetFolderRelativeMode(Whether.No.getFlag()
-																			  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE)
+																			  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_DAO_TARGET_FOLDER_RELATIVE_MODE,Whether.Yes.getFlag().toString())
 																							   .toInt()) ? Whether.No.getFlag() : Whether.Yes
 				.getFlag());
 
@@ -114,7 +114,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 
 		mybatisGeneratorGlobalConfig.setMappingXmlTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setMappingXmlTargetFolderRelativeMode(Whether.No.getFlag()
-																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE)
+																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPING_XML_TARGET_FOLDER_RELATIVE_MODE,Whether.Yes.getFlag().toString())
 																									  .toInt()) ? Whether.No
 				.getFlag() : Whether.Yes.getFlag());
 
@@ -129,7 +129,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 
 		mybatisGeneratorGlobalConfig.setModelTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setModelTargetFolderRelativeMode(Whether.No.getFlag()
-																				.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE)
+																				.equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MODEL_PACKAGE_TARGET_FOLDER_RELATIVE_MODE,Whether.Yes.getFlag().toString())
 																								 .toInt()) ? Whether.No.getFlag() : Whether.Yes
 				.getFlag());
 
@@ -144,7 +144,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 
 		mybatisGeneratorGlobalConfig.setServiceTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setServiceTargetFolderRelativeMode(Whether.No.getFlag()
-																				  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE)
+																				  .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_SERVICE_TARGET_FOLDER_RELATIVE_MODE,Whether.Yes.getFlag().toString())
 																								   .toInt()) ? Whether.No
 				.getFlag() : Whether.Yes.getFlag());
 		if (paramJson.existKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_PACKAGE)) {
@@ -158,7 +158,7 @@ public class BaseBusinessController extends BaseOperateAuthController {
 
 		mybatisGeneratorGlobalConfig.setControllerTargetFolder(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER));
 		mybatisGeneratorGlobalConfig.setControllerTargetFolderRelativeMode(Whether.No.getFlag()
-																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE)
+																					 .equals(paramJson.getStringExByKey(GlobalString.DATABASE_GENERATOR_CONFIG_CONTROLLER_TARGET_FOLDER_RELATIVE_MODE,Whether.Yes.getFlag().toString())
 																									  .toInt()) ? Whether.No
 				.getFlag() : Whether.Yes.getFlag());
 		mybatisGeneratorGlobalConfig.setMapperExtensionName(paramJson.getStringByKey(GlobalString.DATABASE_GENERATOR_CONFIG_MAPPER_Extension_NAME));

@@ -8,6 +8,11 @@ package com.lzt.operate.utility.exceptions;
  */
 public class AuthenticationException extends RuntimeException {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4079302754399882907L;
+
 	public AuthenticationException() {
 	}
 
