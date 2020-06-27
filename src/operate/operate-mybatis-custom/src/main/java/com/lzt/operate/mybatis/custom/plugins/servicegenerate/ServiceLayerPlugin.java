@@ -101,7 +101,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		serviceInterface.addImportedType(baseServiceInstance);
 		serviceInterface.addImportedType(modelJavaType);
 		serviceInterface.addImportedType(exampleJavaType);
-		serviceInterface.addFileCommentLine("/*** copyright (c) 2019 Marvis  ***/");
+		serviceInterface.addFileCommentLine("/*** copyright (c) 2019 CodeGenerator  ***/");
 
 		this.additionalServiceMethods(introspectedTable, serviceInterface);
 		return serviceInterface;
@@ -215,7 +215,7 @@ public class ServiceLayerPlugin extends PaginationPlugin {
 		mapperMethod.addAnnotation("@Autowired");
 
 		serviceImplClazz.addMethod(mapperMethod);
-		serviceImplClazz.addFileCommentLine("/*** copyright (c) 2019 Marvis  ***/");
+		serviceImplClazz.addFileCommentLine("/*** copyright (c) 2019 CodeGenerator  ***/");
 
 		serviceImplClazz
 				.addImportedType(new FullyQualifiedJavaType("org.springframework.beans.factory.annotation.Autowired"));

@@ -224,6 +224,7 @@ public class DataTableGeneratorConfigController extends BaseOperateAuthControlle
 			getterList.add(DataTableGeneratorConfig::getExampleContent);
 			getterList.add(DataTableGeneratorConfig::getServiceContent);
 			getterList.add(DataTableGeneratorConfig::getServiceImplContent);
+			getterList.add(DataTableGeneratorConfig::getControllerContent);
 			getterList.add(DataTableGeneratorConfig::getLastGenerateTime);
 			getterList.add(DataTableGeneratorConfig::getChannel);
 			getterList.add(DataTableGeneratorConfig::getChannelNote);

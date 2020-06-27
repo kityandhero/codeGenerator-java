@@ -110,7 +110,7 @@ public class ControllerLayerPlugin extends PaginationPlugin {
 								   .append("Mapper")
 								   .toString();
 
-		controllerClazz.addFileCommentLine("/*** copyright (c) 2020 luzhitao  ***/");
+		controllerClazz.addFileCommentLine("/*** copyright (c) 2020 CodeGenerator  ***/");
 
 		controllerClazz
 				.addImportedType(new FullyQualifiedJavaType("org.springframework.beans.factory.annotation.Autowired"));
