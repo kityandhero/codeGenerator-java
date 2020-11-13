@@ -54,8 +54,7 @@ import static springfox.documentation.spi.service.contexts.Orderings.methodCompa
 import static springfox.documentation.spi.service.contexts.Orderings.resourceGroupComparator;
 
 /**
- * @author lzt
- * @date 2019-05-08 16:45
+ * @author luzhitao
  */
 @SuppressWarnings({"Guava", "UnstableApiUsage"})
 @Component
@@ -215,7 +214,7 @@ public class ApiListingJsonScanner extends ApiListingScanner {
         return contexts.stream().sorted(methodComparator()).collect(toList());
     }
 
-    class ResourcePathProvider {
+    static class ResourcePathProvider {
         private final ResourceGroup resourceGroup;
 
         ResourcePathProvider(ResourceGroup resourceGroup) {

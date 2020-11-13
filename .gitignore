@@ -18,17 +18,18 @@
 *.zip
 *.tar.gz
 *.rar
+*.iml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 */.idea/
+**/target/
 .idea/
-/src/operate/id-spring-boot-starter/target
-/src/operate/swagger-spring-boot-starter/target
-/src/operate/utility/target
-/src/operate/id-spring-boot-starter/id-spring-boot-starter.iml
-/src/operate/swagger-spring-boot-starter/swagger-spring-boot-starter.iml
-/src/operate/utility/utility.iml
-/src/operate/operate.iml
-/src/operate/id-spring-boot-starter/id-spring-boot-starter.iml
 /src/operate/codetools/src/main/resources/localData.db
+/temp
+
+rebel.xml
+/src/operate/utility/src/main/java/rebel.xml
+/src/operate/swagger-spring-boot-starter/src/main/resources/rebel.xml
+/src/operate/swagger-spring-boot-starter/src/main/java/rebel.xml
+/src/operate/utility/src/main/resources/rebel.xml

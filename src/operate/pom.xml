@@ -12,10 +12,20 @@
 
     <!-- 声明子模块 -->
     <modules>
-        <module>codetools</module>
-        <module>utility</module>
+        <module>operate-utility</module>
         <module>swagger-spring-boot-starter</module>
         <module>id-spring-boot-starter</module>
+        <module>code-generator-app</module>
+        <module>code-generator-entity</module>
+        <module>code-generator-dao</module>
+        <module>code-generator-common</module>
+        <module>code-generator-message-queue</module>
+        <module>operate-mybatis-custom</module>
+        <module>operate-mybatis-base</module>
+        <module>operate-jpa-base</module>
+        <module>code-generator-console</module>
+        <module>operate-mybatis-plus-custom</module>
+        <module>code-generator-app-core</module>
     </modules>
 
     <properties>
@@ -29,7 +39,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.2.4.RELEASE</version>
+                <version>2.2.6.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -41,25 +51,90 @@
                 <version>2.1.1</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-jpa</artifactId>
-                <version>2.2.4.RELEASE</version>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>2.2.6.RELEASE</version>
             </dependency>
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-thymeleaf</artifactId>
-                <version>2.2.4.RELEASE</version>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>2.2.6.RELEASE</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-freemarker -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-freemarker</artifactId>
+                <version>2.2.6.RELEASE</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.2.4.RELEASE</version>
+                <version>2.2.6.RELEASE</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>2.8.1</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.30</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>2.10.6</version>
+            </dependency>
+
+            <!--            <dependency>-->
+            <!--                <groupId>org.flywaydb</groupId>-->
+            <!--                <artifactId>flyway-core</artifactId>-->
+            <!--                <version>6.2.4</version>-->
+            <!--            </dependency>-->
 
             <dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>
@@ -80,6 +155,14 @@
                 <version>1.2.3</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.199</version>
+                <scope>test</scope>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
             <dependency>
                 <groupId>org.mybatis</groupId>
@@ -94,7 +177,6 @@
                 <version>2.0.3</version>
             </dependency>
 
-
             <!--mybatis工具类-->
             <dependency>
                 <groupId>org.mybatis.generator</groupId>
@@ -102,32 +184,55 @@
                 <version>1.3.7</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>3.3.2</version>
+            </dependency>
+
+            <!--模板引擎-->
+            <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core -->
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>2.2</version>
+            </dependency>
+
+            <!--模板引擎-->
+            <!-- https://mvnrepository.com/artifact/com.ibeetl/beetl -->
+            <dependency>
+                <groupId>com.ibeetl</groupId>
+                <artifactId>beetl</artifactId>
+                <version>3.1.8.RELEASE</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.12</version>
+                <scope>provided</scope>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>27.1-jre</version>
+                <version>29.0-jre</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
-                <version>1.1.21</version>
+                <version>1.1.20</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
-                <version>1.1.21</version>
-            </dependency>
-
-
-            <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>1.4.199</version>
+                <version>1.1.20</version>
             </dependency>
 
             <!--commons相关的jar包-->
@@ -224,32 +329,6 @@
                 <version>3.1.0</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-spring -->
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-core</artifactId>
-                <version>1.4.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-spring</artifactId>
-                <version>1.4.2</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.crazycake/shiro-redis -->
-            <dependency>
-                <groupId>org.crazycake</groupId>
-                <artifactId>shiro-redis</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-ehcache -->
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-ehcache</artifactId>
-                <version>1.4.2</version>
-            </dependency>
-
             <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
             <dependency>
                 <groupId>com.auth0</groupId>
@@ -257,25 +336,43 @@
                 <version>3.9.0</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/com.lmax/disruptor -->
+            <!--            <dependency>-->
+            <!--                <groupId>com.lmax</groupId>-->
+            <!--                <artifactId>disruptor</artifactId>-->
+            <!--                <version>3.4.2</version>-->
+            <!--            </dependency>-->
+
+            <!-- https://mvnrepository.com/artifact/cn.pomit/spring-boot-monitor -->
+            <dependency>
+                <groupId>cn.pomit</groupId>
+                <artifactId>spring-boot-monitor</artifactId>
+                <version>0.0.2</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.2.6.RELEASE</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>8</source>
+                        <target>8</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

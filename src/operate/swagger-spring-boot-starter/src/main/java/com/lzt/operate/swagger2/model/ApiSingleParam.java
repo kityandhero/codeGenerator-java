@@ -5,20 +5,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * @author luzhitao
+ */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiSingleParam {
 
-    String name() default "";
+	String name() default "";
 
-    String modelName() default "";
+	String value() default "";
 
-    String value() default "";
+	Class<?> type() default String.class;
 
-    Class<?> type() default String.class;
+	String example() default "";
 
-    String example() default "";
-
-    boolean allowMultiple() default false;
+	boolean allowMultiple() default false;
 
 }

@@ -32,9 +32,8 @@ import java.util.Date;
  *
  * @author yutianbao
  */
-@Data
 @Entity
-@Table(name = "workerNode")
+@Table(name = "worker_node")
 public class WorkerNodeEntity {
 
 	/**
@@ -43,41 +42,96 @@ public class WorkerNodeEntity {
 	@Id
 	@Column(nullable = false)
 	@GeneratedValue
-	long id;
+	private 	long id;
 
 	/**
 	 * Type of CONTAINER: HostName, ACTUAL : IP.
 	 */
-	String hostName;
+	private String hostName;
 
 	/**
 	 * Type of CONTAINER: Port, ACTUAL : Timestamp + Random(0-10000)
 	 */
-	String port;
+	private String port;
 
 	/**
 	 * type of {@link WorkerNodeType}
 	 */
-	int type;
+	private int type;
 
 	/**
 	 * Worker launch date, default now
 	 */
-	Date launchDate = new Date();
+	private Date launchDate = new Date();
 
 	/**
 	 * Created time
 	 */
-	Date created;
+	private Date created;
 
 	/**
 	 * Last modified
 	 */
-	Date modified;
+	private Date modified;
 
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	public String getPort() {
+		return port;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public Date getLaunchDate() {
+		return launchDate;
+	}
+
+	public void setLaunchDate(Date launchDate) {
+		this.launchDate = launchDate;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public Date getModified() {
+		return modified;
+	}
+
+	public void setModified(Date modified) {
+		this.modified = modified;
+	}
 }

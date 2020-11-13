@@ -1,5 +1,7 @@
 package com.lzt.operate.swagger2;
 
+
+
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -20,6 +22,4 @@ import java.lang.annotation.Target;
 @Inherited
 @Import({SwaggerAutoConfiguration.class})
 public @interface EnableSwagger2Doc {
-
-
 }

@@ -6,17 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author lzt
+ * @author luzhitao
  * @date 2019-05-08 16:45
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiJsonObject {
 
-    ApiJsonProperty[] value(); //对象属性值
+	ApiJsonProperty[] value(); //对象属性值
 
-    ApiJsonResult result() default @ApiJsonResult({});
+	ApiJsonResult result() default @ApiJsonResult({});
 
-    String name() default "";
+	String name() default "";
 
 }
