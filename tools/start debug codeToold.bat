@@ -1,0 +1,1 @@
+Java -jar -Xms256m -Xmx400m -Dfile.encoding=UTF-8 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 ../src/operate/code-generator-app/target/code-generator-app-1.0-SNAPSHOT.jar
